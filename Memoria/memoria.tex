@@ -56,12 +56,6 @@
 	\FloatBarrier
 }
 
-
-
-
-
-
-
 \graphicspath{ {./img/} }
 
 % Capítulos
@@ -93,6 +87,7 @@
 \usepackage{xcolor}
 \newcommand{\tutor}[1]{\def\@tutor{#1}}
 \newcommand{\tutorb}[1]{\def\@tutorb{#1}}
+\newcommand{\tutorc}[1]{\def\@tutorc{#1}}
 
 \newcommand{\course}[1]{\def\@course{#1}}
 \definecolor{newBox}{HTML}{D8AD6E}
@@ -135,7 +130,7 @@
     \@date{}\\
     \vspace{0.5cm}
     %Tutor: \@tutor{}\\ % comenta el que no corresponda
-    Tutores: \@tutor{} -- \@tutorb{}\\
+    Tutores: \@tutor{} -- \@tutorb{} -- \@tutorc{}\\
   }%
   \end{center}%
   \null
@@ -143,16 +138,18 @@
   }
 \makeatother
 
-\newcommand{\nombre}{Nombre Alumno/a}
-\newcommand{\nombreTutor}{Nombre Tutor/a 1} 
-\newcommand{\nombreTutorb}{Nombre Tutor/a 2} 
-\newcommand{\dni}{123456A} 
+\newcommand{\nombre}{Daniel Marina de la Cal}
+\newcommand{\nombreTutor}{Antonio Jesús Canepa Oneto} 
+\newcommand{\nombreTutorb}{Sergio Ossa Echeverri} 
+\newcommand{\nombreTutorc}{Fernando Callejo Torre} 
+\newcommand{\dni}{71565266F} 
 
 % Datos de portada
-\title{Título del trabajo}
+\title{Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable}
 \author{\nombre}
 \tutor{\nombreTutor}
 \tutorb{\nombreTutorb}
+\tutorc{\nombreTutorc}
 \date{\today}
 
 
@@ -168,36 +165,43 @@
 
 \noindent\includegraphics[width=\textwidth]{CabeceraEPS.png}\vspace{1cm}
 
-\noindent D. \nombreTutor, profesor/a del departamento de departamento, área de área.
-\noindent D. \nombreTutorb, profesor/a del departamento de departamento, área de área.
+\noindent D. \nombreTutor, profesor del departamento de Informática, área de Lenguajes Informáticos.
+\noindent D. \nombreTutorb, médico intensivista del Hospital Universitario de Burgos.
+\noindent D. \nombreTutorc, médico intensivista del Hospital Universitario de Burgos..
 
-\noindent Expone/n:
+\noindent Exponen:
 
-\noindent Que el/la alumno/a D. \nombre, con DNI \dni, ha realizado el Trabajo final de Grado en Ingeniería de la Salud titulado título del trabajo. 
+\noindent Que el alumno D. \nombre, con DNI \dni, ha realizado el Trabajo final de Grado en Ingeniería de la Salud titulado \textit{Estimación temprana del riesgo de inicio de Noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable}.
 
-\noindent Y que dicho trabajo ha sido realizado por el/la alumno/a bajo la dirección del/los que suscribe/n.
+\noindent Y que dicho trabajo ha sido realizado por el alumno bajo la dirección de los que suscriben.
 
 \begin{center} %\large
 En Burgos, a {\large \today}
 \end{center}
 
+% Author and supervisor
 \vfill\vfill\vfill
 
-% Author and supervisor
-\begin{minipage}{0.45\textwidth}
-\begin{flushleft} %\large
+\begin{minipage}[t]{0.30\textwidth}
+\begin{center}
 Vº. Bº. del Tutor:\\[2cm]
 D. \nombreTutor
-\end{flushleft}
+\end{center}
 \end{minipage}
 \hfill
-\begin{minipage}{0.45\textwidth}
-\begin{flushleft} %\large
+\begin{minipage}[t]{0.30\textwidth}
+\begin{center}
 Vº. Bº. del Tutor:\\[2cm]
 D. \nombreTutorb
-\end{flushleft}
+\end{center}
 \end{minipage}
 \hfill
+\begin{minipage}[t]{0.30\textwidth}
+\begin{center}
+Vº. Bº. del Tutor:\\[2cm]
+D. \nombreTutorc
+\end{center}
+\end{minipage}
 
 \vfill
 
@@ -217,12 +221,12 @@ D. \nombreTutorb
 % Abstract en castellano
 \renewcommand*\abstractname{Resumen}
 \begin{abstract}
-En este primer apartado se hace una \textbf{breve} presentación del tema que se aborda en el proyecto.
+Este TFG propone el desarrollo de un modelo de aprendizaje automático orientado a estimar de forma temprana el riesgo de inicio de noradrenalina en pacientes críticos ingresados en UCI, a partir de variables clínicas disponibles durante las primeras horas de estancia, como constantes vitales, parámetros analíticos y datos básicos del paciente. El objetivo no es solo predecir si el paciente requerirá soporte vasopresor en una ventana temporal definida, sino también ofrecer una herramienta interpretable, en forma de dashboard, que permita visualizar el riesgo estimado y los factores que más contribuyen a dicha predicción en cada caso
 \end{abstract}
 
 \renewcommand*\abstractname{Descriptores}
 \begin{abstract}
-Palabras separadas por comas que identifiquen el contenido del proyecto Ej: servidor web, buscador de vuelos, android \ldots
+Aprendizaje automático, Dashboard, UCI, norepinefrina, noradrenalina. \ldots
 \end{abstract}
 
 \clearpage
@@ -230,12 +234,12 @@ Palabras separadas por comas que identifiquen el contenido del proyecto Ej: serv
 % Abstract en inglés
 \renewcommand*\abstractname{Abstract}
 \begin{abstract}
-A \textbf{brief} presentation of the topic addressed in the project.
+This Bachelor's Thesis proposes the development of a machine learning model aimed at the early estimation of the risk of initiating noradrenaline in critically ill patients admitted to the ICU, based on clinical variables available during the first hours of admission, such as vital signs, laboratory parameters, and basic patient data. The objective is not only to predict whether the patient will require vasopressor support within a defined time window, but also to provide an interpretable tool in the form of a dashboard. This tool will allow for the visualization of the estimated risk and the factors that contribute most to this prediction in each individual case.
 \end{abstract}
 
 \renewcommand*\abstractname{Keywords}
 \begin{abstract}
-keywords separated by commas.
+Machine Learning, Dashboard, ICU, norepinephrine.
 \end{abstract}
 
 \clearpage
