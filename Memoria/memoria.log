@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.3.17)  17 MAR 2026 22:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.3.17)  26 MAR 2026 21:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -855,12 +855,12 @@ Package hyperref Info: Link coloring ON on input line 156.
 \@outlinefile=\write4
 \openout4 = `memoria.out'.
 
-<CabeceraEPS.png, id=15, 1706.375pt x 376.40625pt>
+<CabeceraEPS.png, id=31, 1706.375pt x 376.40625pt>
 File: CabeceraEPS.png Graphic file (type png)
 <use CabeceraEPS.png>
 Package pdftex.def Info: CabeceraEPS.png  used on input line 158.
 (pdftex.def)             Requested size: 383.0pt x 84.48097pt.
-<logo_GIS.png, id=17, 756.8275pt x 478.78876pt>
+<logo_GIS.png, id=33, 756.8275pt x 478.78876pt>
 File: logo_GIS.png Graphic file (type png)
 <use logo_GIS.png>
 Package pdftex.def Info: logo_GIS.png  used on input line 158.
@@ -965,15 +965,117 @@ LaTeX Info: Redefining \% on input line 2.
 ]
 \openout2 = `./tex/1_introduccion.aux'.
 
+ (tex/1_introduccion.tex
+Underfull \vbox (badness 3179) has occurred while \output is active []
 
-No file ./tex/1_introduccion.tex.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.9 \textbf{JustificaciÃ³n del problema}
+                                         [1
+
+
+{C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}
+{C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}]
+Overfull \hbox (64.76224pt too wide) in paragraph at lines 11--12
+\T1/lmr/m/n/12 (-20) ver-si-ta-rio de Bur-gos (HU-BU) [[], []].
+ []
+
+LaTeX Info: Redefining \. on input line 20.
+LaTeX Info: Redefining \% on input line 20.
+Package babel Info: 'spanish' activates 'spanish' shorthands.
+(babel)             Reported on input line 20.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.20 
+      [2])
+LaTeX Info: Redefining \. on input line 261.
+LaTeX Info: Redefining \% on input line 261.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.261 \include{./tex/1_introduccion}
+                                     [3]
 \openout2 = `./tex/2_objetivos.aux'.
 
-No file ./tex/2_objetivos.tex.
+ (tex/2_objetivos.tex
+pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.1 \capitulo{2}{Objetivos}
+                            [4
+
+
+
+
+]
+pdfTeX warning (ext4): destination with the same identifier (name{page.5}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.17 
+      [5]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 2
+8.
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `lmtt' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+LaTeX Info: Redefining \. on input line 44.
+LaTeX Info: Redefining \% on input line 44.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.6}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.44   \item A
+              dquirir experiencia prÃ¡ctica en el manejo de bases de datos c...
+[6])
+LaTeX Info: Redefining \. on input line 262.
+LaTeX Info: Redefining \% on input line 262.
+ [7]
 \openout2 = `./tex/3_teoricos.aux'.
 
-No file ./tex/3_teoricos.tex.
+ (tex/3_teoricos.tex [8
+
+
+
+
+] [9]
+Overfull \hbox (106.08824pt too wide) in paragraph at lines 13--14
+\T1/lmr/m/n/12 (-20) una re-su-ci-ta-ción ade-cua-da con flui-dos [[], []].
+ []
+
+
+Overfull \hbox (114.51123pt too wide) in paragraph at lines 15--16
+\T1/lmr/m/n/12 (-20) sión ar-te-rial me-dia su-pe-rior a 65 mmHg [[], []].
+ []
+
+LaTeX Info: Redefining \. on input line 22.
+LaTeX Info: Redefining \% on input line 22.
+[10]
+LaTeX Info: Redefining \. on input line 33.
+LaTeX Info: Redefining \% on input line 33.
+ [11]
+LaTeX Info: Redefining \. on input line 40.
+LaTeX Info: Redefining \% on input line 40.
+ [12])
+LaTeX Info: Redefining \. on input line 263.
+LaTeX Info: Redefining \% on input line 263.
+ [13]
 \openout2 = `./tex/4_metodologia.aux'.
+
 
 No file ./tex/4_metodologia.tex.
 \openout2 = `./tex/5_resultados.aux'.
@@ -988,7 +1090,55 @@ No file ./tex/7_conclusiones.tex.
 \openout2 = `./tex/8_lineas_futuras.aux'.
 
 No file ./tex/8_lineas_futuras.tex.
-No file memoria.bbl.
+(memoria.bbl [14
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]
+bibitemlist
+[15]
+LaTeX Info: Redefining \. on input line 107.
+LaTeX Info: Redefining \% on input line 107.
+
+
+Class memoir Warning: The material used in the headers is too large
+(15.35403pt) for the given head height (14.5pt), it is recommended to
+either increase the head height or redesign the header
+(in both cases you will find help in the memoir manual). on input line 107.
+
+
+Overfull \vbox (0.85403pt too high) has occurred while \output is active []
+
+
+[16])
+
+Class memoir Warning: The material used in the headers is too large
+(15.35403pt) for the given head height (14.5pt), it is recommended to
+either increase the head height or redesign the header
+(in both cases you will find help in the memoir manual). on input line 274.
+
+LaTeX Info: Redefining \. on input line 274.
+LaTeX Info: Redefining \% on input line 274.
+
+Overfull \vbox (0.85403pt too high) has occurred while \output is active []
+
+
+[17]
 \tf@toc=\write5
 \openout5 = `memoria.toc'.
 
@@ -998,14 +1148,14 @@ No file memoria.bbl.
 \tf@lot=\write7
 \openout7 = `memoria.lot'.
 
-(memoria.aux
+ (memoria.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 LaTeX Info: Redefining \. on input line 13.
 LaTeX Info: Redefining \% on input line 13.
- (tex/1_introduccion.aux) (tex/2_objetivos.aux) (tex/3_teoricos.aux) (tex/4_met
-odologia.aux) (tex/5_resultados.aux) (tex/6_discusion.aux)
-(tex/7_conclusiones.aux) (tex/8_lineas_futuras.aux))
+ (tex/1_introduccion.aux) (tex/2_objetivos.aux)
+(tex/3_teoricos.aux) (tex/4_metodologia.aux) (tex/5_resultados.aux)
+(tex/6_discusion.aux) (tex/7_conclusiones.aux) (tex/8_lineas_futuras.aux))
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
@@ -1015,28 +1165,32 @@ L3 programming layer <2020/03/25>
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package rerunfilecheck Info: File `memoria.out' has not changed.
-(rerunfilecheck)             Checksum: 41615B104C9655D2C46A693F0C068491;391.
+(rerunfilecheck)             Checksum: 8BCAEC30228AAE98B0F624DEE1A5BDBB;912.
  ) 
 Here is how much of TeX's memory you used:
- 17781 strings out of 467871
- 286702 string characters out of 5418376
- 779068 words of memory out of 5000000
- 46285 multiletter control sequences out of 15000+600000
- 697879 words of font info for 117 fonts, out of 8000000 for 9000
+ 18041 strings out of 467871
+ 290300 string characters out of 5418376
+ 786046 words of memory out of 5000000
+ 46383 multiletter control sequences out of 15000+600000
+ 702837 words of font info for 165 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 85i,12n,93p,1006b,558s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 85i,12n,93p,1456b,678s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pf
 b><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pf
 b><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmcsc10.p
 fb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pf
 b><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb
 ><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb>
-<C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri12.pfb>
-<C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmssbx10.pf
-b>
-Output written on memoria.pdf (12 pages, 895857 bytes).
+<C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C
+:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri12.pfb><C
+:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmro12.pfb><C
+:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb>
+<C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb>
+<C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
+
+Output written on memoria.pdf (29 pages, 1042129 bytes).
 PDF statistics:
- 125 PDF objects out of 1000 (max. 8388607)
- 16 named destinations out of 1000 (max. 500000)
- 43043 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 330 PDF objects out of 1000 (max. 8388607)
+ 69 named destinations out of 1000 (max. 500000)
+ 43587 words of extra memory for PDF output out of 51595 (max. 10000000)
 

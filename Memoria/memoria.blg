@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: memoria.aux
+Reallocating 'name_of_file' (item size: 1) to 25 items.
+A level-1 auxiliary file: ./tex/1_introduccion.aux
+Reallocating 'name_of_file' (item size: 1) to 22 items.
+A level-1 auxiliary file: ./tex/2_objetivos.aux
+Reallocating 'name_of_file' (item size: 1) to 21 items.
+A level-1 auxiliary file: ./tex/3_teoricos.aux
+Reallocating 'name_of_file' (item size: 1) to 24 items.
+A level-1 auxiliary file: ./tex/4_metodologia.aux
+Reallocating 'name_of_file' (item size: 1) to 23 items.
+A level-1 auxiliary file: ./tex/5_resultados.aux
+Reallocating 'name_of_file' (item size: 1) to 22 items.
+A level-1 auxiliary file: ./tex/6_discusion.aux
+Reallocating 'name_of_file' (item size: 1) to 25 items.
+A level-1 auxiliary file: ./tex/7_conclusiones.aux
+Reallocating 'name_of_file' (item size: 1) to 27 items.
+A level-1 auxiliary file: ./tex/8_lineas_futuras.aux
+Reallocating 'name_of_file' (item size: 1) to 8 items.
+The style file: apalike.bst
+Reallocating 'name_of_file' (item size: 1) to 13 items.
+Database file #1: bibliografia.bib
+You've used 17 entries,
+            1935 wiz_defined-function locations,
+            583 strings with 8331 characters,
+and the built_in function-call counts, 8300 in all, are:
+= -- 762
+> -- 525
+< -- 3
++ -- 194
+- -- 190
+* -- 809
+:= -- 1493
+add.period$ -- 51
+call.type$ -- 17
+change.case$ -- 175
+chr.to.int$ -- 17
+cite$ -- 17
+duplicate$ -- 239
+empty$ -- 481
+format.name$ -- 209
+if$ -- 1545
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 16
+newline$ -- 88
+num.names$ -- 51
+pop$ -- 145
+preamble$ -- 1
+purify$ -- 174
+quote$ -- 0
+skip$ -- 176
+stack$ -- 0
+substring$ -- 520
+swap$ -- 17
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 102
+warning$ -- 0
+while$ -- 58
+width$ -- 0
+write$ -- 223
