@@ -1,0 +1,178 @@
+---
+# ============================================================
+#  memoria.qmd  –  Memoria TFG · Grado en Ingeniería de la Salud
+#  Universidad de Burgos · Escuela Politécnica Superior
+# ============================================================
+# DATOS DEL ALUMNO/A – edita estos campos
+title: "Estimación temprana del riesgo de inicio de noradrenalina en UCImediante aprendizaje automático y dashboard interpretable"
+author: "Daniel Marina de la Cal"
+
+# Campos extra accesibles desde el preámbulo LaTeX
+# Se pasan como variables para que \tutor y \tutorb funcionen
+# (se definen también en preambulo_memoria.tex vía \newcommand)
+ 
+# ── Salida PDF ──────────────────────────────────────────────
+format: 
+  pdf:
+    documentclass: memoir
+    classoption: [a4paper, 12pt, twoside]
+    pdf-engine: pdflatex 
+    # El preámbulo LaTeX con todos los paquetes y comandos custom
+    include-in-header: preambulo_memoria.tex
+    maketitle: false
+    # Portada y páginas previas gestionadas desde el propio .qmd
+    # con bloques raw LaTeX
+    keep-tex: false          # pon true para depurar
+    number-sections: false   # los capítulos no van numerados
+    toc: false
+    toc-depth: 3
+    lof: false                # lista de figuras
+    lot: false                # lista de tablas
+    cite-method: natbib      # compatible con apalike
+    biblio-style: apalike
+    bibliography: bibliografia.bib
+    lang: es
+
+# ── Motor knitr para R ──────────────────────────────────────
+knitr:
+  opts_chunk:
+    echo: true        # muestra el código R en el pdf
+    warning: false
+    message: false
+    fig.pos: "!h"     # posición de figuras
+    out.width: "90%"
+    fig.align: "center"
+---
+
+```{=latex}
+%% ── Datos de portada (editar aquí) ─────────────────────────
+\title{Estimación temprana del riesgo de inicio de noradrenalina en UCImediante aprendizaje automático y dashboard interpretable}
+\author{\nombre}
+\date{\today}
+
+\maketitle
+```
+
+```{=latex}
+%% ── Página de autorización (Vº Bº tutores) ─────────────────
+\newpage\null\thispagestyle{empty}\newpage
+\thispagestyle{empty}
+
+\noindent\includegraphics[width=\textwidth]{CabeceraEPS.png}\vspace{1cm}
+
+\noindent D. \nombreTutor, profesor/a del departamento de Ingeniería Informática del área de Lenguajes Informáticos.
+\noindent D. \nombreTutorb, médico intensivista del Hospital Universitario de Burgos.
+\noindent D. \nombreTutorc, médico intensivista del Hospital Universitario de Burgos.
+
+\noindent Expone/n:
+
+\noindent Que el/la alumno/a D. \nombre, con DNI \dni, ha realizado el Trabajo
+final de Grado en Ingeniería de la Salud titulado \textit{Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable}.
+
+\noindent Y que dicho trabajo ha sido realizado por el/la alumno/a bajo la
+dirección del/los que suscribe/n.
+
+\begin{center}
+  En Burgos, a {\large \today}
+\end{center}
+
+\vfill\vfill\vfill
+
+\begin{minipage}{0.31\textwidth}
+  \begin{flushleft}
+    Vº. Bº. del Tutor:\\[2cm]
+    D. \nombreTutor
+  \end{flushleft}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}
+  \begin{flushleft}
+    Vº. Bº. del Tutor:\\[2cm]
+    D. \nombreTutorb
+  \end{flushleft}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}
+  \begin{flushleft}
+    Vº. Bº. del Tutor:\\[2cm]
+    D. \nombreTutorc
+  \end{flushleft}
+\end{minipage}
+
+\vfill
+\newpage\null\thispagestyle{empty}\newpage
+```
+
+```{=latex}
+%% ── Resumen / Abstract ──────────────────────────────────────
+\frontmatter
+
+\pagestyle{chapterfirst}
+
+\renewcommand*\abstractname{Resumen}
+\begin{abstract}
+Este TFG propone el desarrollo de un modelo de aprendizaje
+automático orientado a estimar de forma temprana el riesgo de inicio
+de noradrenalina en pacientes críticos ingresados en UCI, a partir de
+variables clínicas disponibles durante las primeras horas de estancia,
+como constantes vitales, parámetros analíticos y datos básicos del
+paciente. El objetivo no es solo predecir si el paciente requerirá soporte
+vasopresor en una ventana temporal definida, sino también ofrecer
+una herramienta interpretable, en forma de dashboard, que permita
+visualizar el riesgo estimado y los factores que más contribuyen a
+dicha predicción en cada caso.
+\end{abstract}
+
+\renewcommand*\abstractname{Descriptores}
+\begin{abstract}
+Aprendizaje automático, Predicción, Dashboard, Sepsis, UCI, Norepinefrina, Noradrenalina.
+\end{abstract}
+
+\clearpage
+
+\renewcommand*\abstractname{Abstract}
+\begin{abstract}
+This Bachelor’s Thesis proposes the development of a machine
+learning model aimed at the early estimation of the risk of initiating
+noradrenaline in critically ill patients admitted to the ICU, based
+on clinical variables available during the first hours of admission,
+such as vital signs, laboratory parameters, and basic patient data.
+The objective is not only to predict whether the patient will require
+vasopressor support within a defined time window, but also to provide
+an interpretable tool in the form of a dashboard. This tool will
+allow for the visualization of the estimated risk and the factors that
+contribute most to this prediction in each individual case.
+\end{abstract}
+
+\renewcommand*\abstractname{Keywords}
+\begin{abstract}
+Machine Learning, Sepsis, Prediction, Dashboard, ICU, norepi-
+nephrine.
+\end{abstract}
+
+\clearpage
+
+\renewcommand{\contentsname}{Índice general}
+\renewcommand{\listfigurename}{Índice de figuras}
+\renewcommand{\listtablename}{Índice de tablas}
+
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+
+\mainmatter
+
+\pagestyle{mipc}
+```
+
+{{< include qmd/1_introduccion.qmd >}}
+{{< include qmd/2_objetivos.qmd >}}
+{{< include qmd/3_teoricos.qmd >}}
+{{< include qmd/4_metodologia.qmd >}}
+{{< include qmd/5_resultados.qmd >}}
+{{< include qmd/6_discusion.qmd >}}
+{{< include qmd/7_conclusiones.qmd >}}
+{{< include qmd/8_lineas_futuras.qmd >}}
