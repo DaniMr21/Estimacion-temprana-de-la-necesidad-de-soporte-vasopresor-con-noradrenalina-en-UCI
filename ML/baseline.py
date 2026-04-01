@@ -5,7 +5,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, RobustScaler
+from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.pipeline import Pipeline
+import numpy as np
 
 
 def cargar_datos():
@@ -14,19 +17,48 @@ def cargar_datos():
     df = pd.read_sql("select * from public.dataset_modelo_6h", engine)
     return df
 
+#Esto se queda comentado porque no sube el AUC, lo baja, no meter variables derivadas
+"""""""""""""""
 def preparar(df):
     target = "etiqueta_norad"
     fuera = ["stay_id", "subject_id", "hadm_id","intime", "outtime", "rn", "horas_uci", "inicio_noradrenalina", "horas_hasta_norad"]
     x = df.drop(columns=fuera + [target]).copy()
     y = df[target].copy()
 
-    #indicadores de missing, bien para ganar más info
+    x["delta_card"] = x["max_card"] - x["min_card"]
+    x["delta_map"] = x["map_media"] - x["map_min"]
+    x["delta_lactato"] = x["lactato_max"] - x["lactato_media"]
+    x["delta_creatinina"] = x["creatinina_max"] - x["creatinina_media"]
+    x["delta_plaquetas"] = x["plaquetas_media"] - x["plaquetas_min"]
+
+    # Para evitar divisiones por 0 o valores raros
+    map_segura = x["map_min"].where(x["map_min"] > 0, np.nan)
+    x["lactato_por_map"] = x["lactato_max"] / map_segura
+    x["edad_por_lactato"] = x["anchor_age"] * x["lactato_max"]
+
+    #indicadores de missing de las cols originales
+    columnas_originales = df.drop(columns=fuera + [target]).columns
+
+    for col in columnas_originales:
+        if x[col].isnull().any():
+            x[f"{col}_falta"] = x[col].isnull().astype(int)
+
+    return x, y
+"""""""""""
+
+def preparar(df):
+    target = "etiqueta_norad"
+    fuera = ["stay_id", "subject_id", "hadm_id", "intime", "outtime", "rn","horas_uci", "inicio_noradrenalina", "horas_hasta_norad"]
+
+    x = df.drop(columns=fuera + [target]).copy()
+    y = df[target].copy()
+
+    # indicadores de missing para todas las variables de x
     for col in x.columns:
         if x[col].isnull().any():
             x[f"{col}_falta"] = x[col].isnull().astype(int)
 
     return x, y
-
 
 def dividir(x, y):
     return train_test_split(x, y, test_size=0.2, random_state=42, stratify=y)
@@ -34,23 +66,22 @@ def dividir(x, y):
 #-----------
 
 def modelo_baseline(x_train, x_test, y_train, y_test):
-    imputer = SimpleImputer(strategy="median")
-    #imputer = SimpleImputer(strategy="mean") baja un poco el AUC
+    # Pipeline para que imputer y scaler se reajusten en cada fold
+    pipeline = Pipeline([("imputer", SimpleImputer(strategy="median")), ("scaler", RobustScaler()),
+    ("modelo", LogisticRegression(max_iter=1000, class_weight="balanced", C=5, solver="liblinear"))]) #saga y lbfgs NO dan mejor rendimiento
 
-    x_train_imp = imputer.fit_transform(x_train)
-    x_test_imp = imputer.transform(x_test)
+    # Validación cruzada estratificada
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    auc = cross_val_score(pipeline, x_train, y_train, cv=cv, scoring="roc_auc")
+    print(f"AUC CV (media ± std): {auc.mean()} ± {auc.std()}")
+    for i in auc:
+        print(f"AUC OBTENIDO: {i}")
 
-    scaler = StandardScaler() #esclar para la RegLog
-    x_train_imp = scaler.fit_transform(x_train_imp)
-    x_test_imp = scaler.transform(x_test_imp)
-
-    modelo = LogisticRegression(max_iter=3000, class_weight="balanced", C=5, solver="liblinear")
-
-    modelo.fit(x_train_imp, y_train)
-    y_pred = modelo.predict_proba(x_test_imp)[:, 1]
-
-    auc = roc_auc_score(y_test, y_pred)
-    print(f"AUC: {auc}")
+    # Entrena final sobre todo el train y evalúa en test
+    pipeline.fit(x_train, y_train)
+    y_pred = pipeline.predict_proba(x_test)[:, 1]
+    auc_test = roc_auc_score(y_test, y_pred)
+    print(f"AUC test final: {auc_test}")
 
 #Nos quedamos con  C = 5 tras hacer pruebas porque a partir de este valor, la mejora no es signifivativa para nada y añadiríamos complejidad "absurdamente"
 
@@ -58,7 +89,6 @@ def main():
     df = cargar_datos()
     x, y = preparar(df)
     x_train, x_test, y_train, y_test = dividir(x, y)
-
     modelo_baseline(x_train, x_test, y_train, y_test)
 
 
