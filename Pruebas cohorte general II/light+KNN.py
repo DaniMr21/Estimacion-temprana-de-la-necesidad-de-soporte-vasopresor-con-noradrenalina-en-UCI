@@ -35,7 +35,7 @@ def dividir(x, y):
 
 def modelo_lightgbm(x_train, x_test, y_train, y_test):
     pipeline = Pipeline([
-        ("imputer", KNNImputer(n_neighbors=5)),
+        ("imputer", KNNImputer(n_neighbors=3)),
         ("modelo", LGBMClassifier(
             n_estimators=300,
             max_depth=2,

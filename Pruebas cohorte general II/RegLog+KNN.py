@@ -37,7 +37,7 @@ def dividir(x, y):
 
 def modelo_baseline(x_train, x_test, y_train, y_test):
     pipeline = Pipeline([
-        ("imputer", KNNImputer(n_neighbors=5)),
+        ("imputer", KNNImputer(n_neighbors=3)),
         ("scaler", RobustScaler()),
         ("modelo", LogisticRegression(max_iter=1000, class_weight="balanced", C=5, solver="liblinear"))
     ])

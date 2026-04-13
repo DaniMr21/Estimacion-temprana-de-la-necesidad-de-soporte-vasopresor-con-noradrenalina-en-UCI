@@ -36,7 +36,7 @@ def dividir(x, y):
 
 def modelo_xg(x_train, x_test, y_train, y_test):
     pipeline = Pipeline([
-        ("imputer", KNNImputer(n_neighbors=5)),
+        ("imputer", KNNImputer(n_neighbors=3)),
         ("modelo", XGBClassifier(
             n_estimators=400,
             max_depth=3,
