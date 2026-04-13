@@ -1,0 +1,51 @@
+Filas: 2250 | Positivos: 227
+
+========================================
+MODELO: Regresión Logística
+AUC CV: 0.5997 ± 0.0384
+  Fold 1: 0.6018
+  Fold 2: 0.6709
+  Fold 3: 0.5784
+  Fold 4: 0.5579
+  Fold 5: 0.5894
+AUC test: 0.7064
+
+========================================
+MODELO: Random Forest
+AUC CV: 0.6568 ± 0.0553
+  Fold 1: 0.7102
+  Fold 2: 0.6949
+  Fold 3: 0.6961
+  Fold 4: 0.6129
+  Fold 5: 0.5700
+AUC test: 0.7220
+
+========================================
+MODELO: XGBoost
+AUC CV: 0.6497 ± 0.0517
+  Fold 1: 0.7102
+  Fold 2: 0.6899
+  Fold 3: 0.6663
+  Fold 4: 0.6130
+  Fold 5: 0.5692
+AUC test: 0.7243
+
+========================================
+MODELO: LightGBM
+AUC CV: 0.6443 ± 0.0379
+  Fold 1: 0.6941
+  Fold 2: 0.6764
+  Fold 3: 0.6463
+  Fold 4: 0.6117
+  Fold 5: 0.5932
+AUC test: 0.7168
+
+========================================
+MODELO: CatBoost
+AUC CV: 0.6508 ± 0.0503
+  Fold 1: 0.7302
+  Fold 2: 0.6843
+  Fold 3: 0.6361
+  Fold 4: 0.5923
+  Fold 5: 0.6112
+AUC test: 0.7243
