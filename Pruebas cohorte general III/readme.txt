@@ -1,0 +1,1 @@
+No existen missings en esta cohorte
