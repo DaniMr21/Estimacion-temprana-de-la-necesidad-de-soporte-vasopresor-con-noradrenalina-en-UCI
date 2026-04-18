@@ -21,7 +21,8 @@ def cargar_datos():
 
 def preparar(df):
     target = "etiqueta_norad_6_24"
-    fuera = ["stay_id", "subject_id", "hadm_id", "horas_hasta_norad", "contador_estancia_uci"]
+    fuera = ["stay_id", "subject_id", "hadm_id", "horas_hasta_norad", "contador_estancia_uci"] #teienq ue estar en criterio en la query -> parametros donde is.null<20%
+    #o filtrar con cel criterio, con el conjunto, qu´ñe paratmetros tienen más de un 80%            
 
     x = df.drop(columns=fuera + [target]).copy()
     y = df[target].copy()
@@ -32,7 +33,7 @@ def dividir(x, y):
     return train_test_split(x, y, test_size=0.2, random_state=42, stratify=y)
 
 
-def evaluar(nombre, pipeline, x_train, x_test, y_train, y_test, es_catboost=False):
+def evaluar(nombre, pipeline, x_train, x_test, y_train, y_test, es_catboost=False): #revisar training y testing guardar prevalencias, o mas uno en training
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     auc = cross_val_score(pipeline, x_train, y_train, cv=cv, scoring="roc_auc",
                           n_jobs=1 if es_catboost else -1)
