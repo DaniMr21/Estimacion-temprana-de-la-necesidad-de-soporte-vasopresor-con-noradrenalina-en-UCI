@@ -1,42 +1,35 @@
-select l.itemid, d.label, count(*) as n
-from mimiciv_hosp.labevents l
-join mimiciv_hosp.d_labitems d on l.itemid = d.itemid
-where l.itemid in (
+select l.itemid, d.label, count(*) as n from mimiciv_hosp.labevents l
+join mimiciv_hosp.d_labitems d on l.itemid = d.itemid where l.itemid in (
     50818,  -- PaCO2
     50882,  -- Bicarbonato
     50931,  -- Glucemia
     50824,  -- Sodio
     50822,  -- Potasio
-    51222   -- Hemoglobina
-)
-group by l.itemid, d.label
-order by l.itemid;
+    51222   -- Hemoglobina)
+group by l.itemid, d.label order by l.itemid;
 
-select c.itemid, d.label, count(*) as n
-from mimiciv_icu.chartevents c
-join mimiciv_icu.d_items d on c.itemid = d.itemid
-where c.itemid = 223835 --Fracción inspirada de o2
+select c.itemid, d.label, count(*) as n from mimiciv_icu.chartevents c
+join mimiciv_icu.d_items d on c.itemid = d.itemid where c.itemid = 223835 --FiO2
 group by c.itemid, d.label;
 
--------
 
 -- Noradrenalina v3
 drop table if exists public.noradrenalina_v3;
 
 create table public.noradrenalina_v3 as
-select 
-    stay_id,
-    min(starttime) as inicio_norad
-from mimiciv_icu.inputevents
-where itemid in (221906)
-and amount > 0
+select stay_id,
+    min(starttime) as inicio_norad --cuándo empieza la norad
+from mimiciv_icu.inputevents where itemid in (221906)
+and amount > 0  --Fuera registros negativos o 0
 group by stay_id;
 
+select * from public.noradrenalina_v3
+
 -- Cohorte base v3: adultos
+
 drop table if exists public.cohorte_base_v3;
 
-create table public.cohorte_base_v3 as
-select 
+create table public.cohorte_base_v3 as select 
     i.subject_id,
     i.hadm_id,
     i.stay_id,
@@ -44,31 +37,10 @@ select
     i.outtime,
     p.anchor_age,
     p.gender,
-    row_number() over (partition by i.subject_id order by i.intime) as contador_estancia_uci
+    row_number() over (partition by i.subject_id order by i.intime) as contador_estancia_uci  --variable util ¿?
 from mimiciv_icu.icustays i
 join mimiciv_hosp.patients p on i.subject_id = p.subject_id
-where p.anchor_age >= 18;
-
--- Verificación
-select count(*) as total, count(distinct subject_id) as pacientes
-from public.cohorte_base_v3;
-
-----------
-drop table if exists public.cohorte_base_v3;
-
-create table public.cohorte_base_v3 as
-select 
-    i.subject_id,
-    i.hadm_id,
-    i.stay_id,
-    i.intime,
-    i.outtime,
-    p.anchor_age,
-    p.gender,
-    row_number() over (partition by i.subject_id order by i.intime) as contador_estancia_uci
-from mimiciv_icu.icustays i
-join mimiciv_hosp.patients p on i.subject_id = p.subject_id
-where p.anchor_age >= 18;
+where p.anchor_age >= 18;  --fuera pediátricos
 
 -- Verificación
 select 
@@ -91,10 +63,8 @@ select
     c.gender,
     c.contador_estancia_uci,
     n.inicio_norad,
-    extract(epoch from (n.inicio_norad - c.intime)) / 3600.0 as horas_hasta_norad
-from public.cohorte_base_v3 c
-left join public.noradrenalina_v3 n
-    on c.stay_id = n.stay_id;
+    extract(epoch from (n.inicio_norad - c.intime)) / 3600.0 as horas_hasta_norad from public.cohorte_base_v3 c    
+left join public.noradrenalina_v3 n on c.stay_id = n.stay_id;       --nos quedamos con los nulls para grupo control
 
 -- Limpiar negativos (norad antes del ingreso UCI)
 drop table if exists public.cohorte_norad_v3_limpio;
@@ -113,8 +83,7 @@ select *,
         else 0
     end as etiqueta_norad_6_24
 from public.cohorte_norad_v3_limpio
-where horas_hasta_norad is null
-   or horas_hasta_norad >= 6;
+where horas_hasta_norad is null or horas_hasta_norad >= 6;  --WHERE excluye pacientes con 0 <= horas_hasta_norad < 6
 
 -- Verificación
 select 

@@ -16,15 +16,15 @@ def compute_outlier_winsorize(arr, left_thresh, right_thresh):
     if arr.notna().sum() == 0:
         return arr, 0, 0
 
-    perc_low  = np.nanpercentile(arr, left_thresh)
-    perc_high = np.nanpercentile(arr, right_thresh)
+    perc_bajo  = np.nanpercentile(arr, left_thresh)
+    perc_alto = np.nanpercentile(arr, right_thresh)
 
-    n_low  = int((arr < perc_low).sum())
-    n_high = int((arr > perc_high).sum())
+    n_bajo  = int((arr < perc_bajo).sum())
+    n_alto = int((arr > perc_alto).sum())
 
-    arr[arr < perc_low]  = perc_low
-    arr[arr > perc_high] = perc_high
-    return arr, n_low, n_high
+    arr[arr < perc_bajo]  = perc_bajo
+    arr[arr > perc_alto] = perc_alto
+    return arr, n_bajo, n_alto
 
 # GCS excluido por rango acotado (3-15); IDs y etiqueta también
 excluir = ['subject_id', 'hadm_id', 'stay_id', 'anchor_age', 'gender',
@@ -37,15 +37,15 @@ cols_clinicas = [c for c in df.columns
 print(f"Filas antes: {len(df)}")
 print(f"Variables a winsorizar: {len(cols_clinicas)}")
 
-total_low, total_high = 0, 0
+total_bajos, total_altos = 0, 0
 for col in cols_clinicas:
-    df[col], n_low, n_high = compute_outlier_winsorize(df[col], 2, 98)
-    total_low  += n_low
-    total_high += n_high
+    df[col], n_bajo, n_alto = compute_outlier_winsorize(df[col], 2, 98)
+    total_bajos += n_bajo
+    total_altos += n_alto
 
 print(f"Filas después: {len(df)}")
-print(f"Valores recortados por abajo: {total_low}")
-print(f"Valores recortados por arriba: {total_high}")
+print(f"Valores recortados por abajo: {total_bajos}")
+print(f"Valores recortados por arriba: {total_altos}")
 print(f"Positivos: {df['etiqueta_norad_6_24'].sum()}")
 print(f"Prevalencia: {100*df['etiqueta_norad_6_24'].mean():.2f}%")
 
