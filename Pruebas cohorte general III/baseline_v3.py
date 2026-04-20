@@ -146,12 +146,8 @@ def main():
     
     print("Regresión Logística")
     pipeline_regresion_logistica = Pipeline([
-        ('scaler', RobustScaler()),
-        ('modelo', LogisticRegression(max_iter=5000,
-                                      class_weight='balanced',
-                                      solver='liblinear',
-                                      random_state=42))
-    ])
+        ('scaler', RobustScaler()), #por si hubiese extremos que distorsionen
+        ('modelo', LogisticRegression(max_iter=5000, class_weight='balanced', solver='liblinear', random_state=42))])
     
     espacio_regresion_logistica = [
         {'modelo__C': [1e-4, 5e-4, 1e-3, 5e-3, 1e-2, 5e-2,
@@ -188,12 +184,8 @@ def main():
     
     print("XGBoost")
     pipeline_xgboost = Pipeline([
-        ('modelo', XGBClassifier(objective='binary:logistic',
-                                 eval_metric='auc',
-                                 random_state=42,
-                                 n_jobs=1,
-                                 tree_method='hist'))
-    ])
+        ('modelo', XGBClassifier(objective='binary:logistic',eval_metric='auc',random_state=42,n_jobs=1,tree_method='hist'))])
+    
     espacio_xgboost = {
         'modelo__n_estimators': [300, 400, 500, 600, 750, 900],
         'modelo__max_depth': [3, 5, 7],
@@ -214,11 +206,8 @@ def main():
     
     print("LightGBM")
     pipeline_lightgbm = Pipeline([
-        ('modelo', LGBMClassifier(random_state=42,
-                                  verbosity=-1,
-                                  n_jobs=1,
-                                  objective='binary'))
-    ])
+        ('modelo', LGBMClassifier(random_state=42, verbosity=-1, n_jobs=1, objective='binary'))])
+    
     espacio_lightgbm = {
         'modelo__n_estimators': [300, 600, 1000],
         'modelo__num_leaves': [15, 31, 63],
@@ -240,12 +229,8 @@ def main():
 
     print("CatBoost")
     pipeline_catboost = Pipeline([
-        ('modelo', CatBoostClassifier(loss_function='Logloss',
-                                      eval_metric='AUC',
-                                      random_seed=42,
-                                      verbose=0,
-                                      thread_count=-1))
-    ])
+        ('modelo', CatBoostClassifier(loss_function='Logloss', eval_metric='AUC', random_seed=42, verbose=0, thread_count=-1))])
+    
     espacio_catboost = {
         'modelo__iterations': [500, 1000],
         'modelo__depth': [4, 5, 6, 7],
@@ -266,7 +251,7 @@ def main():
     print("Naive Bayes")
     pipeline_naive_bayes = Pipeline([
         ('scaler', RobustScaler()),
-        ('modelo', GaussianNB())
+        ('modelo', GaussianNB())  #datos continuos
     ])
     
     espacio_naive_bayes = {
