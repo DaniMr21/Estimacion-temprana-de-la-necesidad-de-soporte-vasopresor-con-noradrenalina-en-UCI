@@ -1,0 +1,53 @@
+======================================================================
+CAPACIDAD PREDICTIVA DE `tiene_sepsis` vs `etiqueta_norad_6_24`
+======================================================================
+N estancias                 : 3281
+Prevalencia norad 6-24h     : 10.30%
+Prevalencia sepsis en 0-6h  : 30.27%
+
+TABLA DE CONTINGENCIA 2x2
+etiqueta_norad_6_24     0    1
+tiene_sepsis                  
+0                    2077  211
+1                     866  127
+
+RIESGO POR GRUPO
+  P(norad | sepsis)    = 0.1279  (12.79%)
+  P(norad | no sepsis) = 0.0922  (9.22%)
+
+  Riesgo relativo (RR) = 1.39  IC95% [1.13, 1.71]
+  Odds ratio     (OR)  = 1.44  IC95% [1.14, 1.82]
+
+SEPSIS COMO CLASIFICADOR BINARIO CRUDO (umbral trivial = 1)
+  Sensibilidad          = 0.3757  (37.6%)
+  Especificidad         = 0.7057  (70.6%)
+  Valor predictivo pos. = 0.1279  (12.8%)
+  Valor predictivo neg. = 0.9078  (90.8%)
+
+DISCRIMINACIÓN
+  AUC (sepsis sola)     = 0.5407
+  (0.50 = azar; 1.00 = perfecto)
+
+  Información mutua     = 0.00140 nats
+
+TEST DE INDEPENDENCIA (chi-cuadrado)
+  chi2 = 9.16  gl = 1  p = 0.00248
+  H0: sepsis y norad son independientes. Se rechaza al 5%.
+
+GANANCIA MARGINAL EN EL MODELO (regresión logística, CV 5-fold agrupada)
+  Entrenando baseline SIN tiene_sepsis...
+    AUC sin sepsis : 0.6930 +/- 0.0143
+  Entrenando baseline CON tiene_sepsis...
+    AUC con sepsis : 0.6940 +/- 0.0129
+    Delta AUC      : +0.0010
+    -> la variable aporta algo, pero marginalmente.
+
+======================================================================
+RESUMEN
+======================================================================
+  RR (sepsis vs no sepsis)   : 1.39  IC95% [1.13, 1.71]
+  OR                         : 1.44  IC95% [1.14, 1.82]
+  p-valor chi2               : 0.00248
+  AUC como predictor unico   : 0.5407
+  Informacion mutua          : 0.00140
+  Delta AUC en modelo LR     : +0.0010

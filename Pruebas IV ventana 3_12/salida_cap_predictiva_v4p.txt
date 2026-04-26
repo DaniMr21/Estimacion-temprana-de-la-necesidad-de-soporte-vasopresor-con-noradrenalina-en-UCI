@@ -1,0 +1,54 @@
+======================================================================
+CAPACIDAD PREDICTIVA DE `tiene_sepsis` vs `etiqueta_norad_3_12`
+Ventana PRECOZ (observación 0-3h, predicción 3-12h)
+======================================================================
+N estancias                 : 1667
+Prevalencia norad 3-12h     : 10.32%
+Prevalencia sepsis en 0-3h  : 27.65%
+
+TABLA DE CONTINGENCIA 2x2
+etiqueta_norad_3_12     0    1
+tiene_sepsis                  
+0                    1092  114
+1                     403   58
+
+RIESGO POR GRUPO
+  P(norad | sepsis)    = 0.1258  (12.58%)
+  P(norad | no sepsis) = 0.0945  (9.45%)
+
+  Riesgo relativo (RR) = 1.33  IC95% [0.99, 1.79]
+  Odds ratio     (OR)  = 1.38  IC95% [0.99, 1.93]
+
+SEPSIS COMO CLASIFICADOR BINARIO CRUDO (umbral trivial = 1)
+  Sensibilidad          = 0.3372  (33.7%)
+  Especificidad         = 0.7304  (73.0%)
+  Valor predictivo pos. = 0.1258  (12.6%)
+  Valor predictivo neg. = 0.9055  (90.5%)
+
+DISCRIMINACIÓN
+  AUC (sepsis sola)     = 0.5338
+  (0.50 = azar; 1.00 = perfecto)
+
+  Información mutua     = 0.00102 nats
+
+TEST DE INDEPENDENCIA (chi-cuadrado)
+  chi2 = 3.20  gl = 1  p = 0.07373
+  H0: sepsis y norad son independientes. No se rechaza al 5%.
+
+GANANCIA MARGINAL EN EL MODELO (regresión logística, CV 5-fold agrupada)
+  Entrenando baseline SIN tiene_sepsis...
+    AUC sin sepsis : 0.6485 +/- 0.0307
+  Entrenando baseline CON tiene_sepsis...
+    AUC con sepsis : 0.6478 +/- 0.0336
+    Delta AUC      : -0.0007
+    -> la variable NO aporta o incluso resta (posible redundancia).
+
+======================================================================
+RESUMEN (ventana PRECOZ 0-3h / 3-12h)
+======================================================================
+  RR (sepsis vs no sepsis)   : 1.33  IC95% [0.99, 1.79]
+  OR                         : 1.38  IC95% [0.99, 1.93]
+  p-valor chi2               : 0.07373
+  AUC como predictor unico   : 0.5338
+  Informacion mutua          : 0.00102
+  Delta AUC en modelo LR     : -0.0007

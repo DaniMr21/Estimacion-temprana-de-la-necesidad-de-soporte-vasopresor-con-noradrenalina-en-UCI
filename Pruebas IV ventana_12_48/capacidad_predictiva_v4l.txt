@@ -1,0 +1,54 @@
+======================================================================
+CAPACIDAD PREDICTIVA DE `tiene_sepsis` vs `etiqueta_norad_12_48`
+Ventana LARGA (observación 0-12h, predicción 12-48h)
+======================================================================
+N estancias                 : 4080
+Prevalencia norad 12-48h    : 11.15%
+Prevalencia sepsis en 0-12h : 32.87%
+
+TABLA DE CONTINGENCIA 2x2
+etiqueta_norad_12_48     0    1
+tiene_sepsis                   
+0                     2470  269
+1                     1155  186
+
+RIESGO POR GRUPO
+  P(norad | sepsis)    = 0.1387  (13.87%)
+  P(norad | no sepsis) = 0.0982  (9.82%)
+
+  Riesgo relativo (RR) = 1.41  IC95% [1.19, 1.68]
+  Odds ratio     (OR)  = 1.48  IC95% [1.21, 1.81]
+
+SEPSIS COMO CLASIFICADOR BINARIO CRUDO (umbral trivial = 1)
+  Sensibilidad          = 0.4088  (40.9%)
+  Especificidad         = 0.6814  (68.1%)
+  Valor predictivo pos. = 0.1387  (13.9%)
+  Valor predictivo neg. = 0.9018  (90.2%)
+
+DISCRIMINACIÓN
+  AUC (sepsis sola)     = 0.5451
+  (0.50 = azar; 1.00 = perfecto)
+
+  Información mutua     = 0.00177 nats
+
+TEST DE INDEPENDENCIA (chi-cuadrado)
+  chi2 = 14.49  gl = 1  p = 0.0001408
+  H0: sepsis y norad son independientes. Se rechaza al 5%.
+
+GANANCIA MARGINAL EN EL MODELO (regresión logística, CV 5-fold agrupada)
+  Entrenando baseline SIN tiene_sepsis...
+    AUC sin sepsis : 0.6502 +/- 0.0406
+  Entrenando baseline CON tiene_sepsis...
+    AUC con sepsis : 0.6546 +/- 0.0408
+    Delta AUC      : +0.0044
+    -> la variable aporta algo, pero marginalmente.
+
+======================================================================
+RESUMEN (ventana LARGA 0-12h / 12-48h)
+======================================================================
+  RR (sepsis vs no sepsis)   : 1.41  IC95% [1.19, 1.68]
+  OR                         : 1.48  IC95% [1.21, 1.81]
+  p-valor chi2               : 0.0001408
+  AUC como predictor unico   : 0.5451
+  Informacion mutua          : 0.00177
+  Delta AUC en modelo LR     : +0.0044
