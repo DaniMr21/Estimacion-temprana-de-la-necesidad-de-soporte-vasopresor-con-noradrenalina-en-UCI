@@ -1,32 +1,6 @@
--- =============================================================================
--- v4.sql — Cohorte y tabla analítica para predicción de noradrenalina (6-24h)
--- =============================================================================
--- Variables incluidas:
---   * Demografía, laboratorio, constantes vitales, GCS y diuresis en 0-6h.
---   * Sepsis-3 reconocida en 0-6h (mimiciv_derived.sepsis3).
---   * SOFA (media/min/max) en 0-6h (mimiciv_derived.sofa, columna
---     `sofa_24hours` = suma de los 6 subscores en ventana de 24h previa
---     al `endtime`).
---   * Ventilación invasiva solapada con 0-6h (mimiciv_derived.ventilation).
---   * Índice P/F (PaO2/FiO2) derivado. FiO2 asumida en porcentaje
---     (estándar MIMIC-IV, itemid 223835).
---
--- Prerrequisitos: tablas `mimiciv_derived.sofa` y `mimiciv_derived.ventilation`
--- creadas en la BBDD (scripts del repo oficial MIT-LCP/mimic-code).
---
--- Ventana de observación (X)  : [intime, intime + 6h]
--- Ventana de predicción (y)   : (intime + 6h, intime + 24h]
--- Etiqueta                    : 1 si inicio de noradrenalina en [6h, 24h], 0 e.o.c.
---
--- Ejecutar con parada al primer error:
---   En psql:    \set ON_ERROR_STOP on
---   En DBeaver: activar "Stop on error"
--- =============================================================================
 
-
--- -----------------------------------------------------------------------------
 -- 1. NORADRENALINA: primer inicio por estancia
--- -----------------------------------------------------------------------------
+
 drop table if exists public.noradrenalina_v4;
 
 create table public.noradrenalina_v4 as
@@ -39,9 +13,9 @@ where itemid = 221906          -- Noradrenalina
 group by stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 2. COHORTE BASE: adultos con estancia UCI > 24h
--- -----------------------------------------------------------------------------
+
 drop table if exists public.cohorte_base_v4;
 
 create table public.cohorte_base_v4 as
@@ -59,10 +33,8 @@ join mimiciv_hosp.patients p on i.subject_id = p.subject_id
 where p.anchor_age >= 18
   and extract(epoch from (i.outtime - i.intime)) / 3600.0 > 24;
 
-
--- -----------------------------------------------------------------------------
 -- 3. COHORTE + NORAD: horas hasta el primer inicio (NULL si nunca recibe)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.cohorte_norad_v4;
 
 create table public.cohorte_norad_v4 as
@@ -90,9 +62,8 @@ where horas_hasta_norad is null
    or horas_hasta_norad >= 0;
 
 
--- -----------------------------------------------------------------------------
 -- 4. DATASET MODELO: etiqueta + exclusión de norad en ventana de observación
--- -----------------------------------------------------------------------------
+
 drop table if exists public.dataset_modelo_v4;
 
 create table public.dataset_modelo_v4 as
@@ -106,9 +77,8 @@ where horas_hasta_norad is null
    or horas_hasta_norad >= 6;
 
 
--- -----------------------------------------------------------------------------
 -- 5. VARIABLES DE LABORATORIO (ventana 0-6h)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_lab_v4;
 
 create table public.variables_lab_v4 as
@@ -214,9 +184,9 @@ left join mimiciv_hosp.labevents l
 group by c.stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 6. CONSTANTES VITALES (ventana 0-6h)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_chart_v4;
 
 create table public.variables_chart_v4 as
@@ -277,9 +247,8 @@ left join mimiciv_icu.chartevents ch
 group by c.stay_id;
 
 
--- -----------------------------------------------------------------------------
 -- 7. GCS (suma de los 3 componentes) — ventana 0-6h
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_gcs_v4;
 
 create table public.variables_gcs_v4 as
@@ -318,9 +287,9 @@ from gcs_total
 group by stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 8. DIURESIS (ventana 0-6h)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_diuresis_v4;
 
 create table public.variables_diuresis_v4 as
@@ -365,9 +334,8 @@ from volumen_6h v
 left join peso_paciente p on v.stay_id = p.stay_id;
 
 
--- -----------------------------------------------------------------------------
 -- 9. SEPSIS-3 reconocida en la ventana 0-6h
--- -----------------------------------------------------------------------------
+
 -- Fuente: mimiciv_derived.sepsis3 (repo oficial MIT-LCP/mimic-code).
 drop table if exists public.variables_sepsis_v4;
 
@@ -390,14 +358,14 @@ left join mimiciv_derived.sepsis3 s
 group by c.stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 10. SOFA score en la ventana 0-6h  
--- -----------------------------------------------------------------------------
+
 -- Fuente: mimiciv_derived.sofa (repo oficial MIT-LCP/mimic-code).
 -- La tabla produce una fila por hora por estancia con `sofa_24hours`, que es
--- la suma de los 6 subscores calculada sobre la ventana de 24h previas al
--- `endtime` de esa fila. Nos quedamos con las filas cuyo endtime cae dentro
--- de las primeras 6h desde intime y agregamos media/min/max del SOFA total.
+-- la suma de los 6 subscores calculada sobre la ventana de 24h previas al `endtime` de esa fila. Nos quedamos con las filas cuyo endtime cae dentro
+-- de primeras 6h desde intime y agregamos media/min/max del SOFA total.
+
 drop table if exists public.variables_sofa_v4;
 
 create table public.variables_sofa_v4 as
@@ -436,13 +404,10 @@ select
 from public.dataset_modelo_v4 c;
 
 
--- -----------------------------------------------------------------------------
--- 12. TABLA FINAL v4 (unión + variables derivadas P/F)
--- -----------------------------------------------------------------------------
--- P/F ratio: PaO2 / (FiO2/100). FiO2 está registrado como porcentaje en
--- chartevents (itemid 223835), estándar en MIMIC-IV. El P/F de las medias
--- es una aproximación del P/F real (pao2 y fio2 no siempre se registran
--- en el mismo charttime); se usa como aproximación habitual en la literatura.
+
+-- 12. TABLA FINAL v4 (unión + variables derivadas)
+
+
 drop table if exists public.dataset_final_v4;
 
 create table public.dataset_final_v4 as
@@ -531,9 +496,8 @@ left join public.variables_ventilacion_v4 vm on c.stay_id = vm.stay_id;
 -- -----------------------------------------------------------------------------
 -- 13. TABLA FINAL LIMPIA (sin missings en predictores clave)
 -- -----------------------------------------------------------------------------
--- `tiene_sepsis` y `ventilacion_invasiva_6h` NO se filtran por is not null:
--- son binarias resueltas a 0/1 por construcción.
--- SOFA y P/F SÍ se filtran para evitar NaN en modelos que no los toleran.
+-- `tiene_sepsis` y `ventilacion_invasiva_6h` NO se filtran por is not null: son binarias resueltas a 0/1 por construcción.
+-- SOFA y P/F SÍ se filtran para evitar NaN en los modelos.
 drop table if exists public.dataset_final_v4_clean;
 
 create table public.dataset_final_v4_clean as
@@ -598,10 +562,7 @@ where lactato_media     is not null
   and sofa_media        is not null
   and pf_media          is not null;
 
-
--- =============================================================================
 -- VERIFICACIONES
--- =============================================================================
 
 -- Resumen global
 select
@@ -616,16 +577,6 @@ select
     round(avg(sofa_media)::numeric, 2)                    as sofa_medio
 from public.dataset_final_v4_clean;
 
--- Sanity check clínico por grupo de etiqueta
--- Se espera: en positivos (etiqueta=1) mayor prevalencia de sepsis, mayor
--- prevalencia de ventilación invasiva, SOFA medio más alto y P/F más bajo.
-select
-    etiqueta_norad_6_24,
-    count(*)                                               as n,
-    round(100.0 * sum(tiene_sepsis) / count(*), 1)         as pct_sepsis,
-    round(100.0 * sum(ventilacion_invasiva_6h) / count(*), 1) as pct_vmi,
-    round(avg(sofa_media)::numeric, 2)                     as sofa_medio,
-    round(avg(pf_media)::numeric, 1)                       as pf_medio
-from public.dataset_final_v4_clean
-group by etiqueta_norad_6_24
-order by etiqueta_norad_6_24;
+
+
+select * from public.dataset_final_v4_clean;

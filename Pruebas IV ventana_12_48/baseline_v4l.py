@@ -18,7 +18,6 @@ from sklearn.naive_bayes import GaussianNB
 def cargar_datos():
     ruta = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
     df = pd.read_csv(ruta)
-    # Por precaución, por si quedara algún NaN en pf_max por el winsorizado.
     df = df.dropna(subset=['pf_max'])
     return df
  

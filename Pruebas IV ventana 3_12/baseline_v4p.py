@@ -18,10 +18,7 @@ from sklearn.naive_bayes import GaussianNB
 def cargar_datos():
     ruta = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
     df = pd.read_csv(ruta)
-    # Por precaución, por si quedara algún NaN en pf_max por el winsorizado.
-    # El resto de NaN legítimos están en horas_hasta_norad (controles) y esa
-    # variable NO se usa como predictora.
-    df = df.dropna(subset=['pf_max'])
+    df = df.dropna(subset=['pf_max']) #justincase
     return df
  
 def preparar(df):

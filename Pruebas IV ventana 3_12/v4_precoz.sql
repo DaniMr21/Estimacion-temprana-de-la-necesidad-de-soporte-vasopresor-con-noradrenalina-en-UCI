@@ -1,27 +1,6 @@
--- =============================================================================
--- v4_precoz.sql — Cohorte y tabla analítica para predicción de noradrenalina
--- Ventana PRECOZ: observación 0-3h, predicción 3-12h
--- =============================================================================
--- Diferencias respecto a v4 (0-6h / 6-24h):
---   * Todas las agregaciones de variables clínicas se toman en [intime, intime+3h].
---   * Etiqueta = 1 si inicio de noradrenalina en [3h, 12h], 0 en caso contrario.
---   * Se excluyen estancias con norad en [0h, 3h) (ya tratadas dentro de la
---     ventana de observación).
---   * Criterio Sepsis-3 se filtra a que sospecha + sofa_time estén en [0, 3h].
---   * Cohorte base: se mantiene el criterio > 24h de estancia para evitar
---     postoperatorios cortos y traslados rápidos.
---
--- Nombre de sufijo: _v4p  (p = precoz).
---
--- Ejecutar con parada al primer error:
---   En psql:    \set ON_ERROR_STOP on
---   En DBeaver: activar "Stop on error"
--- =============================================================================
 
-
--- -----------------------------------------------------------------------------
 -- 1. NORADRENALINA: primer inicio por estancia (igual que v4)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.noradrenalina_v4p;
 
 create table public.noradrenalina_v4p as
@@ -34,9 +13,8 @@ where itemid = 221906          -- Noradrenalina
 group by stay_id;
 
 
--- -----------------------------------------------------------------------------
 -- 2. COHORTE BASE: adultos con estancia UCI > 24h
--- -----------------------------------------------------------------------------
+
 drop table if exists public.cohorte_base_v4p;
 
 create table public.cohorte_base_v4p as
@@ -55,9 +33,8 @@ where p.anchor_age >= 18
   and extract(epoch from (i.outtime - i.intime)) / 3600.0 > 24;
 
 
--- -----------------------------------------------------------------------------
 -- 3. COHORTE + NORAD
--- -----------------------------------------------------------------------------
+
 drop table if exists public.cohorte_norad_v4p;
 
 create table public.cohorte_norad_v4p as
@@ -85,11 +62,11 @@ where horas_hasta_norad is null
    or horas_hasta_norad >= 0;
 
 
--- -----------------------------------------------------------------------------
+
 -- 4. DATASET MODELO: etiqueta ventana PRECOZ
--- -----------------------------------------------------------------------------
+
 -- Etiqueta 1 si inicio norad en [3, 12], 0 en caso contrario.
--- Exclusión: norad iniciada en [0, 3h) (ya tratada en la ventana de observación).
+
 drop table if exists public.dataset_modelo_v4p;
 
 create table public.dataset_modelo_v4p as
@@ -103,9 +80,8 @@ where horas_hasta_norad is null
    or horas_hasta_norad >= 3;
 
 
--- -----------------------------------------------------------------------------
 -- 5. VARIABLES DE LABORATORIO (ventana 0-3h)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_lab_v4p;
 
 create table public.variables_lab_v4p as
@@ -210,10 +186,8 @@ left join mimiciv_hosp.labevents l
     )
 group by c.stay_id;
 
-
--- -----------------------------------------------------------------------------
 -- 6. CONSTANTES VITALES (ventana 0-3h)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_chart_v4p;
 
 create table public.variables_chart_v4p as
@@ -274,9 +248,8 @@ left join mimiciv_icu.chartevents ch
 group by c.stay_id;
 
 
--- -----------------------------------------------------------------------------
 -- 7. GCS (ventana 0-3h)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_gcs_v4p;
 
 create table public.variables_gcs_v4p as
@@ -315,9 +288,9 @@ from gcs_total
 group by stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 8. DIURESIS (ventana 0-3h)
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_diuresis_v4p;
 
 create table public.variables_diuresis_v4p as
@@ -362,9 +335,9 @@ from volumen_3h v
 left join peso_paciente p on v.stay_id = p.stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 9. SEPSIS-3 reconocida en la ventana 0-3h
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_sepsis_v4p;
 
 create table public.variables_sepsis_v4p as
@@ -386,9 +359,9 @@ left join mimiciv_derived.sepsis3 s
 group by c.stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 10. SOFA en la ventana 0-3h
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_sofa_v4p;
 
 create table public.variables_sofa_v4p as
@@ -405,9 +378,9 @@ left join mimiciv_derived.sofa s
 group by c.stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 11. VENTILACIÓN INVASIVA solapada con la ventana 0-3h
--- -----------------------------------------------------------------------------
+
 drop table if exists public.variables_ventilacion_v4p;
 
 create table public.variables_ventilacion_v4p as
@@ -424,9 +397,8 @@ select
 from public.dataset_modelo_v4p c;
 
 
--- -----------------------------------------------------------------------------
 -- 12. TABLA FINAL v4p
--- -----------------------------------------------------------------------------
+
 drop table if exists public.dataset_final_v4p;
 
 create table public.dataset_final_v4p as
@@ -512,9 +484,9 @@ left join public.variables_sofa_v4p        so on c.stay_id = so.stay_id
 left join public.variables_ventilacion_v4p vm on c.stay_id = vm.stay_id;
 
 
--- -----------------------------------------------------------------------------
+
 -- 13. TABLA FINAL LIMPIA
--- -----------------------------------------------------------------------------
+
 drop table if exists public.dataset_final_v4p_clean;
 
 create table public.dataset_final_v4p_clean as
@@ -579,10 +551,7 @@ where lactato_media     is not null
   and sofa_media        is not null
   and pf_media          is not null;
 
-
--- =============================================================================
 -- VERIFICACIONES
--- =============================================================================
 
 select
     count(*)                                              as total_filas,
