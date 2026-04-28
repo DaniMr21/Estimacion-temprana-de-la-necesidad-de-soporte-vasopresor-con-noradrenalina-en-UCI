@@ -1,0 +1,22 @@
+variable_1,variable_2,tipo,asociacion
+ventilacion_invasiva_6h,gcs_min,binaria-continua (rank-biserial),-0.473
+ventilacion_invasiva_6h,gcs_media,binaria-continua (rank-biserial),-0.471
+ventilacion_invasiva_6h,gcs_max,binaria-continua (rank-biserial),-0.437
+ventilacion_invasiva_6h,spo2_media,binaria-continua (rank-biserial),0.307
+gender,peso_kg,binaria-continua (rank-biserial),0.299
+ventilacion_invasiva_6h,spo2_min,binaria-continua (rank-biserial),0.289
+ventilacion_invasiva_6h,pf_max,binaria-continua (rank-biserial),0.278
+ventilacion_invasiva_6h,pao2_max,binaria-continua (rank-biserial),0.273
+ventilacion_invasiva_6h,pao2_media,binaria-continua (rank-biserial),0.259
+ventilacion_invasiva_6h,spo2_max,binaria-continua (rank-biserial),0.257
+ventilacion_invasiva_6h,pf_media,binaria-continua (rank-biserial),0.251
+ventilacion_invasiva_6h,rr_max,binaria-continua (rank-biserial),-0.231
+gender,creatinina_media,binaria-continua (rank-biserial),0.221
+gender,creatinina_max,binaria-continua (rank-biserial),0.22
+gender,creatinina_min,binaria-continua (rank-biserial),0.219
+tiene_sepsis,sofa_max,binaria-continua (rank-biserial),0.211
+ventilacion_invasiva_6h,rr_media,binaria-continua (rank-biserial),-0.202
+tiene_sepsis,sofa_media,binaria-continua (rank-biserial),0.202
+tiene_sepsis,ventilacion_invasiva_6h,binaria-binaria (phi),0.05
+gender,tiene_sepsis,binaria-binaria (phi),0.037
+gender,ventilacion_invasiva_6h,binaria-binaria (phi),-0.006
