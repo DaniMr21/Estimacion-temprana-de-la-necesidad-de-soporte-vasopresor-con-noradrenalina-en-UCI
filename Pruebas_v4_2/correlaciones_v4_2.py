@@ -96,7 +96,7 @@ variables_predictoras = [
     # Respiratorio (4)
     'pf_min',
     'spo2_min',
-    'fio2_media',
+    'fio2_max',
     'rr_max',
 
     # Ventilación y conciencia (2)

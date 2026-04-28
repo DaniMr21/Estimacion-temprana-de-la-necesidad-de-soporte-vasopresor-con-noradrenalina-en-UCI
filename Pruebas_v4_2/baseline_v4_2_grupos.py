@@ -61,7 +61,7 @@ variables_predictoras = [
     # Respiratorio (4)
     'pf_min',
     'spo2_min',
-    'fio2_media',
+    'fio2_max',
     'rr_max',
 
     # Ventilación y conciencia (2)
@@ -79,14 +79,14 @@ variables_predictoras = [
 
     # Hepático (2)
     'bilirrubina_media',
-    'gpt_max',             
+    'gpt_max',              
 
     # Coagulación (2)
     'tp_max',
     'plaquetas_min',
 
     # Hematología/inflamación (2)
-    'leucocitos_min',      
+    'leucocitos_min',       
     'hemoglobina_min',
 
     # Metabólico (1)
@@ -126,7 +126,7 @@ def preparar_subgrupo(df, nombre_subgrupo):
     else:
         raise ValueError(f"Subgrupo no reconocido: {nombre_subgrupo}")
 
-    predictores = df_sub[VARIABLES_PREDICTORAS].copy()
+    predictores = df_sub[variables_predictoras].copy()
     predictores['gender'] = (predictores['gender'] == 'M').astype(int)
 
     etiqueta = df_sub[ETIQUETA].copy()
@@ -363,7 +363,7 @@ def evaluar_subgrupo(df, nombre_subgrupo):
 def main():
     print("=" * 70)
     print("BASELINE v4 REDUCIDO — POR SUBGRUPOS DE SEPSIS")
-    print(f"Variables: {len(VARIABLES_PREDICTORAS)} (set reducido sin tiene_sepsis)")
+    print(f"Variables: {len(variables_predictoras)} (set reducido sin tiene_sepsis)")
     print("=" * 70)
 
     df = cargar_datos()
