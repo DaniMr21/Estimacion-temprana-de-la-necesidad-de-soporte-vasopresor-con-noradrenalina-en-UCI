@@ -46,56 +46,56 @@ def cargar_datos():
 def preparar(df):
 
     variables_predictoras = [
-        # Demografía y contexto (4)
-        'anchor_age',
-        'gender',
-        'peso_kg',
-        'contador_estancia_uci',
+    # Demografía y contexto (4)
+    'anchor_age',
+    'gender',
+    'peso_kg',
+    'contador_estancia_uci',
 
-        # Hemodinámica (2)
-        'map_min',
-        'hr_media',
+    # Hemodinámica (2)
+    'map_min',
+    'hr_media',
 
-        # Respiratorio (4)
-        'pf_min',
-        'spo2_min',
-        'fio2_media',
-        'rr_max',
+    # Respiratorio (4)
+    'pf_min',
+    'spo2_min',
+    'fio2_media',
+    'rr_max',
 
-        # Ventilación y conciencia (2)
-        'ventilacion_invasiva_6h',
-        'gcs_min',
+    # Ventilación y conciencia (2)
+    'ventilacion_invasiva_6h',
+    'gcs_min',
 
-        # Renal (2)
-        'creatinina_max',
-        'diuresis_ml_kg_6h',
+    # Renal (2)
+    'creatinina_max',
+    'diuresis_ml_kg_6h',
 
-        # Ácido-base y metabolismo (3)
-        'lactato_max',
-        'ph_min',
-        'bicarbonato_min',
+    # Ácido-base (3)
+    'lactato_max',
+    'ph_min',
+    'bicarbonato_min',
 
-        # Hepático y coagulación (3)
-        'bilirrubina_media',
-        'gpt_media',
-        'tp_max',
+    # Hepático (2)
+    'bilirrubina_media',
+    'gpt_max',              
 
-        # Coagulación / consumo (1)
-        'plaquetas_min',
+    # Coagulación (2)
+    'tp_max',
+    'plaquetas_min',
 
-        # Hematología/inflamación (2)
-        'leucocitos_max',
-        'hemoglobina_min',
+    # Hematología/inflamación (2)
+    'leucocitos_min',       
+    'hemoglobina_min',
 
-        # Metabólico (1)
-        'glucemia_max',
+    # Metabólico (1)
+    'glucemia_min',         
 
-        # Otro vital (1)
-        'temp_max',
+    # Otro vital (1)
+    'temp_min',              
 
-        # Gravedad global (1)
-        'sofa_media',
-    ]
+    # Gravedad global (1)
+    'sofa_max',              
+]
 
     predictores = df[variables_predictoras].copy()
 

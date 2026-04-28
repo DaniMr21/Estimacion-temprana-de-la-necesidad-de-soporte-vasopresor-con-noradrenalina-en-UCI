@@ -84,25 +84,54 @@ print()
 # -----------------------------------------------------------------------------
 variables_predictoras = [
     # Demografía y contexto (4)
-    'anchor_age', 'gender', 'peso_kg', 'contador_estancia_uci',
+    'anchor_age',
+    'gender',
+    'peso_kg',
+    'contador_estancia_uci',
+
     # Hemodinámica (2)
-    'map_min', 'hr_media',
+    'map_min',
+    'hr_media',
+
     # Respiratorio (4)
-    'pf_min', 'spo2_min', 'fio2_media', 'rr_max',
+    'pf_min',
+    'spo2_min',
+    'fio2_media',
+    'rr_max',
+
     # Ventilación y conciencia (2)
-    'ventilacion_invasiva_6h', 'gcs_min',
+    'ventilacion_invasiva_6h',
+    'gcs_min',
+
     # Renal (2)
-    'creatinina_max', 'diuresis_ml_kg_6h',
-    # Ácido-base y metabolismo (3)
-    'lactato_max', 'ph_min', 'bicarbonato_min',
+    'creatinina_max',
+    'diuresis_ml_kg_6h',
+
+    # Ácido-base (3)
+    'lactato_max',
+    'ph_min',
+    'bicarbonato_min',
+
     # Hepático (2)
-    'bilirrubina_media', 'gpt_media',
+    'bilirrubina_media',
+    'gpt_max',              
+
     # Coagulación (2)
-    'tp_max', 'plaquetas_min',
+    'tp_max',
+    'plaquetas_min',
+
     # Hematología/inflamación (2)
-    'leucocitos_max', 'hemoglobina_min',
-    # Otros (3)
-    'glucemia_max', 'temp_max', 'sofa_media',
+    'leucocitos_min',       
+    'hemoglobina_min',
+
+    # Metabólico (1)
+    'glucemia_min',         
+
+    # Otro vital (1)
+    'temp_min',              
+
+    # Gravedad global (1)
+    'sofa_max',              
 ]
  
 variables_binarias = ['gender', 'ventilacion_invasiva_6h']
