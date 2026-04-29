@@ -1,0 +1,141 @@
+------------------
+BASELINE v5
+Ventana: observación 0-6h / predicción 6-24h
+---------------
+Dataset: (3281, 26) | Positivos: 338 (10.30%)
+Pacientes únicos: 3197 | Estancias: 3281
+Variables predictoras: ['anchor_age', 'gender', 'peso_kg', 'contador_estancia_uci', 'map_min', 'hr_media', 'pf_min', 'spo2_min', 'fio2_max', 'rr_max', 'ventilacion_invasiva_6h', 'gcs_min', 'creatinina_max', 'diuresis_ml_kg_6h', 'lactato_max', 'ph_min', 'bicarbonato_min', 'bilirrubina_media', 'gpt_max', 'tp_max', 'plaquetas_min', 'leucocitos_min', 'hemoglobina_min', 'glucemia_min', 'temp_min', 'sofa_max']
+
+Regresión Logística
+  Fold 1: AUC=0.6757
+    Best params: {'modelo__C': 0.001}
+  Fold 2: AUC=0.7048
+    Best params: {'modelo__C': 0.005}
+  Fold 3: AUC=0.7188
+    Best params: {'modelo__C': 0.005}
+  Fold 4: AUC=0.7023
+    Best params: {'modelo__C': 0.01}
+  Fold 5: AUC=0.6806
+    Best params: {'modelo__C': 0.005}
+
+Regresión Logística — AUC medio: 0.6965 ± 0.0160  (tiempo: 0.1 min)
+
+Random Forest
+  Fold 1: AUC=0.7058
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 5, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 1, 'modelo__n_estimators': 300}
+  Fold 2: AUC=0.7317
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__max_depth': 30, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 1, 'modelo__n_estimators': 600}
+  Fold 3: AUC=0.7093
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 20, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 400}
+  Fold 4: AUC=0.7024
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 20, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 2, 'modelo__n_estimators': 1000}
+  Fold 5: AUC=0.6893
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 20, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 500}
+
+Random Forest — AUC medio: 0.7077 ± 0.0138  (tiempo: 83.2 min)
+
+XGBoost
+  Fold 1: AUC=0.7026
+    Best params: {'modelo__colsample_bytree': 0.6, 'modelo__learning_rate': 0.005, 'modelo__max_depth': 5, 'modelo__n_estimators': 300, 'modelo__reg_lambda': 10, 'modelo__scale_pos_weight': 1, 'modelo__subsample': 0.6}
+  Fold 2: AUC=0.6972
+    Best params: {'modelo__colsample_bytree': 1.0, 'modelo__learning_rate': 0.005, 'modelo__max_depth': 3, 'modelo__n_estimators': 500, 'modelo__reg_lambda': 0.1, 'modelo__scale_pos_weight': 1, 'modelo__subsample': 0.6}
+  Fold 3: AUC=0.6744
+    Best params: {'modelo__colsample_bytree': 1.0, 'modelo__learning_rate': 0.01, 'modelo__max_depth': 3, 'modelo__n_estimators': 600, 'modelo__reg_lambda': 10, 'modelo__scale_pos_weight': 5, 'modelo__subsample': 1.0}
+  Fold 4: AUC=0.7069
+    Best params: {'modelo__colsample_bytree': 0.8, 'modelo__learning_rate': 0.01, 'modelo__max_depth': 3, 'modelo__n_estimators': 300, 'modelo__reg_lambda': 1, 'modelo__scale_pos_weight': 5, 'modelo__subsample': 0.6}
+  Fold 5: AUC=0.6861
+    Best params: {'modelo__colsample_bytree': 0.6, 'modelo__learning_rate': 0.005, 'modelo__max_depth': 7, 'modelo__n_estimators': 600, 'modelo__reg_lambda': 10, 'modelo__scale_pos_weight': 5, 'modelo__subsample': 0.6}
+
+XGBoost — AUC medio: 0.6934 ± 0.0118  (tiempo: 114.4 min)
+
+LightGBM
+  Fold 1: AUC=0.6979
+    Best params: {'modelo__class_weight': None, 'modelo__learning_rate': 0.005, 'modelo__min_child_samples': 10, 'modelo__n_estimators': 300, 'modelo__num_leaves': 15, 'modelo__reg_lambda': 0.1, 'modelo__subsample': 0.6}
+  Fold 2: AUC=0.6782
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__learning_rate': 0.01, 'modelo__min_child_samples': 10, 'modelo__n_estimators': 1000, 'modelo__num_leaves': 63, 'modelo__reg_lambda': 0.1, 'modelo__subsample': 0.6}
+  Fold 3: AUC=0.6473
+    Best params: {'modelo__class_weight': None, 'modelo__learning_rate': 0.005, 'modelo__min_child_samples': 10, 'modelo__n_estimators': 1000, 'modelo__num_leaves': 31, 'modelo__reg_lambda': 0.1, 'modelo__subsample': 0.6}
+  Fold 4: AUC=0.7112
+    Best params: {'modelo__class_weight': None, 'modelo__learning_rate': 0.01, 'modelo__min_child_samples': 60, 'modelo__n_estimators': 300, 'modelo__num_leaves': 15, 'modelo__reg_lambda': 0.1, 'modelo__subsample': 0.6}
+  Fold 5: AUC=0.6765
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__learning_rate': 0.005, 'modelo__min_child_samples': 30, 'modelo__n_estimators': 1000, 'modelo__num_leaves': 31, 'modelo__reg_lambda': 1, 'modelo__subsample': 0.6}
+
+LightGBM — AUC medio: 0.6822 ± 0.0217  (tiempo: 33.7 min)
+
+CatBoost
+  Fold 1: AUC=0.6948
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 4, 'modelo__iterations': 500, 'modelo__l2_leaf_reg': 1, 'modelo__learning_rate': 0.01}
+  Fold 2: AUC=0.7076
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 5, 'modelo__iterations': 500, 'modelo__l2_leaf_reg': 5, 'modelo__learning_rate': 0.01}
+  Fold 3: AUC=0.6930
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 4, 'modelo__iterations': 1000, 'modelo__l2_leaf_reg': 5, 'modelo__learning_rate': 0.01}
+  Fold 4: AUC=0.7190
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 6, 'modelo__iterations': 500, 'modelo__l2_leaf_reg': 5, 'modelo__learning_rate': 0.01}
+  Fold 5: AUC=0.6934
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 7, 'modelo__iterations': 500, 'modelo__l2_leaf_reg': 5, 'modelo__learning_rate': 0.01}
+
+CatBoost — AUC medio: 0.7016 ± 0.0102  (tiempo: 184.1 min)
+
+Naive Bayes
+  Fold 1: AUC=0.6948
+    Best params: {'modelo__var_smoothing': np.float64(3.856620421163472e-05)}
+  Fold 2: AUC=0.6850
+    Best params: {'modelo__var_smoothing': np.float64(3.856620421163472e-05)}
+  Fold 3: AUC=0.6921
+    Best params: {'modelo__var_smoothing': np.float64(3.856620421163472e-05)}
+  Fold 4: AUC=0.6855
+    Best params: {'modelo__var_smoothing': np.float64(1.6102620275609426e-06)}
+  Fold 5: AUC=0.6964
+    Best params: {'modelo__var_smoothing': np.float64(0.00018873918221350996)}
+
+Naive Bayes — AUC medio: 0.6907 ± 0.0047  (tiempo: 0.1 min)
+
+
+------------
+RESUMEN FINAL — v5 (tiempo total: 6.93 h)
+-----------------
+  RF  AUC = 0.7077 ± 0.0138
+  CAT  AUC = 0.7016 ± 0.0102
+  LR  AUC = 0.6965 ± 0.0160
+  XGB  AUC = 0.6934 ± 0.0118
+  NB  AUC = 0.6907 ± 0.0047
+  LGBM  AUC = 0.6822 ± 0.0217
+
+---------------------------
+SHAP — RANDOM FOREST FINAL
+------------------
+
+IMPORTANCIA SHAP
+               variable  shap_medio_absoluto
+                 pf_min             0.042625
+      diuresis_ml_kg_6h             0.035840
+                map_min             0.035270
+                 rr_max             0.033268
+               spo2_min             0.028497
+                 ph_min             0.026340
+               hr_media             0.019483
+               temp_min             0.017751
+               sofa_max             0.016468
+            lactato_max             0.016341
+                gpt_max             0.015228
+           glucemia_min             0.014871
+               fio2_max             0.014313
+        bicarbonato_min             0.011518
+             anchor_age             0.011061
+         leucocitos_min             0.010565
+                 tp_max             0.010251
+                peso_kg             0.010164
+        hemoglobina_min             0.009314
+          plaquetas_min             0.009284
+         creatinina_max             0.007646
+      bilirrubina_media             0.007379
+                gcs_min             0.006326
+ventilacion_invasiva_6h             0.004149
+                 gender             0.001713
+  contador_estancia_uci             0.001324
+
+Figuras guardadas en:
+  .\figuras\shap_beeswarm_v4_2.png
+  .\figuras\shap_bar_v4_2.png
+Tabla guardada en:
+  .\tablas\importancia_shap_v4_2.csv

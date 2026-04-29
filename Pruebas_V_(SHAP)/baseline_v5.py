@@ -66,6 +66,7 @@ def preparar(df):
         'glucemia_min',
 
         'temp_min',
+        'sofa_max'
     ]
 
     predictores = df[variables_predictoras].copy()
