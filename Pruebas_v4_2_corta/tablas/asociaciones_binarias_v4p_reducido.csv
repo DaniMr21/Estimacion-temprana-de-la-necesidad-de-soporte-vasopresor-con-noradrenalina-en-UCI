@@ -1,0 +1,8 @@
+variable_1,variable_2,tipo,asociacion
+ventilacion_invasiva_3h,gcs_min,binaria-continua (rank-biserial),-0.41
+gender,peso_kg,binaria-continua (rank-biserial),0.307
+ventilacion_invasiva_3h,spo2_min,binaria-continua (rank-biserial),0.264
+gender,creatinina_max,binaria-continua (rank-biserial),0.216
+ventilacion_invasiva_3h,rr_max,binaria-continua (rank-biserial),-0.198
+ventilacion_invasiva_3h,pf_min,binaria-continua (rank-biserial),0.156
+gender,ventilacion_invasiva_3h,binaria-binaria (phi),0.019
