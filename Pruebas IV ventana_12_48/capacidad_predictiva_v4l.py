@@ -1,23 +1,3 @@
-"""
-Evalua la capacidad predictiva de la variable `tiene_sepsis` respecto
-a la etiqueta `etiqueta_norad_12_48` (inicio de noradrenalina en 12-48h),
-sobre la ventana LARGA (observación 0-12h).
-
-Replica el mismo análisis que se hizo sobre v4 (0-6h / 6-24h) y v4p
-(0-3h / 3-12h) para poder comparar cómo cambia el valor informativo
-de la sepsis al variar la ventana de observación.
-
-  1. Tabla de contingencia (2x2): conteos crudos.
-  2. Prevalencia del evento en cada grupo (con/sin sepsis).
-  3. Riesgo relativo y odds ratio con intervalos de confianza al 95%.
-  4. Sensibilidad, especificidad, VPP, VPN.
-  5. AUC (sepsis como único predictor).
-  6. Información mutua con la etiqueta.
-  7. Test chi-cuadrado de independencia.
-  8. Ganancia marginal: AUC del modelo con/sin tiene_sepsis
-     (regresión logística, CV 5-fold agrupada por paciente).
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -31,10 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import RobustScaler
 from sklearn.pipeline import Pipeline
 
-
-# -----------------------------------------------------------------------------
 # 1. CARGA
-# -----------------------------------------------------------------------------
 RUTA = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
 df = pd.read_csv(RUTA)
 df = df.dropna(subset=['pf_max'])
@@ -47,19 +24,17 @@ n_total = len(df)
 prevalencia_evento = 100 * y.mean()
 prevalencia_sepsis = 100 * x.mean()
 
-print("=" * 70)
+print("------------------------")
 print("CAPACIDAD PREDICTIVA DE `tiene_sepsis` vs `etiqueta_norad_12_48`")
 print("Ventana LARGA (observación 0-12h, predicción 12-48h)")
-print("=" * 70)
+print("------------------------")
 print(f"N estancias                 : {n_total}")
 print(f"Prevalencia norad 12-48h    : {prevalencia_evento:.2f}%")
 print(f"Prevalencia sepsis en 0-12h : {prevalencia_sepsis:.2f}%")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 2. TABLA DE CONTINGENCIA
-# -----------------------------------------------------------------------------
+
 tabla = pd.crosstab(df['tiene_sepsis'], df['etiqueta_norad_12_48'],
                     rownames=['tiene_sepsis'], colnames=['etiqueta_norad_12_48'])
 print("TABLA DE CONTINGENCIA 2x2")
@@ -71,10 +46,8 @@ b = int(tabla.loc[1, 0])
 c = int(tabla.loc[0, 1])
 d = int(tabla.loc[0, 0])
 
-
-# -----------------------------------------------------------------------------
 # 3. RIESGO RELATIVO Y ODDS RATIO (con IC 95%)
-# -----------------------------------------------------------------------------
+
 riesgo_expuestos = a / (a + b)
 riesgo_no_exp    = c / (c + d)
 rr = riesgo_expuestos / riesgo_no_exp
@@ -101,9 +74,7 @@ print(f"  Odds ratio     (OR)  = {or_:.2f}  IC95% [{ic_or[0]:.2f}, {ic_or[1]:.2f
 print()
 
 
-# -----------------------------------------------------------------------------
 # 4. SENSIBILIDAD / ESPECIFICIDAD
-# -----------------------------------------------------------------------------
 vp = a
 fn = c
 fp = b
@@ -121,10 +92,7 @@ print(f"  Valor predictivo pos. = {vpp:.4f}  ({100*vpp:.1f}%)")
 print(f"  Valor predictivo neg. = {vpn:.4f}  ({100*vpn:.1f}%)")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 5. AUC Y 6. INFORMACIÓN MUTUA
-# -----------------------------------------------------------------------------
 auc = roc_auc_score(y, x)
 print("DISCRIMINACIÓN")
 print(f"  AUC (sepsis sola)     = {auc:.4f}")
@@ -137,9 +105,8 @@ print(f"  Información mutua     = {mi:.5f} nats")
 print()
 
 
-# -----------------------------------------------------------------------------
 # 7. TEST CHI-CUADRADO DE INDEPENDENCIA
-# -----------------------------------------------------------------------------
+
 chi2, p_valor, gl, esperados = stats.chi2_contingency(tabla)
 print("TEST DE INDEPENDENCIA (chi-cuadrado)")
 print(f"  chi2 = {chi2:.2f}  gl = {gl}  p = {p_valor:.4g}")
@@ -147,10 +114,8 @@ print(f"  H0: sepsis y norad son independientes. "
       f"{'Se rechaza' if p_valor < 0.05 else 'No se rechaza'} al 5%.")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 8. GANANCIA MARGINAL EN EL MODELO
-# -----------------------------------------------------------------------------
+
 variables_todas = [
     'anchor_age', 'gender', 'contador_estancia_uci',
     'sofa_media', 'sofa_min', 'sofa_max',
@@ -219,12 +184,12 @@ else:
 print()
 
 
-# -----------------------------------------------------------------------------
-# RESUMEN EJECUTIVO
-# -----------------------------------------------------------------------------
-print("=" * 70)
+
+# RESUMEN 
+
+print("-----------")
 print("RESUMEN (ventana LARGA 0-12h / 12-48h)")
-print("=" * 70)
+print("-------------")
 print(f"  RR (sepsis vs no sepsis)   : {rr:.2f}  IC95% [{ic_rr[0]:.2f}, {ic_rr[1]:.2f}]")
 print(f"  OR                         : {or_:.2f}  IC95% [{ic_or[0]:.2f}, {ic_or[1]:.2f}]")
 print(f"  p-valor chi2               : {p_valor:.4g}")

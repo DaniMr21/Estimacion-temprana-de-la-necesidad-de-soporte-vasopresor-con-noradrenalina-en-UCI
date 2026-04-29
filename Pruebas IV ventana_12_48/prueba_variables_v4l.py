@@ -12,7 +12,7 @@ RUTA_SALIDA = os.path.join(os.path.dirname(__file__), 'importancia_variables_rf_
 df = pd.read_csv(RUTA)
 df = df.dropna(subset=['pf_max'])
 
-# VARIABLES (idénticas a baseline_v4l)
+# VARIABLES 
 variables = [
     'anchor_age', 'gender', 'contador_estancia_uci',
 
@@ -53,10 +53,10 @@ variables = [
 X = df[variables].copy()
 y = df['etiqueta_norad_12_48'].astype(int)
 
-# CODIFICACIÓN MÍNIMA
+# CODIFICACIÓN
 X['gender'] = (X['gender'] == 'M').astype(int)
 
-# 🔥 MISMO RF FINETUNEADO
+#MISMO RF FINETUNEADO
 modelo = RandomForestClassifier(
     n_estimators=400,
     max_depth=10,
@@ -78,7 +78,7 @@ df_imp = pd.DataFrame({
 # GUARDAR TXT
 with open(RUTA_SALIDA, 'w', encoding='utf-8') as f:
     f.write("IMPORTANCIA VARIABLES RF (VENTANA 12-48h)\n")
-    f.write("="*60 + "\n\n")
+    f.write("-------------" + "\n\n")
 
     for _, row in df_imp.iterrows():
         f.write(f"{row['variable']:<35} {row['importancia']:.6f}\n")

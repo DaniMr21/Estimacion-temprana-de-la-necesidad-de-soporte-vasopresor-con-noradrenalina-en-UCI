@@ -31,10 +31,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import RobustScaler
 from sklearn.pipeline import Pipeline
 
-
-# -----------------------------------------------------------------------------
 # 1. CARGA
-# -----------------------------------------------------------------------------
+
 RUTA = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
 df = pd.read_csv(RUTA)
 df = df.dropna(subset=['pf_max'])
@@ -56,10 +54,8 @@ print(f"Prevalencia norad 3-12h     : {prevalencia_evento:.2f}%")
 print(f"Prevalencia sepsis en 0-3h  : {prevalencia_sepsis:.2f}%")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 2. TABLA DE CONTINGENCIA
-# -----------------------------------------------------------------------------
+
 tabla = pd.crosstab(df['tiene_sepsis'], df['etiqueta_norad_3_12'],
                     rownames=['tiene_sepsis'], colnames=['etiqueta_norad_3_12'])
 print("TABLA DE CONTINGENCIA 2x2")
@@ -72,9 +68,8 @@ c = int(tabla.loc[0, 1])  # sepsis=0, evento=1
 d = int(tabla.loc[0, 0])  # sepsis=0, evento=0
 
 
-# -----------------------------------------------------------------------------
 # 3. RIESGO RELATIVO Y ODDS RATIO (con IC 95%)
-# -----------------------------------------------------------------------------
+
 riesgo_expuestos = a / (a + b)
 riesgo_no_exp    = c / (c + d)
 rr = riesgo_expuestos / riesgo_no_exp
@@ -101,9 +96,8 @@ print(f"  Odds ratio     (OR)  = {or_:.2f}  IC95% [{ic_or[0]:.2f}, {ic_or[1]:.2f
 print()
 
 
-# -----------------------------------------------------------------------------
 # 4. SENSIBILIDAD / ESPECIFICIDAD
-# -----------------------------------------------------------------------------
+
 vp = a
 fn = c
 fp = b
@@ -121,10 +115,8 @@ print(f"  Valor predictivo pos. = {vpp:.4f}  ({100*vpp:.1f}%)")
 print(f"  Valor predictivo neg. = {vpn:.4f}  ({100*vpn:.1f}%)")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 5. AUC Y 6. INFORMACIÓN MUTUA
-# -----------------------------------------------------------------------------
+
 auc = roc_auc_score(y, x)
 print("DISCRIMINACIÓN")
 print(f"  AUC (sepsis sola)     = {auc:.4f}")
@@ -136,10 +128,8 @@ mi = mutual_info_classif(x.reshape(-1, 1), y,
 print(f"  Información mutua     = {mi:.5f} nats")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 7. TEST CHI-CUADRADO DE INDEPENDENCIA
-# -----------------------------------------------------------------------------
+
 chi2, p_valor, gl, esperados = stats.chi2_contingency(tabla)
 print("TEST DE INDEPENDENCIA (chi-cuadrado)")
 print(f"  chi2 = {chi2:.2f}  gl = {gl}  p = {p_valor:.4g}")
@@ -148,9 +138,8 @@ print(f"  H0: sepsis y norad son independientes. "
 print()
 
 
-# -----------------------------------------------------------------------------
 # 8. GANANCIA MARGINAL EN EL MODELO
-# -----------------------------------------------------------------------------
+
 variables_todas = [
     'anchor_age', 'gender', 'contador_estancia_uci',
     'sofa_media', 'sofa_min', 'sofa_max',
@@ -219,12 +208,11 @@ else:
 print()
 
 
-# -----------------------------------------------------------------------------
 # RESUMEN EJECUTIVO
-# -----------------------------------------------------------------------------
-print("=" * 70)
+
+print("-----------------")
 print("RESUMEN (ventana PRECOZ 0-3h / 3-12h)")
-print("=" * 70)
+print("----------------")
 print(f"  RR (sepsis vs no sepsis)   : {rr:.2f}  IC95% [{ic_rr[0]:.2f}, {ic_rr[1]:.2f}]")
 print(f"  OR                         : {or_:.2f}  IC95% [{ic_or[0]:.2f}, {ic_or[1]:.2f}]")
 print(f"  p-valor chi2               : {p_valor:.4g}")

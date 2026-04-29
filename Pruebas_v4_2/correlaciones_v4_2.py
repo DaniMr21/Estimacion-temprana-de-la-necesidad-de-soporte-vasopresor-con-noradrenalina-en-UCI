@@ -1,28 +1,5 @@
 """
-Análisis de correlación y multicolinealidad sobre el set REDUCIDO de v4
-(observación 0-6h, predicción 6-24h, 26 variables seleccionadas).
- 
-Replica el mismo análisis que se hizo para el set completo (76 variables)
-para verificar que la reducción ha eliminado la multicolinealidad y para
-documentar la estructura de correlación final del modelo.
- 
-Cuatro análisis complementarios:
- 
-  1. Matriz de correlación de Spearman (no Pearson, por asimetría
-     habitual de las variables clínicas).
-  2. Pares de variables con |rho| > 0.7 (debería estar prácticamente
-     vacío después de la reducción).
-  3. VIF (Variance Inflation Factor) sobre variables continuas
-     (excluye binarias, que se reportan aparte con asociaciones).
-  4. Dendrograma de agrupamiento jerárquico de variables.
- 
-Decisiones metodológicas (idénticas al análisis del set completo):
-  - CSV winsorizado al 2-98%, mismo que usa el modelo.
-  - Filtrado a primera estancia por paciente para garantizar independencia.
-  - Variables binarias (gender, ventilacion_invasiva_6h) excluidas del VIF
-    y reportadas mediante asociaciones específicas.
- 
-Salidas:
+ Salidas:
   - figuras/correlacion_spearman_v4_reducido.png
   - figuras/dendrograma_v4_reducido.png
   - tablas/matriz_spearman_v4_reducido.csv
@@ -43,10 +20,7 @@ from scipy.cluster.hierarchy import linkage, dendrogram
 from scipy.spatial.distance import squareform
 from statsmodels.stats.outliers_influence import variance_inflation_factor
  
- 
-# -----------------------------------------------------------------------------
-# CONFIGURACIÓN
-# -----------------------------------------------------------------------------
+
 RUTA_CSV = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
  
 CARPETA_BASE = os.path.dirname(__file__) if '__file__' in dir() else '.'
@@ -55,13 +29,11 @@ CARPETA_TABLAS  = os.path.join(CARPETA_BASE, 'tablas')
 os.makedirs(CARPETA_FIGURAS, exist_ok=True)
 os.makedirs(CARPETA_TABLAS, exist_ok=True)
  
- 
-# -----------------------------------------------------------------------------
 # 1. CARGA Y FILTRADO A PRIMERA ESTANCIA POR PACIENTE
-# -----------------------------------------------------------------------------
-print("=" * 70)
+
+print("-----------------------------")
 print("ANÁLISIS DE CORRELACIÓN — SET REDUCIDO v4 (26 variables)")
-print("=" * 70)
+print("-----------------------------")
  
 df = pd.read_csv(RUTA_CSV)
 df = df.dropna(subset=['pf_max'])
@@ -79,9 +51,8 @@ print(f"    Positivos            : {df['etiqueta_norad_6_24'].sum()} "
 print()
  
  
-# -----------------------------------------------------------------------------
 # 2. SELECCIÓN DE VARIABLES (set reducido de 26)
-# -----------------------------------------------------------------------------
+
 variables_predictoras = [
     # Demografía y contexto (4)
     'anchor_age',
@@ -147,12 +118,12 @@ print(f"  Binarias               : {len(variables_binarias)}")
 print()
  
  
-# -----------------------------------------------------------------------------
+
 # 3. MATRIZ DE CORRELACIÓN DE SPEARMAN
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("-------------------------------")
 print("[1/4] Matriz de correlación de Spearman")
-print("-" * 70)
+print("----------------------------")
  
 matriz_spearman = X.corr(method='spearman')
  
@@ -186,13 +157,12 @@ matriz_spearman.round(3).to_csv(ruta_matriz)
 print(f"  Matriz completa en    : {ruta_matriz}")
 print()
  
- 
-# -----------------------------------------------------------------------------
+
 # 4. PARES CON ALTA CORRELACIÓN
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("-------------------")
 print("[2/4] Pares con mayor correlación (todos, ordenados)")
-print("-" * 70)
+print("--------------------")
  
 pares = (matriz_spearman.where(np.triu(np.ones_like(matriz_spearman, dtype=bool), k=1))
                         .stack()
@@ -218,12 +188,11 @@ print(f"\n  Tabla guardada en     : {ruta_pares}")
 print()
  
  
-# -----------------------------------------------------------------------------
 # 5. VIF
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("-----------------------")
 print("[3/4] VIF (multicolinealidad multivariante)")
-print("-" * 70)
+print("---------------------")
  
 X_continuas = X[variables_continuas].copy()
 X_std = (X_continuas - X_continuas.mean()) / X_continuas.std()
@@ -257,13 +226,11 @@ vif_df.to_csv(ruta_vif, index=False)
 print(f"\n  Tabla guardada en    : {ruta_vif}")
 print()
  
- 
-# -----------------------------------------------------------------------------
 # 6. ASOCIACIONES BINARIAS
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("-----------------")
 print("Análisis separado de variables binarias")
-print("-" * 70)
+print("---------")
  
 filas = []
 for i, b1 in enumerate(variables_binarias):
@@ -295,12 +262,11 @@ print(f"\n  Tabla guardada en    : {ruta_asoc}")
 print()
  
  
-# -----------------------------------------------------------------------------
 # 7. DENDROGRAMA
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("---------------------")
 print("[4/4] Dendrograma del set reducido")
-print("-" * 70)
+print("----------------------")
  
 distancia = (1 - matriz_spearman.abs()).to_numpy().copy()
 np.fill_diagonal(distancia, 0)
@@ -334,12 +300,11 @@ print(f"  Dendrograma guardado en: {ruta_dendro}")
 print()
  
  
-# -----------------------------------------------------------------------------
 # 8. RESUMEN EJECUTIVO + COMPARACIÓN CON SET COMPLETO
-# -----------------------------------------------------------------------------
-print("=" * 70)
+
+print("----------------------")
 print("RESUMEN EJECUTIVO — COMPARACIÓN CON SET COMPLETO")
-print("=" * 70)
+print("-----------------------")
  
 print(f"  {'Métrica':<35} {'Completo (76 vars)':<22} {'Reducido (26 vars)':<22}")
 print(f"  {'-'*35} {'-'*22} {'-'*22}")
@@ -353,11 +318,3 @@ print()
 print("Ficheros generados:")
 print(f"  Figuras  : {CARPETA_FIGURAS}/")
 print(f"  Tablas   : {CARPETA_TABLAS}/")
-print()
-print("CONCLUSIONES:")
-print("  - Si pares con |rho|>0.7 = 0: la reducción ha eliminado")
-print("    completamente la colinealidad fuerte.")
-print("  - Si VIF > 10 < 5 variables: la multicolinealidad multivariante")
-print("    también está controlada.")
-print("  - Las correlaciones que queden serán moderadas (<0.5) y")
-print("    clínicamente esperables (componentes de SOFA, ácido-base, etc.).")

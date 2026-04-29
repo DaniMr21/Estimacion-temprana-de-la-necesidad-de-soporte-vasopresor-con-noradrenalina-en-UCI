@@ -1,33 +1,3 @@
-"""
-Análisis de desempate entre estadísticos (media / mínimo / máximo) para
-variables clínicas con relevancia ambigua.
- 
-Se aplica a variables donde la elección del estadístico no es clínicamente
-inequívoca (p. ej. SOFA, glucemia, temperatura, leucocitos), combinando
-dos criterios objetivos:
- 
-  1. AUC univariante: capacidad discriminativa del estadístico tomado
-     como único predictor del evento (etiqueta_norad_6_24).
- 
-  2. Cohen's d: tamaño del efecto entre clases (positivos vs negativos).
-     Permite comparar magnitud de la separación entre grupos en
-     unidades estandarizadas, complementando el AUC.
- 
-Junto a esos dos números se reporta:
-  - Mediana del estadístico en cada clase, para inspección clínica.
-  - Dirección del efecto (positivos > negativos o al revés), útil para
-    detectar cuándo el sentido fisiológico esperado coincide con los datos.
- 
-Decisión metodológica:
-  - El AUC se calcula directamente con la variable continua. Si el AUC
-    sale por debajo de 0.5, se invierte (1 - AUC) para reportar siempre
-    el valor "absoluto" de discriminación.
-  - El Cohen's d se reporta con su signo, para conservar la dirección
-    del efecto.
-  - Se filtra a estancias con valor no nulo en la variable. La cohorte
-    se carga del CSV ya winsorizado (definitivo_v4.csv).
-"""
- 
 import warnings
 warnings.filterwarnings('ignore')
  
@@ -35,10 +5,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
  
- 
-# -----------------------------------------------------------------------------
 # CARGA
-# -----------------------------------------------------------------------------
+
 RUTA = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
  
 df = pd.read_csv(RUTA)
@@ -46,10 +14,8 @@ df = df.dropna(subset=['pf_max'])
  
 y = df['etiqueta_norad_6_24'].astype(int).values
  
- 
-# -----------------------------------------------------------------------------
 # FUNCIONES AUXILIARES
-# -----------------------------------------------------------------------------
+
 def cohens_d(grupo_1, grupo_2):
     """Cohen's d para dos muestras independientes con varianzas comparables.
  
@@ -123,13 +89,11 @@ def evaluar_estadisticos(variable_base, sentido_clinico):
         print(f"\n  → Mayor AUC univariante: "
               f"{variable_base}{ganadora[0]} (AUC={ganadora[1][0]:.4f})")
  
- 
-# -----------------------------------------------------------------------------
 # EJECUCIÓN
-# -----------------------------------------------------------------------------
-print("#" * 70)
+
+print("------------------------------")
 print("# ANÁLISIS DE VARIABLES DUDOSAS (desempate min/media/max)")
-print("#" * 70)
+
  
 # Variables donde la decisión entre estadísticos no es clínicamente
 # inequívoca y conviene apoyarse en datos.

@@ -35,9 +35,9 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.pipeline import Pipeline
 
 
-# -----------------------------------------------------------------------------
+
 # 1. CARGA
-# -----------------------------------------------------------------------------
+
 RUTA = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
 df = pd.read_csv(RUTA)
 df = df.dropna(subset=['pf_max'])
@@ -58,11 +58,9 @@ print(f"Prevalencia norad 6-24h     : {prevalencia_evento:.2f}%")
 print(f"Prevalencia sepsis en 0-6h  : {prevalencia_sepsis:.2f}%")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 2. TABLA DE CONTINGENCIA
-# -----------------------------------------------------------------------------
 # Filas: sepsis (0/1). Columnas: evento (0/1).
+
 tabla = pd.crosstab(df['tiene_sepsis'], df['etiqueta_norad_6_24'],
                     rownames=['tiene_sepsis'], colnames=['etiqueta_norad_6_24'])
 print("TABLA DE CONTINGENCIA 2x2")
@@ -76,9 +74,9 @@ c = int(tabla.loc[0, 1])  # sepsis=0, evento=1
 d = int(tabla.loc[0, 0])  # sepsis=0, evento=0
 
 
-# -----------------------------------------------------------------------------
+
 # 3. RIESGO RELATIVO Y ODDS RATIO (con IC 95%)
-# -----------------------------------------------------------------------------
+
 riesgo_expuestos = a / (a + b)         # P(evento | sepsis)
 riesgo_no_exp    = c / (c + d)         # P(evento | no sepsis)
 rr = riesgo_expuestos / riesgo_no_exp
@@ -107,9 +105,8 @@ print(f"  Odds ratio     (OR)  = {or_:.2f}  IC95% [{ic_or[0]:.2f}, {ic_or[1]:.2f
 print()
 
 
-# -----------------------------------------------------------------------------
 # 4. SENSIBILIDAD / ESPECIFICIDAD (sepsis como predictor binario crudo)
-# -----------------------------------------------------------------------------
+
 # Si usáramos "tiene_sepsis == 1" como clasificador directo del evento:
 vp = a
 fn = c
@@ -129,9 +126,9 @@ print(f"  Valor predictivo neg. = {vpn:.4f}  ({100*vpn:.1f}%)")
 print()
 
 
-# -----------------------------------------------------------------------------
+
 # 5. AUC (sepsis como único predictor)
-# -----------------------------------------------------------------------------
+
 auc = roc_auc_score(y, x)
 print("DISCRIMINACIÓN")
 print(f"  AUC (sepsis sola)     = {auc:.4f}")
@@ -139,9 +136,9 @@ print(f"  (0.50 = azar; 1.00 = perfecto)")
 print()
 
 
-# -----------------------------------------------------------------------------
+
 # 6. INFORMACIÓN MUTUA
-# -----------------------------------------------------------------------------
+
 # Cantidad de información que aporta la variable sobre la etiqueta.
 mi = mutual_info_classif(x.reshape(-1, 1), y,
                          discrete_features=True, random_state=42)[0]
@@ -149,9 +146,9 @@ print(f"  Información mutua     = {mi:.5f} nats")
 print()
 
 
-# -----------------------------------------------------------------------------
+
 # 7. TEST CHI-CUADRADO DE INDEPENDENCIA
-# -----------------------------------------------------------------------------
+
 chi2, p_valor, gl, esperados = stats.chi2_contingency(tabla)
 print("TEST DE INDEPENDENCIA (chi-cuadrado)")
 print(f"  chi2 = {chi2:.2f}  gl = {gl}  p = {p_valor:.4g}")
@@ -238,12 +235,11 @@ else:
 print()
 
 
-# -----------------------------------------------------------------------------
+
 # RESUMEN EJECUTIVO
-# -----------------------------------------------------------------------------
-print("=" * 70)
+
+
 print("RESUMEN")
-print("=" * 70)
 print(f"  RR (sepsis vs no sepsis)   : {rr:.2f}  IC95% [{ic_rr[0]:.2f}, {ic_rr[1]:.2f}]")
 print(f"  OR                         : {or_:.2f}  IC95% [{ic_or[0]:.2f}, {ic_or[1]:.2f}]")
 print(f"  p-valor chi2               : {p_valor:.4g}")

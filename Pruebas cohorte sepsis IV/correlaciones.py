@@ -42,9 +42,9 @@ from scipy.spatial.distance import squareform
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 
-# -----------------------------------------------------------------------------
+
 # CONFIGURACIÓN
-# -----------------------------------------------------------------------------
+
 RUTA_CSV = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
 
 CARPETA_BASE = os.path.dirname(__file__) if '__file__' in dir() else '.'
@@ -54,9 +54,8 @@ os.makedirs(CARPETA_FIGURAS, exist_ok=True)
 os.makedirs(CARPETA_TABLAS, exist_ok=True)
 
 
-# -----------------------------------------------------------------------------
 # 1. CARGA Y FILTRADO A PRIMERA ESTANCIA POR PACIENTE
-# -----------------------------------------------------------------------------
+
 print("=" * 70)
 print("ANÁLISIS DE CORRELACIÓN Y MULTICOLINEALIDAD — DATASET v4")
 print("=" * 70)
@@ -76,10 +75,8 @@ print(f"    Positivos            : {df['etiqueta_norad_6_24'].sum()} "
       f"({100*df['etiqueta_norad_6_24'].mean():.2f}%)")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 2. SELECCIÓN DE VARIABLES
-# -----------------------------------------------------------------------------
+
 variables_predictoras = [
     'anchor_age', 'gender', 'contador_estancia_uci',
     'tiene_sepsis',
@@ -123,13 +120,11 @@ print(f"  Continuas              : {len(variables_continuas)}")
 print(f"  Binarias               : {len(variables_binarias)}")
 print()
 
-
-# -----------------------------------------------------------------------------
 # 3. MATRIZ DE CORRELACIÓN DE SPEARMAN
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("-----------------")
 print("[1/4] Matriz de correlación de Spearman")
-print("-" * 70)
+print("-----------------------")
 
 # Spearman es robusto a asimetría y outliers (típicos en variables clínicas)
 matriz_spearman = X.corr(method='spearman')
@@ -164,12 +159,12 @@ print(f"  Matriz completa en    : {ruta_matriz}")
 print()
 
 
-# -----------------------------------------------------------------------------
+
 # 4. PARES CON ALTA CORRELACIÓN (|rho| > 0.7)
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("------------------")
 print("[2/4] Pares con |rho| > 0.7")
-print("-" * 70)
+print("----------------------------------")
 
 # Extraer pares únicos del triángulo superior
 pares = (matriz_spearman.where(np.triu(np.ones_like(matriz_spearman, dtype=bool), k=1))
@@ -195,12 +190,11 @@ print(f"\n  Tabla guardada en     : {ruta_pares}")
 print()
 
 
-# -----------------------------------------------------------------------------
 # 5. VIF (Variance Inflation Factor) sobre variables continuas
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("----------------------------")
 print("[3/4] VIF (multicolinealidad multivariante)")
-print("-" * 70)
+print("------------------------")
 
 # El VIF requiere que las variables sean continuas y que el modelo lineal
 # pueda ajustarse sin singularidades. Excluimos binarias.
@@ -240,12 +234,11 @@ print(f"\n  Tabla guardada en    : {ruta_vif}")
 print()
 
 
-# -----------------------------------------------------------------------------
 # 6. ASOCIACIONES DE VARIABLES BINARIAS (reporte separado)
-# -----------------------------------------------------------------------------
-print("-" * 70)
+
+print("--------------------")
 print("Análisis separado de variables binarias")
-print("-" * 70)
+print("----------------------------------")
 
 # Para variables binarias usamos:
 #  - asociación entre binarias: phi (= Pearson sobre 0/1, equivalente a chi^2 normalizado)
@@ -291,9 +284,9 @@ print()
 # -----------------------------------------------------------------------------
 # 7. DENDROGRAMA DE AGRUPAMIENTO JERÁRQUICO
 # -----------------------------------------------------------------------------
-print("-" * 70)
+print("-------------")
 print("[4/4] Dendrograma de variables (agrupamiento jerárquico)")
-print("-" * 70)
+print("----------------------------------")
 
 # Distancia: 1 - |rho|. Usamos la matriz Spearman completa (incluye binarias).
 distancia = (1 - matriz_spearman.abs()).to_numpy().copy()
@@ -304,12 +297,8 @@ distancia_condensada = squareform(distancia, checks=False)
 # Linkage por average (más estable para datos clínicos heterogéneos)
 enlaces = linkage(distancia_condensada, method='average')
 
-# Linkage por average (más estable para datos clínicos heterogéneos)
-enlaces = linkage(distancia_condensada, method='average')
-
-# ---------------------------------------------------------------------
 # EXTRA: CLUSTERS EXPLÍCITOS
-# ---------------------------------------------------------------------
+
 from scipy.cluster.hierarchy import fcluster
 
 # Corte equivalente a |rho| >= 0.7 → distancia <= 0.3
@@ -365,12 +354,11 @@ print(f"  Dendrograma guardado en: {ruta_dendro}")
 print()
 
 
-# -----------------------------------------------------------------------------
-# 8. RESUMEN EJECUTIVO
-# -----------------------------------------------------------------------------
-print("=" * 70)
+# 8. RESUMEN 
+
+print("-------------------------")
 print("RESUMEN EJECUTIVO")
-print("=" * 70)
+print("------------------")
 print(f"  Estancias analizadas             : {len(df)} (1ª por paciente)")
 print(f"  Variables totales                : {len(variables_predictoras)}")
 print(f"  Pares con |rho| > 0.7            : {len(pares_altos)}")
@@ -380,9 +368,3 @@ print()
 print("Ficheros generados:")
 print(f"  Figuras  : {CARPETA_FIGURAS}/")
 print(f"  Tablas   : {CARPETA_TABLAS}/")
-print()
-print("LECTURA SUGERIDA PARA LA MEMORIA:")
-print("  - El dendrograma es la figura principal (visualización rápida).")
-print("  - La tabla de pares |rho|>0.7 documenta las redundancias por construcción.")
-print("  - El VIF complementa con visión multivariante (no solo pares).")
-print("  - Las asociaciones binarias se reportan aparte.")

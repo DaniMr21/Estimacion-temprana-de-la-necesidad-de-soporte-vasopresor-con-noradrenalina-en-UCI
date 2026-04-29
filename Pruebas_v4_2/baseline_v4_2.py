@@ -1,12 +1,6 @@
 """
 Baseline v4 con set REDUCIDO de variables.
 
-Set de 26 variables seleccionadas a partir del análisis de correlación
-y agrupamiento jerárquico (dendrograma), con criterio doble:
-  - Una variable por cluster.
-  - Importancia RF como primer criterio; sentido clínico como desempate
-    cuando las diferencias entre estadísticos eran <0.005.
-
 Exclusiones razonadas respecto al set completo (76 variables):
   - PaO2 (todas): redundante con P/F (PaO2/FiO2).
   - GOT (todas): mismo cluster hepatocelular que GPT.
@@ -165,9 +159,9 @@ def main():
     df = cargar_datos()
     predictores, etiqueta, paciente_id = preparar(df)
 
-    print("=" * 70)
+    print("--------------")
     print("BASELINE v4 — SET REDUCIDO (26 variables)")
-    print("=" * 70)
+    print("--------------")
     print(f"Dataset: {predictores.shape} | "
           f"Positivos: {etiqueta.sum()} ({100*etiqueta.mean():.2f}%)")
     print(f"Pacientes únicos: {paciente_id.nunique()} | "

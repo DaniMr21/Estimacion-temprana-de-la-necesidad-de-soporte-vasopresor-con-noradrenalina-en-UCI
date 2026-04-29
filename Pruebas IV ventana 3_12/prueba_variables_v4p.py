@@ -12,7 +12,7 @@ RUTA_SALIDA = os.path.join(os.path.dirname(__file__), 'importancia_variables_rf_
 df = pd.read_csv(RUTA)
 df = df.dropna(subset=['pf_max'])
 
-# VARIABLES (idénticas a tu baseline_v4p)
+# VARIABLES 
 variables = [
     'anchor_age', 'gender', 'contador_estancia_uci',
 
@@ -53,7 +53,7 @@ variables = [
 X = df[variables].copy()
 y = df['etiqueta_norad_3_12'].astype(int)
 
-# CODIFICACIÓN MÍNIMA
+# CODIFICACIÓN 
 X['gender'] = (X['gender'] == 'M').astype(int)
 
 #MEJORES PARÁMETROS (misma lógica que antes)
@@ -78,7 +78,7 @@ df_imp = pd.DataFrame({
 # GUARDAR TXT
 with open(RUTA_SALIDA, 'w', encoding='utf-8') as f:
     f.write("IMPORTANCIA VARIABLES RF (VENTANA 3-12h)\n")
-    f.write("="*60 + "\n\n")
+    f.write("------------------" + "\n\n")
 
     for _, row in df_imp.iterrows():
         f.write(f"{row['variable']:<35} {row['importancia']:.6f}\n")

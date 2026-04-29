@@ -22,10 +22,10 @@ os.makedirs(CARPETA_FIGURAS, exist_ok=True)
 os.makedirs(CARPETA_TABLAS, exist_ok=True)
 
 
-print("=" * 70)
+print("---------------------")
 print("CORRELACIONES — v4p SET REDUCIDO")
 print("Ventana: observación 0-3h / predicción 3-12h")
-print("=" * 70)
+print("-----------------------------")
 
 df = pd.read_csv(RUTA_CSV)
 df = df.dropna(subset=['pf_max'])
@@ -117,9 +117,9 @@ print(f"  Binarias          : {len(variables_binarias)}")
 print()
 
 
-print("-" * 70)
+print("-----------------")
 print("[1/4] Matriz de correlación de Spearman")
-print("-" * 70)
+print("---------------------------")
 
 matriz_spearman = X.corr(method='spearman')
 
@@ -170,9 +170,9 @@ print(f"  Matriz guardada en  : {ruta_matriz}")
 print()
 
 
-print("-" * 70)
+print("-------------------")
 print("[2/4] Pares de correlación")
-print("-" * 70)
+print("----------------------")
 
 pares = (
     matriz_spearman
@@ -209,9 +209,9 @@ print(f"\n  Tabla guardada en: {ruta_pares}")
 print()
 
 
-print("-" * 70)
+print("-----------------")
 print("[3/4] VIF")
-print("-" * 70)
+print("--------------------------")
 
 X_continuas = X[variables_continuas].copy()
 
@@ -260,9 +260,9 @@ print(f"\n  VIF guardado en: {ruta_vif}")
 print()
 
 
-print("-" * 70)
+print("----------------------------------")
 print("Análisis separado de variables binarias")
-print("-" * 70)
+print("------------------------")
 
 filas = []
 
@@ -307,9 +307,9 @@ print(f"\n  Asociaciones binarias guardadas en: {ruta_asoc}")
 print()
 
 
-print("-" * 70)
+print("------------------")
 print("[4/4] Dendrograma")
-print("-" * 70)
+print("-------------------")
 
 distancia = (1 - matriz_spearman.abs()).to_numpy().copy()
 np.fill_diagonal(distancia, 0)

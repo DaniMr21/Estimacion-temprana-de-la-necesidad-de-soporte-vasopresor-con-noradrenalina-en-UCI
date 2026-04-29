@@ -142,10 +142,10 @@ def main():
     df = cargar_datos()
     predictores, etiqueta, paciente_id = preparar(df)
 
-    print("=" * 70)
+    print("---------------------------")
     print("BASELINE v4p — SET REDUCIDO")
     print("Ventana: observación 0-3h / predicción 3-12h")
-    print("=" * 70)
+    print("-----------------------------")
     print(f"Dataset: {predictores.shape} | "
           f"Positivos: {etiqueta.sum()} ({100 * etiqueta.mean():.2f}%)")
     print(f"Pacientes únicos: {paciente_id.nunique()} | "
@@ -311,9 +311,9 @@ def main():
 
     tiempo_total_horas = (time.time() - tiempo_global) / 3600
 
-    print("\n" + "-" * 70)
+    print("\n" + "---------------------------")
     print(f"RESUMEN FINAL — v4p REDUCIDO (tiempo total: {tiempo_total_horas:.2f} h)")
-    print("-" * 70)
+    print("---------------")
 
     ranking = sorted(resultados.items(), key=lambda item: -item[1][0])
 

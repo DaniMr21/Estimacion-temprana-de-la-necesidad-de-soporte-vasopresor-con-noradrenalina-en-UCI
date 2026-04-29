@@ -1,24 +1,8 @@
 """
-Baseline v4 con set REDUCIDO de variables, ENTRENADO POR SUBGRUPOS.
-
-Subgrupos analizados:
-  - GLOBAL      : toda la cohorte (referencia)
-  - SEPSIS      : tiene_sepsis == 1
-  - NO_SEPSIS   : tiene_sepsis == 0
-
 Hipótesis a contrastar:
   ¿El modelo predice igual de bien el inicio de noradrenalina en
   pacientes sépticos que en no sépticos? ¿Las variables relevantes
   son las mismas o cambian?
-
-Decisiones metodológicas:
-  - Mismas 26 variables que baseline_v4_reducido.py.
-  - Se EXCLUYE `tiene_sepsis` del modelo cuando se entrena por subgrupo
-    (porque dentro de cada subgrupo es constante, aporta cero).
-  - Mismo grid de hiperparámetros que el baseline reducido global,
-    para permitir comparación directa de AUCs.
-  - CV anidada 5x3 agrupada por paciente.
-  - class_weight='balanced' / scale_pos_weight para gestionar desbalance.
 """
 
 import warnings
@@ -38,14 +22,10 @@ from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 
-
-# -----------------------------------------------------------------------------
 # CONFIGURACIÓN
-# -----------------------------------------------------------------------------
 
 # Set reducido idéntico al de baseline_v4_reducido.py.
-# OJO: tiene_sepsis NO se incluye aquí porque al filtrar por subgrupo es
-# constante y no aporta información dentro del subgrupo.
+# OJO: tiene_sepsis NO se incluye aquí porque al filtrar por subgrupo es constante y no aporta información dentro del subgrupo.
 
 variables_predictoras = [
     # Demografía y contexto (4)
@@ -102,9 +82,7 @@ variables_predictoras = [
 ETIQUETA = 'etiqueta_norad_6_24'
 
 
-# -----------------------------------------------------------------------------
 # CARGA Y PREPARACIÓN
-# -----------------------------------------------------------------------------
 def cargar_datos():
     ruta = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
     df = pd.read_csv(ruta)
@@ -135,9 +113,9 @@ def preparar_subgrupo(df, nombre_subgrupo):
     return predictores, etiqueta, paciente_id
 
 
-# -----------------------------------------------------------------------------
-# CV ANIDADA (igual que baseline_v4_reducido.py)
-# -----------------------------------------------------------------------------
+
+# CV ANIDADA 
+
 def validacion_cruzada_anidada(nombre_modelo, pipeline, espacio_hiperparametros,
                                predictores, etiqueta, paciente_id, n_jobs=-1):
 
@@ -185,10 +163,8 @@ def validacion_cruzada_anidada(nombre_modelo, pipeline, espacio_hiperparametros,
 
     return auc_medio, auc_desv, mejores_params_por_fold
 
-
-# -----------------------------------------------------------------------------
 # DEFINICIÓN DE LOS 6 MODELOS (mismo grid que el baseline global)
-# -----------------------------------------------------------------------------
+
 def definir_modelos():
     """
     Devuelve dict con (nombre_legible, pipeline, espacio_hiperparametros, n_jobs).
@@ -283,14 +259,12 @@ def definir_modelos():
     }
     return pipelines
 
-
-# -----------------------------------------------------------------------------
 # EVALUACIÓN COMPLETA DE UN SUBGRUPO
-# -----------------------------------------------------------------------------
+
 def evaluar_subgrupo(df, nombre_subgrupo):
-    print("\n" + "=" * 70)
+    print("\n" + "--------------------")
     print(f"SUBGRUPO: {nombre_subgrupo}")
-    print("=" * 70)
+    print("------------------------")
 
     predictores, etiqueta, paciente_id = preparar_subgrupo(df, nombre_subgrupo)
 
@@ -334,7 +308,7 @@ def evaluar_subgrupo(df, nombre_subgrupo):
 
     tiempo_horas = (time.time() - tiempo_subgrupo_inicio) / 3600
 
-    print("\n" + "-" * 50)
+    print("\n" + "----------------------------")
     print(f"RESUMEN {nombre_subgrupo} (tiempo: {tiempo_horas:.2f} h)")
     print("-" * 50)
     ranking = sorted(resultados.items(),
@@ -356,15 +330,13 @@ def evaluar_subgrupo(df, nombre_subgrupo):
         'resultados': resultados,
     }
 
-
-# -----------------------------------------------------------------------------
 # MAIN
-# -----------------------------------------------------------------------------
+
 def main():
-    print("=" * 70)
+    print("----------------------")
     print("BASELINE v4 REDUCIDO — POR SUBGRUPOS DE SEPSIS")
     print(f"Variables: {len(variables_predictoras)} (set reducido sin tiene_sepsis)")
-    print("=" * 70)
+    print("--------------------")
 
     df = cargar_datos()
     print(f"\nDataset cargado: {len(df)} estancias")
@@ -379,13 +351,12 @@ def main():
     for subgrupo in ['GLOBAL', 'SEPSIS', 'NO_SEPSIS']:
         resumen[subgrupo] = evaluar_subgrupo(df, subgrupo)
 
-    # -----------------------------------------------------------------------
+    
     # TABLA COMPARATIVA FINAL
-    # -----------------------------------------------------------------------
     horas_totales = (time.time() - tiempo_total) / 3600
-    print("\n" + "=" * 70)
+    print("\n" + "------------------")
     print(f"TABLA COMPARATIVA FINAL (tiempo total: {horas_totales:.2f} h)")
-    print("=" * 70)
+    print("------------------------")
 
     # Cabecera
     print(f"\n  {'Modelo':<8} {'GLOBAL':<22} {'SEPSIS':<22} {'NO_SEPSIS':<22}")
@@ -413,13 +384,6 @@ def main():
             print(f"  {sub:<10} N={r['n_estancias']:<5} "
                   f"Pos={r['n_positivos']:<4} "
                   f"Prev={r['prevalencia_pct']:.2f}%")
-    print()
-    print("INTERPRETACIÓN PREVISTA:")
-    print("  - Si AUC SEPSIS ≈ AUC NO_SEPSIS: el modelo captura señal universal.")
-    print("  - Si AUC SEPSIS > AUC NO_SEPSIS: la fisiología séptica es más predecible.")
-    print("  - Si AUC NO_SEPSIS > AUC SEPSIS: deterioro no séptico tiene patrón más claro.")
-    print("  - Desviaciones altas (±0.04-0.05) en SEPSIS son esperables")
-    print("    por menor tamaño muestral (~993 vs ~2288 estancias).")
 
 
 if __name__ == "__main__":
