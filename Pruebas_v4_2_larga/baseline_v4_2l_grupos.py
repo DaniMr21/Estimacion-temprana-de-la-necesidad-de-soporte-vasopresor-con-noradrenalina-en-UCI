@@ -45,12 +45,12 @@ variables_predictoras = [
     'rr_max',
 
     # Ventilación y conciencia (2)
-    'ventilacion_invasiva_3h',
+    'ventilacion_invasiva_12h',
     'gcs_min',
 
     # Renal (2)
     'creatinina_max',
-    'diuresis_ml_kg_3h',
+    'diuresis_ml_kg_12h',
 
     # Ácido-base (3)
     'lactato_max',
@@ -79,12 +79,12 @@ variables_predictoras = [
     'sofa_max',              
 ]
 
-ETIQUETA = 'etiqueta_norad_3_12'
+ETIQUETA = 'etiqueta_norad_12_48'
 
 
 # CARGA Y PREPARACIÓN
 def cargar_datos():
-    ruta = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
+    ruta = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
     df = pd.read_csv(ruta)
     df = df.dropna(subset=['pf_max'])
     return df
