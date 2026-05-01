@@ -1,4 +1,0 @@
-modelo,AUC,AUPRC,Brier,calibration_intercept,calibration_slope
-RF sin calibrar,0.6625,0.1811,0.1046,-1.083,0.8399
-RF + Platt,0.6616,0.1766,0.0898,-0.0562,0.973
-RF + Isotonic,0.641,0.1558,0.0909,-0.8355,0.5929

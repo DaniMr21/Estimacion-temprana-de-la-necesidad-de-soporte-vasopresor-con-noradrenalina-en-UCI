@@ -41,7 +41,7 @@ variables_predictoras = [
     # Respiratorio (4)
     'pf_min',
     'spo2_min',
-    'fio2_max',
+    #'fio2_max', suprimido por alta correlación con pf min
     'rr_max',
 
     # Ventilación y conciencia (2)

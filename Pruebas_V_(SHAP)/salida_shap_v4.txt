@@ -1,0 +1,38 @@
+======================================================================
+SHAP v4 — RANDOM FOREST (modelo ganador 6-24h)
+======================================================================
+
+[1/4] Cargando datos...
+  Estancias: 3281
+  Positivos: 338 (10.30%)
+  Pacientes únicos: 3197
+  Variables: 26
+
+[2/4] Grid search Random Forest (CV agrupado, 3 folds internos)...
+Traceback (most recent call last):
+  File "C:\Users\danie\TFG\Pruebas_V_(SHAP)\shap_v4_rf.py", line 191, in <module>
+    main()
+  File "C:\Users\danie\TFG\Pruebas_V_(SHAP)\shap_v4_rf.py", line 122, in main
+    busqueda.fit(predictores, etiqueta, groups=paciente_id)
+  File "C:\Users\danie\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\base.py", line 1336, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\danie\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\model_selection\_search.py", line 1053, in fit
+    self._run_search(evaluate_candidates)
+  File "C:\Users\danie\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\model_selection\_search.py", line 1612, in _run_search
+    evaluate_candidates(ParameterGrid(self.param_grid))
+  File "C:\Users\danie\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\model_selection\_search.py", line 999, in evaluate_candidates
+    out = parallel(
+          ^^^^^^^^^
+  File "C:\Users\danie\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\utils\parallel.py", line 91, in __call__
+    return super().__call__(iterable_with_config_and_warning_filters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\danie\AppData\Local\Programs\Python\Python312\Lib\site-packages\joblib\parallel.py", line 2072, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "C:\Users\danie\AppData\Local\Programs\Python\Python312\Lib\site-packages\joblib\parallel.py", line 1682, in _get_outputs
+    yield from self._retrieve()
+  File "C:\Users\danie\AppData\Local\Programs\Python\Python312\Lib\site-packages\joblib\parallel.py", line 1800, in _retrieve
+    time.sleep(0.01)
+KeyboardInterrupt
+^C
