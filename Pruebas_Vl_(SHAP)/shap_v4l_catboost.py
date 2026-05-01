@@ -27,9 +27,8 @@ from sklearn.model_selection import StratifiedGroupKFold, GridSearchCV
 from catboost import CatBoostClassifier
 
 
-# =============================================================================
 # CONFIGURACIÓN
-# =============================================================================
+
 RUTA_CSV = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
 
 CARPETA_BASE = os.path.dirname(__file__) if '__file__' in dir() else '.'
@@ -66,10 +65,8 @@ VARIABLES_PREDICTORAS = [
     'sofa_max',
 ]
 
-
-# =============================================================================
 # CARGA Y PREPARACIÓN
-# =============================================================================
+
 def cargar_y_preparar():
     df = pd.read_csv(RUTA_CSV)
     df = df.dropna(subset=['pf_max'])
@@ -83,13 +80,12 @@ def cargar_y_preparar():
     return predictores, etiqueta, paciente_id
 
 
-# =============================================================================
 # GRID SEARCH + ENTRENAMIENTO + SHAP
-# =============================================================================
+
 def main():
-    print("=" * 70)
+    print("----------------")
     print("SHAP v4l — CATBOOST (modelo ganador 12-48h)")
-    print("=" * 70)
+    print("--------------")
 
     print("\n[1/4] Cargando datos...")
     predictores, etiqueta, paciente_id = cargar_y_preparar()
@@ -186,9 +182,9 @@ def main():
     importancia_shap.to_csv(ruta_tabla, index=False)
     print(f"  Tabla        : {ruta_tabla}")
 
-    print("\n" + "=" * 70)
+    print("\n" + "-------------------------")
     print("IMPORTANCIA SHAP (ordenada)")
-    print("=" * 70)
+    print("-----------------------")
     print(importancia_shap.to_string(index=False))
 
 

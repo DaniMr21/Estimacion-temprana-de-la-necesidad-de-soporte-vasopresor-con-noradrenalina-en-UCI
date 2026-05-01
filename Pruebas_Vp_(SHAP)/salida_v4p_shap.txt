@@ -1,0 +1,59 @@
+======================================================================
+SHAP v4p — CATBOOST (modelo ganador 3-12h)
+======================================================================
+
+[1/4] Cargando datos...
+  Estancias: 1667
+  Positivos: 172 (10.32%)
+  Pacientes únicos: 1645
+  Variables: 26
+
+[2/4] Grid search CatBoost (CV agrupado, 3 folds internos)...
+
+  Tiempo de grid search: 25.7 min
+  Mejor AUC en CV: 0.6729
+  Mejores hiperparámetros:
+    bagging_temperature = 0
+    depth = 4
+    iterations = 500
+    l2_leaf_reg = 15
+    learning_rate = 0.01
+
+[3/4] Calculando SHAP (Tree SHAP)...
+  Forma de los valores SHAP: (1667, 26)
+
+[4/4] Generando figuras y tabla...
+  Bar plot     : c:\Users\danie\TFG\Pruebas_Vp_(SHAP)\figuras\shap_bar_catboost_v4_2_corta.png
+  Beeswarm     : c:\Users\danie\TFG\Pruebas_Vp_(SHAP)\figuras\shap_beeswarm_catboost_v4_2_corta.png
+  Tabla        : c:\Users\danie\TFG\Pruebas_Vp_(SHAP)\tablas\importancia_shap_catboost_v4_2_corta.csv
+
+----------------
+IMPORTANCIA SHAP (ordenada)
+--------------------------
+               variable  shap_medio_absoluto
+                 rr_max             0.127086
+                 pf_min             0.112225
+               spo2_min             0.109536
+                map_min             0.098695
+      diuresis_ml_kg_3h             0.088576
+               hr_media             0.087364
+               temp_min             0.083186
+            lactato_max             0.072969
+                gpt_max             0.065391
+                 ph_min             0.058387
+               fio2_max             0.055184
+               sofa_max             0.049943
+        bicarbonato_min             0.028772
+           glucemia_min             0.023492
+                peso_kg             0.019041
+             anchor_age             0.018882
+                gcs_min             0.017407
+                 gender             0.017331
+        hemoglobina_min             0.015764
+                 tp_max             0.015506
+ventilacion_invasiva_3h             0.013735
+         creatinina_max             0.011545
+          plaquetas_min             0.009862
+      bilirrubina_media             0.009392
+  contador_estancia_uci             0.009012
+         leucocitos_min             0.008175
