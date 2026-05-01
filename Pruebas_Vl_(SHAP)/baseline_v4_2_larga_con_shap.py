@@ -139,7 +139,7 @@ def validacion_cruzada_anidada(nombre_modelo, pipeline, espacio_hiperparametros,
 
     return auc_medio, auc_desv, mejores_params_por_fold
 
-def calcular_shap_rf(predictores, etiqueta):
+def calcular_shap_catboost(predictores, etiqueta, paciente_id):
 
     carpeta_base = os.path.dirname(__file__) if '__file__' in dir() else '.'
     carpeta_figuras = os.path.join(carpeta_base, 'figuras')
@@ -149,20 +149,42 @@ def calcular_shap_rf(predictores, etiqueta):
     os.makedirs(carpeta_tablas, exist_ok=True)
 
     print("\n" + "---------------------------")
-    print("SHAP — RANDOM FOREST FINAL")
-    print("------------------")
+    print("SHAP — CATBOOST FINAL")
+    print("---------------------------")
 
-    modelo_final = RandomForestClassifier(
-        n_estimators=500,
-        max_depth=10,
-        min_samples_leaf=5,
-        max_features=0.3,
-        class_weight='balanced',
-        random_state=42,
-        n_jobs=-1
+    modelo_catboost = CatBoostClassifier(
+        loss_function='Logloss',
+        eval_metric='AUC',
+        random_seed=42,
+        verbose=0,
+        thread_count=-1
     )
 
-    modelo_final.fit(predictores, etiqueta)
+    espacio_cat = {
+        'iterations': [500, 1000],
+        'depth': [4, 5, 6, 7],
+        'learning_rate': [0.01, 0.03, 0.05, 0.1],
+        'l2_leaf_reg': [1, 5, 15],
+        'bagging_temperature': [0, 0.5, 1],
+    }
+
+    cv = StratifiedGroupKFold(n_splits=3, shuffle=True, random_state=42)
+
+    busqueda_final = GridSearchCV(
+        estimator=modelo_catboost,
+        param_grid=espacio_cat,
+        cv=cv,
+        scoring='roc_auc',
+        n_jobs=1,
+        refit=True
+    )
+
+    busqueda_final.fit(predictores, etiqueta, groups=paciente_id)
+
+    modelo_final = busqueda_final.best_estimator_
+
+    print("\nMejores hiperparámetros CatBoost final:")
+    print(busqueda_final.best_params_)
 
     explicador = shap.TreeExplainer(modelo_final)
     valores_shap = explicador.shap_values(predictores)
@@ -182,7 +204,7 @@ def calcular_shap_rf(predictores, etiqueta):
         max_display=20
     )
     plt.tight_layout()
-    ruta_beeswarm = os.path.join(carpeta_figuras, 'shap_beeswarm_v4_2_larga.png')
+    ruta_beeswarm = os.path.join(carpeta_figuras, 'shap_beeswarm_catboost_v4_2_larga.png')
     plt.savefig(ruta_beeswarm, dpi=300, bbox_inches='tight')
     plt.close()
 
@@ -195,7 +217,7 @@ def calcular_shap_rf(predictores, etiqueta):
         max_display=20
     )
     plt.tight_layout()
-    ruta_bar = os.path.join(carpeta_figuras, 'shap_bar_v4_2_larga.png')
+    ruta_bar = os.path.join(carpeta_figuras, 'shap_bar_catboost_v4_2_larga.png')
     plt.savefig(ruta_bar, dpi=300, bbox_inches='tight')
     plt.close()
 
@@ -204,16 +226,16 @@ def calcular_shap_rf(predictores, etiqueta):
         'shap_medio_absoluto': np.abs(valores_shap_clase_positiva).mean(axis=0)
     }).sort_values('shap_medio_absoluto', ascending=False)
 
-    ruta_tabla = os.path.join(carpeta_tablas, 'importancia_shap_v4_2_larga.csv')
+    ruta_tabla = os.path.join(carpeta_tablas, 'importancia_shap_catboost_v4_2_larga.csv')
     importancia_shap.to_csv(ruta_tabla, index=False)
 
     print("\nIMPORTANCIA SHAP")
     print(importancia_shap.to_string(index=False))
 
-    print(f"\nFiguras guardadas en:")
+    print("\nFiguras guardadas en:")
     print(f"  {ruta_beeswarm}")
     print(f"  {ruta_bar}")
-    print(f"Tabla guardada en:")
+    print("Tabla guardada en:")
     print(f"  {ruta_tabla}")
 
 
@@ -350,7 +372,7 @@ def main():
     for nombre, (auc_medio, auc_desv, _) in ranking:
         print(f"  {nombre}  AUC = {auc_medio:.4f} ± {auc_desv:.4f}")
 
-    calcular_shap_rf(predictores, etiqueta)
+    calcular_shap_catboost(predictores, etiqueta)
 
 
 if __name__ == "__main__":
