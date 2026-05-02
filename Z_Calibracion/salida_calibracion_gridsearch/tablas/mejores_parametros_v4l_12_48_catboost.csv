@@ -1,0 +1,6 @@
+ventana,fold,mejor_auc_grid_interno,bagging_temperature,depth,iterations,l2_leaf_reg,learning_rate
+v4l_12_48_catboost,1,0.6519043343071355,0,6,500,5,0.01
+v4l_12_48_catboost,2,0.6969721218264183,0,6,500,5,0.01
+v4l_12_48_catboost,3,0.6417035644936434,0,5,500,5,0.01
+v4l_12_48_catboost,4,0.6461373056885006,0,7,500,15,0.01
+v4l_12_48_catboost,5,0.6729651660444071,0,7,500,5,0.01
