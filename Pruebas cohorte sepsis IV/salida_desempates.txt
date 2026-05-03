@@ -1,0 +1,111 @@
+ANÁLISIS DE DESEMPATE — min / media / max
+
+============================================================
+VARIABLE: hr
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+hr_media             0.5618             +0.228        ↑ (pos=93.2, neg=88.6)
+hr_min               0.5450             +0.160        ↑ (pos=82.0, neg=79.0)
+hr_max               0.5574             +0.209        ↑ (pos=104.0, neg=100.0)
+
+  → Mayor AUC univariante: hr_media (AUC=0.5618)
+
+============================================================
+VARIABLE: temp
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+temp_media           0.5140             -0.091        ↓ (pos=36.8, neg=36.9)
+temp_min             0.5256             -0.149        ↓ (pos=36.6, neg=36.7)
+temp_max             0.5030             +0.005        ↑ (pos=37.0, neg=37.0)
+
+  → Mayor AUC univariante: temp_min (AUC=0.5256)
+
+============================================================
+VARIABLE: tp
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+tp_media             0.5362             +0.161        ↑ (pos=14.9, neg=14.4)
+tp_min               0.5338             +0.158        ↑ (pos=14.7, neg=14.3)
+tp_max               0.5366             +0.165        ↑ (pos=15.0, neg=14.5)
+
+  → Mayor AUC univariante: tp_max (AUC=0.5366)
+
+============================================================
+VARIABLE: fio2
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+fio2_media           0.6185             +0.401        ↑ (pos=60.0, neg=50.0)
+fio2_min             0.6099             +0.351        = (pos=50.0, neg=50.0)
+fio2_max             0.6015             +0.351        ↑ (pos=70.0, neg=50.0)
+
+  → Mayor AUC univariante: fio2_media (AUC=0.6185)
+
+============================================================
+VARIABLE: bilirrubina
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+bilirrubina_media    0.5270             +0.132        ↑ (pos=0.8, neg=0.8)
+bilirrubina_min      0.5257             +0.138        ↑ (pos=0.8, neg=0.7)
+bilirrubina_max      0.5279             +0.128        = (pos=0.8, neg=0.8)
+
+  → Mayor AUC univariante: bilirrubina_max (AUC=0.5279)
+
+============================================================
+VARIABLE: gpt
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+gpt_media            0.5133             -0.165        = (pos=32.0, neg=32.0)
+gpt_min              0.5148             -0.163        = (pos=32.0, neg=32.0)
+gpt_max              0.5126             -0.165        = (pos=32.0, neg=32.0)
+
+  → Mayor AUC univariante: gpt_min (AUC=0.5148)
+
+============================================================
+VARIABLE: leucocitos
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+leucocitos_media     0.5259             +0.093        ↑ (pos=12.5, neg=11.9)
+leucocitos_min       0.5281             +0.098        ↑ (pos=12.3, neg=11.6)
+leucocitos_max       0.5242             +0.085        ↑ (pos=12.6, neg=12.2)
+
+  → Mayor AUC univariante: leucocitos_min (AUC=0.5281)
+
+============================================================
+VARIABLE: sofa
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+sofa_media           0.5856             +0.302        ↑ (pos=4.0, neg=3.0)
+sofa_min             0.5382             +0.108        ↑ (pos=2.0, neg=1.0)
+sofa_max             0.6064             +0.401        ↑ (pos=5.0, neg=4.0)
+
+  → Mayor AUC univariante: sofa_max (AUC=0.6064)
+
+============================================================
+VARIABLE: glucemia
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+glucemia_media       0.5175             -0.021        = (pos=143.0, neg=143.0)
+glucemia_min         0.5223             -0.030        ↓ (pos=138.5, neg=140.0)
+glucemia_max         0.5154             -0.021        ↑ (pos=147.0, neg=146.0)
+
+  → Mayor AUC univariante: glucemia_min (AUC=0.5223)
+
+============================================================
+VARIABLE: plaquetas
+============================================================
+Estadístico          AUC univariante    Cohen d      Pos vs Neg (mediana)
+------------------------------------------------------------
+plaquetas_media      0.5099             -0.029        ↓ (pos=178.5, neg=184.0)
+plaquetas_min        0.5111             -0.031        ↓ (pos=175.5, neg=181.0)
+plaquetas_max        0.5085             -0.028        ↓ (pos=180.5, neg=187.0)
+
+  → Mayor AUC univariante: plaquetas_min (AUC=0.5111)
