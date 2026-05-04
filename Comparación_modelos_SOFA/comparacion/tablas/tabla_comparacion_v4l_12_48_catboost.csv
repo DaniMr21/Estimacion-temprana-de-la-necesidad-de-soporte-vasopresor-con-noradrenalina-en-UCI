@@ -1,3 +1,0 @@
-ventana,modelo,n,positivos,prevalencia,auc,auprc,brier,brier_skill_score,ece
-v4l_12_48_catboost,CatBoost 12-48h,4080,455,0.1115,0.6552,0.1965,0.1005,-0.0144,0.0516
-v4l_12_48_catboost,SOFA,4080,455,0.1115,0.5866,0.1499,0.1526,-0.5403,0.1984

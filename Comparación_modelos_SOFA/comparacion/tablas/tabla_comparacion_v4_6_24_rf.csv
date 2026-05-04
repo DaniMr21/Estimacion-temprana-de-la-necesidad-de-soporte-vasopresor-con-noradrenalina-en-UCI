@@ -1,3 +1,0 @@
-ventana,modelo,n,positivos,prevalencia,auc,auprc,brier,brier_skill_score,ece
-v4_6_24_rf,RF 6-24h,3281,338,0.103,0.7028,0.1983,0.0914,0.0113,0.0231
-v4_6_24_rf,SOFA,3281,338,0.103,0.6011,0.1443,0.1503,-0.6267,0.1931

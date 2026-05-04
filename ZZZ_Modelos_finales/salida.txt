@@ -1,0 +1,477 @@
+=================================================================
+EVALUACIÓN FINAL — CV externa 5 folds agrupada por paciente
+Folds externos   : 5
+Folds internos   : 3
+Proporciones cal.: [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]  (solo RF)
+Métodos cal.     : ['sigmoid', 'isotonic']       (solo RF)
+=================================================================
+
+=================================================================
+  v4_6_24_rf
+=================================================================
+  Estancias: 3281 | Positivos: 338 (10.30%)
+  Pacientes únicos: 3197
+
+  -- Fold 1/5 --
+  Buscando mejor combinación proporción × método...
+  Ganador fold 1: prop=15% metodo=isotonic Brier=0.07640
+  AUC base=0.7309  AUC final=0.7125  AUPRC final=0.1995  Brier final=0.10306
+
+  -- Fold 2/5 --
+  Buscando mejor combinación proporción × método...
+  Ganador fold 2: prop=35% metodo=isotonic Brier=0.08629
+  AUC base=0.6722  AUC final=0.6650  AUPRC final=0.1797  Brier final=0.09071
+
+  -- Fold 3/5 --
+  Buscando mejor combinación proporción × método...
+  Ganador fold 3: prop=10% metodo=isotonic Brier=0.07611
+  AUC base=0.6996  AUC final=0.6971  AUPRC final=0.1917  Brier final=0.09047
+
+  -- Fold 4/5 --
+  Buscando mejor combinación proporción × método...
+  Ganador fold 4: prop=15% metodo=isotonic Brier=0.08261
+  AUC base=0.6877  AUC final=0.6813  AUPRC final=0.1723  Brier final=0.09202
+
+  -- Fold 5/5 --
+  Buscando mejor combinación proporción × método...
+  Ganador fold 5: prop=10% metodo=isotonic Brier=0.07520
+  AUC base=0.7019  AUC final=0.6830  AUPRC final=0.1766  Brier final=0.09167
+
+  RESUMEN MÉTRICAS FINALES (v4_6_24_rf):
+metrica    media      std      min      max
+    auc 0.687794 0.017918 0.664978 0.712524
+  auprc 0.183947 0.011298 0.172281 0.199491
+  brier 0.093583 0.005336 0.090467 0.103057
+logloss 0.584288 0.279585 0.318489 1.056370
+    ece 0.026243 0.011504 0.011575 0.043354
+
+  Generando figuras...
+  ROC: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\roc_v4_6_24_rf.png
+  Precision-Recall: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\precision_recall_v4_6_24_rf.png
+  Calibración: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\calibracion_v4_6_24_rf.png
+  Histograma: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\histograma_v4_6_24_rf.png
+
+  Ventana v4_6_24_rf completada.
+
+=================================================================
+  v4p_3_12_catboost
+=================================================================
+  Estancias: 1667 | Positivos: 172 (10.32%)
+  Pacientes únicos: 1645
+
+  -- Fold 1/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6683 | params: {'depth': 4, 'l2_leaf_reg': 15}
+  AUC base=0.7172  AUC final=0.7172  AUPRC final=0.2346  Brier final=0.08875
+
+  -- Fold 2/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6919 | params: {'depth': 4, 'l2_leaf_reg': 5}
+  AUC base=0.6945  AUC final=0.6945  AUPRC final=0.1819  Brier final=0.09221
+
+  -- Fold 3/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6657 | params: {'depth': 4, 'l2_leaf_reg': 15}
+  AUC base=0.6720  AUC final=0.6720  AUPRC final=0.1631  Brier final=0.09087
+
+  -- Fold 4/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6739 | params: {'depth': 4, 'l2_leaf_reg': 15}
+  AUC base=0.6801  AUC final=0.6801  AUPRC final=0.1946  Brier final=0.08836
+
+  -- Fold 5/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6892 | params: {'depth': 5, 'l2_leaf_reg': 15}
+  AUC base=0.6478  AUC final=0.6478  AUPRC final=0.2005  Brier final=0.08872
+
+  RESUMEN MÉTRICAS FINALES (v4p_3_12_catboost):
+metrica    media      std      min      max
+    auc 0.682326 0.025793 0.647846 0.717152
+  auprc 0.194948 0.026411 0.163082 0.234601
+  brier 0.089783 0.001679 0.088363 0.092209
+logloss 0.315989 0.004754 0.310413 0.322446
+    ece 0.016703 0.006384 0.009003 0.025354
+
+  Generando figuras...
+  ROC: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\roc_v4p_3_12_catboost.png
+  Precision-Recall: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\precision_recall_v4p_3_12_catboost.png
+  Calibración: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\calibracion_v4p_3_12_catboost.png
+  Histograma: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\histograma_v4p_3_12_catboost.png
+
+  Ventana v4p_3_12_catboost completada.
+
+=================================================================
+  v4l_12_48_catboost
+=================================================================
+  Estancias: 4080 | Positivos: 455 (11.15%)
+  Pacientes únicos: 3911
+
+  -- Fold 1/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6674 | params: {'depth': 7, 'l2_leaf_reg': 5}
+  AUC base=0.6023  AUC final=0.6023  AUPRC final=0.1782  Brier final=0.09779
+
+  -- Fold 2/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6602 | params: {'depth': 7, 'l2_leaf_reg': 15}
+  AUC base=0.6113  AUC final=0.6113  AUPRC final=0.1670  Brier final=0.09810
+
+  -- Fold 3/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6245 | params: {'depth': 5, 'l2_leaf_reg': 15}
+  AUC base=0.7063  AUC final=0.7063  AUPRC final=0.2807  Brier final=0.09343
+
+  -- Fold 4/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6266 | params: {'depth': 6, 'l2_leaf_reg': 15}
+  AUC base=0.7104  AUC final=0.7104  AUPRC final=0.2483  Brier final=0.09401
+
+  -- Fold 5/5 --
+  GridSearchCV interno (3 folds)...
+  AUC interno: 0.6549 | params: {'depth': 6, 'l2_leaf_reg': 15}
+  AUC base=0.6458  AUC final=0.6458  AUPRC final=0.2049  Brier final=0.09584
+
+  RESUMEN MÉTRICAS FINALES (v4l_12_48_catboost):
+metrica    media      std      min      max
+    auc 0.655223 0.051158 0.602277 0.710421
+  auprc 0.215827 0.047903 0.166983 0.280666
+  brier 0.095832 0.002126 0.093430 0.098100
+logloss 0.335020 0.009303 0.325251 0.344407
+    ece 0.018234 0.010892 0.005307 0.029753
+
+  Generando figuras...
+  ROC: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\roc_v4l_12_48_catboost.png
+  Precision-Recall: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\precision_recall_v4l_12_48_catboost.png
+  Calibración: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\calibracion_v4l_12_48_catboost.png
+  Histograma: c:\Users\danie\TFG\ZZ_Calibracion\evaluacion_final\figuras\histograma_v4l_12_48_catboost.png
+
+  Ventana v4l_12_48_catboost completada.
+
+=================================================================
+RESUMEN GLOBAL
+=================================================================
+
+v4_6_24_rf:
+metrica    media      std      min      max
+    auc 0.687794 0.017918 0.664978 0.712524
+  auprc 0.183947 0.011298 0.172281 0.199491
+  brier 0.093583 0.005336 0.090467 0.103057
+logloss 0.584288 0.279585 0.318489 1.056370
+    ece 0.026243 0.011504 0.011575 0.043354
+
+v4p_3_12_catboost:
+metrica    media      std      min      max
+    auc 0.682326 0.025793 0.647846 0.717152
+  auprc 0.194948 0.026411 0.163082 0.234601
+  brier 0.089783 0.001679 0.088363 0.092209
+logloss 0.315989 0.004754 0.310413 0.322446
+    ece 0.016703 0.006384 0.009003 0.025354
+
+v4l_12_48_catboost:
+metrica    media      std      min      max
+    auc 0.655223 0.051158 0.602277 0.710421
+  auprc 0.215827 0.047903 0.166983 0.280666
+  brier 0.095832 0.002126 0.093430 0.098100
+logloss 0.335020 0.009303 0.325251 0.344407
+    ece 0.018234 0.010892 0.005307 0.029753
+
+Tablas → evaluacion_final/tablas/
+Figuras → evaluacion_final/figuras/
+=================================================================
+PS C:\Users\danie\TFG> & C:/Users/danie/AppData/Local/Programs/Python/Python312/python.exe c:/Users/danie/TFG/ZZZ_Modelos_finales/modelos_finales.py
+=================================================================
+MODELOS FINALES — GridSearch real + calibración óptima + SHAP
+Fecha             : 2026-05-04 01:55
+Carpeta base      : c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales
+Folds internos    : 3
+Proporciones cal. : [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]  (solo RF)
+Métodos calibrac. : ['sigmoid', 'isotonic']  (criterio: Brier score)
+=================================================================
+
+=================================================================
+  v4_6_24_rf
+=================================================================
+
+[1] Cargando datos...
+  Estancias       : 3281
+  Positivos       : 338 (10.30%)
+  Pacientes únicos: 3197
+  Variables       : 26
+
+[2] Búsqueda sobre 14 combinaciones (7 proporciones × 2 métodos)...
+
+  -- Proporción 10% --
+  Modelo      : 2952 filas | 304 positivos
+  Calibración : 329 filas | 34 positivos
+  GridSearchCV interno (3 folds)...
+  Mejor AUC interno : 0.7072
+  Mejores hiperparámetros:
+    max_depth = None
+    min_samples_leaf = 2
+    n_estimators = 400
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4_6_24_rf_prop10.csv
+    sigmoid     →  Brier = 0.08750
+    isotonic    →  Brier = 0.08350
+
+  -- Proporción 15% --
+  Modelo      : 2788 filas | 288 positivos
+  Calibración : 493 filas | 50 positivos
+  GridSearchCV interno (3 folds)...
+  Mejor AUC interno : 0.7067
+  Mejores hiperparámetros:
+    max_depth = 20
+    min_samples_leaf = 5
+    n_estimators = 400
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4_6_24_rf_prop15.csv
+    sigmoid     →  Brier = 0.08650
+    isotonic    →  Brier = 0.08195
+
+  -- Proporción 20% --
+  Modelo      : 2621 filas | 271 positivos
+  Calibración : 660 filas | 67 positivos
+  GridSearchCV interno (3 folds)...
+  Mejor AUC interno : 0.6963
+  Mejores hiperparámetros:
+    max_depth = 20
+    min_samples_leaf = 2
+    n_estimators = 400
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4_6_24_rf_prop20.csv
+    sigmoid     →  Brier = 0.08550
+    isotonic    →  Brier = 0.08211
+
+  -- Proporción 25% --
+  Modelo      : 2450 filas | 253 positivos
+  Calibración : 831 filas | 85 positivos
+  GridSearchCV interno (3 folds)...
+  Mejor AUC interno : 0.6973
+  Mejores hiperparámetros:
+    max_depth = 20
+    min_samples_leaf = 2
+    n_estimators = 500
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4_6_24_rf_prop25.csv
+    sigmoid     →  Brier = 0.08607
+    isotonic    →  Brier = 0.08367
+
+  -- Proporción 30% --
+  Modelo      : 2285 filas | 236 positivos
+  Calibración : 996 filas | 102 positivos
+  GridSearchCV interno (3 folds)...
+  Mejor AUC interno : 0.6904
+  Mejores hiperparámetros:
+    max_depth = None
+    min_samples_leaf = 2
+    n_estimators = 500
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4_6_24_rf_prop30.csv
+    sigmoid     →  Brier = 0.08535
+    isotonic    →  Brier = 0.08252
+
+  -- Proporción 35% --
+  Modelo      : 2125 filas | 219 positivos
+  Calibración : 1156 filas | 119 positivos
+  GridSearchCV interno (3 folds)...
+  Mejor AUC interno : 0.6789
+  Mejores hiperparámetros:
+    max_depth = None
+    min_samples_leaf = 5
+    n_estimators = 400
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4_6_24_rf_prop35.csv
+    sigmoid     →  Brier = 0.08591
+    isotonic    →  Brier = 0.08398
+
+  -- Proporción 40% --
+  Modelo      : 1963 filas | 203 positivos
+  Calibración : 1318 filas | 135 positivos
+  GridSearchCV interno (3 folds)...
+  Mejor AUC interno : 0.6675
+  Mejores hiperparámetros:
+    max_depth = None
+    min_samples_leaf = 5
+    n_estimators = 300
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4_6_24_rf_prop40.csv
+    sigmoid     →  Brier = 0.08634
+    isotonic    →  Brier = 0.08395
+
+  → GANADOR: proporcion=15%  metodo=isotonic  Brier=0.08195
+
+  Tabla comparación completa: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\calibracion\resultado_seleccion_calibrador_v4_6_24_rf.csv
+ proporcion   metodo  n_modelo  n_calibracion  mejor_auc_grid  brier_score
+       0.15 isotonic      2788            493        0.706687     0.081954
+       0.20 isotonic      2621            660        0.696313     0.082109
+       0.30 isotonic      2285            996        0.690430     0.082520
+       0.10 isotonic      2952            329        0.707157     0.083496
+       0.25 isotonic      2450            831        0.697305     0.083666
+       0.40 isotonic      1963           1318        0.667475     0.083948
+       0.35 isotonic      2125           1156        0.678910     0.083976
+       0.30  sigmoid      2285            996        0.690430     0.085353
+       0.20  sigmoid      2621            660        0.696313     0.085496
+       0.35  sigmoid      2125           1156        0.678910     0.085911
+       0.25  sigmoid      2450            831        0.697305     0.086066
+       0.40  sigmoid      1963           1318        0.667475     0.086345
+       0.15  sigmoid      2788            493        0.706687     0.086504
+       0.10  sigmoid      2952            329        0.707157     0.087501
+  Pickle guardado: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\modelos\modelo_final_v4_6_24_rf.pkl
+
+[3] Reentrenando modelo base ganador en todos los datos (para SHAP)...
+  Listo.
+
+[4] SHAP sobre modelo base (todos los datos)...
+  Calculando Tree SHAP...
+  Forma matriz SHAP: (3281, 26)
+  Bar plot  : c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\figuras\shap_bar_v4_6_24_rf.png
+  Beeswarm  : c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\figuras\shap_beeswarm_v4_6_24_rf.png
+  Tabla SHAP: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\tablas\importancia_shap_v4_6_24_rf.csv
+
+  Importancia SHAP (ordenada):
+               variable  shap_medio_absoluto
+                 pf_min             0.037111
+                map_min             0.035108
+      diuresis_ml_kg_6h             0.031537
+                 rr_max             0.028476
+               spo2_min             0.027470
+                 ph_min             0.023742
+               hr_media             0.021417
+               temp_min             0.019597
+           glucemia_min             0.017961
+            lactato_max             0.017920
+               sofa_max             0.017340
+                gpt_max             0.017187
+               fio2_max             0.014507
+        bicarbonato_min             0.013418
+         leucocitos_min             0.013313
+             anchor_age             0.013251
+                 tp_max             0.013062
+                peso_kg             0.012379
+        hemoglobina_min             0.011931
+          plaquetas_min             0.011840
+         creatinina_max             0.010065
+      bilirrubina_media             0.009475
+                gcs_min             0.007486
+ventilacion_invasiva_6h             0.004358
+                 gender             0.002035
+  contador_estancia_uci             0.001558
+  Pickle guardado: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\modelos\modelo_shap_v4_6_24_rf.pkl
+
+  Ventana v4_6_24_rf completada.
+
+=================================================================
+  v4p_3_12_catboost
+=================================================================
+
+[1] Cargando datos...
+  Estancias       : 1667
+  Positivos       : 172 (10.32%)
+  Pacientes únicos: 1645
+  Variables       : 26
+
+[2] GridSearchCV interno sobre todos los datos...
+  Mejor AUC interno : 0.6729
+  Mejores hiperparámetros:
+    depth = 4
+    l2_leaf_reg = 15
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4p_3_12_catboost.csv
+  Pickle guardado: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\modelos\modelo_final_v4p_3_12_catboost.pkl
+
+[3] SHAP sobre modelo final (todos los datos)...
+  Calculando Tree SHAP...
+  Forma matriz SHAP: (1667, 26)
+  Bar plot  : c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\figuras\shap_bar_v4p_3_12_catboost.png
+  Beeswarm  : c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\figuras\shap_beeswarm_v4p_3_12_catboost.png
+  Tabla SHAP: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\tablas\importancia_shap_v4p_3_12_catboost.csv
+
+  Importancia SHAP (ordenada):
+               variable  shap_medio_absoluto
+                 rr_max             0.127086
+                 pf_min             0.112225
+               spo2_min             0.109536
+                map_min             0.098695
+      diuresis_ml_kg_3h             0.088576
+               hr_media             0.087364
+               temp_min             0.083186
+            lactato_max             0.072969
+                gpt_max             0.065391
+                 ph_min             0.058387
+               fio2_max             0.055184
+               sofa_max             0.049943
+        bicarbonato_min             0.028772
+           glucemia_min             0.023492
+                peso_kg             0.019041
+             anchor_age             0.018882
+                gcs_min             0.017407
+                 gender             0.017331
+        hemoglobina_min             0.015764
+                 tp_max             0.015506
+ventilacion_invasiva_3h             0.013735
+         creatinina_max             0.011545
+          plaquetas_min             0.009862
+      bilirrubina_media             0.009392
+  contador_estancia_uci             0.009012
+         leucocitos_min             0.008175
+  Pickle guardado: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\modelos\modelo_shap_v4p_3_12_catboost.pkl
+
+  Ventana v4p_3_12_catboost completada.
+
+=================================================================
+  v4l_12_48_catboost
+=================================================================
+
+[1] Cargando datos...
+  Estancias       : 4080
+  Positivos       : 455 (11.15%)
+  Pacientes únicos: 3911
+  Variables       : 25
+
+[2] GridSearchCV interno sobre todos los datos...
+  Mejor AUC interno : 0.6600
+  Mejores hiperparámetros:
+    depth = 7
+    l2_leaf_reg = 5
+  Resultados GridSearch: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\gridsearch\mejores_parametros_finales_v4l_12_48_catboost.csv
+  Pickle guardado: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\modelos\modelo_final_v4l_12_48_catboost.pkl
+
+[3] SHAP sobre modelo final (todos los datos)...
+  Calculando Tree SHAP...
+  Forma matriz SHAP: (4080, 25)
+  Bar plot  : c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\figuras\shap_bar_v4l_12_48_catboost.png
+  Beeswarm  : c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\figuras\shap_beeswarm_v4l_12_48_catboost.png
+  Tabla SHAP: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\shap\tablas\importancia_shap_v4l_12_48_catboost.csv
+
+  Importancia SHAP (ordenada):
+                variable  shap_medio_absoluto
+                  pf_min             0.144951
+         bicarbonato_min             0.090720
+                sofa_max             0.085610
+                spo2_min             0.084790
+                 map_min             0.083682
+                hr_media             0.063303
+                  rr_max             0.059150
+      diuresis_ml_kg_12h             0.054920
+             lactato_max             0.052710
+                temp_min             0.045194
+                 gpt_max             0.044338
+            glucemia_min             0.041540
+                 gcs_min             0.034138
+              anchor_age             0.031941
+       bilirrubina_media             0.031801
+                  gender             0.030935
+ventilacion_invasiva_12h             0.030817
+                  ph_min             0.029683
+                  tp_max             0.029160
+                 peso_kg             0.028120
+          creatinina_max             0.027251
+          leucocitos_min             0.026250
+           plaquetas_min             0.019282
+         hemoglobina_min             0.015820
+   contador_estancia_uci             0.004718
+  Pickle guardado: c:\Users\danie\TFG\ZZZ_Modelos_finales\modelos_finales\modelos\modelo_shap_v4l_12_48_catboost.pkl
+
+  Ventana v4l_12_48_catboost completada.
+
+=================================================================
+PROCESO COMPLETADO.
+Modelos validación externa → modelos_finales/modelos/modelo_final_*.pkl
+Modelos para SHAP         → modelos_finales/modelos/modelo_shap_*.pkl
+Figuras SHAP              → modelos_finales/shap/figuras/
+Tablas SHAP               → modelos_finales/shap/tablas/
+Resultados GridSearch     → modelos_finales/gridsearch/
+Comparación calibradores  → modelos_finales/calibracion/
+=================================================================
