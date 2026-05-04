@@ -131,7 +131,6 @@ def main():
     explicador = shap.TreeExplainer(modelo_final)
     valores_shap = explicador.shap_values(predictores)
 
-    # Manejo robusto del formato según versión de SHAP
     if isinstance(valores_shap, list):
         shap_clase_positiva = valores_shap[1]
     elif len(np.array(valores_shap).shape) == 3:

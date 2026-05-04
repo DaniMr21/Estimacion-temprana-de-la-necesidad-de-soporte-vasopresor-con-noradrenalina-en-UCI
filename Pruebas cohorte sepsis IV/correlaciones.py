@@ -1,34 +1,3 @@
-"""
-Análisis de correlación y multicolinealidad sobre el dataset v4
-(observación 0-6h, predicción 6-24h).
-
-Cuatro análisis complementarios:
-
-  1. Matriz de correlación de Spearman (no Pearson, por asimetría
-     habitual de las variables clínicas).
-  2. Pares de variables con |rho| > 0.7 (alta colinealidad).
-  3. VIF (Variance Inflation Factor) sobre variables continuas
-     (excluye binarias, que se reportan aparte con asociaciones).
-  4. Dendrograma de agrupamiento jerárquico de variables.
-
-Decisiones metodológicas:
-  - Se utiliza el CSV winsorizado al 2-98%, que es el mismo que usa el
-    modelo, así las correlaciones son las que el modelo "ve".
-  - Para garantizar independencia entre observaciones, se filtra a la
-    primera estancia por paciente (97.5% del dataset; 84 estancias
-    excluidas de ingresos repetidos del mismo paciente).
-  - Las variables binarias (gender, tiene_sepsis, ventilacion_invasiva_6h)
-    se excluyen del cálculo de VIF y se analizan por separado mediante
-    asociaciones específicas para variables binarias.
-
-Salidas:
-  - figuras/correlacion_spearman_v4.png
-  - figuras/dendrograma_v4.png
-  - tablas/pares_alta_correlacion_v4.csv
-  - tablas/vif_v4.csv
-  - tablas/asociaciones_binarias_v4.csv
-"""
-
 import os
 import warnings
 warnings.filterwarnings('ignore')
@@ -40,8 +9,6 @@ import seaborn as sns
 from scipy.cluster.hierarchy import linkage, dendrogram
 from scipy.spatial.distance import squareform
 from statsmodels.stats.outliers_influence import variance_inflation_factor
-
-
 
 # CONFIGURACIÓN
 

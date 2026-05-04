@@ -1,26 +1,3 @@
-"""
-Calibración metodológicamente sólida de modelos v4/v4p/v4l.
-
-Diseño:
-  - Validación externa agrupada por paciente.
-  - En cada fold externo:
-      1. Se separa TEST externo.
-      2. Dentro del entrenamiento externo se separa:
-          - subconjunto modelo
-          - subconjunto calibración
-      3. En el subconjunto modelo se hace GridSearchCV con CV agrupada.
-      4. Se entrena el mejor modelo.
-      5. Se calibra el mejor modelo en el subconjunto de calibración.
-      6. Se evalúa en TEST externo.
-  - Se guardan métricas, predicciones, resumen, curva de calibración,
-    histograma, ROC y Precision-Recall.
-
-Notas:
-  - No se fijan hiperparámetros finales a mano.
-  - La calibración se aplica después de seleccionar hiperparámetros.
-  - La calibración NO debe aumentar necesariamente el AUC.
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 

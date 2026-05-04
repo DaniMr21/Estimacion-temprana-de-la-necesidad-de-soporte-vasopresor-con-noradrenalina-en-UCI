@@ -1,33 +1,3 @@
-"""
-Competición: modelos ML vs SOFA.
-
-Compara el rendimiento predictivo de:
-  - Modelo ML (predicciones del nested CV, archivo predicciones_<ventana>.csv
-    generado por evaluacion_final_v1.py)
-  - SOFA  (sofa_max, rango 0-24, obtenido del dataset original por índice)
-
-Diferencias respecto a la versión anterior:
-  - Las predicciones ahora tienen columnas:
-      fold, indice_original, y_real, probabilidad_base, probabilidad_final
-  - Se une con el dataset original por indice_original (índice de fila),
-    no por subject_id, porque el CSV de predicciones no lo incluye.
-  - La columna de ML que se usa siempre es probabilidad_final:
-      · RF: probabilidad calibrada (isotonic, proporción óptima)
-      · CatBoost: probabilidad base sin calibrar
-    La distinción la hace el pipeline, aquí no hay que elegir columna.
-  - SOFA se normaliza al rango [0,1] para calcular Brier y ECE
-    (el ML ya da probabilidades en [0,1]).
-
-Salida:
-  comparacion/
-    figuras/
-      roc_comparacion_<ventana>.png
-      pr_comparacion_<ventana>.png
-    tablas/
-      tabla_comparacion_<ventana>.csv
-      tabla_comparacion_global.csv
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 

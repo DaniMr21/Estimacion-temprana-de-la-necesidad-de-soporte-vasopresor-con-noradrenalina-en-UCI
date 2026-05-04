@@ -1,45 +1,3 @@
-"""
-Modelos finales — GridSearch real + calibración óptima + SHAP.
-
-Flujo por modelo:
-
-  RF (v4_6_24) — SE CALIBRA:
-    1. División de todos los datos al 80/20 a nivel de paciente.
-       El 20 % se reserva para calibración y NO participa en el GridSearch.
-    2. GridSearchCV con CV interna agrupada (3 folds) sobre el 80 %.
-    3. Se comparan sigmoid e isotonic sobre el 20 % (criterio: Brier score).
-    4. Pickle final: CalibratedClassifierCV con el método ganador.
-    5. SHAP: el mejor modelo (hiperparámetros ya conocidos) se reentrena
-       sobre TODOS los datos y se pasa a TreeExplainer.
-
-  CatBoost (v4p_3_12, v4l_12_48) — NO SE CALIBRA:
-    1. GridSearchCV con CV interna agrupada (3 folds) sobre TODOS los datos.
-    2. Pickle final: CatBoostClassifier con los mejores hiperparámetros.
-    3. SHAP: el mismo modelo entrenado en todos los datos.
-
-Nota sobre el GridSearch anterior (calibracion_gridsearch_tres_modelos_v4.py):
-  Ese script estimaba el rendimiento dentro de una validación cruzada externa.
-  Cada modelo entrenaba con ~64 % de los datos y se descartaba.
-  Los hiperparámetros óptimos con el 64 % no tienen por qué coincidir
-  con los óptimos al entrenar con el 80 % o el 100 %. Por eso se repite
-  el GridSearch aquí sobre los datos reales de entrenamiento final.
-
-Salida:
-  modelos_finales/
-    modelos/
-      modelo_final_v4_6_24_rf.pkl          <- RF calibrado
-      modelo_shap_v4_6_24_rf.pkl           <- RF base en todos los datos (solo SHAP)
-      modelo_final_v4p_3_12_catboost.pkl   <- CatBoost sin calibrar
-      modelo_final_v4l_12_48_catboost.pkl  <- CatBoost sin calibrar
-    shap/
-      figuras/  shap_bar_<ventana>.png  /  shap_beeswarm_<ventana>.png
-      tablas/   importancia_shap_<ventana>.csv
-    calibracion/
-      resultado_seleccion_calibrador_v4_6_24_rf.csv
-    gridsearch/
-      mejores_parametros_finales_<ventana>.csv
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -130,15 +88,6 @@ VARIABLES_V4L_12_48 = [
     'leucocitos_min', 'hemoglobina_min',
     'glucemia_min', 'temp_min', 'sofa_max',
 ]
-
-
-# ─────────────────────────────────────────────
-# VENTANAS
-# Los espacios de búsqueda son los mismos que en
-# calibracion_gridsearch_tres_modelos_v4.py.
-# calibrar=True  → división 80/20, GridSearch en 80 %, calibración en 20 %.
-# calibrar=False → GridSearch en todos los datos, sin calibración.
-# ─────────────────────────────────────────────
 
 VENTANAS = {
 
