@@ -1,0 +1,55 @@
+============================================================
+MODELO A — RF CON gpt_max (26 variables)
+============================================================
+Dataset: (3281, 26) | Positivos: 338 (10.30%)
+
+  Fold 1: AUC=0.7192
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 10, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 1000}
+  Fold 2: AUC=0.7228
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 20, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 1, 'modelo__n_estimators': 1000}
+  Fold 3: AUC=0.7064
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 20, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 1000}
+  Fold 4: AUC=0.6981
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 10, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 1000}
+  Fold 5: AUC=0.6893
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 20, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 500}
+
+RF CON gpt_max — AUC medio: 0.7072 ± 0.0126  (tiempo: 3.0 min)
+
+============================================================
+MODELO B — RF SIN gpt_max (25 variables)
+============================================================
+Dataset: (3281, 25) | Positivos: 338 (10.30%)
+
+  Fold 1: AUC=0.7213
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 10, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 1000}
+  Fold 2: AUC=0.7128
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__max_depth': None, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 1, 'modelo__n_estimators': 1000}
+  Fold 3: AUC=0.6834
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 20, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 1, 'modelo__n_estimators': 500}
+  Fold 4: AUC=0.6957
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 10, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 1000}
+  Fold 5: AUC=0.6935
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__max_depth': 10, 'modelo__max_features': 'sqrt', 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 1000}
+
+RF SIN gpt_max — AUC medio: 0.7013 ± 0.0137  (tiempo: 2.5 min)
+
+============================================================
+COMPARACIÓN FINAL (tiempo total: 5.6 min)
+============================================================
+  Modelo A — CON gpt_max (26 vars): AUC = 0.7072 ± 0.0126
+  Modelo B — SIN gpt_max (25 vars): AUC = 0.7013 ± 0.0137
+  Diferencia (B − A)              : -0.0058
+
+  AUC por fold:
+    Fold      A (con gpt)    B (sin gpt)    Δ
+    1         0.7192         0.7213        +0.0021
+    2         0.7228         0.7128        -0.0101
+    3         0.7064         0.6834        -0.0230
+    4         0.6981         0.6957        -0.0024
+    5         0.6893         0.6935        +0.0042
+
+  Conclusión:
+    → AUC baja apreciablemente. Decisión más delicada:
+      considerar mantener gpt_max o documentar el trade-off
+      entre interpretabilidad y rendimiento.
