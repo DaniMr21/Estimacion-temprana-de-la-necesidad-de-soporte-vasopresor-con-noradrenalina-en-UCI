@@ -1,49 +1,39 @@
 """
-Backward elimination — CatBoost v4p CORTA (ventana 0-3h / predicción 3-12h).
+Backward elimination — RF v4l LARGA (sin gpt_max).
+Mismo enfoque que la ventana principal: RF con grid reducido (36 combinaciones).
 
-Parte de las variables originales SIN gpt_max y elimina una a una las no
-significativas (IC95% incluye 0 en permutation importance), empezando por
-la menos importante según caída de AUC.
-
-Orden de eliminación (de menos a más importante según permutation importance):
-  1.  peso_kg               (-0.26 pp)
-  2.  glucemia_min          (-0.23 pp)
-  3.  hemoglobina_min       (-0.22 pp)
-  4.  creatinina_max        (-0.14 pp)
-  5.  ventilacion_invasiva_3h(-0.13 pp)
-  6.  leucocitos_min        (-0.11 pp)
-  7.  plaquetas_min         (-0.05 pp)
-  8.  gender                (-0.00 pp)
-  9.  contador_estancia_uci ( 0.03 pp)
-  10. bicarbonato_min       ( 0.03 pp)
-  11. tp_max                ( 0.09 pp)
-  12. anchor_age            ( 0.17 pp)
-  13. fio2_max              ( 0.22 pp)
-  14. hr_media              ( 0.29 pp)
-  15. lactato_max           ( 0.65 pp)
-  16. spo2_min              ( 0.97 pp)
-  17. ph_min                ( 0.98 pp)
-  18. rr_max                ( 1.30 pp)
-  19. diuresis_ml_kg_3h     ( 1.48 pp)
-
-Grid CatBoost reducido: 96 combinaciones vs 240 originales (~2.5x más rápido).
+Orden de eliminación (de menos a más importante según permutation importance CAT v4l):
+  1.  peso_kg
+  2.  hemoglobina_min
+  3.  creatinina_max
+  4.  plaquetas_min
+  5.  contador_estancia_uci
+  6.  leucocitos_min
+  7.  gender
+  8.  ph_min
+  9.  anchor_age
+  10. tp_max
+  11. ventilacion_invasiva_12h
+  12. gcs_min
+  13. lactato_max
+  14. hr_media
 """
 
 import warnings
 warnings.filterwarnings('ignore')
 
+import os
 import pandas as pd
 import numpy as np
 import time
 from sklearn.model_selection import StratifiedGroupKFold, GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import roc_auc_score
-from catboost import CatBoostClassifier
-import os
+from sklearn.ensemble import RandomForestClassifier
 
 # ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
-RUTA_CSV     = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
-ETIQUETA     = 'etiqueta_norad_3_12'
+RUTA_CSV     = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
+ETIQUETA     = 'etiqueta_norad_12_48'
 UMBRAL_CAIDA = 0.005
 
 CARPETA_BASE   = os.path.dirname(__file__) if '__file__' in dir() else '.'
@@ -52,73 +42,67 @@ os.makedirs(CARPETA_TABLAS, exist_ok=True)
 
 ORDEN_ELIMINACION = [
     'peso_kg',
-    'glucemia_min',
     'hemoglobina_min',
     'creatinina_max',
-    'ventilacion_invasiva_3h',
-    'leucocitos_min',
     'plaquetas_min',
-    'gender',
     'contador_estancia_uci',
-    'bicarbonato_min',
-    'tp_max',
-    'anchor_age',
-    'fio2_max',
-    'hr_media',
-    'lactato_max',
-    'spo2_min',
+    'leucocitos_min',
+    'gender',
     'ph_min',
-    'rr_max',
-    'diuresis_ml_kg_3h',
+    'anchor_age',
+    'tp_max',
+    'ventilacion_invasiva_12h',
+    'gcs_min',
+    'lactato_max',
+    'hr_media',
 ]
 
 VARIABLES_INICIO = [
     'anchor_age', 'gender', 'peso_kg', 'contador_estancia_uci',
     'map_min', 'hr_media',
-    'pf_min', 'spo2_min', 'fio2_max', 'rr_max',
-    'ventilacion_invasiva_3h', 'gcs_min',
-    'creatinina_max', 'diuresis_ml_kg_3h',
+    'pf_min', 'spo2_min', 'rr_max',
+    'ventilacion_invasiva_12h', 'gcs_min',
+    'creatinina_max', 'diuresis_ml_kg_12h',
     'lactato_max', 'ph_min', 'bicarbonato_min',
     'bilirrubina_media',
     'tp_max', 'plaquetas_min',
     'leucocitos_min', 'hemoglobina_min',
     'glucemia_min', 'temp_min', 'sofa_max',
 ]
-# 25 variables (sin gpt_max)
+# 24 variables (sin gpt_max, sin fio2_max)
 
-# ── PIPELINE Y GRID REDUCIDO ───────────────────────────────────────────────────
+# ── PIPELINE Y GRID REDUCIDO (idéntico a ventana principal) ───────────────────
 pipeline = Pipeline([
-    ('modelo', CatBoostClassifier(
-        loss_function='Logloss', eval_metric='AUC',
-        random_seed=42, verbose=0, thread_count=-1
-    ))
+    ('modelo', RandomForestClassifier(random_state=42, n_jobs=-1))
 ])
 espacio = {
-    'modelo__iterations':          [500, 1000],
-    'modelo__depth':               [4, 6],
-    'modelo__learning_rate':       [0.01, 0.05, 0.1],
-    'modelo__l2_leaf_reg':         [1, 5],
-    'modelo__bagging_temperature': [0, 1],
+    'modelo__n_estimators':     [300, 500, 1000],
+    'modelo__max_depth':        [10, 20, None],
+    'modelo__min_samples_leaf': [1, 5],
+    'modelo__max_features':     ['sqrt'],
+    'modelo__class_weight':     ['balanced', 'balanced_subsample'],
 }
-# 2*2*3*2*2 = 48 combinaciones (vs 240 originales)
-
+# 36 combinaciones
 
 # ── FUNCIONES ─────────────────────────────────────────────────────────────────
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
+    df = df.dropna(subset=[ETIQUETA, 'subject_id', 'pf_min'])
     return df
 
 
 def preparar(df, variables):
-    predictores  = df[variables].copy()
-    etiqueta     = df[ETIQUETA].copy()
-    paciente_id  = df['subject_id'].copy()
-    predictores['gender'] = (predictores['gender'] == 'M').astype(int)
+    predictores = df[variables].copy()
+    etiqueta    = df[ETIQUETA].copy()
+    paciente_id = df['subject_id'].copy()
+
+    if 'gender' in predictores.columns:
+        predictores['gender'] = predictores['gender'].map({'M': 1, 'F': 0}).astype(int)
+
     return predictores, etiqueta, paciente_id
 
 
-def entrenar_cat(predictores, etiqueta, paciente_id):
+def entrenar_rf(predictores, etiqueta, paciente_id):
     cv_ext = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
     cv_int = StratifiedGroupKFold(n_splits=3, shuffle=True, random_state=42)
     aucs = []
@@ -127,7 +111,7 @@ def entrenar_cat(predictores, etiqueta, paciente_id):
         y_tr, y_te = etiqueta.iloc[idx_tr],    etiqueta.iloc[idx_te]
         pid_tr = paciente_id.iloc[idx_tr]
         gs = GridSearchCV(pipeline, espacio, cv=cv_int,
-                          scoring='roc_auc', n_jobs=1, refit=True)
+                          scoring='roc_auc', n_jobs=-1, refit=True)
         gs.fit(x_tr, y_tr, groups=pid_tr)
         aucs.append(roc_auc_score(y_te, gs.predict_proba(x_te)[:, 1]))
     return np.mean(aucs), np.std(aucs)
@@ -136,7 +120,7 @@ def entrenar_cat(predictores, etiqueta, paciente_id):
 # ── MAIN ───────────────────────────────────────────────────────────────────────
 def main():
     print("=" * 65)
-    print("BACKWARD ELIMINATION — CatBoost v4p CORTA (sin gpt_max)")
+    print("BACKWARD ELIMINATION — RF v4l LARGA (sin gpt_max)")
     print("=" * 65)
     print(f"Variables de partida : {len(VARIABLES_INICIO)}")
     print(f"Variables a probar   : {len(ORDEN_ELIMINACION)}")
@@ -147,11 +131,10 @@ def main():
     historial = []
     t_global = time.time()
 
-    # Modelo de referencia
     print(f"[Referencia] {len(variables_actuales)} variables")
     t0 = time.time()
     pred, et, pid = preparar(df, variables_actuales)
-    auc_ref, std_ref = entrenar_cat(pred, et, pid)
+    auc_ref, std_ref = entrenar_rf(pred, et, pid)
     print(f"  AUC = {auc_ref:.4f} ± {std_ref:.4f}  ({(time.time()-t0)/60:.1f} min)\n")
     historial.append({'paso': 0, 'variable_eliminada': 'ninguna (referencia)',
                       'n_variables': len(variables_actuales),
@@ -169,7 +152,7 @@ def main():
 
         t0 = time.time()
         pred, et, pid = preparar(df, vars_prueba)
-        auc_nuevo, std_nuevo = entrenar_cat(pred, et, pid)
+        auc_nuevo, std_nuevo = entrenar_rf(pred, et, pid)
         delta = auc_nuevo - auc_anterior
         t_min = (time.time() - t0) / 60
 
@@ -180,17 +163,16 @@ def main():
             decision = 'ELIMINAR'
             variables_actuales = vars_prueba
             auc_anterior = auc_nuevo
-            print(f"  → ELIMINAR: AUC se mantiene.\n")
+            print(f"  → ELIMINAR\n")
         else:
             decision = 'CONSERVAR'
-            print(f"  → CONSERVAR: AUC baja {abs(delta):.4f} > umbral.\n")
+            print(f"  → CONSERVAR: cae {abs(delta):.4f} > {UMBRAL_CAIDA}\n")
 
         historial.append({'paso': paso, 'variable_eliminada': var,
                           'n_variables': len(vars_prueba),
                           'auc': auc_nuevo, 'std': std_nuevo,
                           'delta': delta, 'decision': decision})
 
-    # Resumen
     t_total = (time.time() - t_global) / 60
     print("=" * 65)
     print(f"RESUMEN FINAL (tiempo total: {t_total:.1f} min)")
@@ -204,12 +186,13 @@ def main():
 
     print(f"\nEliminadas ({len(eliminadas)}): {eliminadas}")
     print(f"Conservadas no-sig ({len(conservadas)}): {conservadas}")
-    print(f"\nSet final ({len(variables_actuales)} vars): {variables_actuales}")
+    print(f"\nSet final ({len(variables_actuales)} vars):")
+    for v in variables_actuales: print(f"  - {v}")
     print(f"\nAUC referencia : {auc_ref:.4f} ± {std_ref:.4f}")
     print(f"AUC final      : {auc_anterior:.4f}")
     print(f"Δ total        : {auc_anterior - auc_ref:+.4f}")
 
-    ruta = os.path.join(CARPETA_TABLAS, 'backward_elimination_CAT_v4p.csv')
+    ruta = os.path.join(CARPETA_TABLAS, 'backward_elimination_RF_v4l.csv')
     df_hist.to_csv(ruta, index=False)
     print(f"\nGuardado en: {ruta}")
 
