@@ -28,7 +28,7 @@ CARPETA_FIGS   = os.path.join(CARPETA_BASE, 'figuras')
 os.makedirs(CARPETA_TABLAS, exist_ok=True)
 os.makedirs(CARPETA_FIGS, exist_ok=True)
 
-VARIABLES = ['map_min', 'hr_media', 'pf_min', 'spo2_min', 'rr_max', 'fio2_max', 'diuresis_ml_kg_3h', 'lactato_max', 'ph_min', 'bilirrubina_media', 'gcs_min', 'gpt_max', 'temp_min', 'sofa_max', 'anchor_age']
+VARIABLES = ['map_min', 'hr_media', 'pf_min', 'spo2_min', 'rr_max', 'diuresis_ml_kg_3h', 'lactato_max', 'ph_min', 'temp_min', 'sofa_max']
 
 
 # ── CARGA ─────────────────────────────────────────────────────────────────────

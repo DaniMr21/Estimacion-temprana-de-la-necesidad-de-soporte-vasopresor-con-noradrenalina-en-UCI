@@ -12,7 +12,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 # ── VARIABLES POR VENTANA ─────────────────────────────────────────────────────
 
-VARS_V4P = ['map_min', 'hr_media', 'pf_min', 'spo2_min', 'rr_max', 'diuresis_ml_kg_3h', 'creatinina_max', 'lactato_max', 'ph_min', 'temp_min', 'sofa_max']
+VARS_V4P = ['map_min', 'hr_media', 'pf_min', 'spo2_min', 'rr_max', 'diuresis_ml_kg_3h', 'lactato_max', 'ph_min', 'temp_min', 'sofa_max']
 
 
 VENTANAS = [
