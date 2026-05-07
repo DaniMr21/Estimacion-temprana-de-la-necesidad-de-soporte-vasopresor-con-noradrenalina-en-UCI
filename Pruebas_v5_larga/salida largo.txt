@@ -1,0 +1,235 @@
+========================================================================
+BASELINE COMPLETO — v4l (12-48h)  |  6 algoritmos × 3 subgrupos
+========================================================================
+Set de variables (14):
+  - map_min
+  - hr_media
+  - pf_min
+  - spo2_min
+  - rr_max
+  - ventilacion_invasiva_12h
+  - diuresis_ml_kg_12h
+  - lactato_max
+  - bicarbonato_min
+  - bilirrubina_media
+  - gcs_min
+  - glucemia_min
+  - temp_min
+  - sofa_max
+
+Dataset total: N=4080 | Positivos=455 (11.15%)
+Sépticos    : 1341
+No sépticos : 2739
+
+────────────────────────────────────────────────────────────────────────
+SUBGRUPO: GLOBAL
+────────────────────────────────────────────────────────────────────────
+  N=4080 | Positivos=455 (11.15%) | Pacientes únicos=3911
+
+  [LR]  combinaciones grid: 12
+    Fold 1: AUC=0.6091
+    Fold 2: AUC=0.5957
+    Fold 3: AUC=0.7046
+    Fold 4: AUC=0.7079
+    Fold 5: AUC=0.6429
+    LR → AUC = 0.6521 ± 0.0469  (0.1 min)
+
+  [NB]  combinaciones grid: 30
+    Fold 1: AUC=0.6058
+    Fold 2: AUC=0.5746
+    Fold 3: AUC=0.7068
+    Fold 4: AUC=0.6722
+    Fold 5: AUC=0.6249
+    NB → AUC = 0.6369 ± 0.0472  (0.0 min)
+
+  [RF]  combinaciones grid: 72
+    Fold 1: AUC=0.6296
+    Fold 2: AUC=0.6008
+    Fold 3: AUC=0.6840
+    Fold 4: AUC=0.6926
+    Fold 5: AUC=0.6726
+    RF → AUC = 0.6559 ± 0.0351  (5.3 min)
+
+  [LGBM]  combinaciones grid: 96
+    Fold 1: AUC=0.6359
+    Fold 2: AUC=0.6081
+    Fold 3: AUC=0.6857
+    Fold 4: AUC=0.6644
+    Fold 5: AUC=0.6693
+    LGBM → AUC = 0.6527 ± 0.0275  (1.1 min)
+
+  [CAT]  combinaciones grid: 16
+    Fold 1: AUC=0.6235
+    Fold 2: AUC=0.6212
+    Fold 3: AUC=0.7073
+    Fold 4: AUC=0.7086
+    Fold 5: AUC=0.6679
+    CAT → AUC = 0.6657 ± 0.0383  (7.1 min)
+
+  [XGB]  combinaciones grid: 144
+    Fold 1: AUC=0.6324
+    Fold 2: AUC=0.6011
+    Fold 3: AUC=0.6877
+    Fold 4: AUC=0.6666
+    Fold 5: AUC=0.6604
+    XGB → AUC = 0.6496 ± 0.0300  (1.7 min)
+
+  RANKING — GLOBAL:
+    CAT     AUC = 0.6657 ± 0.0383
+    RF      AUC = 0.6559 ± 0.0351
+    LGBM    AUC = 0.6527 ± 0.0275
+    LR      AUC = 0.6521 ± 0.0469
+    XGB     AUC = 0.6496 ± 0.0300
+    NB      AUC = 0.6369 ± 0.0472
+
+────────────────────────────────────────────────────────────────────────
+SUBGRUPO: SÉPTICOS
+────────────────────────────────────────────────────────────────────────
+  N=1341 | Positivos=186 (13.87%) | Pacientes únicos=1328
+
+  [LR]  combinaciones grid: 12
+    Fold 1: AUC=0.6457
+    Fold 2: AUC=0.6479
+    Fold 3: AUC=0.6839
+    Fold 4: AUC=0.5562
+    Fold 5: AUC=0.6201
+    LR → AUC = 0.6308 ± 0.0425  (0.0 min)
+
+  [NB]  combinaciones grid: 30
+    Fold 1: AUC=0.6214
+    Fold 2: AUC=0.6445
+    Fold 3: AUC=0.7224
+    Fold 4: AUC=0.6033
+    Fold 5: AUC=0.6386
+    NB → AUC = 0.6461 ± 0.0408  (0.0 min)
+
+  [RF]  combinaciones grid: 72
+    Fold 1: AUC=0.6130
+    Fold 2: AUC=0.5807
+    Fold 3: AUC=0.7182
+    Fold 4: AUC=0.6464
+    Fold 5: AUC=0.6088
+    RF → AUC = 0.6334 ± 0.0472  (3.2 min)
+
+  [LGBM]  combinaciones grid: 96
+    Fold 1: AUC=0.5805
+    Fold 2: AUC=0.5806
+    Fold 3: AUC=0.7006
+    Fold 4: AUC=0.6185
+    Fold 5: AUC=0.6459
+    LGBM → AUC = 0.6252 ± 0.0450  (0.7 min)
+
+  [CAT]  combinaciones grid: 16
+    Fold 1: AUC=0.6107
+    Fold 2: AUC=0.6373
+    Fold 3: AUC=0.7249
+    Fold 4: AUC=0.6382
+    Fold 5: AUC=0.6253
+    CAT → AUC = 0.6473 ± 0.0401  (5.4 min)
+
+  [XGB]  combinaciones grid: 144
+    Fold 1: AUC=0.5877
+    Fold 2: AUC=0.6144
+    Fold 3: AUC=0.7354
+    Fold 4: AUC=0.6138
+    Fold 5: AUC=0.6153
+    XGB → AUC = 0.6333 ± 0.0521  (0.9 min)
+
+  RANKING — SÉPTICOS:
+    CAT     AUC = 0.6473 ± 0.0401
+    NB      AUC = 0.6461 ± 0.0408
+    RF      AUC = 0.6334 ± 0.0472
+    XGB     AUC = 0.6333 ± 0.0521
+    LR      AUC = 0.6308 ± 0.0425
+    LGBM    AUC = 0.6252 ± 0.0450
+
+────────────────────────────────────────────────────────────────────────
+SUBGRUPO: NO SÉPTICOS
+────────────────────────────────────────────────────────────────────────
+  N=2739 | Positivos=269 (9.82%) | Pacientes únicos=2653
+
+  [LR]  combinaciones grid: 12
+    Fold 1: AUC=0.6080
+    Fold 2: AUC=0.7032
+    Fold 3: AUC=0.5890
+    Fold 4: AUC=0.6531
+    Fold 5: AUC=0.6786
+    LR → AUC = 0.6464 ± 0.0426  (0.0 min)
+
+  [NB]  combinaciones grid: 30
+    Fold 1: AUC=0.6047
+    Fold 2: AUC=0.6808
+    Fold 3: AUC=0.5928
+    Fold 4: AUC=0.6315
+    Fold 5: AUC=0.6567
+    NB → AUC = 0.6333 ± 0.0325  (0.0 min)
+
+  [RF]  combinaciones grid: 72
+    Fold 1: AUC=0.6393
+    Fold 2: AUC=0.6819
+    Fold 3: AUC=0.5888
+    Fold 4: AUC=0.6767
+    Fold 5: AUC=0.7045
+    RF → AUC = 0.6582 ± 0.0406  (3.8 min)
+
+  [LGBM]  combinaciones grid: 96
+    Fold 1: AUC=0.6216
+    Fold 2: AUC=0.6684
+    Fold 3: AUC=0.5688
+    Fold 4: AUC=0.6785
+    Fold 5: AUC=0.6647
+    LGBM → AUC = 0.6404 ± 0.0408  (0.9 min)
+
+  [CAT]  combinaciones grid: 16
+    Fold 1: AUC=0.6280
+    Fold 2: AUC=0.6865
+    Fold 3: AUC=0.5672
+    Fold 4: AUC=0.6947
+    Fold 5: AUC=0.7157
+    CAT → AUC = 0.6584 ± 0.0541  (5.9 min)
+
+  [XGB]  combinaciones grid: 144
+    Fold 1: AUC=0.6199
+    Fold 2: AUC=0.6975
+    Fold 3: AUC=0.5842
+    Fold 4: AUC=0.6897
+    Fold 5: AUC=0.7138
+    XGB → AUC = 0.6610 ± 0.0501  (1.2 min)
+
+  RANKING — NO SÉPTICOS:
+    XGB     AUC = 0.6610 ± 0.0501
+    CAT     AUC = 0.6584 ± 0.0541
+    RF      AUC = 0.6582 ± 0.0406
+    LR      AUC = 0.6464 ± 0.0426
+    LGBM    AUC = 0.6404 ± 0.0408
+    NB      AUC = 0.6333 ± 0.0325
+
+========================================================================
+RESUMEN GLOBAL — v4l  (tiempo total: 0.62 h)
+========================================================================
+   subgrupo algoritmo    auc    std  tiempo_min
+     GLOBAL       CAT 0.6657 0.0383      7.1352
+     GLOBAL        RF 0.6559 0.0351      5.3405
+     GLOBAL      LGBM 0.6527 0.0275      1.0768
+     GLOBAL        LR 0.6521 0.0469      0.0935
+     GLOBAL       XGB 0.6496 0.0300      1.6575
+     GLOBAL        NB 0.6369 0.0472      0.0413
+NO SÉPTICOS       XGB 0.6610 0.0501      1.2440
+NO SÉPTICOS       CAT 0.6584 0.0541      5.8632
+NO SÉPTICOS        RF 0.6582 0.0406      3.8453
+NO SÉPTICOS        LR 0.6464 0.0426      0.0308
+NO SÉPTICOS      LGBM 0.6404 0.0408      0.9160
+NO SÉPTICOS        NB 0.6333 0.0325      0.0351
+   SÉPTICOS       CAT 0.6473 0.0401      5.3729
+   SÉPTICOS        NB 0.6461 0.0408      0.0226
+   SÉPTICOS        RF 0.6334 0.0472      3.2350
+   SÉPTICOS       XGB 0.6333 0.0521      0.9040
+   SÉPTICOS        LR 0.6308 0.0425      0.0198
+   SÉPTICOS      LGBM 0.6252 0.0450      0.6631
+
+  GANADORES:
+    GLOBAL          →  CAT    AUC=0.6657 ± 0.0383
+    NO SÉPTICOS     →  XGB    AUC=0.6610 ± 0.0501
+    SÉPTICOS        →  CAT    AUC=0.6473 ± 0.0401
+
+  Guardado: C:\Users\danie\TFG\Pruebas_v5_larga\tablas\baseline_completo_v4l.csv
