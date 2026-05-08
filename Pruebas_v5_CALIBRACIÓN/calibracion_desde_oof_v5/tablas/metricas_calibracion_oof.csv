@@ -1,0 +1,4 @@
+ventana,n,positivos,prevalencia,brier,brier_ref,bss,ece,hl_chi2,hl_gl,hl_p_valor,hl_interpretacion
+6_24h,3281,338,0.103,0.08698,0.0924,0.0587,0.01293,13.732,8,0.089,No rechaza H0
+3_12h,1667,172,0.1032,0.08962,0.09253,0.0314,0.03104,22.21,8,0.0045,Rechaza H0
+12_48h,4080,455,0.1115,0.09508,0.09908,0.0404,0.01324,15.753,8,0.046,Rechaza H0
