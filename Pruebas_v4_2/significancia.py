@@ -80,7 +80,6 @@ print("SIGNIFICANCIA UNIVARIANTE — SET REDUCIDO v4 (26 variables)")
 
 
 df = pd.read_csv(RUTA_CSV)
-df = df.dropna(subset=['pf_max'])
 print(f"\nDataset cargado:")
 print(f"  Estancias totales      : {len(df)}")
 print(f"  Pacientes únicos       : {df['subject_id'].nunique()}")

@@ -1,10 +1,3 @@
-"""
-Hipótesis a contrastar:
-  ¿El modelo predice igual de bien el inicio de noradrenalina en
-  pacientes sépticos que en no sépticos? ¿Las variables relevantes
-  son las mismas o cambian?
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 

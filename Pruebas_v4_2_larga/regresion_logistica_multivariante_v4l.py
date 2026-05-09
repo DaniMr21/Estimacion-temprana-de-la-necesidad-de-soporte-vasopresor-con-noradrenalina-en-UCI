@@ -3,10 +3,6 @@ Regresión logística multivariante — ventana LARGA v4l (25 variables).
 Observación: 0-12h | Predicción: 12-48h
 Etiqueta: etiqueta_norad_12_48
 
-Diferencias respecto a v4p:
-  - Sin fio2_max
-  - ventilacion_invasiva_12h, diuresis_ml_kg_12h
-
 Salidas:
   - tablas/regresion_logistica_multivariante_v4l.csv
   - tablas/comparacion_univariante_vs_multivariante_v4l.csv

@@ -3,16 +3,6 @@ Análisis de significancia univariante — ventana LARGA v4l (25 variables).
 Observación: 0-12h | Predicción: 12-48h
 Etiqueta: etiqueta_norad_12_48
 
-Diferencias respecto a v4p:
-  - Sin fio2_max (eliminada por alta correlación con pf_min en ventana larga)
-  - ventilacion_invasiva_12h en lugar de ventilacion_invasiva_6h
-  - diuresis_ml_kg_12h en lugar de diuresis_ml_kg_6h
-
-Tests:
-  - Variables continuas (23): Mann-Whitney U
-  - Variables binarias  (2) : Chi-cuadrado
-Corrección: Benjamini-Hochberg (FDR, alpha=0.05)
-
 Salidas:
   - tablas/significancia_univariante_v4l.csv
 """

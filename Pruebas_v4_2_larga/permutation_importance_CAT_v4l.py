@@ -3,10 +3,6 @@ Permutation Importance — CatBoost, ventana LARGA v4l (25 variables).
 Observación: 0-12h | Predicción: 12-48h
 Etiqueta: etiqueta_norad_12_48
 
-Diferencias respecto a v4p:
-  - Sin fio2_max
-  - ventilacion_invasiva_12h, diuresis_ml_kg_12h
-
 Salidas:
   - tablas/permutation_importance_CAT_v4l.csv
   - figuras/permutation_importance_CAT_v4l.png
