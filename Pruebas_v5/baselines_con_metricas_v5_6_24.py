@@ -16,8 +16,6 @@ Calcula, con validación cruzada externa agrupada por paciente:
 Importante:
   - Solo usa el subgrupo GLOBAL.
   - Mantiene StratifiedGroupKFold por subject_id.
-  - El umbral se elige dentro de cada fold usando solo entrenamiento
-    mediante Youden sobre predicciones out-of-fold internas.
 """
 
 import os

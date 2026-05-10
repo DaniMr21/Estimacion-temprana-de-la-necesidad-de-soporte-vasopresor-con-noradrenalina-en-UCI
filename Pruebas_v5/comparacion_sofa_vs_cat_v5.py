@@ -64,7 +64,6 @@ def main():
     print("=" * 65)
 
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
 
     y   = df[ETIQUETA].copy()
     pid = df['subject_id'].copy()
@@ -84,7 +83,7 @@ def main():
         y_te  = y.iloc[idx_te]
 
         # ── A. SOFA SOLO (sin modelo, AUC directo) ────────────────────────
-        sofa_te = df['sofa_max'].iloc[idx_te].fillna(df['sofa_max'].median())
+        sofa_te = df['sofa_max'].iloc[idx_te]
         auc_sofa = roc_auc_score(y_te, sofa_te)
         aucs_sofa.append(auc_sofa)
 

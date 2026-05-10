@@ -1,16 +1,5 @@
 """
-Análisis SHAP — RF v4 (set final, 12 variables).
-
-Genera explicaciones SHAP sobre el modelo RF entrenado con el set final.
-Salidas (nombres únicos para no pisar nada):
-  - figuras/shap_summary_bar_v4.png       : importancia global (bar plot)
-  - figuras/shap_summary_beeswarm_v4.png  : beeswarm (efecto + signo)
-  - figuras/shap_dependence_TOP3_v4.png   : dependencia para top 3 vars
-  - tablas/shap_importance_v4.csv         : importancia agregada |SHAP|
-
 NOTA: SHAP se calcula sobre el modelo entrenado en TODO el dataset.
-Esto es estándar para interpretación; el AUC reportado sigue siendo
-el del CV anidado.
 """
 
 import warnings
