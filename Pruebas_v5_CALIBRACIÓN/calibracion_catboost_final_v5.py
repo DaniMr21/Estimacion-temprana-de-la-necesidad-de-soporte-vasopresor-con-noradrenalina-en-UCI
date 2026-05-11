@@ -38,9 +38,6 @@ RANDOM_STATE = 42
 N_SPLITS_EXTERNOS = 5
 N_SPLITS_INTERNOS = 3
 
-# Por defecto dejo 20%, que es lo mas limpio y no dispara tiempos.
-# Si quieres hacer busqueda exhaustiva como en el script anterior, cambia a:
-# PROPORCIONES_CALIBRACION = [0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40]
 PROPORCIONES_CALIBRACION = [0.20]
 METODOS_CALIBRACION = ["sigmoid", "isotonic"]
 
@@ -119,7 +116,6 @@ def construir_pipeline_catboost():
 def cargar_y_preparar(config):
     df = pd.read_csv(config["ruta_csv"])
 
-    # Mantengo el mismo filtro que tus baselines.
     if "pf_max" in df.columns:
         df = df.dropna(subset=["pf_max"]).copy()
 

@@ -19,8 +19,8 @@ Métricas calculadas:
 Salidas:
   calibracion_desde_oof_v5/
     tablas/
-      metricas_calibracion_oof.csv          <- tabla resumen por ventana
-      tabla_deciles_{ventana}.csv           <- tabla HL por grupos
+      metricas_calibracion_oof.csv   <- tabla resumen por ventana
+      tabla_deciles_{ventana}.csv  <- tabla HL por grupos
     figuras/
       calibracion_{ventana}.png
       histograma_{ventana}.png
@@ -83,15 +83,7 @@ np.random.seed(SEMILLA)
 # =============================================================================
 
 def test_hosmer_lemeshow(y_real, probabilidad, n_grupos=10):
-    """
-    Test de bondad de ajuste de Hosmer-Lemeshow (variante H: grupos por deciles
-    de probabilidad predicha). Devuelve estadístico chi², grados de libertad y p-valor.
-
-    Hipótesis nula H0: el modelo está bien calibrado (no hay diferencia significativa
-    entre frecuencias observadas y predichas).
-
-    Referencia: Hosmer D.W. & Lemeshow S. (2000). Applied Logistic Regression, 2ª ed.
-    """
+    
     y_real      = np.asarray(y_real)
     probabilidad = np.asarray(probabilidad)
 
@@ -139,17 +131,7 @@ def test_hosmer_lemeshow(y_real, probabilidad, n_grupos=10):
 # =============================================================================
 
 def calcular_brier_y_bss(y_real, probabilidad):
-    """
-    Brier Score y Brier Skill Score.
-
-    BSS = 1 - BS_modelo / BS_referencia
-    BS_referencia = prevalencia * (1 - prevalencia)
-    (corresponde al modelo que predice la prevalencia para todos)
-
-    BSS = 0  → el modelo no mejora sobre el modelo trivial.
-    BSS = 1  → calibración y discriminación perfectas.
-    BSS > 0  → el modelo mejora sobre el trivial.
-    """
+    
     y_real       = np.asarray(y_real, dtype=float)
     prevalencia  = y_real.mean()
     brier        = brier_score_loss(y_real, probabilidad)
