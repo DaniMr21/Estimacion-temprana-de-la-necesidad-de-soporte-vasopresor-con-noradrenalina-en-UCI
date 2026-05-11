@@ -1,6 +1,0 @@
-ventana,fold,mejor_auc_grid_interno,class_weight,max_depth,max_features,min_samples_leaf,n_estimators
-v4_6_24_rf,1,0.6944341775270962,balanced_subsample,,0.5,2,300
-v4_6_24_rf,2,0.696992983166492,balanced,,sqrt,1,400
-v4_6_24_rf,3,0.7084669233023799,balanced_subsample,,sqrt,5,500
-v4_6_24_rf,4,0.7146189184464768,balanced_subsample,20.0,sqrt,5,400
-v4_6_24_rf,5,0.697915015930383,balanced_subsample,20.0,sqrt,5,300
