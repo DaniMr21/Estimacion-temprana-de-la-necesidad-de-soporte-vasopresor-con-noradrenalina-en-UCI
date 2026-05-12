@@ -1,0 +1,124 @@
+=================================================================
+BASELINE v4 — VARIABLES SIGNIFICATIVAS PROPIAS POR MODELO
+=================================================================
+Estancias: 3281 | Pacientes: 3197 | Positivos: 338 (10.30%)
+
+──────────────────────────────────────────────────
+Regresión Logística  (7 variables)
+  ['pf_min', 'diuresis_ml_kg_6h', 'rr_max', 'sofa_max', 'ph_min', 'hr_media', 'ventilacion_invasiva_6h']
+  Fold 1: AUC=0.6798
+    Best params: {'modelo__C': 0.005}
+  Fold 2: AUC=0.6782
+    Best params: {'modelo__C': 1}
+  Fold 3: AUC=0.7004
+    Best params: {'modelo__C': 0.0005}
+  Fold 4: AUC=0.6982
+    Best params: {'modelo__C': 0.1}
+  Fold 5: AUC=0.6884
+    Best params: {'modelo__C': 0.01}
+
+Regresión Logística — AUC medio: 0.6890 ± 0.0091  (tiempo: 0.1 min)
+
+──────────────────────────────────────────────────
+Random Forest  (9 variables)
+  ['pf_min', 'map_min', 'diuresis_ml_kg_6h', 'rr_max', 'spo2_min', 'ph_min', 'hr_media', 'glucemia_min', 'ventilacion_invasiva_6h']
+  Fold 1: AUC=0.6933
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': None, 'modelo__max_features': 0.3, 'modelo__min_samples_leaf': 1, 'modelo__n_estimators': 1000}
+  Fold 2: AUC=0.6845
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__max_depth': 20, 'modelo__max_features': 0.3, 'modelo__min_samples_leaf': 1, 'modelo__n_estimators': 500}
+  Fold 3: AUC=0.7252
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__max_depth': 20, 'modelo__max_features': 0.3, 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 300}
+  Fold 4: AUC=0.6815
+    Best params: {'modelo__class_weight': 'balanced_subsample', 'modelo__max_depth': 20, 'modelo__max_features': 0.3, 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 300}
+  Fold 5: AUC=0.7165
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__max_depth': 10, 'modelo__max_features': 0.5, 'modelo__min_samples_leaf': 5, 'modelo__n_estimators': 500}
+
+Random Forest — AUC medio: 0.7002 ± 0.0175  (tiempo: 36.3 min)
+
+──────────────────────────────────────────────────
+XGBoost  (8 variables)
+  ['pf_min', 'map_min', 'diuresis_ml_kg_6h', 'temp_min', 'hr_media', 'ph_min', 'sofa_max', 'ventilacion_invasiva_6h']
+  Fold 1: AUC=0.6901
+    Best params: {'modelo__colsample_bytree': 0.8, 'modelo__learning_rate': 0.005, 'modelo__max_depth': 3, 'modelo__n_estimators': 600, 'modelo__reg_lambda': 0.1, 'modelo__scale_pos_weight': 1, 'modelo__subsample': 0.6}
+  Fold 2: AUC=0.7159
+    Best params: {'modelo__colsample_bytree': 0.8, 'modelo__learning_rate': 0.005, 'modelo__max_depth': 3, 'modelo__n_estimators': 400, 'modelo__reg_lambda': 1, 'modelo__scale_pos_weight': 5, 'modelo__subsample': 0.6}
+  Fold 3: AUC=0.6789
+    Best params: {'modelo__colsample_bytree': 1.0, 'modelo__learning_rate': 0.005, 'modelo__max_depth': 3, 'modelo__n_estimators': 750, 'modelo__reg_lambda': 1, 'modelo__scale_pos_weight': 1, 'modelo__subsample': 1.0}
+  Fold 4: AUC=0.6828
+    Best params: {'modelo__colsample_bytree': 0.6, 'modelo__learning_rate': 0.005, 'modelo__max_depth': 3, 'modelo__n_estimators': 300, 'modelo__reg_lambda': 10, 'modelo__scale_pos_weight': 1, 'modelo__subsample': 0.6}
+  Fold 5: AUC=0.6929
+    Best params: {'modelo__colsample_bytree': 1.0, 'modelo__learning_rate': 0.01, 'modelo__max_depth': 3, 'modelo__n_estimators': 300, 'modelo__reg_lambda': 1, 'modelo__scale_pos_weight': 1, 'modelo__subsample': 0.6}
+
+XGBoost — AUC medio: 0.6921 ± 0.0129  (tiempo: 41.3 min)
+
+──────────────────────────────────────────────────
+LightGBM  (6 variables)
+  ['map_min', 'pf_min', 'diuresis_ml_kg_6h', 'spo2_min', 'ph_min', 'ventilacion_invasiva_6h']
+  Fold 1: AUC=0.6462
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__learning_rate': 0.005, 'modelo__min_child_samples': 10, 'modelo__n_estimators': 300, 'modelo__num_leaves': 15, 'modelo__reg_lambda': 1, 'modelo__subsample': 0.6}
+  Fold 2: AUC=0.6625
+    Best params: {'modelo__class_weight': None, 'modelo__learning_rate': 0.005, 'modelo__min_child_samples': 30, 'modelo__n_estimators': 600, 'modelo__num_leaves': 15, 'modelo__reg_lambda': 10, 'modelo__subsample': 0.6}
+  Fold 3: AUC=0.6892
+    Best params: {'modelo__class_weight': None, 'modelo__learning_rate': 0.005, 'modelo__min_child_samples': 10, 'modelo__n_estimators': 600, 'modelo__num_leaves': 15, 'modelo__reg_lambda': 0.1, 'modelo__subsample': 0.6}
+  Fold 4: AUC=0.6971
+    Best params: {'modelo__class_weight': 'balanced', 'modelo__learning_rate': 0.005, 'modelo__min_child_samples': 10, 'modelo__n_estimators': 600, 'modelo__num_leaves': 15, 'modelo__reg_lambda': 10, 'modelo__subsample': 0.6}
+  Fold 5: AUC=0.6807
+    Best params: {'modelo__class_weight': None, 'modelo__learning_rate': 0.01, 'modelo__min_child_samples': 10, 'modelo__n_estimators': 300, 'modelo__num_leaves': 15, 'modelo__reg_lambda': 10, 'modelo__subsample': 0.6}
+
+LightGBM — AUC medio: 0.6751 ± 0.0185  (tiempo: 14.4 min)
+
+──────────────────────────────────────────────────
+CatBoost  (8 variables)
+  ['map_min', 'pf_min', 'diuresis_ml_kg_6h', 'hr_media', 'rr_max', 'glucemia_min', 'ph_min', 'ventilacion_invasiva_6h']
+  Fold 1: AUC=0.6978
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 4, 'modelo__iterations': 1000, 'modelo__l2_leaf_reg': 5, 'modelo__learning_rate': 0.01}
+  Fold 2: AUC=0.7109
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 6, 'modelo__iterations': 500, 'modelo__l2_leaf_reg': 5, 'modelo__learning_rate': 0.01}
+  Fold 3: AUC=0.7374
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 7, 'modelo__iterations': 500, 'modelo__l2_leaf_reg': 5, 'modelo__learning_rate': 0.01}
+  Fold 4: AUC=0.6897
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 7, 'modelo__iterations': 500, 'modelo__l2_leaf_reg': 15, 'modelo__learning_rate': 0.01}
+  Fold 5: AUC=0.7097
+    Best params: {'modelo__bagging_temperature': 0, 'modelo__depth': 4, 'modelo__iterations': 500, 'modelo__l2_leaf_reg': 5, 'modelo__learning_rate': 0.01}
+
+CatBoost — AUC medio: 0.7091 ± 0.0162  (tiempo: 121.2 min)
+
+──────────────────────────────────────────────────
+Naive Bayes  (9 variables)
+  ['pf_min', 'diuresis_ml_kg_6h', 'rr_max', 'temp_min', 'ph_min', 'lactato_max', 'sofa_max', 'hr_media', 'ventilacion_invasiva_6h']
+  Fold 1: AUC=0.6726
+    Best params: {'modelo__var_smoothing': np.float64(0.01)}
+  Fold 2: AUC=0.6784
+    Best params: {'modelo__var_smoothing': np.float64(0.01)}
+  Fold 3: AUC=0.6975
+    Best params: {'modelo__var_smoothing': np.float64(0.01)}
+  Fold 4: AUC=0.7053
+    Best params: {'modelo__var_smoothing': np.float64(0.01)}
+  Fold 5: AUC=0.6872
+    Best params: {'modelo__var_smoothing': np.float64(0.01)}
+
+Naive Bayes — AUC medio: 0.6882 ± 0.0120  (tiempo: 0.1 min)
+
+
+=================================================================
+RESUMEN FINAL (tiempo total: 3.56 h)
+=================================================================
+
+  CAT    ( 8 vars)  AUC = 0.7091 ± 0.0162
+  RF     ( 9 vars)  AUC = 0.7002 ± 0.0175
+  XGB    ( 8 vars)  AUC = 0.6921 ± 0.0129
+  LR     ( 7 vars)  AUC = 0.6890 ± 0.0091
+  NB     ( 9 vars)  AUC = 0.6882 ± 0.0120
+  LGBM   ( 6 vars)  AUC = 0.6751 ± 0.0185
+
+COMPARACIÓN CON SETS ANTERIORES (RF):
+  Set                                       Vars  AUC
+  ──────────────────────────────────────── ─────  ──────────────────
+  Completo                                    76  0.6992 ± 0.0134
+  Reducido (baseline_v4_2)                    26  0.7077 ± 0.0089
+  Sig. v1 (con gpt+gender)                   ~11  0.7108 ± 0.0093
+  Sig. v2 (sin gpt+gender)                    ~9  0.7108 ± 0.0093
+  Sig. v3 (sin gpt+gender+fio2)                9  0.7002 ± 0.0175
+
+  Diferencia RF (v3 vs v1): -0.0106
+  → AUC cae. Documentar el trade-off.
