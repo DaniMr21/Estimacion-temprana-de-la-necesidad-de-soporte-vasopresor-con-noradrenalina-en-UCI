@@ -1,0 +1,27 @@
+variable,test,p_valor_uni,p_valor_uni_BH,sig_uni_BH,LR_caida_pp,LR_sig,RF_caida_pp,RF_sig,XGB_caida_pp,XGB_sig,LGBM_caida_pp,LGBM_sig,CAT_caida_pp,CAT_sig,NB_caida_pp,NB_sig,n_modelos_significativos,consenso,consenso_global
+temp_min,Mann-Whitney U,0.018179170728540178,0.03151056259613631,True,0.7181,True,0.5074,True,0.6983,True,0.8147,True,0.7454,True,0.7576,True,6,Unanime_significativa,Robusta_completa
+pf_min,Mann-Whitney U,2.6909252166658406e-11,6.996405563331186e-10,True,1.9234,True,1.7142,False,1.6113,True,1.5953,True,1.6454,True,1.4509,True,5,Mayoria_significativa,Robusta_mayoria
+spo2_min,Mann-Whitney U,1.4031324855498965e-08,1.2160481541432434e-07,True,0.5883,True,0.7632,True,0.8264,True,0.6154,True,0.2814,False,0.3468,True,5,Mayoria_significativa,Robusta_mayoria
+bicarbonato_min,Mann-Whitney U,8.794804264365759e-08,4.5732982174701944e-07,True,1.2792,True,1.2689,True,1.3176,True,0.9943,True,1.432,True,0.4884,False,5,Mayoria_significativa,Robusta_mayoria
+rr_max,Mann-Whitney U,1.6101849649280898e-07,6.977468181355055e-07,True,1.0502,True,0.5453,True,0.3214,False,0.6626,True,0.9707,True,0.8736,True,5,Mayoria_significativa,Robusta_mayoria
+map_min,Mann-Whitney U,3.3559063059865775e-05,9.69484043951678e-05,True,0.7043,True,0.9123,True,0.8177,True,0.5378,True,0.7797,False,0.3891,True,5,Mayoria_significativa,Robusta_mayoria
+glucemia_min,Mann-Whitney U,0.0783678748988592,0.1273477967106462,False,0.5417,False,0.6248,True,0.6037,True,0.6643,True,0.7159,True,0.11,False,4,Mayoria_significativa,ML_mayoria_sin_uni
+sofa_max,Mann-Whitney U,1.4300232053960966e-09,1.8590301670149254e-08,True,0.5584,False,0.8639,True,1.3513,True,1.2305,True,0.945,False,0.5271,False,3,Discordante,Moderada
+lactato_max,Mann-Whitney U,1.0176494587318366e-05,3.779840846718251e-05,True,0.093,False,0.6697,True,0.5928,True,0.358,False,0.5946,True,0.1582,False,3,Discordante,Moderada
+diuresis_ml_kg_12h,Mann-Whitney U,0.004841976864127265,0.01049094987227574,True,-0.0693,False,1.1224,True,0.6261,False,0.9375,True,1.1236,True,-0.1304,False,3,Discordante,Moderada
+gpt_max,Mann-Whitney U,0.6972429976882815,0.7251327175958127,False,0.3163,False,0.7061,False,0.5801,True,0.6328,False,1.1383,True,-0.3914,False,2,Discordante,Solo_ML
+bilirrubina_media,Mann-Whitney U,0.00704857285810247,0.013090206736476016,True,0.1703,False,0.3519,True,0.026,False,-0.0522,False,0.3873,False,0.1636,False,1,Discordante,Moderada
+ventilacion_invasiva_12h,Chi-cuadrado,0.6076539017051089,0.6582917268472013,False,0.0665,False,0.1132,True,0.0684,False,0.1529,False,0.1635,False,-0.0653,False,1,Discordante,Solo_ML
+fio2_max,Mann-Whitney U,2.3256739293741084e-08,1.5116880540931703e-07,True,0.1107,False,0.231,False,-0.0822,False,0.1054,False,0.0074,False,0.4327,False,0,Unanime_no_significativa,Solo_univariante
+creatinina_max,Mann-Whitney U,2.3353835054497777e-05,7.589996392711777e-05,True,-0.0359,False,0.1585,False,0.212,False,0.2099,False,-0.0255,False,0.0991,False,0,Unanime_no_significativa,Solo_univariante
+ph_min,Mann-Whitney U,0.00038765509922844413,0.0010079032579939546,True,0.0395,False,0.1026,False,0.0732,False,0.0347,False,0.0362,False,0.0102,False,0,Unanime_no_significativa,Solo_univariante
+hr_media,Mann-Whitney U,0.003639750705814605,0.008603047122834521,True,0.3167,False,0.5915,False,0.8736,False,0.7702,False,0.8904,False,0.1822,False,0,Unanime_no_significativa,Solo_univariante
+tp_max,Mann-Whitney U,0.006228257799111072,0.012456515598222143,True,0.1269,False,-0.0864,False,-0.0541,False,0.0423,False,0.2888,False,0.1774,False,0,Unanime_no_significativa,Solo_univariante
+peso_kg,Mann-Whitney U,0.14316280984089058,0.20917891631670446,False,-0.0067,False,-0.2883,False,-0.0927,False,-0.1892,False,-0.141,False,-0.0832,False,0,Unanime_no_significativa,No_significativa
+gender,Chi-cuadrado,0.14481617283464154,0.20917891631670446,False,0.0648,False,-0.0208,False,-0.0057,False,-0.067,False,0.0107,False,-0.011,False,0,Unanime_no_significativa,No_significativa
+plaquetas_min,Mann-Whitney U,0.20442215465404345,0.2797355800529016,False,-0.0885,False,0.0103,False,-0.1274,False,0.0491,False,-0.1499,False,-0.104,False,0,Unanime_no_significativa,No_significativa
+anchor_age,Mann-Whitney U,0.22105902577498115,0.2873767335074755,False,0.2255,False,0.2947,False,0.1439,False,0.0799,False,0.0147,False,0.0604,False,0,Unanime_no_significativa,No_significativa
+leucocitos_min,Mann-Whitney U,0.23320545296456374,0.28873056081326937,False,-0.2485,False,-0.1287,False,-0.2333,False,-0.188,False,-0.3182,False,-0.0903,False,0,Unanime_no_significativa,No_significativa
+gcs_min,Mann-Whitney U,0.30582453948794286,0.3614290012130234,False,-0.0222,False,0.1593,False,0.1097,False,0.305,False,0.3966,False,-0.0038,False,0,Unanime_no_significativa,No_significativa
+hemoglobina_min,Mann-Whitney U,0.48827705195818993,0.5519653630831712,False,-0.1054,False,-0.0654,False,-0.0289,False,-0.0489,False,-0.136,False,-0.0757,False,0,Unanime_no_significativa,No_significativa
+contador_estancia_uci,Mann-Whitney U,0.8449633981793604,0.8449633981793604,False,-0.0535,False,0.0226,False,-0.0072,False,-0.0032,False,0.0122,False,-0.1071,False,0,Unanime_no_significativa,No_significativa
