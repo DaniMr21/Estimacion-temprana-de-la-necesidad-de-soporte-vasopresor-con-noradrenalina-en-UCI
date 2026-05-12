@@ -36,13 +36,6 @@ os.makedirs(CARPETA_TABLAS, exist_ok=True)
 ETIQUETA   = 'etiqueta_norad_12_48'
 COLUMNA_ID = 'subject_id'
 
-# Variables a verificar — las que generaban dudas clínicas
-VARIABLES_REVISAR = [
-    'gpt_max',
-    'ventilacion_invasiva_12h',
-    'fio2_max',
-    'gender',
-]
 
 # Todas las variables del set reducido (para la LR multivariante ajustada)
 VARIABLES_MODELO = [
@@ -55,6 +48,8 @@ VARIABLES_MODELO = [
     'sofa_max',
     'ventilacion_invasiva_12h', 'gender',
 ]
+
+VARIABLES_REVISAR = VARIABLES_MODELO
 
 VARIABLES_BINARIAS = ['gender', 'ventilacion_invasiva_12h']
 
