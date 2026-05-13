@@ -4,8 +4,8 @@ warnings.filterwarnings('ignore')
 import pandas as pd
 import numpy as np
 import time
-import shap
-import matplotlib.pyplot as plt
+import joblib
+import os
 
 from sklearn.model_selection import StratifiedGroupKFold, GridSearchCV
 from sklearn.preprocessing import RobustScaler
@@ -19,8 +19,20 @@ from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 
-# ── 1. MÉTRICAS AVANZADAS PARA RIGOR METODOLÓGICO ─────────────────────────────
+# ── CREACIÓN DE DIRECTORIOS ──
+# Obtiene la ruta exacta donde está este script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
+TABLAS_DIR = os.path.join(BASE_DIR, "TABLAS")
+MODELOS_DIR = os.path.join(BASE_DIR, "MODELOS ENTRENADOS")
 
+# Crea las carpetas si no existen
+os.makedirs(TABLAS_DIR, exist_ok=True)
+os.makedirs(MODELOS_DIR, exist_ok=True)
+
+# Ruta del archivo final
+FILE_CSV = os.path.join(TABLAS_DIR, 'resultados_metricas_multiventana.csv')
+
+# ── MÉTRICAS AVANZADAS ──
 def brier_skill_score(y_true, y_prob):
     prevalencia = np.mean(y_true)
     prob_nula = np.full_like(y_true, prevalencia, dtype=float)
@@ -38,14 +50,12 @@ def expected_calibration_error(y_true, y_prob, n_bins=10):
             ece += (np.sum(mask) / len(y_true)) * np.abs(np.mean(y_true[mask]) - np.mean(y_prob[mask]))
     return ece
 
-# ── 2. CONFIGURACIÓN DE VENTANAS (VARIABLES DEPURADAS) ────────────────────────
-
+# ── DICCIONARIO LIMPIO ──
 CONFIG_VENTANAS = {
     'Corto_3_12': {
         'ruta': r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv',
         'etiqueta': 'etiqueta_norad_3_12',
         'vars': {
-            # Se eliminan gpt_max, fio2_max y creatinina_max por incoherencia 
             'RF':   ['temp_min', 'rr_max'],
             'XGB':  ['pf_min', 'map_min', 'diuresis_ml_kg_3h', 'sofa_max'],
             'LGBM': ['map_min', 'pf_min', 'sofa_max'],
@@ -57,7 +67,6 @@ CONFIG_VENTANAS = {
         'ruta': r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv',
         'etiqueta': 'etiqueta_norad_6_24',
         'vars': {
-            # Se eliminan gpt_max, creatinina_max, ph_min y temp_min 
             'LR':   ['pf_min', 'diuresis_ml_kg_6h', 'rr_max', 'sofa_max', 'hr_media', 'ventilacion_invasiva_6h'],
             'RF':   ['pf_min', 'map_min', 'diuresis_ml_kg_6h', 'rr_max', 'spo2_min', 'hr_media', 'glucemia_min', 'ventilacion_invasiva_6h'],
             'XGB':  ['pf_min', 'map_min', 'diuresis_ml_kg_6h', 'hr_media', 'sofa_max', 'ventilacion_invasiva_6h'],
@@ -70,7 +79,6 @@ CONFIG_VENTANAS = {
         'ruta': r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv',
         'etiqueta': 'etiqueta_norad_12_48',
         'vars': {
-            # Se eliminan gpt_max, ph_min y lactato_max 
             'LR':   ['temp_min', 'pf_min', 'spo2_min', 'bicarbonato_min', 'rr_max', 'map_min'],
             'RF':   ['temp_min', 'spo2_min', 'bicarbonato_min', 'rr_max', 'map_min', 'glucemia_min', 'sofa_max', 'diuresis_ml_kg_12h', 'bilirrubina_media'],
             'XGB':  ['temp_min', 'pf_min', 'spo2_min', 'bicarbonato_min', 'map_min', 'glucemia_min', 'sofa_max'],
@@ -80,25 +88,23 @@ CONFIG_VENTANAS = {
         }
     }
 }
-
 COLUMNA_ID = 'subject_id'
 
-# ── 3. FUNCIONES DE EJECUCIÓN Y EXPLICABILIDAD ────────────────────────────────
-
+# ── FUNCIONES ──
 def preparar_datos(ruta, variables, etiqueta):
     df = pd.read_csv(ruta)
-    if 'pf_max' in df.columns: df = df.dropna(subset=['pf_max'])
     X, y, ids = df[variables].copy(), df[etiqueta].copy(), df[COLUMNA_ID].copy()
     if 'gender' in X.columns: X['gender'] = (X['gender'] == 'M').astype(int)
     return X, y, ids
 
-def ejecutar_validacion(nombre_modelo, pipeline, espacio, X, y, ids):
+def ejecutar_validacion(pipeline, espacio, X, y, ids):
     cv_externo = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
     cv_interno = StratifiedGroupKFold(n_splits=3, shuffle=True, random_state=42)
     res = {'AUC_ROC': [], 'AUC_PR': [], 'Brier': [], 'BSS': [], 'ECE': [], 'LogLoss': []}
     
     for train_idx, test_idx in cv_externo.split(X, y, groups=ids):
-        busqueda = GridSearchCV(pipeline, espacio, cv=cv_interno, scoring='roc_auc', n_jobs=-1, refit=True)
+        # n_jobs=1 estrictamente para asegurar que no colapse la RAM
+        busqueda = GridSearchCV(pipeline, espacio, cv=cv_interno, scoring='roc_auc', n_jobs=1, refit=True)
         busqueda.fit(X.iloc[train_idx], y.iloc[train_idx], groups=ids.iloc[train_idx])
         probs = busqueda.predict_proba(X.iloc[test_idx])[:, 1]
         y_t = y.iloc[test_idx]
@@ -112,47 +118,52 @@ def ejecutar_validacion(nombre_modelo, pipeline, espacio, X, y, ids):
         
     return {k: np.mean(v) for k, v in res.items()}, {k: np.std(v) for k, v in res.items()}, busqueda.best_estimator_
 
-def calcular_shap(model, X, ventana, modelo_n):
-    try:
-        m = model.named_steps['modelo']
-        explainer = shap.TreeExplainer(m) if modelo_n not in ['LR', 'NB'] else shap.KernelExplainer(m.predict_proba, shap.sample(X, 100))
-        vals = explainer.shap_values(X)
-        if isinstance(vals, list): vals = vals[1]
-        plt.figure(figsize=(10, 6))
-        shap.summary_plot(vals, X, show=False)
-        plt.title(f"SHAP - {ventana} - {modelo_n}")
-        plt.savefig(f"SHAP_{ventana}_{modelo_n}.png", dpi=300)
-        plt.close()
-    except Exception as e: print(f"Error SHAP {modelo_n}: {e}")
-
-# ── 4. MAIN ───────────────────────────────────────────────────────────────────
-
+# ── MAIN ──
 def main():
-    final_res = []
-    # IMPORTANTE: Reemplaza estos espacios por tus rejillas completas para el TFG final
+    # Iniciar CSV si no existe
+    if not os.path.exists(FILE_CSV):
+        pd.DataFrame(columns=['Ventana', 'Modelo', 'AUC_ROC', 'AUC_PR', 'Brier', 'BSS', 'ECE', 'LogLoss']).to_csv(FILE_CSV, index=False)
+
     espacios = {
-        'LR': (Pipeline([('s', RobustScaler()), ('modelo', LogisticRegression(class_weight='balanced', random_state=42))]), {'modelo__C': [0.005, 0.1, 1]}),
-        'RF': (Pipeline([('modelo', RandomForestClassifier(random_state=42, n_jobs=1))]), {'modelo__n_estimators': [500], 'modelo__max_depth': [10, 20]}),
-        'XGB': (Pipeline([('modelo', XGBClassifier(random_state=42, n_jobs=1, tree_method='hist'))]), {'modelo__n_estimators': [500], 'modelo__max_depth': [3, 5]}),
-        'LGBM': (Pipeline([('modelo', LGBMClassifier(random_state=42, n_jobs=1))]), {'modelo__n_estimators': [500]}),
-        'CAT': (Pipeline([('modelo', CatBoostClassifier(random_seed=42, verbose=0))]), {'modelo__iterations': [500]}),
-        'NB': (Pipeline([('s', RobustScaler()), ('modelo', GaussianNB())]), {'modelo__var_smoothing': [1e-9, 1e-5]})
+        'LR': (Pipeline([('s', RobustScaler()), ('modelo', LogisticRegression(max_iter=5000, class_weight='balanced', solver='liblinear', random_state=42))]), {'modelo__C': [1e-4, 5e-4, 1e-3, 5e-3, 1e-2, 5e-2, 0.1, 0.5, 1, 5, 10, 50]}),
+        'RF': (Pipeline([('modelo', RandomForestClassifier(random_state=42, n_jobs=1))]), {'modelo__n_estimators': [300, 400, 500, 600, 700, 850, 1000], 'modelo__max_depth': [None, 5, 10, 20, 30], 'modelo__min_samples_leaf': [1, 2, 5], 'modelo__max_features': ['sqrt', 0.3, 0.5], 'modelo__class_weight': ['balanced', 'balanced_subsample']}),
+        'XGB': (Pipeline([('modelo', XGBClassifier(objective='binary:logistic', eval_metric='auc', random_state=42, n_jobs=1, tree_method='hist'))]), {'modelo__n_estimators': [300, 400, 500, 600, 750, 900], 'modelo__max_depth': [3, 5, 7], 'modelo__learning_rate': [0.005, 0.01, 0.03, 0.1], 'modelo__subsample': [0.6, 0.8, 1.0], 'modelo__colsample_bytree': [0.6, 0.8, 1.0], 'modelo__reg_lambda': [0.1, 1, 10], 'modelo__scale_pos_weight': [1, 5, 9]}),
+        'LGBM': (Pipeline([('modelo', LGBMClassifier(random_state=42, verbosity=-1, n_jobs=1, objective='binary'))]), {'modelo__n_estimators': [300, 600, 1000], 'modelo__num_leaves': [15, 31, 63], 'modelo__learning_rate': [0.005, 0.01, 0.03, 0.1], 'modelo__min_child_samples': [10, 30, 60], 'modelo__reg_lambda': [0.1, 1, 10], 'modelo__subsample': [0.6, 0.8, 1.0], 'modelo__class_weight': ['balanced', None]}),
+        'CAT': (Pipeline([('modelo', CatBoostClassifier(loss_function='Logloss', eval_metric='AUC', random_seed=42, verbose=0, thread_count=1))]), {'modelo__iterations': [500, 1000], 'modelo__depth': [4, 5, 6, 7], 'modelo__learning_rate': [0.01, 0.03, 0.05, 0.1], 'modelo__l2_leaf_reg': [1, 5, 15], 'modelo__bagging_temperature': [0, 0.5, 1]}),
+        'NB': (Pipeline([('s', RobustScaler()), ('modelo', GaussianNB())]), {'modelo__var_smoothing': np.logspace(-12, -2, 30)})
     }
 
     for vent, conf in CONFIG_VENTANAS.items():
-        print(f"\n>>> Ventana: {vent}")
+        print(f"\n{'='*40}\nVentana: {vent}\n{'='*40}")
         for m_id, v_list in conf['vars'].items():
+            
+            # 1. Comprobar si ya existe en el CSV para saltarlo si el script se interrumpió
+            current_csv = pd.read_csv(FILE_CSV)
+            if ((current_csv['Ventana'] == vent) & (current_csv['Modelo'] == m_id)).any():
+                print(f"  [OMITIDO] {m_id} ya se encuentra evaluado en el CSV.")
+                continue
+
+            # 2. Entrenar y evaluar
             X, y, ids = preparar_datos(conf['ruta'], v_list, conf['etiqueta'])
             pipe, param = espacios[m_id]
-            print(f"  Entrenando {m_id}...", end="", flush=True)
-            m_m, m_s, m_f = ejecutar_validacion(m_id, pipe, param, X, y, ids)
-            final_res.append({'Ventana': vent, 'Modelo': m_id, **m_m})
-            calcular_shap(m_f, X, vent, m_id)
-            print(" Ok.")
+            print(f"  [ENTRENANDO] {m_id} ({len(v_list)} vars)...", end="", flush=True)
+            
+            try:
+                m_m, m_s, m_f = ejecutar_validacion(pipe, param, X, y, ids)
+                
+                # 3. Guardado Inmediato del Modelo (.pkl) en subcarpeta MODELOS ENTRENADOS
+                nombre_archivo = os.path.join(MODELOS_DIR, f"modelo_final_{vent}_{m_id}.pkl")
+                joblib.dump(m_f, nombre_archivo)
+                
+                # 4. Guardado Inmediato de las Métricas (CSV) en subcarpeta TABLAS
+                nueva_fila = pd.DataFrame([{'Ventana': vent, 'Modelo': m_id, **m_m}])
+                nueva_fila.to_csv(FILE_CSV, mode='a', header=False, index=False)
+                
+                print(f" OK. Guardado.")
+            except Exception as e:
+                print(f" ERROR: {e}")
 
-    df = pd.DataFrame(final_res)
-    df.to_csv('resultados_finales_tfg_depurados.csv', index=False)
-    print("\nProceso completado. Resultados en CSV y gráficos SHAP generados.")
+    print(f"\nPROCESO COMPLETADO. Revisa las carpetas '{TABLAS_DIR}' y '{MODELOS_DIR}'.")
 
 if __name__ == "__main__":
     main()

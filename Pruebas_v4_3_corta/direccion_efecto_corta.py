@@ -44,7 +44,7 @@ VARIABLES_MODELO = [
     'ph_min', 'bicarbonato_min', 'lactato_max',
     'gpt_max',
     'glucemia_min', 'temp_min',
-    'sofa_max',
+    'sofa_max', 'tp_max',
     'ventilacion_invasiva_3h', 'gender',
 ]
 

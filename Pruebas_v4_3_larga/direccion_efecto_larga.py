@@ -43,7 +43,7 @@ VARIABLES_MODELO = [
     'map_min', 'hr_media',
     'diuresis_ml_kg_12h', 'creatinina_max',
     'ph_min', 'bicarbonato_min', 'lactato_max',
-    'gpt_max',
+    'gpt_max', 'bilirrubina_media',
     'glucemia_min', 'temp_min',
     'sofa_max',
     'ventilacion_invasiva_12h', 'gender',
