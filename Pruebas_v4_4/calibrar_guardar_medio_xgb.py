@@ -221,3 +221,48 @@ plt.savefig(ruta_fig, dpi=200, bbox_inches='tight')
 plt.show()
 print(f"\nGráfica guardada en: {ruta_fig}")
 print("\n[Fin] El modelo calibrado está listo para validación externa.")
+
+# ── PASO 5: AÑADIR RESULTADOS AL CSV GENERAL ──────────────────────────────────
+from sklearn.metrics import average_precision_score, log_loss
+
+print("\nCalculando métricas por fold para el CSV...")
+
+# 1. Calcular métricas por fold para tener las medias y desviaciones (std)
+metricas_cal = {'AUC_ROC': [], 'AUC_PR': [], 'Brier': [], 'BSS': [], 'ECE': [], 'LogLoss': []}
+
+for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X, y, grupos)):
+    y_test_fold = y[idx_test]
+    prob_fold = prob_calibrada[idx_test]
+    
+    metricas_cal['AUC_ROC'].append(roc_auc_score(y_test_fold, prob_fold))
+    metricas_cal['AUC_PR'].append(average_precision_score(y_test_fold, prob_fold))
+    metricas_cal['Brier'].append(brier_score_loss(y_test_fold, prob_fold))
+    metricas_cal['BSS'].append(calcular_bss(prob_fold, y_test_fold))
+    metricas_cal['ECE'].append(calcular_ece(prob_fold, y_test_fold))
+    metricas_cal['LogLoss'].append(log_loss(y_test_fold, prob_fold))
+
+medias_cal = {k: np.mean(v) for k, v in metricas_cal.items()}
+std_cal    = {k: np.std(v)  for k, v in metricas_cal.items()}
+
+# 2. Definir la ruta de tu CSV original
+RUTA_CSV_RESULTADOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                   'TABLAS', 'resultados_metricas_multiventana.csv')
+
+# 3. Construir la fila con el formato exacto
+# Le ponemos de nombre algo como "XGB_Platt" para distinguirlo del XGB normal
+fila_calibrada = {
+    'Ventana': 'Medio_6_24',
+    'Modelo':  f'XGB_Calibrado', 
+    'n_vars':  len(VARIABLES),
+}
+
+for metrica in ['AUC_ROC', 'AUC_PR', 'Brier', 'BSS', 'ECE', 'LogLoss']:
+    fila_calibrada[metrica]          = round(medias_cal[metrica], 4)
+    fila_calibrada[f'{metrica}_std'] = round(std_cal[metrica], 4)
+
+# 4. Añadir la fila al CSV sin sobreescribir lo que ya tienes
+pd.DataFrame([fila_calibrada]).to_csv(
+    RUTA_CSV_RESULTADOS, mode='a', header=False, index=False
+)
+
+print(f"¡Éxito! Fila 'XGB_Calibrado' añadida al archivo: {RUTA_CSV_RESULTADOS}")
