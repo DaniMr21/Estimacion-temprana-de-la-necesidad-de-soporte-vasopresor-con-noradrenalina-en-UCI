@@ -3,6 +3,9 @@
 -- Modelo: XGBoost Medio_6_24 (calibrado Platt)
 -- Variables del modelo: pf_min, map_min, diuresis_ml_kg_6h,
 --                       hr_media, sofa_max, ventilacion_invasiva_6h
+-- CORRECCIÓN respecto a versión anterior: step 9 diuresis
+--   - antes: else 0  → pacientes sin registros de orina obtenían diuresis=0
+--   - ahora: COUNT=0 → NULL  → se elimina en el step 13 como dato desconocido
 -- =============================================================================
 
 
@@ -56,8 +59,6 @@ where horas_hasta_norad is null or horas_hasta_norad >= 6;
 
 
 -- 5. LABORATORIO (ventana 0-6h)
--- pao2_min: para calcular pf_min
--- bilirrubina, plaquetas, creatinina: auxiliares para SOFA interno únicamente
 drop table if exists variables_lab_eicu_v4;
 create table variables_lab_eicu_v4 as
 select c.patientunitstayid,
@@ -73,7 +74,7 @@ left join "lab" l on c.patientunitstayid = l.patientunitstayid
 group by c.patientunitstayid;
 
 
--- 6. VITALES (ventana 0-6h) — solo map_min y hr_media
+-- 6. VITALES (ventana 0-6h)
 drop table if exists variables_vitales_eicu_v4;
 create table variables_vitales_eicu_v4 as
 with periodic as (
@@ -100,7 +101,7 @@ from periodic p
 left join aperiodic a on p.patientunitstayid = a.patientunitstayid;
 
 
--- 7. FiO2 NORMALIZADO (ventana 0-6h) — para pf_min y SOFA respiratorio
+-- 7. FiO2 NORMALIZADO (ventana 0-6h)
 drop table if exists variables_fio2_eicu_v4;
 create table variables_fio2_eicu_v4 as
 with raw as (
@@ -125,7 +126,7 @@ from normalizado where fio2_pct is not null
 group by patientunitstayid;
 
 
--- 8. GCS (ventana 0-6h) — solo para SOFA neurológico
+-- 8. GCS (ventana 0-6h)
 drop table if exists variables_gcs_eicu_v4;
 create table variables_gcs_eicu_v4 as
 select c.patientunitstayid,
@@ -138,25 +139,41 @@ left join "nurseCharting" nc on c.patientunitstayid = nc.patientunitstayid
 group by c.patientunitstayid;
 
 
--- 9. DIURESIS normalizada por peso (ventana 0-6h) — variable del modelo
+-- 9. DIURESIS normalizada por peso (ventana 0-6h)
+-- CORRECCIÓN: paciente sin ningún registro de orina en la ventana → NULL
+-- Lógica:
+--   - peso_kg nulo o ≤0               → NULL
+--   - ningún registro de orina válido  → NULL (era 0 antes, incorrecto)
+--   - hay registros válidos            → suma / peso_kg
 drop table if exists variables_diuresis_eicu_v4;
 create table variables_diuresis_eicu_v4 as
 select c.patientunitstayid,
     case
-        when c.peso_kg > 0 and c.peso_kg is not null
-        then sum(case
-            when io.celllabel in (
-                'Urine','URINE CATHETER','Voided Amount','Foley cath','Foley',
-                'Urine, void:','foley','Urine Output-Foley','SN Urine Output(ml)',
-                'Urine Output (mL)-Urethral Catheter','Urine Output-foley',
-                'Urine Output (mL)-Urethral Catheter ',
-                'Urine Output (mL)-Urethral Catheter  ','Urine Output-FOLEY',
-                'FOLEY','Urine Output-Urine Output')
-              and io.cellvaluenumeric > 0
-            then io.cellvaluenumeric
-            else 0
-        end) / c.peso_kg
-        else null
+        when c.peso_kg is null or c.peso_kg <= 0 then null
+        when count(case
+                when io.celllabel in (
+                    'Urine','URINE CATHETER','Voided Amount','Foley cath','Foley',
+                    'Urine, void:','foley','Urine Output-Foley','SN Urine Output(ml)',
+                    'Urine Output (mL)-Urethral Catheter','Urine Output-foley',
+                    'Urine Output (mL)-Urethral Catheter ',
+                    'Urine Output (mL)-Urethral Catheter  ','Urine Output-FOLEY',
+                    'FOLEY','Urine Output-Urine Output')
+                  and io.cellvaluenumeric > 0
+                then 1
+             end) = 0 then null
+        else
+            sum(case
+                when io.celllabel in (
+                    'Urine','URINE CATHETER','Voided Amount','Foley cath','Foley',
+                    'Urine, void:','foley','Urine Output-Foley','SN Urine Output(ml)',
+                    'Urine Output (mL)-Urethral Catheter','Urine Output-foley',
+                    'Urine Output (mL)-Urethral Catheter ',
+                    'Urine Output (mL)-Urethral Catheter  ','Urine Output-FOLEY',
+                    'FOLEY','Urine Output-Urine Output')
+                  and io.cellvaluenumeric > 0
+                then io.cellvaluenumeric
+                else 0
+            end) / c.peso_kg
     end as diuresis_ml_kg_6h
 from dataset_modelo_eicu_v4 c
 left join "intakeOutput" io on c.patientunitstayid = io.patientunitstayid
@@ -164,24 +181,14 @@ left join "intakeOutput" io on c.patientunitstayid = io.patientunitstayid
 group by c.patientunitstayid, c.peso_kg;
 
 
--- 10. VENTILACIÓN INVASIVA (ventana 0-6h) — variable del modelo
--- Se detecta por presencia de registros de ventilador en respiratoryCharting
--- AVISO: verificar que estos labels existen en tu instancia eICU
--- Si el paciente tiene ≥1 registro de parámetros de ventilador → ventilacion_invasiva_6h = 1
+-- 10. VENTILACIÓN INVASIVA (ventana 0-6h)
 drop table if exists variables_ventilacion_eicu_v4;
 create table variables_ventilacion_eicu_v4 as
 select c.patientunitstayid,
     max(case when rc.respchartvaluelabel in (
-        'Vent Rate',
-        'Tidal Volume (set)',
-        'Tidal Volume (observed)',
-        'TV/kg IBW',
-        'PEEP',
-        'Peak Insp. Pressure',
-        'Plateau Pressure',
-        'Mean Airway Pressure',
-        'Inspiratory Ratio',
-        'Inspiratory Time'
+        'Vent Rate','Tidal Volume (set)','Tidal Volume (observed)',
+        'TV/kg IBW','PEEP','Peak Insp. Pressure','Plateau Pressure',
+        'Mean Airway Pressure','Inspiratory Ratio','Inspiratory Time'
     ) then 1 else 0 end) as ventilacion_invasiva_6h
 from dataset_modelo_eicu_v4 c
 left join "respiratoryCharting" rc on c.patientunitstayid = rc.patientunitstayid
@@ -189,7 +196,7 @@ left join "respiratoryCharting" rc on c.patientunitstayid = rc.patientunitstayid
 group by c.patientunitstayid;
 
 
--- 11. SOFA (ventana 0-6h) — variable del modelo
+-- 11. SOFA (ventana 0-6h)
 drop table if exists variables_sofa_eicu_v4;
 create table variables_sofa_eicu_v4 as
 with vasopresores as (
@@ -264,7 +271,7 @@ select patientunitstayid,
 from componentes;
 
 
--- 12. TABLA FINAL — identificadores + etiqueta + 6 variables del modelo
+-- 12. TABLA FINAL
 drop table if exists dataset_final_eicu_v4;
 create table dataset_final_eicu_v4 as
 select
@@ -276,7 +283,6 @@ select
     c.contador_estancia_uci,
     c.horas_hasta_norad,
     c.etiqueta_norad_6_24,
-    -- 6 variables del modelo XGB Medio
     case
         when l.pao2_min is not null and f.fio2_max is not null and f.fio2_max > 0
         then l.pao2_min / (f.fio2_max / 100.0)
@@ -287,24 +293,24 @@ select
     vt.hr_media,
     so.sofa_max,
     vc.ventilacion_invasiva_6h
-from dataset_modelo_eicu_v4      c
-left join variables_lab_eicu_v4      l  on c.patientunitstayid = l.patientunitstayid
-left join variables_vitales_eicu_v4  vt on c.patientunitstayid = vt.patientunitstayid
-left join variables_fio2_eicu_v4     f  on c.patientunitstayid = f.patientunitstayid
-left join variables_diuresis_eicu_v4 d  on c.patientunitstayid = d.patientunitstayid
-left join variables_sofa_eicu_v4     so on c.patientunitstayid = so.patientunitstayid
+from dataset_modelo_eicu_v4         c
+left join variables_lab_eicu_v4         l  on c.patientunitstayid = l.patientunitstayid
+left join variables_vitales_eicu_v4     vt on c.patientunitstayid = vt.patientunitstayid
+left join variables_fio2_eicu_v4        f  on c.patientunitstayid = f.patientunitstayid
+left join variables_diuresis_eicu_v4    d  on c.patientunitstayid = d.patientunitstayid
+left join variables_sofa_eicu_v4        so on c.patientunitstayid = so.patientunitstayid
 left join variables_ventilacion_eicu_v4 vc on c.patientunitstayid = vc.patientunitstayid;
 
 
--- 13. TABLA FINAL LIMPIA — solo filas completas en las 6 variables del modelo
+-- 13. TABLA FINAL LIMPIA
 drop table if exists dataset_final_eicu_v4_clean;
 create table dataset_final_eicu_v4_clean as
 select * from dataset_final_eicu_v4
-where pf_min               is not null
-  and map_min              is not null
-  and diuresis_ml_kg_6h   is not null
-  and hr_media             is not null
-  and sofa_max             is not null
+where pf_min                is not null
+  and map_min               is not null
+  and diuresis_ml_kg_6h     is not null
+  and hr_media              is not null
+  and sofa_max              is not null
   and ventilacion_invasiva_6h is not null;
 
 
