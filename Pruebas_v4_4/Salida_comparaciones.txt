@@ -1,0 +1,51 @@
+PS C:\Users\danie\TFG> & C:/Users/danie/AppData/Local/Programs/Python/Python312/python.exe c:/Users/danie/TFG/Pruebas_v4_4/comparativa_subgrupos.py
+c:\Users\danie\TFG\Pruebas_v4_4\comparativa_subgrupos.py:22: SyntaxWarning: invalid escape sequence '\m'
+  RUTA_PKL   = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'MODELOS_ENTRENADOS\modelo_Medio_6_24_XGB.pkl')
+Cargando datos y modelo...
+Generando predicciones OOF honestas (5 folds)...
+
+======================================================================
+SUBGRUPO / MODELO         | N (Pacientes) | AUC-ROC | AUC-PR  | BSS     | ECE    
+----------------------------------------------------------------------
+GLOBAL (Todos)            | n=3282        | 0.6802  | 0.2075  | +0.0282 | 0.0329 
+SÉPTICOS (tiene_sepsis=1) | n=993         | 0.6943  | 0.2870  | +0.0643 | 0.0280 
+NO SÉPTICOS (tiene_sepsis=0) | n=2289        | 0.6674  | 0.1726  | +0.0028 | 0.0361 
+----------------------------------------------------------------------
+SOFA (Baseline Clínico)   | n=3282        | 0.6064  | 0.1469  |   ---   |   ---  
+======================================================================
+
+✅XGBoost Calibrado supera al SOFA en 7.4 puntos porcentuales de AUC-ROC.
+PS C:\Users\danie\TFG> & C:/Users/danie/AppData/Local/Programs/Python/Python312/python.exe c:/Users/danie/TFG/Pruebas_v4_4/comparativa_larga.py
+c:\Users\danie\TFG\Pruebas_v4_4\comparativa_larga.py:18: SyntaxWarning: invalid escape sequence '\m'
+  RUTA_PKL   = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'MODELOS_ENTRENADOS\modelo_Largo_12_48_XGB.pkl')
+Cargando datos y modelo (Ventana LARGA)...
+Generando predicciones OOF honestas (5 folds)...
+
+======================================================================
+SUBGRUPO / MODELO         | N (Pacientes) | AUC-ROC | AUC-PR  | BSS     | ECE    
+----------------------------------------------------------------------
+GLOBAL (Todos)            | n=4088        | 0.6417  | 0.1703  | +0.0207 | 0.0168 
+SÉPTICOS (tiene_sepsis=1) | n=1343        | 0.6499  | 0.2085  | +0.0177 | 0.0297 
+NO SÉPTICOS (tiene_sepsis=0) | n=2745        | 0.6303  | 0.1499  | +0.0165 | 0.0107 
+----------------------------------------------------------------------
+SOFA (Baseline Clínico)   | n=4088        | 0.5875  | 0.1492  |   ---   |   ---  
+======================================================================
+
+✅ El XGB del Largo supera al SOFA en 5.4 puntos porcentuales de AUC-ROC.
+PS C:\Users\danie\TFG> & C:/Users/danie/AppData/Local/Programs/Python/Python312/python.exe c:/Users/danie/TFG/Pruebas_v4_4/comparativa_corta.py
+c:\Users\danie\TFG\Pruebas_v4_4\comparativa_corta.py:21: SyntaxWarning: invalid escape sequence '\m'
+  RUTA_PKL   = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'MODELOS_ENTRENADOS\modelo_Corto_3_12_CAT.pkl')
+Cargando datos y modelo (Ventana CORTA)...
+Generando predicciones OOF honestas (5 folds)...
+
+======================================================================
+SUBGRUPO / MODELO         | N (Pacientes) | AUC-ROC | AUC-PR  | BSS     | ECE    
+----------------------------------------------------------------------
+GLOBAL (Todos)            | n=1667        | 0.6170  | 0.1505  | +0.0120 | 0.0085 
+SÉPTICOS (tiene_sepsis=1) | n=461         | 0.6218  | 0.1725  | +0.0039 | 0.0208 
+NO SÉPTICOS (tiene_sepsis=0) | n=1206        | 0.6053  | 0.1515  | +0.0128 | 0.0115 
+----------------------------------------------------------------------
+SOFA (Baseline Clínico)   | n=1667        | 0.5811  | 0.1317  |   ---   |   ---  
+======================================================================
+
+✅El Cat del Corto supera al SOFA en 3.6 puntos porcentuales de AUC-ROC
