@@ -76,7 +76,7 @@ for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X, y, grupos)):
     prob_bruta_test             = modelo_fold.predict_proba(X_test)[:, 1]
     prob_oof[idx_test]          = prob_bruta_test
  
-    # Platt puro (sigmoide, sin regularización — estándar de la literatura)
+    # Platt puro (sigmoide, sin regularización)
     cal_platt_puro = LogisticRegression(C=1e10, solver='lbfgs', max_iter=1000)
     cal_platt_puro.fit(prob_bruta_train.reshape(-1, 1), y_train)
     prob_platt_puro[idx_test] = cal_platt_puro.predict_proba(
@@ -128,7 +128,7 @@ prob_calibrada = candidatos[mejor_nombre]
  
 # ── PASO 3: WRAPPER Y GUARDADO ─────────────────────────────────────────────────
  
-class ModeloCalibrаdо:
+class ModeloCalibrado:
     """
     Wrapper genérico: modelo XGB + calibrador (Platt puro, Platt reg o Isotónica).
     predict_proba() es compatible con sklearn.
@@ -172,7 +172,7 @@ print("Re-entrenando modelo base sobre datos internos completos...")
 modelo_completo = clone(modelo)
 modelo_completo.fit(X, y)
  
-modelo_calibrado = ModeloCalibrаdо(modelo_completo, calibrador_final, mejor_nombre)
+modelo_calibrado = ModeloCalibrado(modelo_completo, calibrador_final, mejor_nombre)
 joblib.dump(modelo_calibrado, RUTA_SALIDA)
 print(f"Modelo calibrado ({mejor_nombre}) guardado en: {RUTA_SALIDA}")
  
@@ -265,4 +265,4 @@ pd.DataFrame([fila_calibrada]).to_csv(
     RUTA_CSV_RESULTADOS, mode='a', header=False, index=False
 )
 
-print(f"¡Éxito! Fila 'XGB_Calibrado' añadida al archivo: {RUTA_CSV_RESULTADOS}")
+print(f"Fila 'XGB_Calibrado' añadida al archivo: {RUTA_CSV_RESULTADOS}")

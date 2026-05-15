@@ -70,7 +70,7 @@ for ventana, conf in CONFIG_VENTANAS.items():
         
         # Saltar si por algún casual el modelo no está guardado
         if not os.path.exists(ruta_pkl):
-            print(f" ⚠️ No se encontró el modelo {nombre_archivo_pkl}, omitiendo...")
+            print(f"No se encontró el modelo {nombre_archivo_pkl}, omitiendo...")
             continue
             
         print(f"  -> Generando gráfica para {modelo_nombre}...")
