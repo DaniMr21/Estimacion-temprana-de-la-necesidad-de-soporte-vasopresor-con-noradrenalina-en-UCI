@@ -224,7 +224,7 @@ st.markdown(
     '<div class="aviso-prototipo">'
     '⚠ PROTOTIPO DE INVESTIGACIÓN — NO USAR BAJO NINGÚN CONCEPTO EN PRÁCTICA '
     'CLÍNICA REAL ⚠<br>'
-    'Sistema académico (TFG) sin validación clínica ni autorización regulatoria. '
+    'Sin validación clínica ni autorización regulatoria. '
     'Las decisiones clínicas son responsabilidad exclusiva del facultativo.'
     '</div>',
     unsafe_allow_html=True
