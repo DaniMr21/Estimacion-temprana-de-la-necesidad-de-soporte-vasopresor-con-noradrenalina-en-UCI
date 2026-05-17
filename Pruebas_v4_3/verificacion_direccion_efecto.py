@@ -1,21 +1,3 @@
-"""
-Verificación de dirección del efecto — directo desde datos crudos.
-
-Para cada variable del set final, calcula directamente del CSV original:
-  - Mediana (continuas) o proporción (binarias) en positivos vs negativos
-  - Diferencia de medianas / proporciones
-  - Test estadístico (Mann-Whitney o Chi-cuadrado)
-  - OR crudo (univariante, solo orientativo)
-  - OR ajustado de la regresión logística multivariante
-
-Todo calculado desde cero, sin depender de ficheros intermedios.
-Esto permite justificar cada decisión de inclusión/exclusión con
-los números reales del dataset.
-
-Salida:
-  - tablas/verificacion_direccion_efecto_v4.csv
-"""
-
 import os
 import warnings
 warnings.filterwarnings('ignore')
@@ -55,7 +37,6 @@ VARIABLES_BINARIAS = ['gender', 'ventilacion_invasiva_6h']
 
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     # Primera estancia por paciente para evitar dependencia
     df = (df.sort_values([COLUMNA_ID, 'contador_estancia_uci'])
             .drop_duplicates(COLUMNA_ID, keep='first')

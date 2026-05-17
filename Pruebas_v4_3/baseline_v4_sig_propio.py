@@ -1,37 +1,3 @@
-"""
-Baseline v4 — cada modelo entrenado con sus propias variables
-estadísticamente significativas (IC95% de permutation importance excluye 0).
-
-Las variables de cada modelo se obtienen de:
-  tablas/permutation_importance_multimodelo_v4.csv
-  (columna IC_excluye_cero == True)
-
-Variables significativas por modelo:
-  LR   (8):  gpt_max, pf_min, diuresis_ml_kg_6h, rr_max, sofa_max,
-             ph_min, hr_media, ventilacion_invasiva_6h
-  RF   (11): pf_min, map_min, diuresis_ml_kg_6h, rr_max, gpt_max,
-             spo2_min, ph_min, hr_media, glucemia_min,
-             ventilacion_invasiva_6h, gender
-  XGB  (9):  pf_min, map_min, diuresis_ml_kg_6h, temp_min, hr_media,
-             ph_min, sofa_max, ventilacion_invasiva_6h, gender
-  LGBM (8):  map_min, pf_min, diuresis_ml_kg_6h, gpt_max, spo2_min,
-             ph_min, ventilacion_invasiva_6h, gender
-  CAT  (9):  map_min, pf_min, diuresis_ml_kg_6h, hr_media, rr_max,
-             glucemia_min, ph_min, ventilacion_invasiva_6h, gender
-  NB   (11): gpt_max, pf_min, diuresis_ml_kg_6h, rr_max, temp_min,
-             ph_min, lactato_max, sofa_max, hr_media,
-             ventilacion_invasiva_6h, fio2_max
-
-Mismo CV anidado (5 externos, 3 internos, StratifiedGroupKFold) y
-mismo grid de hiperparámetros que baseline_v4_2.py para que la
-comparación de AUC sea directa.
-
-Comparación esperada:
-  Set completo  (76 vars) — RF AUC: 0.6992 ± 0.0134
-  Set reducido  (26 vars) — RF AUC: 0.7077 ± 0.0089
-  Set sig. propio (este)  — RF AUC: ?
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -92,7 +58,6 @@ COLUMNA_ID = 'subject_id'
 
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 
@@ -323,28 +288,6 @@ def main():
     for clave, (auc_medio, auc_desv, _) in ranking:
         n_vars = len(VARIABLES_POR_MODELO[clave])
         print(f"  {clave:<6} ({n_vars:>2} vars)  AUC = {auc_medio:.4f} ± {auc_desv:.4f}")
-
-    print()
-    print("COMPARACIÓN CON SETS ANTERIORES (RF):")
-    print(f"  {'Set':<35} {'Vars':>5}  AUC")
-    print(f"  {'─'*35} {'─'*5}  {'─'*18}")
-    print(f"  {'Completo':<35} {'76':>5}  0.6992 ± 0.0134")
-    print(f"  {'Reducido (baseline_v4_2)':<35} {'26':>5}  0.7077 ± 0.0089")
-    auc_rf  = resultados['RF'][0]
-    desv_rf = resultados['RF'][1]
-    n_rf    = len(VARIABLES_POR_MODELO['RF'])
-    print(f"  {'Sig. propio por modelo (este)':<35} {n_rf:>5}  "
-          f"{auc_rf:.4f} ± {desv_rf:.4f}")
-
-    delta = auc_rf - 0.7077
-    print()
-    print(f"  Diferencia RF (este vs reducido): {delta:+.4f}")
-    if abs(delta) <= 0.005:
-        print("  → AUC se mantiene. Selección de variables justificada.")
-    elif delta > 0.005:
-        print("  → AUC mejora. Selección de variables beneficiosa.")
-    else:
-        print("  → AUC cae más de 0.005. Revisar selección de variables.")
 
 
 if __name__ == "__main__":

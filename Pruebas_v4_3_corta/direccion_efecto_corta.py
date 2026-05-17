@@ -1,21 +1,3 @@
-"""
-Verificación de dirección del efecto — directo desde datos crudos.
-
-Para cada variable del set final, calcula directamente del CSV original:
-  - Mediana (continuas) o proporción (binarias) en positivos vs negativos
-  - Diferencia de medianas / proporciones
-  - Test estadístico (Mann-Whitney o Chi-cuadrado)
-  - OR crudo (univariante, solo orientativo)
-  - OR ajustado de la regresión logística multivariante
-
-Todo calculado desde cero, sin depender de ficheros intermedios.
-Esto permite justificar cada decisión de inclusión/exclusión con
-los números reales del dataset.
-
-Salida:
-  - tablas/verificacion_direccion_efecto_v4p.csv
-"""
-
 import os
 import warnings
 warnings.filterwarnings('ignore')

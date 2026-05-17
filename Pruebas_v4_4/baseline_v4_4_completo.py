@@ -114,7 +114,7 @@ ESPACIOS = {
             ('modelo', XGBClassifier(
                 objective='binary:logistic', eval_metric='auc',
                 random_state=42,
-                n_jobs=1,           # GridSearchCV ya paralela por fuera
+                n_jobs=1,          
                 tree_method='hist',
                 verbosity=0,
             )),
@@ -133,7 +133,7 @@ ESPACIOS = {
         Pipeline([
             ('modelo', LGBMClassifier(
                 random_state=42, verbosity=-1,
-                n_jobs=1,           # GridSearchCV ya paralela por fuera
+                n_jobs=1,          
                 objective='binary',
             )),
         ]),
@@ -152,7 +152,7 @@ ESPACIOS = {
             ('modelo', CatBoostClassifier(
                 loss_function='Logloss', eval_metric='AUC',
                 random_seed=42, verbose=0,
-                thread_count=1,     # GridSearchCV ya paralela por fuera
+                thread_count=1,    
             )),
         ]),
         {
@@ -200,7 +200,6 @@ def expected_calibration_error(y_true, y_prob, n_bins=10):
 
 def preparar_datos(ruta, variables, etiqueta):
     df = pd.read_csv(ruta)
-    df = df.dropna(subset=['pf_max'])   # igual que en todos los scripts anteriores
     x  = df[variables].copy()
     y  = df[etiqueta].copy()
     ids = df[COLUMNA_ID].copy()
@@ -213,7 +212,7 @@ def preparar_datos(ruta, variables, etiqueta):
 
 def ejecutar_cv(pipeline, espacio, x, y, ids):
     """
-    CV anidada 5×3 para obtener métricas imparciales.
+    CV anidada 5x3 para obtener métricas imparciales.
     Devuelve medias, desviaciones y los mejores parámetros de cada fold
     (para luego reentrenar el modelo final sobre todos los datos).
     """

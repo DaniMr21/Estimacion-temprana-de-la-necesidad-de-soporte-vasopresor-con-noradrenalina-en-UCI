@@ -1,44 +1,3 @@
-"""
-Baseline v4 — cada modelo entrenado con sus propias variables
-estadísticamente significativas, tras verificación de dirección del efecto.
-
-Eliminaciones respecto al permutation importance multimodelo,
-justificadas por verificacion_direccion_efecto_v4.csv:
-
-  - gpt_max : OR ajustado = 0.680 (coef = -0.386). Efecto inverso.
-    Mediana idéntica en positivos y negativos (32.0 vs 32.0).
-    Confusión por indicación: pacientes con GPT muy alta tienen
-    limitación de esfuerzo terapéutico. Patrón no generalizable.
-  - gender  : p_test = 0.32, p_ajustado = 0.29, OR = 1.068.
-    Sin significancia en ningún análisis. Efecto mínimo, ruido.
-  - fio2_max: p_ajustado = 0.65, OR = 1.032. Dirección coherente
-    pero efecto independiente nulo — absorbida por pf_min, spo2_min
-    y rr_max en el modelo multivariante.
-
-Variables finales por modelo:
-  LR   (7):  pf_min, diuresis_ml_kg_6h, rr_max, sofa_max,
-             ph_min, hr_media, ventilacion_invasiva_6h
-  RF   (9):  pf_min, map_min, diuresis_ml_kg_6h, rr_max,
-             spo2_min, ph_min, hr_media, glucemia_min,
-             ventilacion_invasiva_6h
-  XGB  (8):  pf_min, map_min, diuresis_ml_kg_6h, temp_min,
-             hr_media, ph_min, sofa_max, ventilacion_invasiva_6h
-  LGBM (6):  map_min, pf_min, diuresis_ml_kg_6h,
-             spo2_min, ph_min, ventilacion_invasiva_6h
-  CAT  (8):  map_min, pf_min, diuresis_ml_kg_6h, hr_media,
-             rr_max, glucemia_min, ph_min, ventilacion_invasiva_6h
-  NB   (9):  pf_min, diuresis_ml_kg_6h, rr_max, temp_min,
-             ph_min, lactato_max, sofa_max, hr_media,
-             ventilacion_invasiva_6h
-
-Comparación de referencia (RF):
-  Set completo  (76 vars) : 0.6992 ± 0.0134
-  Set reducido  (26 vars) : 0.7077 ± 0.0089
-  Set sig. v1 (con gpt+gender)      : 0.7108 ± 0.0093
-  Set sig. v2 (sin gpt+gender)      : 0.7108 ± 0.0093
-  Set sig. v3 (sin gpt+gender+fio2) : ?
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -99,7 +58,6 @@ COLUMNA_ID = 'subject_id'
 
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 
@@ -330,30 +288,6 @@ def main():
     for clave, (auc_medio, auc_desv, _) in ranking:
         n_vars = len(VARIABLES_POR_MODELO[clave])
         print(f"  {clave:<6} ({n_vars:>2} vars)  AUC = {auc_medio:.4f} ± {auc_desv:.4f}")
-
-    print()
-    print("COMPARACIÓN CON SETS ANTERIORES (RF):")
-    print(f"  {'Set':<40} {'Vars':>5}  AUC")
-    print(f"  {'─'*40} {'─'*5}  {'─'*18}")
-    print(f"  {'Completo':<40} {'76':>5}  0.6992 ± 0.0134")
-    print(f"  {'Reducido (baseline_v4_2)':<40} {'26':>5}  0.7077 ± 0.0089")
-    print(f"  {'Sig. v1 (con gpt+gender)':<40} {'~11':>5}  0.7108 ± 0.0093")
-    print(f"  {'Sig. v2 (sin gpt+gender)':<40} {'~9':>5}  0.7108 ± 0.0093")
-    auc_rf  = resultados['RF'][0]
-    desv_rf = resultados['RF'][1]
-    n_rf    = len(VARIABLES_POR_MODELO['RF'])
-    print(f"  {'Sig. v3 (sin gpt+gender+fio2)':<40} {n_rf:>5}  "
-          f"{auc_rf:.4f} ± {desv_rf:.4f}")
-
-    delta = auc_rf - 0.7108
-    print()
-    print(f"  Diferencia RF (v3 vs v1): {delta:+.4f}")
-    if abs(delta) <= 0.005:
-        print("  → AUC se mantiene. Eliminaciones justificadas.")
-    elif delta > 0.005:
-        print("  → AUC mejora. Eliminaciones beneficiosas.")
-    else:
-        print("  → AUC cae. Documentar el trade-off.")
 
 
 if __name__ == "__main__":
