@@ -329,17 +329,7 @@ else:
                     f'<div class="percentil-grande">{percentil}</div>',
                     unsafe_allow_html=True
                 )
-                if percentil >= 80:
-                    nivel = 'ALTO'
-                elif percentil >= 50:
-                    nivel = 'MEDIO'
-                else:
-                    nivel = 'BAJO'
-                st.markdown(
-                    f'<div class="percentil-etiqueta">Nivel: <b>{nivel}</b></div>',
-                    unsafe_allow_html=True
-                )
-
+                
                 # ID paciente
                 if 'ID' in df_raw.columns:
                     pid = df_raw['ID'].iloc[0]
