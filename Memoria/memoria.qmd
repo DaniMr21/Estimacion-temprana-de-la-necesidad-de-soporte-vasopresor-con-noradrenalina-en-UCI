@@ -46,7 +46,7 @@ knitr:
 
 ```{=latex}
 %% ── Datos de portada (editar aquí) ─────────────────────────
-\title{Estimación temprana del riesgo de inicio de noradrenalina en UCImediante aprendizaje automático y dashboard interpretable}
+\title{Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable}
 \author{\nombre}
 \date{\today}
 
