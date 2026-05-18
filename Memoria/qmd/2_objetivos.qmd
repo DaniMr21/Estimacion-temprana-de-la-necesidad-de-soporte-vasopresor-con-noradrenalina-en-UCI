@@ -28,7 +28,7 @@ a dicha predicción en cada paciente de forma individualizada.
 \textbf{Objetivos técnicos}
 
 \begin{enumerate}
-  \item Definir y construir a partir de MIMIC-IV la cohorte general de pacientes adultos de UCI como base y el subgrupo de sepsis como análisis específico.
+  \item Definir y construir a partir de MIMIC-IV la cohorte general de pacientes adultos de UCI, registrando la presencia de sepsis como variable para el análisis de rendimiento diferencial por subgrupos.
 
   \item Extraer y preprocesar las variables predictoras relevantes disponibles en las primeras horas del ingreso en UCI, incluyendo constantes vitales, parámetros analíticos y otros 
   indicadores de disfunción orgánica y perfusión tisular.

@@ -1,3 +1,4 @@
+```{=latex}
 \capitulo{3}{Conceptos teóricos}
 
 \textbf{Inestabilidad hemodinámica en UCI y deterioro hemodinámico}
@@ -102,3 +103,4 @@ primeras horas de estancia, sobre una cohorte general de adultos en UCI sin rest
 el uso de modelos con selección de variables por ventana, la traducción del resultado a una interfaz funcional tipo \textit{dashboard} y la validación externa sobre una 
 cohorte multicéntrica independiente. De este modo, el trabajo se orienta no solo a la obtención de un buen rendimiento predictivo, sino también a su posible utilidad como herramienta de apoyo a 
 la decisión clínica.
+```

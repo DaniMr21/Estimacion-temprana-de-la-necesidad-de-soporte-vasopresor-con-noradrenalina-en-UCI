@@ -1,3 +1,4 @@
+```{=latex}
 \capitulo{1}{Introducción}
 
 \textbf{Contexto clínico y relevancia del problema}
@@ -31,7 +32,7 @@ identificar de forma temprana a los pacientes con mayor riesgo de requerir sopor
 \textbf{Planteamiento del trabajo}
 
 En los últimos años, el aprendizaje automático (\textit{machine learning}, ML) ha despertado un interés creciente en la predicción de eventos clínicos en pacientes críticos, 
-favorecido por la disponibilidad de bases de datos clínicas de gran escala como MIMIC-IV o eICU y por la capacidad de estos modelos para integrar simultáneamente múltiples variables 
+favorecido por la disponibilidad de bases de datos clínicas de gran escala como MIMIC-IV o eICU \cite{pollard2018} y por la capacidad de estos modelos para integrar simultáneamente múltiples variables 
 clínicas \cite{johnson2023,shanmugam2025}. Sin embargo, buena parte de los trabajos publicados carece de validación externa, centra su enfoque en métricas de discriminación retrospectiva 
 sin trasladar los resultados a escenarios de uso clínico real, o aborda tareas más generales como la predicción de mortalidad o la detección de sepsis sin orientarse a decisiones terapéuticas 
 concretas \cite{shanmugam2025,rockenschaub2025}.
@@ -41,10 +42,11 @@ noradrenalina en pacientes adultos ingresados en UCI, utilizando variables clín
 Los modelos se entrenan sobre la cohorte general de pacientes adultos de UCI de MIMIC-IV, sin restricción diagnóstica, lo que permite abordar el problema en toda su amplitud clínica.
 El trabajo incorpora tres elementos de interés práctico adicionales: el diseño de distintas ventanas temporales de predicción, la incorporación de explicabilidad individualizada mediante 
 valores SHAP y la integración del modelo en un prototipo de \textit{dashboard} clínico desarrollado en Streamlit, orientado al apoyo a la decisión a pie de cama. 
-La aplicabilidad fuera del entorno de entrenamiento se evalúa mediante validación externa sobre la base de datos eICU.
+La aplicabilidad fuera del entorno de entrenamiento se evalúa mediante validación externa sobre la base de datos eICU \cite{pollard2018}.
 
 \textbf{Estructura de la memoria}
 
 El presente documento se organiza en ocho capítulos. Tras este capítulo introductorio, el \textbf{Capítulo~2} recoge los objetivos del trabajo. 
 El \textbf{Capítulo~3} desarrolla el marco teórico y el estado del arte. El \textbf{Capítulo~4} describe la metodología empleada. 
 Los \textbf{Capítulos~5 y~6} presentan y discuten los resultados. El \textbf{Capítulo~7} recoge las conclusiones y el \textbf{Capítulo~8} propone posibles líneas de trabajo futuro.
+```
