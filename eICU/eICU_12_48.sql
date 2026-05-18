@@ -1,8 +1,9 @@
 -- =============================================================================
 -- DATASET VALIDACIÓN EXTERNA eICU — ventana 12-48h
--- Modelo: XGBoost Largo_12_48
--- Variables del modelo: temp_min, pf_min, spo2_min, bicarbonato_min,
---                       map_min, glucemia_min, sofa_max
+-- Modelo XGBoost  : temp_min, pf_min, spo2_min, bicarbonato_min,
+--                   map_min, glucemia_min, sofa_max
+-- Modelo CatBoost : pf_min, bicarbonato_min, rr_max,
+--                   diuresis_ml_kg_12h, temp_min, glucemia_min
 -- =============================================================================
 
 
@@ -46,7 +47,7 @@ where horas_hasta_norad is null or horas_hasta_norad >= 12;
 
 
 -- 4. LABORATORIO (ventana 0-12h)
--- bicarbonato_min, glucemia_min: variables del modelo
+-- bicarbonato_min, glucemia_min: variables de ambos modelos
 -- pao2_min: para calcular pf_min
 -- bilirrubina, plaquetas, creatinina: auxiliares SOFA únicamente
 drop table if exists variables_lab_eicu_v4l;
@@ -55,7 +56,6 @@ select c.patientunitstayid,
     min(case when l.labname = 'bicarbonate'      then l.labresult end) as bicarbonato_min,
     min(case when l.labname = 'glucose'          then l.labresult end) as glucemia_min,
     min(case when l.labname = 'paO2'             then l.labresult end) as pao2_min,
-    -- Auxiliares para SOFA
     max(case when l.labname = 'total bilirubin'  then l.labresult end) as bilirrubina_max,
     min(case when l.labname = 'platelets x 1000' then l.labresult end) as plaquetas_min,
     max(case when l.labname = 'creatinine'       then l.labresult end) as creatinina_max
@@ -70,13 +70,16 @@ left join "lab" l on c.patientunitstayid = l.patientunitstayid
 group by c.patientunitstayid;
 
 
--- 5. VITALES (ventana 0-12h) — temp_min, spo2_min, map_min
+-- 5. VITALES (ventana 0-12h)
+-- temp_min, spo2_min, map_min: variables XGBoost
+-- rr_max: variable CatBoost
 drop table if exists variables_vitales_eicu_v4l;
 create table variables_vitales_eicu_v4l as
 with periodic as (
     select c.patientunitstayid,
         min(vp.sao2)         as spo2_min,
         min(vp.systemicmean) as map_art_min,
+        max(vp.respiration)  as rr_max,
         min(case when vp.temperature > 50 then (vp.temperature - 32) * 5.0/9.0
                  else vp.temperature end) as temp_min_periodic
     from dataset_modelo_eicu_v4l c
@@ -110,6 +113,7 @@ temp_nurse as (
 )
 select p.patientunitstayid,
     p.spo2_min,
+    p.rr_max,
     coalesce(p.temp_min_periodic, t.temp_min_nurse) as temp_min,
     coalesce(p.map_art_min, a.map_nibp_min)         as map_min
 from periodic p
@@ -117,7 +121,7 @@ left join aperiodic  a on p.patientunitstayid = a.patientunitstayid
 left join temp_nurse t on p.patientunitstayid = t.patientunitstayid;
 
 
--- 6. FiO2 NORMALIZADO (ventana 0-12h) — para pf_min y SOFA respiratorio
+-- 6. FiO2 NORMALIZADO (ventana 0-12h)
 drop table if exists variables_fio2_eicu_v4l;
 create table variables_fio2_eicu_v4l as
 with raw as (
@@ -156,7 +160,7 @@ left join "nurseCharting" nc on c.patientunitstayid = nc.patientunitstayid
 group by c.patientunitstayid;
 
 
--- 8. SOFA (ventana 0-12h) — variable del modelo
+-- 8. SOFA (ventana 0-12h)
 drop table if exists variables_sofa_eicu_v4l;
 create table variables_sofa_eicu_v4l as
 with vasopresores as (
@@ -231,7 +235,45 @@ select patientunitstayid,
 from componentes;
 
 
--- 9. TABLA FINAL — identificadores + etiqueta + 7 variables del modelo
+-- 8bis. DIURESIS normalizada por peso (ventana 0-12h) — variable CatBoost
+-- Misma lógica que eICU_6_24 pero con offset hasta 720 min (12h)
+drop table if exists variables_diuresis_eicu_v4l;
+create table variables_diuresis_eicu_v4l as
+select c.patientunitstayid,
+    case
+        when c.peso_kg is null or c.peso_kg <= 0 then null
+        when count(case
+                when io.celllabel in (
+                    'Urine','URINE CATHETER','Voided Amount','Foley cath','Foley',
+                    'Urine, void:','foley','Urine Output-Foley','SN Urine Output(ml)',
+                    'Urine Output (mL)-Urethral Catheter','Urine Output-foley',
+                    'Urine Output (mL)-Urethral Catheter ',
+                    'Urine Output (mL)-Urethral Catheter  ','Urine Output-FOLEY',
+                    'FOLEY','Urine Output-Urine Output')
+                  and io.cellvaluenumeric > 0
+                then 1
+             end) = 0 then null
+        else
+            sum(case
+                when io.celllabel in (
+                    'Urine','URINE CATHETER','Voided Amount','Foley cath','Foley',
+                    'Urine, void:','foley','Urine Output-Foley','SN Urine Output(ml)',
+                    'Urine Output (mL)-Urethral Catheter','Urine Output-foley',
+                    'Urine Output (mL)-Urethral Catheter ',
+                    'Urine Output (mL)-Urethral Catheter  ','Urine Output-FOLEY',
+                    'FOLEY','Urine Output-Urine Output')
+                  and io.cellvaluenumeric > 0
+                then io.cellvaluenumeric
+                else 0
+            end) / c.peso_kg
+    end as diuresis_ml_kg_12h
+from dataset_modelo_eicu_v4l c
+left join "intakeOutput" io on c.patientunitstayid = io.patientunitstayid
+    and io.intakeoutputoffset between 0 and 720
+group by c.patientunitstayid, c.peso_kg;
+
+
+-- 9. TABLA FINAL
 drop table if exists dataset_final_eicu_v4l;
 create table dataset_final_eicu_v4l as
 select
@@ -243,7 +285,7 @@ select
     c.contador_estancia_uci,
     c.horas_hasta_norad,
     c.etiqueta_norad_12_48,
-    -- 7 variables del modelo XGB Largo
+    -- Variables XGBoost + CatBoost
     vt.temp_min,
     case
         when l.pao2_min is not null and f.fio2_max is not null and f.fio2_max > 0
@@ -251,28 +293,34 @@ select
         else null
     end                      as pf_min,
     vt.spo2_min,
+    vt.rr_max,
     l.bicarbonato_min,
     vt.map_min,
     l.glucemia_min,
-    so.sofa_max
+    so.sofa_max,
+    d.diuresis_ml_kg_12h
 from dataset_modelo_eicu_v4l      c
 left join variables_lab_eicu_v4l      l  on c.patientunitstayid = l.patientunitstayid
 left join variables_vitales_eicu_v4l  vt on c.patientunitstayid = vt.patientunitstayid
 left join variables_fio2_eicu_v4l     f  on c.patientunitstayid = f.patientunitstayid
-left join variables_sofa_eicu_v4l     so on c.patientunitstayid = so.patientunitstayid;
+left join variables_sofa_eicu_v4l     so on c.patientunitstayid = so.patientunitstayid
+left join variables_diuresis_eicu_v4l d  on c.patientunitstayid = d.patientunitstayid;
 
 
--- 10. TABLA FINAL LIMPIA — solo filas completas en las 7 variables del modelo
+-- 10. TABLA FINAL LIMPIA
+-- Filtro XGBoost original + rr_max y diuresis_ml_kg_12h para CatBoost
 drop table if exists dataset_final_eicu_v4l_clean;
 create table dataset_final_eicu_v4l_clean as
 select * from dataset_final_eicu_v4l
-where temp_min        is not null
-  and pf_min          is not null
-  and spo2_min        is not null
-  and bicarbonato_min is not null
-  and map_min         is not null
-  and glucemia_min    is not null
-  and sofa_max        is not null;
+where temp_min             is not null
+  and pf_min               is not null
+  and spo2_min             is not null
+  and bicarbonato_min      is not null
+  and map_min              is not null
+  and glucemia_min         is not null
+  and sofa_max             is not null
+  and rr_max               is not null
+  and diuresis_ml_kg_12h   is not null;
 
 
 -- VERIFICACIÓN

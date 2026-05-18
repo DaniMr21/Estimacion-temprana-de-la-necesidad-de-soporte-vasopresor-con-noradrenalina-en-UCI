@@ -1,252 +1,105 @@
-"""
-Tabla 1 — Características basales MIMIC vs eICU
-================================================
-Genera una tabla comparativa de case-mix para las tres ventanas temporales.
-
-Variables incluidas (disponibles en ambas cohortes):
-  - N pacientes
-  - Edad (mediana [IQR])
-  - Género masculino n (%)
-  - Peso kg (mediana [IQR])
-  - SOFA máx (mediana [IQR])
-  - Primera estancia UCI n (%)
-  - Uso de noradrenalina — positivos n (%)
-  - Horas hasta noradrenalina en positivos (mediana [IQR])
-
-Test estadístico:
-  - Continuas: Mann-Whitney U → p-value
-  - Categóricas: Chi-cuadrado → p-value
-"""
-
 import os
-import numpy as np
 import pandas as pd
-from scipy import stats
+import matplotlib.pyplot as plt
+import seaborn as sns
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
-CARPETA_MIMIC  = r'C:\Users\danie\OneDrive\Escritorio\DATA'
-CARPETA_EICU   = r'C:\Users\danie\OneDrive\Escritorio\DATA'
-CARPETA_SALIDA = os.path.dirname(os.path.abspath(__file__))
+# ── RUTA A LA CARPETA DONDE TIENES LOS CSVS ──
+CARPETA_DATOS = r'C:\Users\danie\OneDrive\Escritorio\DATA'
 
-VENTANAS = {
-    'Corto 3-12h': {
-        'mimic':    os.path.join(CARPETA_MIMIC, 'definitivo_v4p.csv'),
-        'eicu':     os.path.join(CARPETA_EICU,  'eICU_3_12_definitivo.csv'),
-        'etiqueta': 'etiqueta_norad_3_12',
+# ── TU DICCIONARIO COMPLETO Y EXACTO (Añadidos los CSV de MIMIC correspondientes) ──
+ventanas = {
+    'Corto_3_12': {
+        'mimic': os.path.join(CARPETA_DATOS, 'definitivo_v4p.csv'),
+        'eicu': os.path.join(CARPETA_DATOS, 'eICU_3_12_definitivo.csv'),
+        'vars': ['map_min', 'pf_min', 'sofa_max', 'tp_max'],
+        'label': 'Corto 3-12h (CatBoost)'
     },
-    'Medio 6-24h': {
-        'mimic':    os.path.join(CARPETA_MIMIC, 'definitivo_v4.csv'),
-        'eicu':     os.path.join(CARPETA_EICU,  'eICU_6_24_definitivo.csv'),
-        'etiqueta': 'etiqueta_norad_6_24',
+    'Medio_6_24': {
+        'mimic': os.path.join(CARPETA_DATOS, 'definitivo_v4.csv'),
+        'eicu': os.path.join(CARPETA_DATOS, 'eICU_6_24_definitivo.csv'),
+        'vars': ['pf_min', 'map_min', 'diuresis_ml_kg_6h', 'hr_media', 'sofa_max', 'ventilacion_invasiva_6h'],
+        'label': 'Medio 6-24h (XGBoost cal.)'
     },
-    'Largo 12-48h': {
-        'mimic':    os.path.join(CARPETA_MIMIC, 'definitivo_v4l.csv'),
-        'eicu':     os.path.join(CARPETA_EICU,  'eICU_12_48_definitivo.csv'),
-        'etiqueta': 'etiqueta_norad_12_48',
+    'Medio_6_24_CAT': {
+        'mimic': os.path.join(CARPETA_DATOS, 'definitivo_v4.csv'),
+        'eicu': os.path.join(CARPETA_DATOS, 'eICU_6_24_definitivo.csv'),
+        'vars': ['pf_min', 'rr_max', 'map_min', 'diuresis_ml_kg_6h', 'ventilacion_invasiva_6h', 'hr_media', 'glucemia_min'],
+        'label': 'Medio 6-24h (CatBoost)'
     },
+    'Largo_12_48': {
+        'mimic': os.path.join(CARPETA_DATOS, 'definitivo_v4l.csv'),
+        'eicu': os.path.join(CARPETA_DATOS, 'eICU_12_48_definitivo.csv'),
+        'vars': ['temp_min', 'pf_min', 'spo2_min', 'bicarbonato_min', 'map_min', 'glucemia_min', 'sofa_max'],
+        'label': 'Largo 12-48h (XGBoost)'
+    },
+    'Largo_12_48_CAT': {
+        'mimic': os.path.join(CARPETA_DATOS, 'definitivo_v4l.csv'),
+        'eicu': os.path.join(CARPETA_DATOS, 'eICU_12_48_definitivo.csv'),
+        'vars': ['pf_min', 'bicarbonato_min', 'rr_max', 'diuresis_ml_kg_12h', 'temp_min', 'glucemia_min'],
+        'label': 'Largo 12-48h (CatBoost)'
+    }
 }
 
+# ── DIRECTORIO DONDE SE ESTÁ EJECUTANDO ESTE SCRIPT ──
+directorio_actual = os.getcwd()
 
-# ── FUNCIONES AUXILIARES ───────────────────────────────────────────────────────
-
-def mediana_iqr(serie):
-    """Devuelve string 'mediana [Q1 – Q3]'."""
-    s = serie.dropna()
-    if len(s) == 0:
-        return '—'
-    med = np.median(s)
-    q1  = np.percentile(s, 25)
-    q3  = np.percentile(s, 75)
-    return f'{med:.1f} [{q1:.1f}–{q3:.1f}]'
-
-
-def n_pct(serie, valor=1):
-    """Devuelve string 'n (%)' para variable binaria."""
-    s = serie.dropna()
-    n = int((s == valor).sum())
-    pct = 100 * n / len(s) if len(s) > 0 else 0
-    return f'{n:,} ({pct:.1f}%)'
-
-
-def test_continua(s1, s2):
-    """Mann-Whitney U, devuelve p formateado."""
-    s1 = s1.dropna()
-    s2 = s2.dropna()
-    if len(s1) < 2 or len(s2) < 2:
-        return '—'
-    _, p = stats.mannwhitneyu(s1, s2, alternative='two-sided')
-    if p < 0.001:
-        return '<0.001'
-    return f'{p:.3f}'
-
-
-def test_categorica(s1, s2, valor=1):
-    """Chi-cuadrado 2×2; si hay celda cero usa Fisher exacto."""
-    s1 = s1.dropna()
-    s2 = s2.dropna()
-    tabla = [
-        [int((s1 == valor).sum()), int((s1 != valor).sum())],
-        [int((s2 == valor).sum()), int((s2 != valor).sum())],
-    ]
-    if any(c == 0 for fila in tabla for c in fila):
-        _, p = stats.fisher_exact(tabla)
-    else:
-        try:
-            _, p, _, _ = stats.chi2_contingency(tabla)
-        except ValueError:
-            _, p = stats.fisher_exact(tabla)
-    if p < 0.001:
-        return '<0.001'
-    return f'{p:.3f}'
-
-
-def codificar_gender(serie):
-    """Normaliza género a 1=masculino, 0=femenino, NaN=desconocido.
-    Maneja: 'M', 'F', 'Male', 'Female', 'Unknown', numérico."""
-    s = serie.copy().astype(str).str.upper().str.strip()
-    resultado = pd.Series(np.nan, index=serie.index)
-    resultado[s.isin(['M', 'MALE'])]   = 1.0
-    resultado[s.isin(['F', 'FEMALE'])] = 0.0
-    # 'UNKNOWN' y cualquier otro valor se quedan como NaN
-    return resultado
-
-
-# ── GENERACIÓN DE TABLA ────────────────────────────────────────────────────────
-
-filas_totales = []
-
-for ventana, cfg in VENTANAS.items():
-    dm = pd.read_csv(cfg['mimic'])
-    de = pd.read_csv(cfg['eicu'])
-    etq = cfg['etiqueta']
-
-    # Normalizar género
-    dm['gender_bin'] = codificar_gender(dm['gender'])
-    de['gender_bin'] = codificar_gender(de['gender'])
-
-    # Primera estancia UCI
-    dm['primera_estancia'] = (dm['contador_estancia_uci'] == 1).astype(float)
-    de['primera_estancia'] = (de['contador_estancia_uci'] == 1).astype(float)
-
-    # Horas hasta norad solo en positivos
-    horas_m = dm.loc[dm[etq] == 1, 'horas_hasta_norad']
-    horas_e = de.loc[de[etq] == 1, 'horas_hasta_norad']
-
-    definiciones = [
-        # (etiqueta fila, tipo, col_m, col_e, kwargs)
-        ('N',                        'n',    None,             None,             {}),
-        ('Edad (años)',               'cont', 'anchor_age',     'anchor_age',     {}),
-        ('Género masculino',          'cat',  'gender_bin',     'gender_bin',     {}),
-        ('Peso (kg)',                 'cont', 'peso_kg',        'peso_kg',        {}),
-        ('SOFA máx',                  'cont', 'sofa_max',       'sofa_max',       {}),
-        ('Primera estancia UCI',      'cat',  'primera_estancia','primera_estancia',{}),
-        ('Noradrenalina (positivos)', 'cat',  etq,              etq,              {}),
-        ('Horas hasta norad *',       'cont_sub', None,         None,             {}),
-    ]
-
-    bloque = []
-    bloque.append({'Variable': f'── {ventana} ──', 'MIMIC': '', 'eICU': '', 'p': ''})
-
-    for etiqueta_fila, tipo, col_m, col_e, _ in definiciones:
-        if tipo == 'n':
-            fila = {
-                'Variable': 'N',
-                'MIMIC':    f'{len(dm):,}',
-                'eICU':     f'{len(de):,}',
-                'p':        '—',
-            }
-        elif tipo == 'cont':
-            fila = {
-                'Variable': etiqueta_fila,
-                'MIMIC':    mediana_iqr(dm[col_m]),
-                'eICU':     mediana_iqr(de[col_e]),
-                'p':        test_continua(dm[col_m], de[col_e]),
-            }
-        elif tipo == 'cat':
-            fila = {
-                'Variable': etiqueta_fila,
-                'MIMIC':    n_pct(dm[col_m]),
-                'eICU':     n_pct(de[col_e]),
-                'p':        test_categorica(dm[col_m], de[col_e]),
-            }
-        elif tipo == 'cont_sub':
-            fila = {
-                'Variable': etiqueta_fila,
-                'MIMIC':    mediana_iqr(horas_m),
-                'eICU':     mediana_iqr(horas_e),
-                'p':        test_continua(horas_m, horas_e),
-            }
-        bloque.append(fila)
-
-    filas_totales.extend(bloque)
-
-df_tabla = pd.DataFrame(filas_totales)[['Variable', 'MIMIC', 'eICU', 'p']]
-
-# ── IMPRIMIR ───────────────────────────────────────────────────────────────────
-print('\n' + '=' * 80)
-print('TABLA 1 — Características basales MIMIC (entrenamiento) vs eICU (validación)')
-print('Continuas: mediana [IQR]  |  Categóricas: n (%)  |  p: Mann-Whitney / χ²')
-print('=' * 80)
-print(df_tabla.to_string(index=False))
-print('\n* Solo en pacientes que recibieron noradrenalina (positivos)')
-print('  IQR = rango intercuartílico  |  UCI = Unidad de Cuidados Intensivos')
-
-# ── GUARDAR CSV ────────────────────────────────────────────────────────────────
-ruta_csv = os.path.join(CARPETA_SALIDA, 'tabla1_mimic_vs_eicu.csv')
-df_tabla.to_csv(ruta_csv, index=False, encoding='utf-8-sig')
-print(f'\nCSV guardado en: {ruta_csv}')
-
-# ── GUARDAR IMAGEN ─────────────────────────────────────────────────────────────
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
-fig, ax = plt.subplots(figsize=(13, len(df_tabla) * 0.42 + 1.5))
-ax.axis('off')
-
-cabecera = ['Variable', 'MIMIC\n(entrenamiento)', 'eICU\n(validación externa)', 'p-valor']
-filas_img = df_tabla.values.tolist()
-
-tabla_img = ax.table(
-    cellText=filas_img,
-    colLabels=cabecera,
-    loc='center',
-    cellLoc='center',
-)
-tabla_img.auto_set_font_size(False)
-tabla_img.set_fontsize(8.5)
-tabla_img.scale(1, 1.55)
-
-# Estilo cabecera
-for j in range(4):
-    tabla_img[0, j].set_facecolor('#2c3e50')
-    tabla_img[0, j].set_text_props(color='white', fontweight='bold')
-
-# Estilo filas de ventana (separadores)
-for i, fila in enumerate(filas_img):
-    if str(fila[0]).startswith('──'):
-        for j in range(4):
-            tabla_img[i + 1, j].set_facecolor('#d5e8f0')
-            tabla_img[i + 1, j].set_text_props(fontweight='bold')
-    elif i % 2 == 0:
-        for j in range(4):
-            tabla_img[i + 1, j].set_facecolor('#f7f9fc')
-
-# Columna Variable alineada a la izquierda
-for i in range(len(filas_img) + 1):
-    tabla_img[i, 0].set_text_props(ha='left')
-
-fig.suptitle(
-    'Tabla 1 — Características basales MIMIC vs eICU\n'
-    'Continuas: mediana [IQR]  ·  Categóricas: n (%)  ·  p: Mann-Whitney / χ²',
-    fontsize=9, y=0.98
-)
-
-plt.tight_layout()
-ruta_img = os.path.join(CARPETA_SALIDA, 'tabla1_mimic_vs_eicu.png')
-plt.savefig(ruta_img, dpi=180, bbox_inches='tight', facecolor='white')
-plt.close()
-print(f'Imagen guardada en: {ruta_img}')
-print('\n[Fin]')
+# ── GENERACIÓN DE BOXPLOTS ──
+for key, info in ventanas.items():
+    try:
+        # Cargar los datos
+        df_mimic = pd.read_csv(info['mimic'])
+        df_eicu = pd.read_csv(info['eicu'])
+        
+        # Etiquetar
+        df_mimic['Hospital'] = 'MIMIC-IV'
+        df_eicu['Hospital'] = 'eICU'
+        
+        # Unir
+        df_junto = pd.concat([df_mimic, df_eicu], ignore_index=True)
+        
+        # Variables de ESTE modelo concreto
+        variables = info['vars']
+        n_vars = len(variables)
+        
+        # Crear la figura adaptativa (si tiene 7 vars, la imagen es más ancha)
+        fig, axes = plt.subplots(1, n_vars, figsize=(4 * n_vars, 5))
+        fig.suptitle(f"EDA Comparativo: {info['label']}", fontsize=16, fontweight='bold')
+        
+        # Por si solo hay 1 variable (que no pete el array de ejes)
+        if n_vars == 1:
+            axes = [axes]
+            
+        for i, var in enumerate(variables):
+            # Comprobar que la variable existe por si hay algún error de tipeo
+            if var in df_junto.columns:
+                sns.boxplot(
+                    x='Hospital', 
+                    y=var, 
+                    data=df_junto, 
+                    ax=axes[i], 
+                    palette={'MIMIC-IV': 'lightblue', 'eICU': 'lightgreen'},
+                    showfliers=False # Oculta puntos extremos para ver la caja limpia
+                )
+                axes[i].set_title(var, fontweight='bold')
+                axes[i].set_xlabel('')
+                axes[i].set_ylabel('Valor')
+                axes[i].grid(axis='y', linestyle='--', alpha=0.7)
+            else:
+                axes[i].set_title(f"{var}\n(NO ENCONTRADA)", color='red')
+                axes[i].axis('off')
+                
+        plt.tight_layout()
+        
+        # Guardar en la carpeta DONDE EJECUTAS EL CÓDIGO
+        nombre_archivo = f'EDA_Boxplots_{key}.png'
+        ruta_guardado = os.path.join(directorio_actual, nombre_archivo)
+        
+        plt.savefig(ruta_guardado, dpi=300, bbox_inches='tight')
+        print(f"✅ ¡Hecho! Gráfico {key} guardado en: {ruta_guardado}")
+        
+        plt.close()
+        
+    except FileNotFoundError as e:
+        print(f"❌ ERROR: No encuentro algún archivo CSV para {key}. Revisa las rutas. Detalle: {e}")

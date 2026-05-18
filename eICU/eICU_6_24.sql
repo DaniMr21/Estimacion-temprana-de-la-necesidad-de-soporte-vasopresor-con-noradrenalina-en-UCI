@@ -1,8 +1,9 @@
 -- =============================================================================
 -- DATASET VALIDACIÓN EXTERNA eICU — ventana 6-24h
--- Modelo: XGBoost Medio_6_24 (calibrado Platt)
--- Variables del modelo: pf_min, map_min, diuresis_ml_kg_6h,
---                       hr_media, sofa_max, ventilacion_invasiva_6h
+-- Modelo XGBoost  : pf_min, map_min, diuresis_ml_kg_6h,
+--                   hr_media, sofa_max, ventilacion_invasiva_6h
+-- Modelo CatBoost : pf_min, rr_max, map_min, diuresis_ml_kg_6h,
+--                   ventilacion_invasiva_6h, hr_media, glucemia_min
 -- CORRECCIÓN respecto a versión anterior: step 9 diuresis
 --   - antes: else 0  → pacientes sin registros de orina obtenían diuresis=0
 --   - ahora: COUNT=0 → NULL  → se elimina en el step 13 como dato desconocido
@@ -59,10 +60,12 @@ where horas_hasta_norad is null or horas_hasta_norad >= 6;
 
 
 -- 5. LABORATORIO (ventana 0-6h)
+-- glucemia_min: variable del modelo CatBoost
 drop table if exists variables_lab_eicu_v4;
 create table variables_lab_eicu_v4 as
 select c.patientunitstayid,
     min(case when l.labname = 'paO2'             then l.labresult end) as pao2_min,
+    min(case when l.labname = 'glucose'          then l.labresult end) as glucemia_min,
     max(case when l.labname = 'total bilirubin'  then l.labresult end) as bilirrubina_max,
     min(case when l.labname = 'platelets x 1000' then l.labresult end) as plaquetas_min,
     max(case when l.labname = 'creatinine'       then l.labresult end) as creatinina_max
@@ -70,17 +73,22 @@ from dataset_modelo_eicu_v4 c
 left join "lab" l on c.patientunitstayid = l.patientunitstayid
     and l.labresult is not null
     and l.labresultoffset between 0 and 360
-    and l.labname in ('paO2', 'total bilirubin', 'platelets x 1000', 'creatinine')
+    and l.labname in (
+        'paO2', 'glucose',
+        'total bilirubin', 'platelets x 1000', 'creatinine'
+    )
 group by c.patientunitstayid;
 
 
 -- 6. VITALES (ventana 0-6h)
+-- rr_max: variable del modelo CatBoost
 drop table if exists variables_vitales_eicu_v4;
 create table variables_vitales_eicu_v4 as
 with periodic as (
     select c.patientunitstayid,
         avg(vp.heartrate)    as hr_media,
-        min(vp.systemicmean) as map_art_min
+        min(vp.systemicmean) as map_art_min,
+        max(vp.respiration)  as rr_max
     from dataset_modelo_eicu_v4 c
     left join "vitalPeriodic" vp on c.patientunitstayid = vp.patientunitstayid
         and vp.observationoffset between 0 and 360
@@ -96,6 +104,7 @@ aperiodic as (
 )
 select p.patientunitstayid,
     p.hr_media,
+    p.rr_max,
     coalesce(p.map_art_min, a.map_nibp_min) as map_min
 from periodic p
 left join aperiodic a on p.patientunitstayid = a.patientunitstayid;
@@ -141,10 +150,6 @@ group by c.patientunitstayid;
 
 -- 9. DIURESIS normalizada por peso (ventana 0-6h)
 -- CORRECCIÓN: paciente sin ningún registro de orina en la ventana → NULL
--- Lógica:
---   - peso_kg nulo o ≤0               → NULL
---   - ningún registro de orina válido  → NULL (era 0 antes, incorrecto)
---   - hay registros válidos            → suma / peso_kg
 drop table if exists variables_diuresis_eicu_v4;
 create table variables_diuresis_eicu_v4 as
 select c.patientunitstayid,
@@ -289,10 +294,12 @@ select
         else null
     end                      as pf_min,
     vt.map_min,
+    vt.rr_max,
     d.diuresis_ml_kg_6h,
     vt.hr_media,
     so.sofa_max,
-    vc.ventilacion_invasiva_6h
+    vc.ventilacion_invasiva_6h,
+    l.glucemia_min
 from dataset_modelo_eicu_v4         c
 left join variables_lab_eicu_v4         l  on c.patientunitstayid = l.patientunitstayid
 left join variables_vitales_eicu_v4     vt on c.patientunitstayid = vt.patientunitstayid
@@ -303,15 +310,18 @@ left join variables_ventilacion_eicu_v4 vc on c.patientunitstayid = vc.patientun
 
 
 -- 13. TABLA FINAL LIMPIA
+-- Se mantiene el filtro original (XGBoost) + las dos nuevas variables (CatBoost)
 drop table if exists dataset_final_eicu_v4_clean;
 create table dataset_final_eicu_v4_clean as
 select * from dataset_final_eicu_v4
-where pf_min                is not null
-  and map_min               is not null
-  and diuresis_ml_kg_6h     is not null
-  and hr_media              is not null
-  and sofa_max              is not null
-  and ventilacion_invasiva_6h is not null;
+where pf_min                  is not null
+  and map_min                 is not null
+  and diuresis_ml_kg_6h       is not null
+  and hr_media                is not null
+  and sofa_max                is not null
+  and ventilacion_invasiva_6h is not null
+  and rr_max                  is not null
+  and glucemia_min            is not null;
 
 
 -- VERIFICACIÓN

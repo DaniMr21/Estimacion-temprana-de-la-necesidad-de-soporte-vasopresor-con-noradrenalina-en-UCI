@@ -82,6 +82,15 @@ VENTANAS = {
                      'hr_media', 'sofa_max', 'ventilacion_invasiva_6h'],
         'label'   : 'Medio 6-24h (XGBoost cal.)',
     },
+    # ── NUEVO ──────────────────────────────────────────────────────────────────
+    'Medio_6_24_CAT': {
+        'pkl'     : 'modelo_Medio_6_24_CAT.pkl',
+        'csv'     : 'eICU_6_24_definitivo.csv',
+        'etiqueta': 'etiqueta_norad_6_24',
+        'vars'    : ['pf_min', 'rr_max', 'map_min', 'diuresis_ml_kg_6h',
+                     'ventilacion_invasiva_6h', 'hr_media', 'glucemia_min'],
+        'label'   : 'Medio 6-24h (CatBoost)',
+    },
     'Largo_12_48': {
         'pkl'     : 'modelo_Largo_12_48_XGB.pkl',
         'csv'     : 'eICU_12_48_definitivo.csv',
@@ -89,6 +98,15 @@ VENTANAS = {
         'vars'    : ['temp_min', 'pf_min', 'spo2_min', 'bicarbonato_min',
                      'map_min', 'glucemia_min', 'sofa_max'],
         'label'   : 'Largo 12-48h (XGBoost)',
+    },
+    # ── NUEVO ──────────────────────────────────────────────────────────────────
+    'Largo_12_48_CAT': {
+        'pkl'     : 'modelo_Largo_12_48_CAT.pkl',
+        'csv'     : 'eICU_12_48_definitivo.csv',
+        'etiqueta': 'etiqueta_norad_12_48',
+        'vars'    : ['pf_min', 'bicarbonato_min', 'rr_max',
+                     'diuresis_ml_kg_12h', 'temp_min', 'glucemia_min'],
+        'label'   : 'Largo 12-48h (CatBoost)',
     },
 }
 
