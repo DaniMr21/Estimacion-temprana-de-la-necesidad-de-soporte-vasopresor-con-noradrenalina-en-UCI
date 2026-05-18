@@ -3,7 +3,7 @@
 #  anexos.qmd  –  Documentación Técnica (Anexos) TFG GIS UBU
 #  Universidad de Burgos · Escuela Politécnica Superior
 # ============================================================
-title: "Estimación temprana del riesgo de inicio de noradrenalina en UCImediante aprendizaje automático y dashboard interpretable"
+title: "Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable"
 author: "Daniel Marina de la Cal"
  
 format:
@@ -36,7 +36,7 @@ knitr:
 
 ```{=latex}
 %% ── Portada anexos ──────────────────────────────────────────
-\title{Estimación temprana del riesgo de inicio de noradrenalina en UCImediante aprendizaje automático y dashboard interpretable}
+\title{Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable}
 \author{\nombre}
 \date{\today}
 

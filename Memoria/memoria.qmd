@@ -4,7 +4,7 @@
 #  Universidad de Burgos · Escuela Politécnica Superior
 # ============================================================
 # DATOS DEL ALUMNO/A – edita estos campos
-title: "Estimación temprana del riesgo de inicio de noradrenalina en UCImediante aprendizaje automático y dashboard interpretable"
+title: "Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable"
 author: "Daniel Marina de la Cal"
 
 # Campos extra accesibles desde el preámbulo LaTeX
@@ -111,8 +111,8 @@ dirección del/los que suscribe/n.
 
 \renewcommand*\abstractname{Resumen}
 \begin{abstract}
-Este TFG propone el desarrollo de un modelo de aprendizaje
-automático orientado a estimar de forma temprana el riesgo de inicio
+Este TFG propone el desarrollo de modelos de aprendizaje automático orientados
+a estimar de forma temprana el riesgo de inicio
 de noradrenalina en pacientes críticos ingresados en UCI, a partir de
 variables clínicas disponibles durante las primeras horas de estancia,
 como constantes vitales, parámetros analíticos y datos básicos del
@@ -125,29 +125,28 @@ dicha predicción en cada caso.
 
 \renewcommand*\abstractname{Descriptores}
 \begin{abstract}
-Aprendizaje automático, Predicción, Dashboard, Sepsis, UCI, Norepinefrina, Noradrenalina.
+Aprendizaje automático, Predicción, Dashboard, Sepsis, UCI, Noradrenalina, vasopresor.
 \end{abstract}
 
 \clearpage
 
 \renewcommand*\abstractname{Abstract}
 \begin{abstract}
-This Bachelor’s Thesis proposes the development of a machine
-learning model aimed at the early estimation of the risk of initiating
+This Bachelor’s Thesis proposes the development of machine
+learning models aimed at the early estimation of the risk of initiating
 noradrenaline in critically ill patients admitted to the ICU, based
 on clinical variables available during the first hours of admission,
 such as vital signs, laboratory parameters, and basic patient data.
 The objective is not only to predict whether the patient will require
 vasopressor support within a defined time window, but also to provide
 an interpretable tool in the form of a dashboard. This tool will
-allow for the visualization of the estimated risk and the factors that
+allow the visualization of the estimated risk and the factors that
 contribute most to this prediction in each individual case.
 \end{abstract}
 
 \renewcommand*\abstractname{Keywords}
 \begin{abstract}
-Machine Learning, Sepsis, Prediction, Dashboard, ICU, norepi-
-nephrine.
+Machine Learning, Sepsis, Prediction, Dashboard, ICU, norepinephrine, vasopressor.
 \end{abstract}
 
 \clearpage
