@@ -1,52 +1,53 @@
-```{=latex}
 \capitulo{1}{Introducción}
 
 \textbf{Contexto clínico y relevancia del problema}
 
-El paciente crítico ingresado en la Unidad de Cuidados Intensivos (UCI) se caracteriza por la presencia de uno o varios órganos en situación de fallo o riesgo inminente de fallo, 
-lo que exige una monitorización continua y una capacidad de respuesta terapéutica inmediata. Entre las intervenciones de soporte hemodinámico más frecuentes en este contexto se encuentra 
-la administración de vasopresores, fármacos cuyo objetivo es mantener una presión de perfusión adecuada cuando los mecanismos compensadores del organismo resultan insuficientes. 
-La noradrenalina es el vasopresor de primera elección en la mayoría de los escenarios de inestabilidad hemodinámica en UCI, como el shock séptico \cite{evans2021}. Usada como fármaco,
-su efecto predominante sobre los receptores alfa-adrenérgicos favorece la vasoconstricción periférica 
-y el aumento de la presión arterial media con un perfil clínico favorable frente a otras alternativas al tener efecto mínimo sobre la frecuencia cardiaca \cite{evans2021}.
+El paciente crítico ingresado en la Unidad de Cuidados Intensivos (UCI) presenta con frecuencia situaciones de fallo orgánico o riesgo inminente de deterioro clínico, 
+lo que exige una monitorización continua y una respuesta terapéutica rápida. Dentro de este contexto, la inestabilidad hemodinámica constituye uno de los problemas más relevantes, 
+ya que puede comprometer la perfusión tisular y favorecer la progresión hacia disfunción multiorgánica.
 
-La sepsis y el shock séptico representan la causa más frecuente de inestabilidad hemodinámica que requiere soporte vasopresor en UCI. 
-A escala global, se estimaron 48,9 millones de casos de sepsis y 11 millones de muertes atribuibles en 2017 \cite{fleischmann2020}. 
-En adultos hospitalizados, la incidencia de sepsis tratada en UCI alcanza aproximadamente 58 casos por cada 100.000 personas-año \cite{fleischmann2020}. 
-En España, la mortalidad en pacientes sépticos ingresados en UCI se sitúa alrededor del 30\,\% y puede alcanzar el 50\,\% en los casos de shock séptico \cite{hubu2025}. 
-De acuerdo con la definición de Sepsis-3, el shock séptico se caracteriza por la necesidad de vasopresores para mantener una presión arterial media (PAM) $\geq 65$ mmHg y por un lactato sérico 
-$> 2$ mmol/L pese a una adecuada resucitación con fluidos \cite{singer2016}. Sin embargo, la necesidad de noradrenalina no es exclusiva de la sepsis: otras situaciones de shock circulatorio 
-pueden requerir también soporte vasopresor \cite{vincent2013}, lo que confiere al problema una dimensión más amplia que la de la sepsis aislada.
+Entre las intervenciones empleadas para el soporte hemodinámico se encuentra la administración de vasopresores. Estos fármacos permiten mantener una presión de perfusión adecuada cuando 
+los mecanismos compensadores del organismo y la reposición de volumen no son suficientes. La noradrenalina es el vasopresor de primera elección en la mayoría de los escenarios de shock 
+distributivo e inestabilidad hemodinámica en UCI, especialmente en el shock séptico \cite{evans2021}.
+
+La sepsis y el shock séptico representan una de las principales causas de necesidad de soporte vasopresor en pacientes críticos. A escala global, se estimaron 48,9 millones de casos de sepsis y 
+11 millones de muertes atribuibles en 2017 \cite{fleischmann2020}. En adultos hospitalizados, la incidencia de sepsis tratada en UCI alcanza aproximadamente 58 casos por cada 
+100.000 personas-año \cite{fleischmann2020}. En España, la mortalidad de los pacientes sépticos ingresados en UCI se sitúa alrededor del 30\,\% y puede alcanzar el 50\,\% en los casos de 
+shock séptico \cite{hubu2025}. No obstante, la necesidad de noradrenalina no se limita a la sepsis, ya que otras formas de shock circulatorio pueden requerir también soporte vasopresor 
+\cite{vincent2013}. Por ello, la predicción del inicio de noradrenalina constituye un problema clínico relevante en la cohorte general de pacientes críticos, más allá de un único diagnóstico.
 
 \textbf{Justificación del problema}
 
-La decisión de iniciar noradrenalina en un paciente crítico no responde a un único umbral ni a una sola variable. 
-En la práctica clínica habitual, esta decisión depende de la interpretación simultánea de múltiples señales: la tendencia de las constantes vitales,
- el nivel de lactato, la respuesta a la fluidoterapia, el grado de disfunción orgánica, la situación respiratoria y el contexto clínico global del paciente \cite{evans2021,hubu2025}. 
- Esta complejidad dificulta estimar precozmente el riesgo y puede traducirse en variabilidad en el momento de inicio del tratamiento entre pacientes y entre centros.
+La decisión de iniciar noradrenalina en un paciente crítico no depende de una única variable aislada. En la práctica clínica habitual, 
+esta decisión se basa en la interpretación conjunta de múltiples señales, como la evolución de la presión arterial, la frecuencia cardiaca, el lactato, la respuesta a la fluidoterapia, 
+la diuresis, el grado de disfunción orgánica, la situación respiratoria y el contexto clínico global del paciente \cite{evans2021,hubu2025}. Esta complejidad puede dificultar la 
+identificación temprana de los pacientes que evolucionarán hacia la necesidad de soporte vasopresor.
 
-La evidencia reciente sugiere que un inicio más precoz de noradrenalina podría asociarse con mejores resultados clínicos, menor administración acumulada de fluidos y una consecución más rápida 
-de los objetivos hemodinámicos \cite{shi2025,firzli2023}. Sin embargo, el momento óptimo de inicio sigue siendo objeto de debate, lo que refuerza la necesidad de herramientas que ayuden a 
-identificar de forma temprana a los pacientes con mayor riesgo de requerir soporte vasopresor.
+Además, el momento óptimo de inicio de la noradrenalina continúa siendo un aspecto clínico relevante. Un inicio excesivamente tardío puede prolongar la hipoperfusión y favorecer una mayor 
+acumulación de fluidos, mientras que una indicación innecesaria podría exponer al paciente a tratamientos invasivos no justificados. En este contexto, disponer de herramientas capaces de estimar
+ de forma temprana el riesgo de requerir noradrenalina podría ayudar a complementar la valoración clínica y favorecer una vigilancia más dirigida de los pacientes con mayor probabilidad de 
+ deterioro hemodinámico.
 
 \textbf{Planteamiento del trabajo}
 
-En los últimos años, el aprendizaje automático (\textit{machine learning}, ML) ha despertado un interés creciente en la predicción de eventos clínicos en pacientes críticos, 
-favorecido por la disponibilidad de bases de datos clínicas de gran escala como MIMIC-IV o eICU \cite{pollard2018} y por la capacidad de estos modelos para integrar simultáneamente múltiples variables 
-clínicas \cite{johnson2023,shanmugam2025}. Sin embargo, buena parte de los trabajos publicados carece de validación externa, centra su enfoque en métricas de discriminación retrospectiva 
-sin trasladar los resultados a escenarios de uso clínico real, o aborda tareas más generales como la predicción de mortalidad o la detección de sepsis sin orientarse a decisiones terapéuticas 
-concretas \cite{shanmugam2025,rockenschaub2025}.
+En los últimos años, el aprendizaje automático (\textit{machine learning}, ML) ha adquirido un papel creciente en el análisis de datos clínicos complejos. 
+Su capacidad para integrar simultáneamente variables fisiológicas, analíticas y demográficas resulta especialmente atractiva en el entorno de UCI, 
+donde la toma de decisiones se apoya en información heterogénea y cambiante. Las bases de datos clínicas de gran escala, como MIMIC-IV y eICU, han facilitado el desarrollo y 
+la evaluación de este tipo de modelos en pacientes críticos \cite{johnson2023,pollard2018}.
 
-En este contexto, el presente Trabajo de Fin de Grado propone el desarrollo y la validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de 
-noradrenalina en pacientes adultos ingresados en UCI, utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. 
-Los modelos se entrenan sobre la cohorte general de pacientes adultos de UCI de MIMIC-IV, sin restricción diagnóstica, lo que permite abordar el problema en toda su amplitud clínica.
-El trabajo incorpora tres elementos de interés práctico adicionales: el diseño de distintas ventanas temporales de predicción, la incorporación de explicabilidad individualizada mediante 
-valores SHAP y la integración del modelo en un prototipo de \textit{dashboard} clínico desarrollado en Streamlit, orientado al apoyo a la decisión a pie de cama. 
-La aplicabilidad fuera del entorno de entrenamiento se evalúa mediante validación externa sobre la base de datos eICU \cite{pollard2018}.
+El presente Trabajo de Fin de Grado propone el desarrollo y la validación de modelos de aprendizaje automático para estimar de forma temprana el riesgo de inicio de noradrenalina en pacientes 
+adultos ingresados en UCI. Para ello, se emplean variables clínicas y analíticas disponibles durante las primeras horas de estancia, con el objetivo de anticipar la necesidad de soporte 
+vasopresor antes de que se produzca el evento.
+
+A diferencia de enfoques centrados exclusivamente en pacientes sépticos, este trabajo se plantea sobre una cohorte general de pacientes adultos de UCI de MIMIC-IV, 
+sin restricción diagnóstica inicial. Esta decisión permite abordar el problema desde una perspectiva más amplia y ajustada al uso real de la noradrenalina en cuidados intensivos. 
+La presencia de sepsis se considera posteriormente como variable de análisis para estudiar el comportamiento diferencial de los modelos en subgrupos clínicamente relevantes.
+
+El trabajo incorpora tres elementos de interés práctico. En primer lugar, se diseñan distintas ventanas temporales de predicción para evaluar el rendimiento del modelo en diferentes escenarios 
+de anticipación clínica. En segundo lugar, se aplica interpretabilidad mediante valores SHAP, con el fin de identificar qué variables contribuyen con mayor peso a la predicción tanto a nivel 
+global como individual. En tercer lugar, se desarrolla un prototipo de \textit{dashboard} clínico en Streamlit, orientado a visualizar el riesgo estimado y los factores explicativos principales 
+de cada paciente. Finalmente, la capacidad de generalización del modelo se evalúa mediante validación externa sobre la base de datos eICU \cite{pollard2018}.
 
 \textbf{Estructura de la memoria}
 
-El presente documento se organiza en ocho capítulos. Tras este capítulo introductorio, el \textbf{Capítulo~2} recoge los objetivos del trabajo. 
-El \textbf{Capítulo~3} desarrolla el marco teórico y el estado del arte. El \textbf{Capítulo~4} describe la metodología empleada. 
-Los \textbf{Capítulos~5 y~6} presentan y discuten los resultados. El \textbf{Capítulo~7} recoge las conclusiones y el \textbf{Capítulo~8} propone posibles líneas de trabajo futuro.
-```
+El presente documento se organiza en ocho capítulos. Tras este capítulo introductorio, el \textbf{Capítulo~2} recoge los objetivos del trabajo. El \textbf{Capítulo~3} desarrolla el marco teórico y el estado del arte, incluyendo los fundamentos clínicos del shock, el uso de vasopresores, las bases del aprendizaje automático aplicado a UCI y la revisión de trabajos previos relacionados. El \textbf{Capítulo~4} describe la metodología empleada, incluyendo la construcción de cohortes, la definición del evento objetivo, el preprocesamiento de datos, el entrenamiento de modelos y la validación externa. Los \textbf{Capítulos~5 y~6} presentan y discuten los resultados obtenidos. El \textbf{Capítulo~7} recoge las conclusiones principales y el \textbf{Capítulo~8} propone posibles líneas de trabajo futuro.
