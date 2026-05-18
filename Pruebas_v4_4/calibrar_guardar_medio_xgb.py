@@ -82,7 +82,7 @@ for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X, y, grupos)):
     prob_platt_puro[idx_test] = cal_platt_puro.predict_proba(
         prob_bruta_test.reshape(-1, 1))[:, 1]
  
-    # Platt regularizado (C óptimo por CV interna en cada fold)
+    # Platt regularizado
     cal_platt_reg = LogisticRegressionCV(
         Cs=10, cv=3, solver='lbfgs', max_iter=1000, scoring='neg_brier_score'
     )
@@ -129,11 +129,7 @@ prob_calibrada = candidatos[mejor_nombre]
 # ── PASO 3: WRAPPER Y GUARDADO ─────────────────────────────────────────────────
  
 class ModeloCalibrado:
-    """
-    Wrapper genérico: modelo XGB + calibrador (Platt puro, Platt reg o Isotónica).
-    predict_proba() es compatible con sklearn.
-    El modelo base se re-entrena sobre TODOS los datos internos antes de guardar.
-    """
+   
     def __init__(self, modelo_base, calibrador, tipo_calibrador):
         self.modelo_base      = modelo_base
         self.calibrador       = calibrador

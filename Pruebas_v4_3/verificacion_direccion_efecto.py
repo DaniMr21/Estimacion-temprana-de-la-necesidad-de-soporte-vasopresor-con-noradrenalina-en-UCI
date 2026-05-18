@@ -48,7 +48,7 @@ def cargar_datos():
 def calcular_or_crudo(df, var, etiqueta):
     """OR crudo de regresión logística univariante."""
     try:
-        x = df[[var]].copy().fillna(df[var].median())
+        x = df[[var]].copy()
         escalador = StandardScaler()
         x_std = escalador.fit_transform(x)
         x_sm  = sm.add_constant(x_std)
@@ -70,7 +70,6 @@ def calcular_or_crudo(df, var, etiqueta):
 def calcular_or_ajustado(df, etiqueta):
     """OR ajustado de regresión logística multivariante con todas las variables."""
     x = df[VARIABLES_MODELO].copy()
-    x = x.fillna(x.median(numeric_only=True))
     escalador = StandardScaler()
     x_std = pd.DataFrame(
         escalador.fit_transform(x),
@@ -151,8 +150,8 @@ def main():
             p25_neg = negativos[var].quantile(0.25)
             p75_neg = negativos[var].quantile(0.75)
             stat, p_test = mannwhitneyu(
-                positivos[var].dropna(),
-                negativos[var].dropna(),
+                positivos[var],
+                negativos[var],
                 alternative='two-sided'
             )
             estadistico = stat
@@ -202,8 +201,8 @@ def main():
             'variable':          var,
             'tipo':              'binaria' if es_binaria else 'continua',
             'test':              nombre_test,
-            'n_positivos':       len(positivos[var].dropna()),
-            'n_negativos':       len(negativos[var].dropna()),
+            'n_positivos':       len(positivos[var]),
+            'n_negativos':       len(negativos[var]),
             'valor_positivos':   round(val_pos, 4),
             'valor_negativos':   round(val_neg, 4),
             'p_test':            p_test,

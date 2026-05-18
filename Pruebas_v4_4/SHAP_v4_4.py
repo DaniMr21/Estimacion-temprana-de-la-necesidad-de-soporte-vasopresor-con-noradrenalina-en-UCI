@@ -144,7 +144,7 @@ plt.style.use('seaborn-v0_8-whitegrid')
 for ventana, conf in CONFIG_VENTANAS.items():
     print(f"\nProcesando ventana: {ventana}...")
 
-    df = pd.read_csv(conf['ruta']).dropna(subset=['pf_max'])
+    df = pd.read_csv(conf['ruta'])
 
     for modelo_nombre, lista_vars in conf['vars'].items():
         ruta_pkl = os.path.join(

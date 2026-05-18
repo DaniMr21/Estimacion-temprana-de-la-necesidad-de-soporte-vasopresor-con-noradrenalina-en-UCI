@@ -210,7 +210,7 @@ for nombre_ventana, cfg in VENTANAS.items():
     m_sofa = metricas_punto(y, sofa_norm)
 
     # Bootstrap IC95%
-    print('  Calculando bootstrap IC95%...')
+    print('  Calculando bootstrap IC95%')
     ic_mod  = bootstrap_ic95(y, prob_modelo)
     ic_sofa = bootstrap_ic95(y, sofa_norm)
 

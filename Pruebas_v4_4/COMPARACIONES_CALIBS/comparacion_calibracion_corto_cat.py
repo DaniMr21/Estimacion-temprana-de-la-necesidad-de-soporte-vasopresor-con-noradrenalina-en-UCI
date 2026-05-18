@@ -1,20 +1,3 @@
-"""
-Comparación empírica de calibración — Corto_3_12 CAT
-=====================================================
-Compara tres configuraciones sobre probabilidades OOF honestas:
-  1. Sin calibración (modelo tal cual)
-  2. Calibración de Platt (regresión logística)
-  3. Calibración isotónica
-
-La calibración se evalúa de forma HONESTA: dentro de cada fold,
-el calibrador se ajusta en los folds de entrenamiento y se evalúa
-en el fold de test. Nunca ve los datos de test durante el ajuste.
-
-Requiere:
-  - modelo_Corto_3_12_CAT.pkl  (en la misma carpeta que este script)
-  - definitivo_v4p.csv         (ruta configurada abajo)
-"""
-
 import os
 import joblib
 import numpy as np
@@ -59,7 +42,6 @@ def calcular_ece(probabilidades, etiquetas, n_bins=N_BINS_CAL):
 
 
 def calcular_bss(probabilidades, etiquetas):
-    """Brier Skill Score: 1 - BS_modelo / BS_climatologia."""
     prevalencia     = etiquetas.mean()
     bs_modelo       = brier_score_loss(etiquetas, probabilidades)
     bs_climatologia = brier_score_loss(etiquetas, np.full_like(probabilidades, prevalencia))
@@ -76,7 +58,7 @@ def metricas_resumen(probabilidades, etiquetas, nombre):
 
 # ── CARGA ──────────────────────────────────────────────────────────────────────
 print("Cargando datos y modelo...")
-df      = pd.read_csv(RUTA_CSV).dropna(subset=['pf_max'])
+df      = pd.read_csv(RUTA_CSV)
 y       = df[ETIQUETA].values.astype(int)
 grupos  = df[COLUMNA_ID].values
 X       = df[VARIABLES].copy()

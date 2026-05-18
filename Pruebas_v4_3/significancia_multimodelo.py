@@ -104,7 +104,6 @@ VARIABLES_CONTINUAS  = [v for v in VARIABLES_PREDICTORAS
 
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 
@@ -119,19 +118,7 @@ def preparar(df):
 # ── SIGNIFICANCIA UNIVARIANTE ─────────────────────────────────────────────────
 
 def calcular_significancia_univariante(df):
-    """
-    Tests univariantes para cada variable frente a la etiqueta.
 
-    Se filtra a la PRIMERA estancia por paciente para evitar dependencia
-    entre observaciones (distinto al pipeline de modelado, que usa todas
-    las estancias con agrupamiento por paciente).
-
-    Continuas : Mann-Whitney U (two-sided)
-    Binarias  : Chi-cuadrado de Pearson
-    Corrección: FDR Benjamini-Hochberg (q < 0.05)
-
-    Devuelve DataFrame con una fila por variable.
-    """
     df_primera = (
         df.sort_values([COLUMNA_ID, 'contador_estancia_uci'])
           .drop_duplicates(COLUMNA_ID, keep='first')
@@ -151,8 +138,8 @@ def calcular_significancia_univariante(df):
 
     # ── Continuas: Mann-Whitney U ──────────────────────────────────────────
     for var in VARIABLES_CONTINUAS:
-        grupo_pos = df_test.loc[df_test[ETIQUETA] == 1, var].dropna()
-        grupo_neg = df_test.loc[df_test[ETIQUETA] == 0, var].dropna()
+        grupo_pos = df_test.loc[df_test[ETIQUETA] == 1, var]
+        grupo_neg = df_test.loc[df_test[ETIQUETA] == 0, var]
 
         if len(grupo_pos) < 2 or len(grupo_neg) < 2:
             filas.append({

@@ -63,11 +63,11 @@ for ventana, conf in CONFIG_VENTANAS.items():
     print(f"\nProcesando ventana: {ventana}...")
     
     # Cargar datos
-    df = pd.read_csv(conf['ruta']).dropna(subset=['pf_max'])
+    df = pd.read_csv(conf['ruta'])
     y = df[conf['etiqueta']].copy()
     ids = df[COLUMNA_ID].copy()
     
-    # El mismo KFold que usaste en la CV externa
+    # El mismo KFold de la CV externa
     cv_externo = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
     
     for modelo_nombre, lista_vars in conf['vars'].items():
@@ -75,7 +75,7 @@ for ventana, conf in CONFIG_VENTANAS.items():
         if not os.path.exists(ruta_pkl):
             continue
             
-        print(f"  -> Extrayendo probabilidades OOF para {modelo_nombre}...")
+        print(f"Extrayendo probabilidades OOF para {modelo_nombre}...")
         
         # Preparar X
         X = df[lista_vars].copy()
@@ -85,7 +85,7 @@ for ventana, conf in CONFIG_VENTANAS.items():
         # Cargar modelo (ya viene con los mejores hiperparámetros)
         modelo = joblib.load(ruta_pkl)
         
-        # LA MAGIA: Calcular probabilidades Out-of-Fold (Honestas)
+        #Calcular probabilidades Out-of-Fold (Honestas)
         probs_oof = cross_val_predict(
             estimator=modelo, 
             X=X, 

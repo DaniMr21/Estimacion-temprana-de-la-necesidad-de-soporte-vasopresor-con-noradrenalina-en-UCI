@@ -39,7 +39,6 @@ for nombre, conf in CONFIG.items():
         # ── DESEMPAQUETAR EL PIPELINE PARA SHAP ───────────────────────────────
         # Si el objeto cargado es un Pipeline de sklearn, extraemos sus partes
         if hasattr(pipeline, 'steps'):
-            print("   [Pipeline detectado] Extrayendo estimador final...")
             modelo_final = pipeline.steps[-1][1]  # El modelo es el último paso
             
             # Si el pipeline tiene más pasos (como un StandardScaler), transformamos X primero
@@ -76,6 +75,6 @@ for nombre, conf in CONFIG.items():
         print(f"✅ ¡Logrado! Gráfico guardado en: {ruta_img}")
         
     except Exception as e:
-        print(f"❌ Error en ventana {nombre}: {e}")
+        print(f"Error en ventana {nombre}: {e}")
 
 print("FIN")

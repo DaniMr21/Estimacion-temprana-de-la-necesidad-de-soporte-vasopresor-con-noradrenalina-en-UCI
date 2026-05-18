@@ -46,15 +46,14 @@ def calcular_bss(probabilidades, etiquetas):
     return float(1 - bs_modelo / bs_clima) if bs_clima != 0 else np.nan
 
 # ── 1. CARGA DE DATOS Y MODELO BASE ──────────────────────────────────────────
-print("Cargando datos de eICU (Largo) y modelo base de MIMIC...")
-df = pd.read_csv(CSV_EICU).dropna(subset=VARIABLES + [ETIQUETA])
+print("Cargando datos de eICU (Largo) y modelo base de MIMIC")
+df = pd.read_csv(CSV_EICU)
 X = df[VARIABLES]
 y = df[ETIQUETA].values.astype(int)
 
 modelo_mimic = joblib.load(MODELO_PKL)
 
 # Probabilidades crudas tal cual salen del modelo entrenado en Boston
-print("Generando predicciones originales...")
 prob_originales = modelo_mimic.predict_proba(X)[:, 1]
 
 # ── 2. RECALIBRACIÓN LOCAL (PLATT EN CROSS-VALIDATION) ───────────────────────

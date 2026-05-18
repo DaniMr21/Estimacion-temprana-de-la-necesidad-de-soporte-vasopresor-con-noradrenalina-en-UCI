@@ -57,7 +57,7 @@ def metricas_resumen(probabilidades, etiquetas, nombre):
 
 # ── CARGA ──────────────────────────────────────────────────────────────────────
 print("Cargando datos y modelo...")
-df     = pd.read_csv(RUTA_CSV).dropna(subset=['pf_max'])
+df     = pd.read_csv(RUTA_CSV)
 y      = df[ETIQUETA].values.astype(int)
 grupos = df[COLUMNA_ID].values
 X      = df[VARIABLES].copy()
