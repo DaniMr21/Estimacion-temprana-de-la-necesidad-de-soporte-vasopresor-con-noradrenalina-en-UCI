@@ -183,7 +183,7 @@ select patientunitstayid,
 from componentes;
 
 
--- 7. TABLA FINAL — identificadores + etiqueta + 4 variables del modelo únicamente
+-- 7. TABLA FINAL — añade columnas auxiliares para el filtro estricto del SOFA
 drop table if exists dataset_final_eicu_v4p;
 create table dataset_final_eicu_v4p as
 select
@@ -195,6 +195,7 @@ select
     c.contador_estancia_uci,
     c.horas_hasta_norad,
     c.etiqueta_norad_3_12,
+    -- Variables del modelo
     vt.map_min,
     case
         when l.pao2_min is not null and f.fio2_max is not null and f.fio2_max > 0
@@ -202,22 +203,36 @@ select
         else null
     end                      as pf_min,
     so.sofa_max,
-    l.tp_max
+    l.tp_max,
+    -- Componentes del SOFA para filtro estricto (no entran al modelo)
+    l.bilirrubina_max,
+    l.plaquetas_min,
+    l.creatinina_max,
+    g.gcs_min
 from dataset_modelo_eicu_v4p     c
 left join variables_lab_eicu_v4p     l  on c.patientunitstayid = l.patientunitstayid
 left join variables_vitales_eicu_v4p vt on c.patientunitstayid = vt.patientunitstayid
 left join variables_fio2_eicu_v4p    f  on c.patientunitstayid = f.patientunitstayid
-left join variables_sofa_eicu_v4p    so on c.patientunitstayid = so.patientunitstayid;
+left join variables_sofa_eicu_v4p    so on c.patientunitstayid = so.patientunitstayid
+left join variables_gcs_eicu_v4p     g  on c.patientunitstayid = g.patientunitstayid;
 
 
--- 8. TABLA FINAL LIMPIA — solo filas completas en las 4 variables del modelo
+-- 8. TABLA FINAL LIMPIA — SOFA con todos sus componentes medidos
 drop table if exists dataset_final_eicu_v4p_clean;
 create table dataset_final_eicu_v4p_clean as
-select * from dataset_final_eicu_v4p
-where map_min  is not null
-  and pf_min   is not null
-  and sofa_max is not null
-  and tp_max   is not null;
+select
+    subject_id, stay_id, anchor_age, gender, peso_kg, contador_estancia_uci,
+    horas_hasta_norad, etiqueta_norad_3_12,
+    map_min, pf_min, sofa_max, tp_max
+from dataset_final_eicu_v4p
+where map_min          is not null
+  and pf_min           is not null
+  and sofa_max         is not null
+  and tp_max           is not null
+  and bilirrubina_max  is not null   -- componente hepático medido
+  and plaquetas_min    is not null   -- componente coagulación medido
+  and creatinina_max   is not null   -- componente renal medido
+  and gcs_min          is not null;  -- componente neurológico medido
 
 
 -- VERIFICACIÓN
@@ -231,3 +246,19 @@ from dataset_final_eicu_v4p_clean;
 
 -- DESCARGAR
 select * from dataset_final_eicu_v4p_clean;
+
+SELECT
+    count(*) as total,
+    -- Componentes que podrían ser cero por ausencia de dato
+    sum(case when l.bilirrubina_max is null then 1 else 0 end) as sin_bilirrubina,
+    sum(case when l.plaquetas_min   is null then 1 else 0 end) as sin_plaquetas,
+    sum(case when l.creatinina_max  is null then 1 else 0 end) as sin_creatinina,
+    sum(case when l.pao2_min        is null then 1 else 0 end) as sin_pao2,
+    sum(case when g.gcs_min         is null then 1 else 0 end) as sin_gcs,
+    -- Pacientes donde TODOS los componentes analíticos son nulos
+    sum(case when l.bilirrubina_max is null 
+              and l.plaquetas_min   is null 
+              and l.creatinina_max  is null then 1 else 0 end) as sin_ninguna_analitica
+FROM dataset_final_eicu_v4p_clean f
+LEFT JOIN variables_lab_eicu_v4p  l on f.stay_id = l.patientunitstayid
+LEFT JOIN variables_gcs_eicu_v4p  g on f.stay_id = g.patientunitstayid;
