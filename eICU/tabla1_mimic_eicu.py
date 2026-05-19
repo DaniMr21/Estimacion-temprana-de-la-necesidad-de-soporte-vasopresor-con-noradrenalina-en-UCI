@@ -104,11 +104,14 @@ def test_categorica(s1, s2, valor=1):
 
 def codificar_gender(serie):
     """Normaliza género a 1=M, 0=F independientemente del formato."""
+    # CAMBIO MÍNIMO: Evaluar de forma segura tanto tipos numéricos como texto
     s = serie.copy()
-    if s.dtype == object:
-        s = s.str.upper().str.strip()
-        return (s == 'M').astype(float)
-    return s  # ya es numérica
+    if s.dtype in [np.int64, np.int32, np.float64, np.float32]:
+        return (s == 1).astype(float)
+    
+    # Si viene como objeto/texto, aplicamos tu mapeo de strings seguro
+    s_str = s.astype(str).str.upper().str.strip()
+    return s_str.str.startswith('M').astype(float)
 
 
 # ── GENERACIÓN DE TABLA ────────────────────────────────────────────────────────

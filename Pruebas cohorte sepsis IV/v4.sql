@@ -577,6 +577,4 @@ select
     round(avg(sofa_media)::numeric, 2)                    as sofa_medio
 from public.dataset_final_v4_clean;
 
-
-
 select * from public.dataset_final_v4_clean;
