@@ -72,7 +72,7 @@ MODELOS = {
     },
     'Largo': {
         'modelo_pkl' : 'modelo_Largo_12_48_XGB.pkl',
-        'calibrador' : 'calibrador_Largo_eICU.pkl',
+        'calibrador' : None,  
         'csv_mimic'  : 'definitivo_v4l.csv',
         'etiqueta'   : 'etiqueta_norad_12_48',
         'vars'       : ['temp_min', 'pf_min', 'spo2_min', 'bicarbonato_min',
