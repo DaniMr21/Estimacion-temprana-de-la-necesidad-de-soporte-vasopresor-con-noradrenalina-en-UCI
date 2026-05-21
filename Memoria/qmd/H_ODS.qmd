@@ -11,4 +11,72 @@ Se pueden incluir tantas subsecciones como sean necesarias con la intención de 
 Más información en el documento de la CRUE \url{https://www.crue.org/wp-content/uploads/2020/02/Directrices_Sosteniblidad_Crue2012.pdf}.
 
 Este anexo tendrá una extensión comprendida entre 600 y 800 palabras.
+
+
+%% ══════════════════════════════════════════════════════
+%%  APÉNDICE H – Sostenibilidad curricular
+%% ══════════════════════════════════════════════════════
+\apendice{Anexo de sostenibilización curricular}
+
+\section{Introducción}
+
+Este Trabajo de Fin de Grado se centra en el desarrollo de modelos de aprendizaje automático para estimar de forma temprana el riesgo de inicio de soporte vasopresor en pacientes ingresados 
+en unidades de cuidados intensivos. Aunque el objetivo principal del proyecto es clínico y tecnológico, también presenta implicaciones relacionadas con la sostenibilidad, especialmente en 
+tres ámbitos: el uso eficiente de recursos computacionales, la posible optimización de recursos sanitarios y la transparencia en el desarrollo de herramientas de inteligencia artificial 
+aplicadas a la salud.
+
+La sostenibilidad, en este contexto, no se limita únicamente a la reducción del impacto ambiental, sino que también incluye la capacidad de desarrollar soluciones técnicamente viables, 
+clínicamente útiles y socialmente responsables. Por ello, este anexo recoge cómo distintas decisiones tomadas durante el diseño, entrenamiento y evaluación de los modelos se relacionan con 
+una práctica más eficiente y prudente de la ingeniería aplicada al ámbito sanitario.
+
+\section{Dimensión ambiental}
+
+Desde el punto de vista ambiental, el proyecto ha procurado evitar un uso innecesario de recursos computacionales. El entrenamiento de modelos de aprendizaje automático puede implicar un 
+consumo energético relevante, especialmente cuando se realizan búsquedas extensas de hiperparámetros o se prueban muchas configuraciones sin criterio previo.
+
+Por ello, durante el desarrollo se priorizó una metodología razonable y contenida. Se limitaron las combinaciones de modelos e hiperparámetros a aquellas justificadas por el problema, 
+se reutilizaron procesos de validación comunes entre modelos y se evitó incorporar análisis redundantes que no aportasen una mejora clara. Además, se emplearon implementaciones eficientes, 
+como métodos basados en histogramas en modelos de boosting, con el fin de reducir tiempos de entrenamiento y consumo de memoria.
+
+También se intentó que el código fuera reutilizable y organizado, evitando ejecuciones innecesarias derivadas de errores de estructura o duplicación de procesos. Esta forma de trabajo reduce 
+el coste computacional acumulado y facilita que futuros análisis puedan realizarse de manera más controlada.
+
+Estas decisiones no eliminan el impacto ambiental asociado al uso de recursos informáticos, pero contribuyen a mantenerlo dentro de unos límites proporcionados para un Trabajo de Fin de Grado.
+
+\section{Dimensión económica}
+
+La estancia en UCI supone un uso intensivo de recursos humanos, materiales y económicos. En este contexto, disponer de herramientas que ayuden a identificar de forma temprana a pacientes con 
+riesgo de deterioro hemodinámico podría contribuir a una mejor planificación asistencial.
+
+El modelo desarrollado no sustituye la valoración clínica, pero puede servir como apoyo para priorizar la vigilancia de pacientes con mayor probabilidad de requerir noradrenalina. 
+Si este tipo de sistemas se validaran adecuadamente en entornos reales, podrían ayudar a optimizar la asignación de recursos, anticipar intervenciones y reducir complicaciones asociadas a una 
+detección tardía.
+
+Además, una predicción temprana podría favorecer una gestión más eficiente de pruebas, monitorización, personal y camas disponibles, especialmente en unidades con alta presión asistencial. 
+No obstante, cualquier aplicación práctica requeriría una validación clínica externa, integración segura en los flujos de trabajo y evaluación de su impacto real.
+
+En cualquier caso, el impacto económico del sistema no se evalúa directamente en este trabajo, por lo que debe entenderse como una posible línea de aplicación futura y no como una conclusión demostrada.
+
+\section{Dimensión social y ética}
+
+En el ámbito social y ético, el proyecto se relaciona con la seguridad del paciente, la equidad y la transparencia en el uso de inteligencia artificial clínica. Al tratarse de un sistema 
+predictivo aplicado a pacientes críticos, es fundamental que sus resultados sean interpretables y que no se utilicen de forma automática ni aislada.
+
+Por este motivo, el trabajo incorpora herramientas de interpretabilidad, como los valores SHAP, que permiten analizar qué variables contribuyen más a la predicción realizada por el modelo. 
+Esto facilita una lectura más comprensible del resultado y reduce el riesgo de tratar el modelo como una ``caja negra''.
+
+Además, el uso de bases de datos clínicas desidentificadas, como MIMIC-IV y eICU-CRD, exige respetar los acuerdos de uso, la privacidad de los pacientes y la reproducibilidad del análisis.
+En este sentido, la organización del código y la documentación del procedimiento buscan facilitar que el trabajo pueda ser revisado, auditado y, en su caso, reproducido por otros investigadores.
+
+También debe destacarse que un modelo predictivo de este tipo solo tendría sentido como herramienta de apoyo. La decisión final debe seguir correspondiendo al personal clínico, que puede valorar 
+factores contextuales no recogidos en los datos estructurados.
+
+\section{Conclusión}
+
+En conjunto, este TFG incorpora la sostenibilidad de forma transversal, principalmente mediante un uso responsable de los recursos computacionales, 
+una orientación hacia la mejora de la eficiencia asistencial y una preocupación por la transparencia de los modelos predictivos. Aunque el trabajo no mide directamente el impacto ambiental, 
+económico o social del sistema, sí plantea un desarrollo tecnológico alineado con principios de responsabilidad, reproducibilidad y apoyo a la toma de decisiones clínicas.
+
+De este modo, el proyecto muestra que la aplicación de inteligencia artificial en salud debe evaluarse no solo por su rendimiento predictivo, sino también por su eficiencia, su interpretabilidad 
+y su integración responsable en contextos clínicos reales.
 ```

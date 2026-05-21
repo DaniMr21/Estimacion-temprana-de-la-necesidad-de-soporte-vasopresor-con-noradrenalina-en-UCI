@@ -1,0 +1,520 @@
+```{=latex}
+%% ── Capítulo 4: Metodología ─────────────────────────────────
+\capitulo{4}{Metodología}
+```
+El trabajo se estructuró en tres fases principales: construcción de las cohortes, desarrollo y evaluación interna de los modelos sobre MIMIC-IV, y validación externa sobre eICU-CRD.
+
+El principal objetico metodológico fue definir tres ventanas para ver la necesidad de soporte vasopresor en tres horizontes temporales clínicamente diferenciados:
+
+Las ventanas temporales fueron: corta, observación 0-3 h y predicción 3-12 h; media, observación 0-6 h y predicción 6-24 h; y larga, observación 0-12 h y predicción 12-48 h tras el ingreso.
+
+El motivo de esta elección de franjas es cubrir distintos escenarios asistenciales: desde la detección precoz de deterioro hemodinámico inminente hasta la identificación 
+de pacientes con riesgo de evolución desfavorable en un plazo más amplio. En todos los casos, los predictores se extrajeron exclusivamente de periodos previos al inicio 
+de la noradrenalina, evitando así cualquier forma de fuga de información desde el evento hacia el modelo.
+
+La cohorte de entrenamiento y evaluación interna se construyó a partir de MIMIC-IV. El acceso a esta BBDD requirió completar el curso de formación en investigación con datos humanos del CITI
+Program [@citiprogram], registrar el proyecto en PhysioNet [@physionet], esperar su aprobación y firmar el correspondiente acuerdo de uso de datos. Dicho acuerdo obliga, entre otros aspectos, 
+a no intentar reidentificar pacientes, no redistribuir los datos y publicar el código necesario para la reproducibilidad del proyecto en un repositorio público.
+
+Inicialmente se valoró utilizar como cohorte de validación externa un conjunto de datos desidentificado de pacientes de la UCI del Hospital Universitario de Burgos (HUBU). 
+El objetivo era evaluar la extrapolabilidad de los modelos entrenados en MIMIC-IV a una población europea y a un sistema sanitario distinto.
+
+Sin embargo, esta alternativa fue finalmente descartada para esta fase del trabajo. La decisión se debió a la dificultad técnica para extraer de forma homogénea todas las
+variables requeridas y, especialmente, a la marcada heterogeneidad entre los sistemas asistenciales, los protocolos clínicos y la estructura de registro de ambas cohortes.
+La diferencia no se limitaba al origen geográfico de los pacientes, sino que afectaba a aspectos directamente relacionados con la práctica clínica: criterios de ingreso en UCI, 
+intensidad de monitorización, disponibilidad y periodicidad de determinadas variables, pautas de tratamiento y soporte hemodinámico.
+
+A pesar de ello, se elaboró el documento requerido para el Comité de Ética en Investigación del HUBU. Como línea futura, una vez confirmada la viabilidad de extracción de
+las variables necesarias, se prevé solicitar su aprobación para realizar una validación externa sobre estos datos del HUBU. Esta validación
+tendría una doble finalidad: evaluar la extrapolabilidad de los modelos a un contexto sanitario europeo y explorar su posible publicación científica una vez identificados 
+todos los aspectos a considerar.
+
+Finalmente se seleccionó eICU-CRD como cohorte de validación externa. Aunque también procede de población norteamericana, su carácter multicéntrico permite evaluar el 
+rendimiento de los modelos en un entorno interhospitalario heterogéneo, con variabilidad real entre centros y prácticas asistenciales, abordando una de las principales limitaciones 
+que presentaban la mayor parte de estudios publicados y mencionados en el estado del arte. Al mismo tiempo, mantiene una mayor comparabilidad estructural con MIMIC-IV que la disponible 
+inicialmente con los datos del HUBU. Los requisitos de acceso y utilización fueron equivalentes a los de MIMIC-IV, al tratarse también de una base de datos alojada en PhysioNet.
+
+La cohorte de desarrollo se construyó mediante consultas SQL directas sobre las tablas de MIMIC-IV alojadas en un servidor PostgreSQL local. El proceso siguió un flujo 
+estructurado en varias etapas.
+
+En primer lugar, se identificaron todas las estancias en UCI y se exigió una duración mínima de estancia suficiente para que el horizonte de predicción quedara completamente contenido 
+dentro del seguimiento disponible.
+
+Para las ventanas Corto y Medio se exigió una estancia superior a 24 horas. Para la ventana Largo se exigió una estancia superior a 48 horas. Este criterio conservador 
+evita el truncamiento informativo de los casos negativos, es decir, pacientes que podrían haber recibido noradrenalina si su estancia en UCI hubiera sido más larga.
+
+El evento objetivo fue el primer inicio de perfusión de noradrenalina durante la estancia en UCI. En MIMIC-IV se localizó a partir del `itemid` 221906 de la tabla 
+`inputevents`. Para cada estancia se calculó el tiempo transcurrido, en horas, desde el ingreso en UCI hasta el primer inicio registrado de noradrenalina.
+
+Se excluyeron las estancias en las que la noradrenalina se había iniciado antes del comienzo de la ventana de observación correspondiente. Con ello se garantizó 
+que todos los predictores se extrajeran de un periodo libre de tratamiento vasopresor, evitando que el modelo aprendiera patrones derivados de una intervención ya iniciada.
+
+Para cada ventana temporal se asignó una etiqueta binaria. Una estancia recibió etiqueta positiva (`1`) cuando el primer inicio de perfusión de noradrenalina 
+ocurrió estrictamente dentro del intervalo de predicción definido para esa ventana. Por el contrario, recibió etiqueta negativa (`0`) cuando no ocurrió dentro de dicho 
+horizonte.
+
+La etiqueta negativa incluye dos situaciones: pacientes que nunca requirieron soporte vasopresor durante toda su estancia en UCI y pacientes que iniciaron noradrenalina 
+fuera del horizonte predictivo evaluado, por ejemplo de forma tardía una vez cerrada la ventana de predicción.
+
+La presencia de sepsis se identificó mediante la tabla derivada `mimiciv_derived.sepsis3`. La puntuación SOFA se obtuvo a partir de `mimiciv_derived.sofa`. Ambas tablas 
+proceden del repositorio oficial de scripts derivados de MIMIC-IV mantenido por MIT-LCP [citar], que implementa los criterios Sepsis-3.
+
+[Meter gráfico o pseudocódigo]
+
+La puntuación SOFA se incorporó como variable predictora. La variable de sepsis se utilizó principalmente como variable de análisis diferencial por subgrupos, dada su 
+importancia clínica y su relación directa con el inicio de soporte vasopresor.
+
+La cohorte de validación externa se construyó mediante consultas SQL sobre las tablas de eICU-CRD, alojadas en el mismo entorno local que MIMIC-IV. Se aplicaron las 
+mismas restricciones de estancia mínima obligatoria utilizadas en la cohorte de desarrollo.
+
+En eICU-CRD, el evento objetivo se identificó a partir de la tabla `infusionDrug`. Se buscaron perfusiones cuyo nombre de fármaco contuviera los términos *norepinephrine* 
+o *levophed* (nombre comercial). Se excluyeron las entradas que contenían el término *volume*, con el fin de evitar falsos positivos relacionados con soluciones de reposición 
+o registros no correspondientes a perfusión vasopresora.
+
+Para cada estancia se registró el primer inicio de noradrenalina en minutos desde el ingreso en UCI. Posteriormente, este valor se convirtió a horas para mantener la 
+consistencia con MIMIC-IV. Se aplicaron los mismos criterios de exclusión de noradrenalina precoz y de asignación de etiqueta binaria utilizados en la cohorte de 
+entrenamiento.
+
+A diferencia de MIMIC-IV, eICU-CRD no dispone de tablas derivadas precalculadas para SOFA ni para sepsis. Por ello, el índice SOFA se calculó específicamente en SQL 
+a partir de sus seis componentes fundamentales y de manera similar a como se calcula en el repositorio del MIT-LCP.
+
+En eICU-CRD no fue posible obtener un indicador de sepsis equivalente al disponible en MIMIC-IV. Aunque la base de datos dispone de información microbiológica estructurada para el 
+requerimiento de "sospecha de infección", esta está poco poblada por disponibilidad limitada de interfaces microbiológicas según la documentación oficial. 
+
+Se valoró aproximar la sepsis mediante códigos ICD, pero esta opción se descartó por no considerarse metodológicamente adecuada. La codificación administrativa
+es introducida manualmente a posteriori por personal médico, lo que puede incorporar errores humanos, omisiones o codificación de entidades clínicas similares pero no 
+equivalentes. Por tanto, el análisis diferencial por subgrupos de sepsis se realizó únicamente sobre la cohorte de MIMIC-IV.
+
+El tratamiento de datos faltantes se abordó con un criterio deliberadamente estricto. Tanto en las variables predictoras de MIMIC-IV y eICU-CRD como en los componentes 
+individuales del SOFA calculado para eICU-CRD, se descartó el uso de técnicas de imputación estadística, incluyendo sustitución por media, mediana o algoritmos KNN.
+
+La decisión se justificó por dos motivos. En primer lugar, la imputación introduce un componente sintético que exige asumir supuestos metodológicos complejos sobre el 
+mecanismo de ausencia de datos, lo que excedía el alcance de este trabajo. En segundo lugar, tras analizar la dinámica asistencial de la UCI, se descartó también asignar 
+una puntuación de cero a los componentes ausentes del SOFA, ya que la ausencia de registro no equivale necesariamente a normalidad clínica. En consecuencia, se retuvieron únicamente 
+las estancias con registros reales e íntegros en la totalidad de las variables analizadas.
+
+Esta decisión tuvo una consecuencia directa sobre la composición de las cohortes finales: la prevalencia del evento objetivo aumentó desde aproximadamente el 3-4% en 
+las cohortes brutas originales hasta el 10-11% tras el filtro de completitud. Este cambio es compatible con un sesgo de monitorización esperable en cuidados intensivos. 
+Los pacientes con analíticas completas, gases arteriales, constantes vitales frecuentes y control estricto de diuresis son, por definición, pacientes con mayor gravedad 
+clínica percibida por el equipo sanitario.
+
+[Meter comparativa]
+
+Aunque este filtrado reduce el tamaño muestral y selecciona una población de mayor gravedad, también refina la cohorte hacia la población diana real del modelo: pacientes
+con alta intensidad de monitorización, sospecha de deterioro hemodinámico o riesgo de shock en evolución. Por el contrario, muchas de las estancias excluidas por registros
+incompletos corresponden previsiblemente a ingresos postquirúrgicos breves o cuadros de baja complejidad, escenarios donde la necesidad de soporte vasopresor es menos 
+frecuente y donde una herramienta predictiva de este tipo tendría menor valor asistencial.
+
+Antes del modelado se realizó un análisis exploratorio de datos sobre la cohorte de MIMIC-IV mediante un *notebook* de Jupyter. Esta fase tuvo dos objetivos: caracterizar la distribución de cada
+variable predictora y detectar valores fisiológicamente implausibles o erráticos que pudieran distorsionar el aprendizaje de los modelos.
+
+Para cada variable continua se inspeccionaron histogramas, diagramas de caja y percentiles extremos, tanto en la cohorte completa como desagregando por etiqueta del evento. 
+Esta revisión permitió identificar distribuciones asimétricas, colas pesadas y valores extremos frecuentes en variables clínicas de pacientes críticos. Un ejemplo ilustrativo es 
+la presión arterial media (MAP): aunque valores inferiores a 20 mmHg o superiores a 200 mmHg son fisiológicamente posibles en contextos muy extremos, 
+su presencia puntual en el registro —habitualmente asociada a artefactos de monitorización, errores de transcripción o transitorios de calibración— puede distorsionar significativamente 
+los estadísticos de resumen calculados sobre la ventana de observación.
+
+Es importante señalar que la winsorización se aplicó sobre los estadísticos de resumen ya agregados (media, mínimo y máximo por estancia y ventana) y no sobre las mediciones individuales en
+ bruto. Esto responde a que la unidad de análisis del modelo es la estancia, no la medición puntual: los valores extremos que resultan clínicamente significativos son aquellos que afectan al 
+ estadístico de resumen de la estancia, no los picos instantáneos que pueden reflejar situaciones transitorias reales.
+
+Siguiendo la lógica de preprocesamiento propuesta por Gupta et al. [@gupta2022] para datos de MIMIC-IV, se aplicó una estrategia de winsorización al percentil 2 y 98 sobre todas las variables 
+clínicas continuas agregadas. La winsorización sustituye los valores por debajo del percentil 2 o por encima del percentil 98 por los propios límites del intervalo, manteniendo el tamaño
+ muestral íntegro y evitando la pérdida de observaciones. Esta opción se prefirió frente a la eliminación de filas porque en UCI un valor extremo no es necesariamente un error de registro 
+ —puede reflejar la situación real de un paciente crítico—, y eliminar esas estancias introduciría un sesgo de selección adicional. Se aplicó el mismo criterio de winsorización (p2--p98) de forma
+  uniforme a todas las variables continuas, sin excepciones por variable, garantizando así un tratamiento homogéneo y reproducible del espacio de predictores.
+
+Quedaron excluidas de la winsorización las variables con rango acotado por definición —la escala de Glasgow (3--15) y la puntuación SOFA (0--24)— así como las variables binarias, como la 
+presencia de sepsis o de ventilación invasiva, para las que el procedimiento carece de sentido.
+
+Los percentiles 2 y 98 se calcularon exclusivamente sobre la cohorte de MIMIC-IV y se almacenaron en un fichero de referencia. Posteriormente se aplicaron esos mismos umbrales a las cohortes 
+de eICU-CRD, garantizando que el tratamiento de valores extremos en la cohorte de validación externa se realizara con parámetros aprendidos en el conjunto de entrenamiento. 
+Este orden es metodológicamente imprescindible: calcular los percentiles sobre eICU-CRD e imputarlos a sí mismo equivaldría a usar información de la distribución de la cohorte de validación 
+durante el preprocesamiento, introduciendo una forma sutil de fuga de información.
+
+Como cada parámetro analítico y constante vital se extrajo inicialmente con tres estadísticos calculados sobre la ventana de observación (media, mínimo y máximo), 
+conservar los tres habría introducido una colinealidad elevada, ya que los tres derivan de la misma señal fisiológica y comparten una proporción sustancial de información.
+
+Para evitarlo, se seleccionó un único estadístico por variable mediante un procedimiento jerárquico en dos pasos: primero un criterio clínico y, cuando este no era 
+concluyente, un criterio estadístico de desempate.
+
+El criterio clínico se aplicó de forma preferente. Para cada variable se eligió el estadístico con mayor sentido fisiopatológico para anticipar deterioro hemodinámico.
+
+En la presión arterial media se retuvo el valor mínimo, dado que la hipotensión es el desencadenante directo del soporte vasopresor. En lactato, creatinina, bilirrubina 
+y GPT se retuvo el valor máximo, al tratarse de marcadores cuya elevación refleja hipoperfusión tisular, fracaso renal, disfunción hepática o daño hepatocelular. 
+En la diuresis se utilizó el valor acumulado y normalizado por peso corporal en la ventana completa, ya que su valor instantáneo tiene menor interpretación clínica.
+
+Para SpO$_2$, pH, plaquetas y bicarbonato se seleccionó el mínimo, puesto que su descenso refleja deterioro respiratorio, acidosis o disfunción de la coagulación. Para FiO$_2$
+ se eligió el máximo, como indicador de mayor necesidad de oxígeno suplementario, mientras que para el cociente PaO$_2$/FiO$_2$ se conservó el mínimo, al representar la peor 
+ situación de oxigenación. En la frecuencia cardiaca se conservó la media como reflejo del tono autonómico predominante durante la ventana, y en la frecuencia respiratoria 
+ se retuvo el máximo como marcador de distrés respiratorio.
+
+[REVISAR BIEN ESTO MUY BIEN HASTA LA MARCA]---------------------------------------------------------------------------------------------------------------------------------
+
+El criterio estadístico se aplicó únicamente cuando el sentido clínico no resolvía la elección de forma inequívoca o cuando existían dos estadísticos clínicamente 
+plausibles. En estos casos se ejecutó un análisis de desempate que comparó para cada candidato:
+
+* El AUC-ROC univariante frente a la etiqueta del evento, como medida de capacidad discriminativa aislada.
+* La magnitud del efecto mediante la *d* de Cohen entre positivos y negativos.
+* La mediana y el rango intercuartílico en cada grupo, para comprobar la coherencia de la dirección del efecto.
+
+Cuando el AUC univariante era inferior a 0,5, se interpretaba como `1 - AUC`, asumiendo que la variable podía tener una dirección protectora o de riesgo según su naturaleza
+ clínica. Se retuvo el estadístico con mayor poder discriminativo siempre que su dirección fuera coherente con el sentido fisiopatológico esperado. Si el ganador 
+ estadístico contradecía claramente el criterio clínico, se priorizó la interpretación clínica, dado que un efecto inverso aparente podía deberse a confusión por 
+ covariables.
+
+Este procedimiento se aplicó especialmente a variables ambiguas como temperatura, tiempo de protrombina, GPT, FiO$_2$, bilirrubina, leucocitos, SOFA, glucemia y plaquetas.
+
+Una vez seleccionado un único estadístico por variable, se evaluó la redundancia entre predictores candidatos sobre la primera estancia de cada paciente. 
+Esta restricción evitó la dependencia entre observaciones procedentes del mismo individuo.
+
+Una vez seleccionado un único estadístico por variable, se evaluó la redundancia entre predictores candidatos sobre la primera estancia de cada paciente, restricción que evita la dependencia 
+entre observaciones procedentes del mismo individuo. Se calculó la matriz de correlación de Spearman entre todas las variables candidatas, prefiriendo este coeficiente frente al de Pearson 
+por su robustez ante distribuciones asimétricas y valores extremos residuales, frecuentes en variables clínicas de UCI incluso tras la winsorización. La matriz se visualizó como un mapa de calor
+ con escala bipolar centrada en cero, lo que permitió identificar visualmente los bloques de variables fuertemente asociadas. Del triángulo superior de la matriz se extrajeron todos los pares 
+ con coeficiente absoluto superior a 0,7, umbral a partir del cual la información compartida entre dos variables es suficientemente grande como para cuestionar su coexistencia en un modelo 
+ lineal. 
+ 
+Una vez seleccionado un único estadístico por variable, se evaluó la redundancia entre predictores candidatos sobre la primera estancia de cada paciente, restricción que evita la dependencia 
+entre observaciones procedentes del mismo individuo. Se calculó la matriz de correlación de Spearman entre todas las variables candidatas, prefiriendo este coeficiente frente al de Pearson por 
+su robustez ante distribuciones asimétricas y valores extremos residuales frecuentes en variables clínicas de UCI. 
+
+La matriz se visualizó como un mapa de calor con escala bipolar centrada en cero, lo que permitió identificar visualmente los bloques de variables fuertemente asociadas. Del triángulo superior 
+de la matriz se extrajeron todos los pares con coeficiente absoluto superior a 0,7, umbral a partir del cual la información compartida entre dos variables es suficientemente grande como para 
+cuestionar su coexistencia en un modelo. Para las variables binarias (sepsis, ventilación invasiva, sexo)  se emplearon métricas específicas: el coeficiente *phi* para los pares binaria-binaria
+y la correlación de Spearman como aproximación al coeficiente *rank-biserial* para los pares binaria-continua, reportando únicamente las asociaciones con coeficiente absoluto superior a 0,2.
+
+Adicionalmente, se realizó un agrupamiento jerárquico ascendente con enlace medio (*average linkage*) sobre la distancia $1 - |\rho|$, generando un dendrograma de todas las variables candidatas.
+Se aplicó un corte a distancia 0,3 —equivalente a $|\rho| \geq 0{,}7$— para identificar *clusters* de variables con información redundante: los estadísticos de resumen de una misma variable 
+analítica (media, mínimo y máximo) formaban sistemáticamente grupos muy compactos, lo que confirmaba la necesidad de retener un único estadístico por variable. Estos resultados sirvieron como
+información de apoyo para la siguiente fase de selección, aunque la decisión final de inclusión o exclusión de cada predictor se tomó en función de los criterios de importancia por permutación 
+y coherencia clínica, y no de un recorte automático por umbral de correlación.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[REVISAR TAMBIEN]
+
+La selección final de predictores se realizó de forma independiente para cada algoritmo y ventana temporal. El objetivo fue identificar variables con contribución predictiva robusta y, 
+al mismo tiempo, clínicamente coherente. El procedimiento constó de dos etapas.
+
+En la primera etapa se calculó la importancia por permutación (*permutation importance*) de todos los predictores candidatos de forma independiente para cada uno de los seis algoritmos. 
+sta técnica mide la contribución de una variable evaluando cuánto cae el rendimiento del modelo cuando sus valores se permutan aleatoriamente, rompiendo su relación con la etiqueta pero
+ manteniendo su distribución marginal. Para cada algoritmo el cálculo se integró dentro del mismo esquema de validación cruzada estratificada con grupos empleado en el entrenamiento 
+ (`StratifiedGroupKFold`, $k=5$ folds externos, $k=3$ folds internos, agrupando por `subject_id`), con 50 repeticiones de permutación por variable y fold. A partir de las distribuciones 
+ obtenidas se estimó un intervalo de confianza al 95% por *bootstrap* para la importancia de cada predictor dentro de ese algoritmo concreto. El criterio de retención fue estricto: se 
+ conservaron únicamente las variables cuyo intervalo de confianza inferior excluía el cero, es decir, aquellas con contribución positiva y estadísticamente robusta al rendimiento de ese 
+ modelo específico. Sobre los p-valores derivados de esta etapa se aplicó corrección de Benjamini-Hochberg por algoritmo para controlar la tasa de falsos descubrimientos en el contexto de 
+ comparaciones múltiples. El resultado fue un subconjunto de variables candidatas diferente para cada algoritmo, que constituyó la entrada de la segunda etapa.
+
+En la segunda etapa se verificó que la dirección del efecto de cada variable preseleccionada fuera clínicamente coherente. Para las variables continuas se aplicó el test de Mann-Whitney U 
+comparando su distribución entre pacientes positivos y negativos, reportando la mediana y el rango intercuartílico en cada grupo. Para las variables binarias se empleó el test chi-cuadrado,
+ con conmutación automática al test exacto de Fisher en presencia de celdas con frecuencia esperada inferior a 5. Para cada variable se calculó además el *odds ratio* crudo mediante regresión
+  logística univariante estandarizada y el *odds ratio* ajustado mediante una regresión logística multivariante con todos los predictores del set reducido estandarizados, obteniendo así tanto 
+  el efecto bruto como el efecto independiente de cada variable condicionado al resto. La comparación entre la dirección observada en los datos crudos y el signo del coeficiente ajustado 
+  permitió detectar variables con efecto inverso al esperado clínicamente. Este fenómeno se observó concretamente en variables como el lactato y el GPT, cuya aparente inversión de dirección
+   en algunos modelos se atribuyó a artefactos de la muestra: la presencia de pacientes con hiperlactatemia severa de origen no circulatorio, o una concentración elevada de hepatópatas en el
+    subconjunto analizado, puede distorsionar la relación estimada sin que ello refleje una señal predictiva genuina. Ante la imposibilidad de distinguir en todos los casos un efecto real de
+     un artefacto muestral, se optó por descartar sistemáticamente todas las variables con incoherencia entre la dirección observada en los datos y el signo del coeficiente ajustado, sin
+      excepciones, priorizando la robustez clínica del modelo final sobre el rendimiento estadístico puntual.
+
+El conjunto final de predictores para cada modelo y ventana se determinó como la intersección de ambos criterios. Este proceso independiente por algoritmo explica que los subconjuntos finales 
+difieran entre modelos dentro de una misma ventana: el número de variables retenidas osciló entre 2 (Random Forest en la ventana Corto, donde solo `temp_min` y `rr_max` superaron ambos filtros)
+ y 10 (Random Forest en la ventana Largo), reflejando la diferente capacidad de cada algoritmo para extraer señal robusta y coherente del espacio de predictores candidatos.
+
+La variable `tiene_sepsis` recibió un análisis específico dada su importancia clínica y su prevalencia en la cohorte (30,3% de las estancias en la ventana Medio). Se evaluó su capacidad 
+predictiva aislada y su ganancia marginal al modelo mediante un conjunto de métricas complementarias calculadas sobre la cohorte completa de la ventana Medio. Como predictor único, la sepsis 
+presentó un AUC-ROC de 0,54, apenas superior al azar, con una información mutua de 0,0014 nats respecto a la etiqueta. El análisis epidemiológico reveló una asociación estadísticamente 
+significativa con el evento (chi-cuadrado $p = 0,0025$), con un riesgo relativo de 1,39 (IC95%: 1,13--1,71) y un *odds ratio* de 1,44 (IC95%: 1,14--1,82): los pacientes sépticos presentaban una 
+probabilidad de iniciar noradrenalina del 12,8% frente al 9,2% en los no sépticos. Sin embargo, al evaluar la ganancia marginal de la variable mediante validación cruzada agrupada por paciente, 
+la diferencia de AUC-ROC entre un modelo de regresión logística entrenado con todas las variables y el mismo modelo sin `tiene_sepsis` fue de solo +0,0010, indicando que la información aportada
+por la sepsis ya estaba capturada por el resto de predictores (principalmente SOFA, variables respiratorias y hemodinámicas). Por este motivo, `tiene_sepsis` no se incluyó como predictor en los
+modelos finales, sino que se empleó exclusivamente como variable de estratificación para el análisis diferencial de rendimiento por subgrupos.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Con la selección final de variables se entrenaron y compararon seis algoritmos de clasificación supervisada para cada ventana temporal:
+
+* Regresión logística.
+* Naive Bayes gaussiano.
+* *Random Forest*.
+* XGBoost.
+* LightGBM.
+* CatBoost.
+
+Esta selección cubre varios paradigmas de aprendizaje supervisado sobre datos tabulares: un modelo lineal de referencia con regularización, un modelo probabilístico basal,
+ un método de ensamblado por *bagging* y tres implementaciones avanzadas de potenciación de gradiente.
+
+Para los clasificadores sensibles a la escala y a la presencia de valores extremos, concretamente regresión logística y Naive Bayes, se integró `RobustScaler` en la primera
+ etapa deL pipeline. Este transformador centra mediante la mediana y escala mediante el rango intercuartílico, lo que reduce la influencia de valores extremos residuales tras la winsorización.
+
+Para los modelos basados en árboles de decisión, es decir, *Random Forest*, XGBoost, LightGBM y CatBoost, el escalado se omitió deliberadamente. Las particiones de los 
+árboles son invariantes a transformaciones monótonas de las variables, por lo que el escalado no aporta una ventaja metodológica clara.
+
+El rendimiento de los modelos se estimó mediante validación cruzada anidada (*Nested Cross-Validation*) con `StratifiedGroupKFold` en ambos niveles: 5 *folds* en el bucle
+externo y 3 *folds* en el bucle interno.
+
+La condición de grupo garantiza que todas las estancias asociadas a un mismo paciente se asignen en bloque al conjunto de entrenamiento o al conjunto de prueba. 
+Esto evita que un mismo paciente aparezca simultáneamente en entrenamiento y evaluación, situación que produciría fuga de información y métricas artificialmente optimistas.
+
+La estratificación mantiene una prevalencia similar del evento objetivo en cada *fold*. Este aspecto es especialmente importante en una cohorte con desequilibrio moderado 
+de clases, donde la proporción de positivos tras el filtro de completitud se sitúa aproximadamente en el 10-11%.
+--------------- aqui viene cuando la matan 
+
+El bucle externo, compuesto por 5 *folds*, se dedicó exclusivamente a la evaluación del rendimiento general. En cada iteración, el conjunto de datos se dividió en un 80% de
+ desarrollo y un 20% de prueba externa. El 20% reservado no se utilizó en ningún momento para seleccionar hiperparámetros.
+
+El bucle interno, compuesto por 3 *folds*, se dedicó a la optimización de hiperparámetros mediante búsqueda exhaustiva en rejilla (`GridSearchCV`). 
+El conjunto de desarrollo del bucle externo se subdividió internamente en tres partes, utilizando dos tercios para entrenamiento local y un tercio para validación local en cada iteración.
+
+La métrica objetivo de la búsqueda fue el AUC-ROC. Una vez identificada la combinación óptima de hiperparámetros en el bucle interno, el modelo se reentrenó con esa
+ configuración sobre el 80% completo del *fold* externo y se evaluó de forma ciega sobre el 20% reservado.
+
+Esta arquitectura garantiza que la selección de hiperparámetros y la evaluación del rendimiento permanezcan separadas, evitando el sesgo optimista que aparece 
+cuando ambas decisiones se toman sobre los mismos datos.
+
+En cada *fold* externo se calcularon métricas complementarias de discriminación, rendimiento probabilístico y calibración.
+
+El **AUC-ROC** evaluó la capacidad del modelo para ordenar correctamente a los pacientes según su riesgo. Un valor de 0,5 equivale al azar y un valor de 1,0 a 
+discriminación perfecta.
+
+El **AUC-PR** o *Average Precision* se utilizó por su relevancia en cohortes desequilibradas. Esta métrica enfatiza la precisión alcanzada a distintos niveles de 
+sensibilidad y no se ve inflada por la abundancia de casos negativos.
+
+El **Brier Score** midió el error cuadrático medio entre la probabilidad predicha y la etiqueta observada, evaluando conjuntamente discriminación y calibración.
+
+El **Brier Skill Score** se calculó como:
+
+$$
+BSS = 1 - \frac{BS_{modelo}}{BS_{climatología}}
+$$
+
+La climatología corresponde a un modelo trivial que predice siempre la prevalencia observada del evento. Un BSS positivo indica que el modelo aporta ganancia predictiva 
+real frente a la probabilidad basal; un BSS negativo indica que el modelo es peor que predecir siempre la prevalencia.
+
+El **Expected Calibration Error** se calculó dividiendo las predicciones en 10 intervalos uniformes y ponderando la diferencia absoluta entre la probabilidad media 
+predicha y la frecuencia observada del evento en cada intervalo. Esta métrica evalúa si las probabilidades emitidas por el modelo son fiables en términos absolutos.
+
+Finalmente, se calculó también la **Log-Loss** como métrica estándar de evaluación probabilística. Para todas las métricas se reportaron media y desviación estándar 
+a través de los 5 *folds* externos.
+
+Dado que el objetivo final es desarrollar una herramienta de apoyo a la decisión clínica, no basta con que los modelos discriminen correctamente entre pacientes de 
+mayor y menor riesgo. Las probabilidades emitidas deben ser interpretables en términos absolutos. Por ejemplo, si el modelo asigna a un paciente un riesgo del 20%, 
+debería observarse que aproximadamente uno de cada cinco pacientes con predicciones similares inicia noradrenalina.
+
+Por este motivo, sobre los modelos con BSS positivo se evaluaron técnicas de calibración post-hoc. Se probaron tres variantes:
+
+* Calibración de Platt pura, mediante regresión logística sin regularización.
+* Calibración de Platt regularizada, seleccionando el parámetro de regularización mediante validación cruzada interna y minimizando el Brier negativo.
+* Regresión isotónica, como calibrador no paramétrico.
+
+El procedimiento se ejecutó dentro de una validación cruzada con `StratifiedGroupKFold` de 5 *folds*. En cada *fold*, el calibrador se ajustó sobre las probabilidades del 
+conjunto de entrenamiento y se aplicó sobre las probabilidades del conjunto de prueba, sin solapamiento. Esto evitó el sobreajuste del calibrador.
+
+El criterio de selección fue el ECE más bajo entre las variantes que mantenían BSS positivo. CatBoost no requirió calibración en ninguna ventana, ya que su ECE nativo fue
+inferior a 0,02 en los tres horizontes. XGBoost en la ventana Medio mejoró su ECE mediante calibración de Platt pura. En la ventana Largo, la calibración no mejoró el BSS y se descartó.
+
+La selección entre calibrar o no calibrar cada modelo se basó en dos criterios
+conjuntos: que el calibrador mejorara el ECE respecto al modelo sin calibrar, y
+que el BSS se mantuviera positivo tras la calibración. Si la calibración reducía
+el BSS aunque mejorara el ECE, se descartaba, ya que la fiabilidad probabilística
+no puede perseguirse a costa de perder ganancia predictiva real. Bajo este
+criterio, CatBoost resultó innecesario calibrar en las tres ventanas, con ECE
+nativo inferior a 0,02, lo que indica que sus probabilidades brutas ya reflejan
+de forma aceptable la frecuencia real del evento. XGBoost en la ventana Medio
+presentó un ECE que se redujo de forma apreciable mediante Platt pura sin
+comprometer el BSS, por lo que se adoptó ese calibrador. En la ventana Largo,
+ninguna variante de calibración mejoró ambos criterios simultáneamente, por lo
+que XGBoost se empleó sin calibrar.
+
+Una vez evaluadas las métricas de todos los algoritmos mediante validación
+cruzada anidada, el modelo primario de cada ventana se seleccionó atendiendo
+principalmente al BSS, por ser el indicador más exigente al medir la mejora
+real sobre un predictor trivial. Se exigió además que el ECE fuera inferior a
+0,03 y que el AUC-ROC fuera competitivo respecto al resto de algoritmos de esa
+ventana. En la ventana Corto, CatBoost fue el único algoritmo con BSS positivo
+consistente entre folds, por lo que se seleccionó como modelo único. En las
+ventanas Medio y Largo, CatBoost obtuvo el BSS más alto y se designó como
+modelo primario; XGBoost presentó un BSS positivo con un perfil de variables
+parcialmente complementario, por lo que se seleccionó como modelo secundario
+en ambas ventanas. No se seleccionaron más de dos modelos por ventana para
+mantener la interpretabilidad del sistema y evitar la proliferación de
+predicciones redundantes.
+
+## 16. Reentrenamiento sobre la cohorte completa
+
+Una vez confirmado el rendimiento mediante validación cruzada anidada, los modelos finales se reentrenaron sobre el 100% de la cohorte de desarrollo. 
+Los hiperparámetros utilizados en este reentrenamiento se determinaron mediante votación mayoritaria sobre las cinco configuraciones óptimas obtenidas en los *folds* 
+externos.
+
+Para cada hiperparámetro se seleccionó el valor más frecuente entre los cinco *folds*. Este procedimiento estabiliza la elección frente a fluctuaciones aleatorias de 
+las particiones y refleja la configuración más robusta a lo largo de la cohorte.
+
+Los modelos finales se serializaron en formato `.pkl` mediante `joblib` y se integraron posteriormente en los *scripts* de validación externa y en el prototipo de 
+*dashboard* clínico.
+
+## 17. Interpretabilidad mediante SHAP
+
+Para interpretar los modelos finales se calcularon valores SHAP (*SHapley Additive exPlanations*), que permiten descomponer cada predicción en la contribución individual 
+de cada variable.
+
+La elección del explicador dependió del tipo de modelo. Para modelos basados en árboles, como *Random Forest*, XGBoost, LightGBM y CatBoost, se utilizó `TreeExplainer`, 
+por su eficiencia y adecuación a este tipo de estructuras. Para regresión logística se utilizó `LinearExplainer` sobre los datos escalados. Para Naive Bayes se empleó 
+`KernelExplainer`, un método agnóstico al modelo, con una muestra de fondo de 200 observaciones y un muestreo de 500 puntos sobre el conjunto de evaluación.
+
+Sobre los modelos finales se generaron gráficos *beeswarm*, que muestran para cada variable la magnitud del valor SHAP y la dirección del efecto en función del valor de 
+la variable. Estos gráficos permitieron interpretar el comportamiento global del modelo y comprobar que las relaciones aprendidas eran clínicamente plausibles.
+
+También se calcularon valores SHAP sobre la cohorte de validación externa de eICU-CRD, con el fin de comparar la consistencia del comportamiento del modelo entre 
+cohortes. En el caso particular del modelo calibrado de la ventana Medio, se diseñó un procedimiento para extraer el modelo de árboles subyacente desde la estructura 
+compuesta del calibrador, aplicando previamente las transformaciones intermedias necesarias para que `TreeExplainer` operara sobre el núcleo del modelo.
+
+La incorporación de SHAP responde a una exigencia tanto metodológica como ética del proyecto. Un modelo de aprendizaje automático aplicado en un entorno clínico que
+emite probabilidades de riesgo sin ninguna explicación asociada constituye una caja negra: el clínico que lo consulta no puede evaluar si la predicción es razonable,
+ni identificar qué variables la están impulsando, ni detectar un posible comportamiento anómalo del modelo ante un paciente atípico. Esta opacidad reduce la confianza
+clínica en el sistema y dificulta su eventual adopción en la práctica asistencial. Los valores SHAP resuelven este problema descomponiendo cada predicción individual en
+contribuciones atribuibles a cada variable, expresadas en la misma escala que el *log-odds* del modelo. Esto permite al usuario del *dashboard* ver, para cada paciente
+concreto, qué variables están empujando el riesgo al alza y cuáles lo están reduciendo, con qué magnitud relativa, y si esa explicación es coherente con la clínica
+observada. Adicionalmente, los gráficos *beeswarm* globales sobre el conjunto de predicciones fuera de la muestra permiten verificar que el modelo ha aprendido
+relaciones fisiopatológicamente plausibles a nivel de cohorte, actuando como una capa de audito
+
+
+Con el fin de evaluar si el rendimiento de los modelos era homogéneo entre
+perfiles clínicos distintos, se realizó un análisis de subgrupos estratificando
+la cohorte de MIMIC-IV por la presencia o ausencia de sepsis. Las predicciones
+fuera de la muestra utilizadas en este análisis se obtuvieron mediante
+validación cruzada con `StratifiedGroupKFold` ($k=5$), reentrenando el modelo
+en cada fold y generando probabilidades honestas sobre los pacientes no vistos,
+de forma que las métricas de cada subgrupo se calcularan siempre sobre datos
+que el modelo no había utilizado durante el entrenamiento. Este análisis es
+relevante porque la fisiopatología del deterioro hemodinámico en el paciente
+séptico difiere de la del paciente no séptico: en el primero predomina la
+vasodilatación por liberación de mediadores inflamatorios, mientras que en el
+segundo pueden coexistir mecanismos obstructivos, cardiogénicos o
+hipovolémicos. Un modelo que funcionara bien globalmente pero fallara en uno
+de los dos subgrupos tendría una aplicabilidad clínica limitada precisamente
+en el perfil donde más se necesita.
+
+En cada subgrupo se calcularon AUC-ROC, AUC-PR, BSS y ECE. Este análisis permitió evaluar si el modelo mantenía un rendimiento comparable en ambos contextos clínicos.
+
+Además, se evaluó la puntuación SOFA aislada como referencia clínica basal. Para ello se calcularon su AUC-ROC y AUC-PR en la cohorte global de cada ventana. 
+Esta comparación permitió contextualizar el valor añadido de los modelos de aprendizaje automático frente a una herramienta clínica ampliamente utilizada en UCI.
+
+## 19. Validación externa
+
+Los modelos entrenados sobre MIMIC-IV se aplicaron directamente sobre las cohortes de eICU-CRD, sin reentrenamiento, para evaluar su capacidad de generalización a un 
+entorno multicéntrico independiente.
+
+El rendimiento externo se midió mediante AUC-ROC, AUC-PR, BSS y ECE. Para cada métrica se calcularon intervalos de confianza al 95% mediante *bootstrap* con 1.000 
+iteraciones y semilla fija igual a 42, garantizando la reproducibilidad del procedimiento.
+
+La diferencia de AUC-ROC entre cada modelo y SOFA se contrastó mediante una aproximación *bootstrap* al test de DeLong. En cada iteración se remuestreó con reemplazo 
+el conjunto de pacientes, se recalculó la diferencia de AUC y, a partir de la distribución obtenida, se estimó el p-valor bilateral. Este enfoque evita asumir normalidad 
+y se adapta de forma natural a la estructura de las cohortes externas.
+
+De forma complementaria, se generó una tabla comparativa de características basales entre MIMIC-IV y eICU-CRD para cada ventana temporal. Se compararon edad, sexo, peso, 
+SOFA, prevalencia de sepsis y prevalencia del evento. Para variables continuas se utilizó el test de Mann-Whitney U y para variables categóricas el test chi-cuadrado. 
+También se generaron gráficos de caja comparativos para las variables predictoras de cada modelo, con el objetivo de identificar diferencias de distribución que pudieran 
+explicar parte de la pérdida de rendimiento entre validación interna y externa.
+
+## 20. Prototipo de dashboard clínico
+
+Como parte del trabajo se desarrolló un prototipo de *dashboard* clínico en Python utilizando Streamlit. La aplicación permite introducir mediante un CSV los valores de las 
+variables predictoras de un paciente y obtener, para cada una de las tres ventanas temporales, una estimación individualizada del riesgo de inicio de noradrenalina.
+
+El *dashboard* proporciona dos elementos principales:
+
+* **Probabilidad estimada** de inicio de noradrenalina en cada ventana temporal (media o larga) basada en percentiles de riesgo.
+
+* **Explicación individual mediante SHAP**, mostrando los principales factores que empujan la predicción hacia mayor o menor riesgo en ese paciente concreto.
+
+Los modelos entrenados se cargan como archivos serializados `.pkl` mediante `joblib`. Los percentiles de referencia de la cohorte de entrenamiento se almacenan como 
+archivos CSV auxiliares.
+
+El prototipo fue diseñado con una limitación deliberada e irrenunciable: la
+aplicación no emite recomendaciones clínicas ni indicaciones terapéuticas de
+ningún tipo. El sistema únicamente proporciona una estimación de probabilidad y
+una explicación de los factores que la determinan para ese paciente concreto. La
+decisión de iniciar o no el soporte vasopresor corresponde en exclusiva al
+facultativo responsable, que integrará esta información junto con el resto del
+cuadro clínico, la evolución del paciente y su propio criterio profesional. Esta
+restricción no es una limitación técnica sino una decisión de diseño consciente,
+coherente con los principios éticos aplicables al desarrollo de herramientas de
+inteligencia artificial en entornos sanitarios: un modelo predictivo no
+validado prospectivamente en el entorno de uso, no aprobado por un comité de
+ética asistencial y no integrado en los flujos de trabajo clínicos establecidos
+no debe en ningún caso sustituir ni condicionar la toma de decisiones médicas.
+El prototipo debe entenderse, por tanto, como una prueba de concepto orientada
+a explorar la viabilidad técnica del sistema, no como una herramienta lista para
+su implantación clínica.
+
+## 21. Metodología de ingeniería del software
+
+El desarrollo del software siguió una metodología experimental iterativa, propia de proyectos de ciencia de datos en los que la solución no está cerrada desde el inicio 
+y se refina progresivamente en función de los resultados clínicos y estadísticos obtenidos.
+
+No se aplicó un marco formal de gestión como Scrum o Kanban, dado que el trabajo fue desarrollado por un único autor y la planificación respondió a una hoja de ruta 
+científica más que a un *backlog* de funcionalidades. La disciplina de desarrollo se articuló principalmente alrededor del control de versiones, la trazabilidad de los 
+experimentos y la revisión progresiva de resultados.
+
+El proyecto se estructuró en versiones sucesivas, incluyendo v1, v2, v3, v4 y v4. Cada versión incorporó mejoras concretas tras la evaluación crítica de la anterior: 
+ampliación de la cohorte, redefinición de ventanas de observación, corrección del manejo de la diuresis nula en eICU-CRD, incorporación de técnicas de calibración y ajustes
+ en la validación externa, entre otras.
+
+El control de versiones se realizó mediante Git y GitHub. Se mantuvo un repositorio público que cumple el requisito del acuerdo de uso de MIMIC-IV y eICU-CRD de publicar 
+el código necesario para la reproducibilidad. El repositorio contiene las consultas SQL de construcción de cohortes, los *scripts* de análisis exploratorio, selección de 
+variables, entrenamiento, calibración, interpretabilidad, validación externa y la aplicación Streamlit.
+
+Los archivos CSV intermedios no se versionaron en el repositorio por su volumen y por las restricciones de no redistribución de datos derivados
+ de MIMIC-IV y eICU-CRD.
+
+El código se organizó en carpetas funcionales: construcción y limpieza de datos, modelado, modelos entrenados, figuras y tablas, y aplicación del *dashboard*. 
+Esta organización facilita la trazabilidad, ya que cada figura o métrica reportada en la memoria puede asociarse al *script* que la genera, y los modelos finales 
+pueden recargarse desde sus archivos `.pkl` sin necesidad de reentrenamiento.
+
+El entorno de desarrollo utilizó Python 3.12 junto con librerías del ecosistema científico y de aprendizaje automático, incluyendo `pandas`, `numpy`, `scikit-learn`, 
+`xgboost`, `lightgbm`, `catboost`, `shap`, `matplotlib`, `seaborn`, `streamlit`, `joblib`, `statsmodels` y `scipy`. La base de datos se gestionó mediante PostgreSQL 
+alojado localmente. El IDE principal fue Visual Studio Code.
+
+Dada la naturaleza eminentemente empírica y de investigación del proyecto, se adoptó un enfoque de ciclo de vida basado en prototipado rápido, prescindiendo 
+deliberadamente del modelado formal mediante diagramas estructurados de clases o casos de uso (UML). En su lugar, el esfuerzo de ingeniería de software se centró en el 
+codiseño y la construcción progresiva de una arquitectura orientada a flujos de datos (data-driven pipeline).
+
+El Dashboard en Streamlit se modeló siguiendo una estrategia de desarrollo incremental y evolutivo. El diseño inicial partió de un núcleo mínimo 
+funcional enfocado en la persistencia y carga de los serializadores de los modelos de Machine Learning, integrando secuencialmente en iteraciones posteriores los módulos 
+reactivos de distribución probabilística, categorización del nivel de riesgo clínico e interpretabilidad local mediante valores SHAP.
+
+%%-----------------Miau-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A continuación se muestra un **ejemplo de tabla generada con R** usando
+`knitr::kable()`:
+
+```{r tabla-ejemplo,}
+#| label: tbl-iris
+#| tbl-cap: "Estadísticos descriptivos del conjunto de datos iris"
+
+library(knitr)
+library(dplyr)
+
+iris |>
+  group_by(Species) |>
+  summarise(
+    N           = n(),
+    Media_SL    = round(mean(Sepal.Length), 2),
+    SD_SL       = round(sd(Sepal.Length), 2),
+    Media_PL    = round(mean(Petal.Length), 2),
+    SD_PL       = round(sd(Petal.Length), 2)
+  ) |>
+  kable(
+    col.names = c("Especie", "N", "Media Sep.L",
+                  "SD Sep.L", "Media Pet.L", "SD Pet.L"),
+    booktabs  = TRUE,
+    format    = "latex"
+  )
+```
+
+Y podremos referenciar esta tabla en el texto como la tabla \ref{tbl-iris} que aparece en la página \pageref{tbl-iris}.
+
+%%--------------------------------Grrrr----Miau------------------------------------------------------------------------------------------------------------------------------------------
+## Metodología de Ingeniería del Software
+
+Si el TFG incluye desarrollo software, indicar la metodología seguida.
+Se pueden incluir diagramas de casos de uso, diagramas de clases, diagramas de secuencia, etc. para describir el diseño del software desarrollado.
