@@ -172,6 +172,31 @@ fuga de información.
 
 #### Correlaciones, filtros y selección final de las variables:
 
+###### Matriz de correlaciones y dendrograma
+
+###### clusters
+
+###### Selección 1ª con criterio clínico y luego con cohen's dada
+
+###### Explicar todos los descartes
+
+#### Permutation importance de cada regresor sobre el conjunto de variables para ver si estad signidicativas. También univariante
+
+####### OR para ver la dirección del efecto sobre las significativas y nuevos descartes. Explicar artefactos de la muestra, por ejemplo GPT_max o lactato.
+
+#### Baseline final y métricas
+
+###### Calibración
+
+###### Prueba subgrupos sepsis y comparación con SOFA
+
+#### Validación externa y comparación con SOFA
+
+#### Dashboard y sus limitaciones
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## Metodología de Ingeniería del Software
 
 Si el TFG incluye desarrollo software, indicar la metodología seguida.
