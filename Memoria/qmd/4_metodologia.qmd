@@ -35,6 +35,12 @@ inicialmente con los datos del HUBU. Los requisitos de acceso y utilización fue
 La cohorte de desarrollo se construyó mediante consultas SQL directas sobre las tablas de MIMIC-IV alojadas en un servidor PostgreSQL local. El proceso siguió un flujo 
 estructurado en varias etapas.
 
+La selección inicial de variables se basó en criterios clínicos y en la disponibilidad de dichas variables en MIMIC-IV. Se priorizaron constantes vitales, parámetros analíticos, 
+variables respiratorias, marcadores de función orgánica y datos básicos del paciente con relación fisiopatológica plausible con el deterioro hemodinámico y el posible inicio de soporte 
+vasopresor. Esta selección se apoyó además en las variables y criterios recogidos en el Protocolo Código Sepsis del Hospital Universitario de Burgos, especialmente aquellos relacionados 
+con la monitorización inicial, la detección de hipoperfusión, la valoración de disfunción orgánica y los criterios de valoración por UCI. De este modo, el conjunto inicial de predictores 
+no se definió únicamente por disponibilidad técnica en la base de datos, sino también por su relevancia clínica en el manejo del paciente crítico con sospecha de sepsis o shock.
+
 En primer lugar, se identificaron todas las estancias en UCI y se exigió una duración mínima de estancia suficiente para que el horizonte de predicción quedara completamente contenido 
 dentro del seguimiento disponible.
 
@@ -61,36 +67,26 @@ proceden del repositorio oficial de scripts derivados de MIMIC-IV mantenido por 
 \begin{table}[htbp]
 \centering
 \small
-\begin{tabular}{p{0.46\textwidth} | p{0.46\textwidth}}
+\begin{tabular}{p{0.42\textwidth} | p{0.50\textwidth}}
 
 \textbf{Cálculo del SOFA (ventana 24 h)} &
 \textbf{Detección de Sepsis-3} \\[4pt]
 
-\textbf{Para} cada hora $h$ de la estancia: &
-\textbf{Para} cada antibiótico administrado: \\
-\quad Respiratorio: P/F$<$100$\to$4, $<$200$\to$3, $<$300$\to$2, $<$400$\to$1, resto$\to$0 &
-\quad \textbf{Si} cultivo en $\pm$72/24 h del antibiótico: \\
-\quad Coagulación: plt$<$20$\to$4, $<$50$\to$3, $<$100$\to$2, $<$150$\to$1 &
-\quad\quad sospecha $\leftarrow$ verdadero \\
-\quad Hepático: bili$\geq$12$\to$4, $\geq$6$\to$3, $\geq$2$\to$2, $\geq$1.2$\to$1 &
-\quad\quad $t_s \leftarrow \min(t_\text{cultivo},\, t_\text{antibiótico})$ \\
-\quad Cardiovascular: norepi$>$0.1$\to$4, norepi$\leq$0.1$\to$3, &
-\\
-\quad\quad dopamina$>$0$\to$2, MAP$<$70$\to$1 &
-\textbf{Para} cada evento de sospecha: \\
-\quad Neurológico: GCS$<$6$\to$4, 6-9$\to$3, 10-12$\to$2, 13-14$\to$1 &
-\quad \textbf{Si} $\exists$ SOFA $\geq 2$ en $[t_s-48\text{h},\; t_s+24\text{h}]$: \\
-\quad Renal: creat$\geq$5$\to$4, $\geq$3.5$\to$3, $\geq$2$\to$2, $\geq$1.2$\to$1 &
-\quad\quad sepsis3 $\leftarrow$ verdadero \\[4pt]
-\textbf{Componente}$_{24h}$ $\leftarrow$ MAX(componente, ventana 23 h) &
-\quad\quad $t_\text{onset}$ $\leftarrow$ primer endtime con SOFA $\geq 2$ \\
-SOFA$_{24h}$ $\leftarrow$ suma de los 6 componentes$_{24h}$ &
-\textbf{Devolver} registro más temprano con sospecha $\wedge$ SOFA$\geq$2 \\
+\textbf{Para} cada hora $h$ de la estancia: & \textbf{Para} cada antibiótico administrado: \\[2pt]
+\quad Respiratorio: P/F$<$100$\to$4, $<$200$\to$3, $<$300$\to$2, $<$400$\to$1 & \quad \textbf{Si} cultivo en $\pm$72/24\,h del antibiótico: \\
+\quad Coagulación: plt$<$20$\to$4, $<$50$\to$3, $<$100$\to$2, $<$150$\to$1 & \quad\quad sospecha $\leftarrow$ verdadero \\
+\quad Hepático: bili$\geq$12$\to$4, $\geq$6$\to$3, $\geq$2$\to$2, $\geq$1.2$\to$1 & \quad\quad $t_s \leftarrow \min(t_\text{cultivo},\, t_\text{antibiótico})$ \\
+\quad Cardiovascular: norepi$>$0.1$\to$4, $\leq$0.1$\to$3, & \\
+\quad\quad dopamina$>$0$\to$2, MAP$<$70$\to$1 & \textbf{Para} cada evento de sospecha: \\
+\quad Neurológico: GCS$<$6$\to$4, 6--9$\to$3, 10--12$\to$2, 13--14$\to$1 & \quad \textbf{Si} $\exists$ SOFA $\geq 2$ en $[t_s-48\text{h},\; t_s+24\text{h}]$: \\
+\quad Renal: creat$\geq$5$\to$4, $\geq$3.5$\to$3, $\geq$2$\to$2, $\geq$1.2$\to$1 & \quad\quad sepsis3 $\leftarrow$ verdadero \\[4pt]
+\textbf{Componente}$_{24h}$ $\leftarrow$ MAX(componente, 23\,h) & \quad\quad $t_\text{onset}$ $\leftarrow$ primer endtime con SOFA $\geq 2$ \\[2pt]
+SOFA$_{24h}$ $\leftarrow$ $\sum$ 6 componentes$_{24h}$ & \textbf{Devolver} registro más temprano con sospecha $\wedge$ SOFA$\geq$2 \\
 
 \end{tabular}
 \caption{Pseudocódigo de los algoritmos del repositorio MIT-LCP para
 el cálculo horario del SOFA y la detección del \textit{onset} de Sepsis-3
-en MIMIC-IV \citep{johnson2018mimic, mimiccode}.}
+en MIMIC-IV \cite{johnson2023}\cite{mimiccode}.}
 \label{tab:pseudocodigo_sofa_sepsis}
 \end{table}
 ```
@@ -153,12 +149,9 @@ Aunque este filtrado reduce el tamaño muestral y selecciona una población de m
 monitorización y sospecha de deterioro hemodinámico. Las estancias excluidas corresponden previsiblemente a ingresos postquirúrgicos breves o cuadros de baja complejidad, escenarios donde la
 necesidad de soporte vasopresor es poco frecuente y donde una herramienta predictiva de este tipo tendría menor o escaso valor asistencial.
 
-Antes del modelado se realizó un análisis exploratorio de datos sobre la cohorte de MIMIC-IV mediante un *notebook* de Jupyter, con el objetivo de caracterizar la distribución de cada variable 
-predictora y detectar valores fisiológicamente implausibles que pudieran distorsionar el aprendizaje de los modelos. Para cada variable continua se inspeccionaron histogramas, diagramas de caja
-y percentiles extremos, tanto en la cohorte completa como desagregando por etiqueta del evento. Esta revisión confirmó la presencia de distribuciones asimétricas, colas pesadas y valores 
-extremos frecuentes en variables clínicas de pacientes críticos.
-
-[METER IMÁGENES]
+Antes del modelado se realizó un análisis exploratorio de datos sobre la cohorte de MIMIC-IV mediante un *notebook* de Jupyter. Para cada variable continua se inspeccionaron estadísticos
+descriptivos, percentiles extremos y la distribución de valores desagregada por etiqueta del evento, lo que confirmó la presencia de distribuciones asimétricas, colas pesadas y valores extremos
+frecuentes en variables clínicas de pacientes críticos.
 
 Para el tratamiento de estos valores extremos se siguió la lógica de preprocesamiento propuesta por Gupta et al. [@gupta2022mimic] para datos de MIMIC-IV, que recomienda winsorización sobre las
 variables clínicas continuas. La eliminación directa de filas se descartó porque en UCI un valor extremo no es necesariamente un error de registro —puede reflejar la situación real de un paciente
@@ -177,38 +170,8 @@ para las que el procedimiento carece de sentido. Los percentiles 2 y 98 se calcu
 a eICU-CRD, garantizando que el tratamiento de valores extremos en la cohorte externa se realizara con parámetros aprendidos en el conjunto de entrenamiento y evitando así cualquier forma de 
 fuga de información.
 
-%%-----------------Miau-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#### Correlaciones, filtros y selección final de las variables:
 
-A continuación se muestra un **ejemplo de tabla generada con R** usando
-`knitr::kable()`:
-
-```{r tabla-ejemplo,}
-#| label: tbl-iris
-#| tbl-cap: "Estadísticos descriptivos del conjunto de datos iris"
-
-library(knitr)
-library(dplyr)
-
-iris |>
-  group_by(Species) |>
-  summarise(
-    N           = n(),
-    Media_SL    = round(mean(Sepal.Length), 2),
-    SD_SL       = round(sd(Sepal.Length), 2),
-    Media_PL    = round(mean(Petal.Length), 2),
-    SD_PL       = round(sd(Petal.Length), 2)
-  ) |>
-  kable(
-    col.names = c("Especie", "N", "Media Sep.L",
-                  "SD Sep.L", "Media Pet.L", "SD Pet.L"),
-    booktabs  = TRUE,
-    format    = "latex"
-  )
-```
-
-Y podremos referenciar esta tabla en el texto como la tabla \ref{tbl-iris} que aparece en la página \pageref{tbl-iris}.
-
-%%--------------------------------Grrrr----Miau------------------------------------------------------------------------------------------------------------------------------------------
 ## Metodología de Ingeniería del Software
 
 Si el TFG incluye desarrollo software, indicar la metodología seguida.
