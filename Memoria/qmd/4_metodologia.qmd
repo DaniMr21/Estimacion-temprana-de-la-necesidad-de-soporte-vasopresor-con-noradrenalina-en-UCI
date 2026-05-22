@@ -360,8 +360,6 @@ Cada modelo final se serializó mediante `joblib` en un fichero `.pkl` que conti
 entorno con las mismas versiones de las librerías y aplicarlo directamente a nuevas observaciones sin necesidad de reentrenarlo, lo cual fue imprescindible para el desarrollo posterior del 
 dashboard interactivo y para la validación externa sobre eICU-CRD.
 
-## Evaluación honesta sobre datos no vistos (OOF)
-
 Las métricas obtenidas en la validación cruzada anidada del baseline son la estimación más realista del rendimiento generalizable de cada modelo, ya que cada 
 predicción se realiza sobre estancias que no participaron ni en el entrenamiento ni en la búsqueda de hiperparámetros. Sin embargo, esas métricas se reportan 
 como medias y desviaciones por fold, lo que dificulta inspeccionar visualmente la curva ROC, la curva precision-recall o la calibración del modelo. Para 
@@ -377,8 +375,6 @@ aleatorio), y la curva de calibración construida con diez bins de igual número
 baja densidad de probabilidad predicha.
 
 [PONER ALGUNA FIG AQUÍ]
-
-## Calibración
 
 La capacidad discriminativa medida por AUC-ROC informa sobre la habilidad del modelo para ordenar correctamente a los pacientes por riesgo, pero no garantiza 
 que las probabilidades predichas se correspondan numéricamente con las frecuencias reales del evento. Un modelo puede separar perfectamente positivos 
@@ -408,8 +404,6 @@ en el dashboard final.
 
 [ Aquí podría ir una figura comparativa de la calibración antes y después del XGBoost]
 
-## Interpretabilidad mediante SHAP
-
 La interpretabilidad post-hoc se abordó mediante valores SHAP (*SHapley Additive exPlanations*), que asigna a cada variable predictora una contribución cuantitativa a la 
 diferencia entre la predicción individual y el valor esperado del modelo sobre la población. A diferencia de la importancia por permutación, que opera a 
 nivel agregado y mide cuánto degrada el rendimiento la pérdida de una variable, los valores SHAP descomponen la predicción puntual de cada paciente en contribuciones aditivas por variable, 
@@ -436,8 +430,6 @@ artefactos aislados de registro, como valores implausibles de MAP, sino de relac
 como técnica de selección automática de variables, sino como una capa de auditoría e interpretabilidad para reducir el carácter de ``caja negra'' de los modelos finales.
 
 [Aquí podría ir una rejilla con algún diagrama]
-
-## Análisis por subgrupos y comparación con SOFA
 
 Una vez seleccionado y calibrado el modelo final de cada ventana, se realizó un análisis diferencial por subgrupos clínicos para evaluar si el rendimiento 
 del modelo era homogéneo entre pacientes con y sin sepsis, dado que el inicio de noradrenalina es particularmente frecuente en el contexto del shock 
