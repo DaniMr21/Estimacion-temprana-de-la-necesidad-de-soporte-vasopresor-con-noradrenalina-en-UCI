@@ -155,10 +155,10 @@ fisiológica mantenida y resultan más compatibles con artefactos de monitorizac
 Quedaron excluidas de la winsorización las variables con rango acotado por definición —Glasgow (3--15) y SOFA (0--24)— y las variables binarias, para las que el 
 procedimiento carece de sentido. Los percentiles 2 y 98 se calcularon exclusivamente sobre MIMIC-IV y se almacenaron en un fichero de referencia aplicado posteriormente 
 a eICU-CRD, de modo que el tratamiento de valores extremos en la cohorte externa utilizó parámetros aprendidos únicamente en la cohorte de entrenamiento.
----
+
 Con el objetivo de identificar redundancias en el espacio de predictores, se calculó la matriz de correlación de Spearman sobre las 76 variables del conjunto inicial, 
-utilizando únicamente la primera estancia por paciente para evitar que las réplicas de un mismo sujeto inflaran artificialmente las asociaciones. 
-Se eligió el coeficiente de Spearman al ser más robusto que el de pearson por su robustez ante distribuciones asimétricas y valores extremos.
+utilizando únicamente la primera estancia por paciente para evitar que las réplicas de un mismo sujeto inflaran artificialmente las asociaciones. Se eligió Spearman frente
+a Pearson por su mayor robustez ante distribuciones asimétricas, relaciones no lineales monótonas y valores extremos residuales.
 
 ::: {#fig-correlaciones layout-ncol=2}
 ![Matriz de Spearman](img/correlacion_spearman_v4.png){#fig-correlacion-spearman}
@@ -168,29 +168,31 @@ Se eligió el coeficiente de Spearman al ser más robusto que el de pearson por 
 Análisis de correlación y estructura de agrupamiento de las 76 variables predictoras (MIMIC-IV, ventana Medio). Izquierda: matriz de correlación de Spearman. Derecha: dendrograma jerárquico con corte en $|\rho| = 0{,}7$.
 :::
 
-La matriz resultante, representada como mapa de calor, reveló la presencia de bloques de alta correlación positiva correspondientes a los tres estadísticos de resumen de cada variable fisiológica: 
-media, mínimo y máximo de una misma magnitud mostraron correlaciones entre sí superiores a 0,7 de forma sistemática. Este patrón era esperable dado que los tres estadísticos se calculan sobre la
-misma ventana de observación y reflejan la misma señal clínica con distintos énfasis. Adicionalmente se observaron correlaciones positivas moderadas-altas entre variables con relación 
-fisiopatológica conocida, como la PAFI (pf) con sus componentes, o entre los distintos marcadores de función hepática (GPT, GOT, bilirrubina). Para visualizar la estructura de agrupamiento de 
-forma más interpretable, se construyó un dendrograma jerárquico mediante enlace promedio sobre la matriz de distancias $1 - |\rho|$. El dendrograma confirmó la formación de clusters compactos 
-dentro de cada variable fisiológica (los tres estadísticos de una misma magnitud se agrupan sistemáticamente antes de unirse con otras variables), así como superclústeres entre magnitudes 
-clínicamente relacionadas.
+La matriz de correlación mostró bloques de alta redundancia entre los tres estadísticos de resumen de una misma variable fisiológica —media, mínimo y máximo—, 
+con correlaciones superiores a 0,7 de forma sistemática. Este patrón era esperable, ya que los tres estadísticos proceden de la misma señal clínica dentro de la misma 
+ventana de observación. También se observaron asociaciones moderadas-altas entre variables fisiopatológicamente relacionadas, como PAFI y sus componentes, 
+o entre marcadores de función hepática como GPT, GOT y bilirrubina. Para complementar la matriz, se construyó un dendrograma jerárquico mediante enlace promedio sobre la distancia $1 - |\rho|$. Este análisis confirmó la formación de grupos
+ compactos dentro de cada variable fisiológica y la presencia de agrupaciones entre magnitudes clínicamente relacionadas.
 
-A partir de estos resultados se aplicó un proceso de selección en dos fases. En la primera fase se eligió el estadístico de resumen más representativo de cada variable mediante criterio clínico:
-se seleccionó el mínimo para variables  donde el valor más bajo refleja el peor estado fisiológico del paciente 
-(MAP, P/F, SpO2, GCS, pH, bicarbonato, plaquetas, hemoglobina, leucocitos, glucemia, temperatura), y el máximo para variables donde el valor más alto  refleja el peor estado (creatinina, 
-lactato, frecuencia respiratoria, GPT, TP, SOFA, FiO2). Para las variables en las que la dirección clínica no era  inequívoca —frecuencia cardíaca, bilirrubina, y el resto de las variables con 
-clusters internos sin dirección clara— se recurrió a una segunda fase de desempate estadístico basada en el AUC univariante y la d de Cohen, seleccionando el estadístico con mayor capacidad 
-discriminativa sobre la etiqueta  del evento. El resultado de este proceso fue `hr_media` y `bilirrubina_media` como estadísticos seleccionados por desempate.
+A partir de estos resultados se aplicó una reducción inicial del espacio de predictores. En primer lugar, se seleccionó un único estadístico de resumen por variable
+ fisiológica, priorizando el criterio clínico. Se conservó el mínimo cuando el peor estado del paciente se asociaba a valores bajos, como MAP, P/F, SpO$_2$, GCS, pH, 
+ bicarbonato, plaquetas o hemoglobina; y el máximo cuando el peor estado se asociaba a valores elevados, como creatinina, lactato, frecuencia respiratoria, tiempo 
+ de protrombina, SOFA o FiO$_2$.
 
-Tras la selección del estadístico, se descartaron las variables redundantes por solapamiento de información: la PaO2 en todas sus variantes (redundante con PAFI), 
-la GOT en todas sus variantes (mismo cluster que GPT, con correlaciones superiores a 0,99), y la variable `tiene_sepsis` (su información discriminativa queda recogida en el SOFA y sus 
-componentes; su aportación única —la sospecha de infección— no es objetivamente cuantificable de forma comparable entre bases de datos). En la ventana Largo se eliminó adicionalmente `fio2_max` 
-por su alta correlación con P/F en esa ventana y posteriormente en todas las demás. El conjunto final quedó reducido a 25 variables para las ventanas.
+En las variables donde existían varios estadísticos clínicamente plausibles, la elección se apoyó en un desempate estadístico basado en el AUC univariante, 
+la $d$ de Cohen y la dirección de la diferencia entre pacientes positivos y negativos. El AUC permitió valorar la capacidad discriminativa aislada, 
+mientras que la $d$ de Cohen cuantificó la magnitud del efecto entre grupos. Cuando las diferencias entre estadísticos fueron pequeñas o la interpretación 
+clínica no era inequívoca, se priorizó el resumen con mayor coherencia fisiopatológica y menor redundancia con el resto de predictores.
 
-La correlación máxima residual entre variables del conjunto final fue  $|\rho| = 0{,}477$ (P/F mínimo -- FiO2 máximo) en la ventana Medio,  $|\rho| = 0{,}514$ 
-(bilirrubina media -- plaquetas mínimas) en la ventana Corto,  y $|\rho| = 0{,}516$ (ventilación invasiva -- GCS mínimo) en la ventana Largo  tras excluir `fio2_max`. Ningún par superó el umbral
-de $|\rho| = 0{,}52$, lo que confirma la ausencia de multicolinealidad relevante en el espacio de predictores final.
+Tras seleccionar un único estadístico por variable, se eliminaron predictores redundantes por solapamiento de información. La PaO$_2$ se descartó por estar ya incorporada 
+en el cociente P/F, la GOT por su elevada correlación con GPT, y `tiene_sepsis` por reservarse para el análisis diferencial por subgrupos y no estar disponible de 
+forma equivalente en eICU-CRD. En la ventana larga se eliminó adicionalmente `fio2_max` por su alta correlación con P/F; este criterio se extendió posteriormente 
+al resto de ventanas para mantener un conjunto de predictores homogéneo.
+
+El conjunto final, tras eliminar `fio2_max` en las tres ventanas, quedó reducido a 25 variables. La correlación máxima residual fue $|\rho| = 0{,}514$ (bilirrubina
+media -- plaquetas mínimas) en la ventana corta, $|\rho| = 0{,}473$ (ventilación invasiva -- GCS mínimo) en la media y $|\rho| = 0{,}516$ (ventilación invasiva --
+GCS mínimo) en la larga, sin que ningún par superara $|\rho| = 0{,}52$. Esto indica ausencia de multicolinealidad relevante en el espacio de predictores final.
+
 
 ::: {#fig-dendrogramas-reducidos layout-ncol=3}
 ![Corto (3--12 h)](img/dendrograma_v4p_reducido.png){#fig-dendro-corto}
@@ -205,21 +207,21 @@ línea roja: $|\rho| = 0{,}7$; línea naranja: $|\rho| = 0{,}5$.
 Ningún par de variables supera el umbral de $|\rho| = 0{,}52$.
 :::
 
-Con el fin de identificar qué variables contribuían de forma estadísticamente significativa al rendimiento de cada regresor probado (Regresión logística, Naive Bayes, Random Forest, LightGBM, XGBoost y Catboost), 
-se diseñó una validación cruzada anidada con estructura 5×3. El bucle externo dividió las estancias en 5 particiones mediante `StratifiedGroupKFold`, manteniendo la proporción de positivos y negativos en cada partición y 
-garantizando que todas las estancias de un mismo paciente quedaran íntegramente en el mismo fold para evitar fuga de información entre estancias del mismo sujeto. 
-El bucle interno repitió el mismo esquema con 3 particiones para la búsqueda de hiperparámetros mediante `GridSearchCV`. En cada fold externo, el modelo con los mejores hiperparámetros
-identificados en el bucle interno se reentrenó sobre los datos de entrenamiento completos del fold y se evaluó sobre el conjunto de test, que nunca había participado ni en el entrenamiento ni en la selección de hiperparámetros. Se aplicó `RobustScaler`
-dentro del pipeline para la Regresión Logística y el Naive Bayes, garantizando que la normalización se ajustara exclusivamente sobre los datos de entrenamiento de cada fold.
+Con el fin de identificar qué variables contribuían de forma significativa al rendimiento de cada clasificador evaluado —regresión logística, Naive Bayes, Random Forest, LightGBM, XGBoost y CatBoost—,
+se utilizó una validación cruzada anidada con estructura 5×3. El bucle externo dividió las estancias en cinco particiones mediante `StratifiedGroupKFold`, manteniendo la
+proporción de positivos y negativos y garantizando que todas las estancias de un mismo paciente quedaran en el mismo fold, para evitar fuga de información entre 
+observaciones del mismo sujeto. El bucle interno repitió el mismo esquema con tres particiones para la búsqueda de hiperparámetros mediante `GridSearchCV`. 
+En cada fold externo, el modelo con los mejores hiperparámetros seleccionados internamente se reentrenó sobre el conjunto de entrenamiento completo del fold y se evaluó
+sobre el conjunto de test, que no había participado ni en el entrenamiento ni en la selección de hiperparámetros. En la regresión logística y en Naive Bayes se integró
+`RobustScaler` dentro del `pipeline`, de forma que la normalización se ajustara exclusivamente sobre los datos de entrenamiento de cada fold.
 
-Sobre el conjunto de test de cada fold externo se calculó la importancia por permutación (*permutation importance*): cada variable se permutó aleatoriamente 50 veces y se registró la caída 
-resultante en el AUC-ROC. Una variable se consideró significativa para un modelo dado cuando el intervalo de confianza al 95% de esa caída —calculado como los percentiles 2,5 y 97,5 sobre los 5 folds—
-excluía el cero, es decir, cuando su eliminación producía una degradación del rendimiento distinguible de la variación aleatoria. Este proceso se ejecutó de forma independiente para cada uno de
-los seis algoritmos y para cada una de las tres ventanas temporales.
-
-Paralelamente, se realizó un análisis de significancia univariante sobre la primera estancia por paciente para evitar dependencias entre observaciones del mismo sujeto.
-Para las variables continuas se aplicó el test de Mann-Whitney U y para las variables binarias el test chi-cuadrado. Los p-valores resultantes se corrigieron mediante el método de 
-Benjamini-Hochberg (FDR $q < 0{,}05$) para controlar la tasa de falsos descubrimientos derivada de las comparaciones múltiples.
+Sobre el conjunto de test de cada fold externo se calculó la importancia por permutación (*permutation importance*). Para ello, cada variable se permutó aleatoriamente 50
+veces y se registró la caída resultante en el AUC-ROC. Una variable se consideró significativa para un modelo dado cuando el intervalo de confianza al 95% de dicha caída
+—calculado mediante los percentiles 2,5 y 97,5 de las caídas observadas en las repeticiones y folds— excluía el cero, indicando una contribución positiva distinguible de la variación aleatoria.
+Este proceso se ejecutó de forma independiente para cada algoritmo y ventana temporal. Paralelamente, se realizó un análisis univariante sobre la primera estancia de 
+cada paciente para evitar dependencias entre observaciones del mismo sujeto. Para las variables continuas se aplicó el test de Mann-Whitney U y para las variables 
+binarias el test chi-cuadrado. Los p-valores se corrigieron mediante Benjamini-Hochberg (FDR $q < 0{,}05$) para controlar la tasa de falsos descubrimientos por 
+comparaciones múltiples.
 
 ::: {#fig-significancia layout-ncol=3}
 ![Corto (3--12 h)](img/significancia_global_v4p.png){#fig-sig-corto}
@@ -228,137 +230,92 @@ Benjamini-Hochberg (FDR $q < 0{,}05$) para controlar la tasa de falsos descubrim
 
 ![Largo (12--48 h)](img/significancia_global_v4l.png){#fig-sig-largo}
 
-Importancia por permutación de cada variable para los seis algoritmos evaluados,
-en cada ventana temporal. Las barras representan la caída media de AUC-ROC al
-permutar la variable; los intervalos de confianza al 95% se calcularon sobre los
-5 folds externos. Las variables cuyo IC95% excluye el cero se consideraron
+Importancia por permutación de cada variable para los seis algoritmos evaluados, en cada ventana temporal. Las barras representan la caída media de AUC-ROC al
+permutar la variable; los intervalos de confianza al 95% se calcularon sobre los 5 folds externos. Las variables cuyo IC95% excluye el cero se consideraron
 estadísticamente significativas para ese regresor.
 :::
 
-Que una variable sea estadísticamente significativa en la permutation importance no  garantiza que el modelo esté aprendiendo la relación fisiopatológica correcta: 
-podría estar captando un artefacto de la muestra, una correlación espuria o una  asociación en dirección contraria a la esperada clínicamente. Para verificar este 
-aspecto se calculó, sobre la primera estancia por paciente, el OR ajustado mediante regresión logística multivariante con todas las variables del conjunto reducido, 
-estandarizadas previamente para hacer los coeficientes comparables entre sí. Se contrastó la dirección del OR ajustado con la dirección observada en los datos 
-brutos: si los pacientes positivos presentaban valores más altos de una variable pero el OR ajustado era menor que 1, o viceversa, se consideraba que el modelo 
-aprendía una dirección de efecto incoherente con los datos, lo que en presencia de multicolinealidad residual puede deberse a supresión estadística entre predictores. 
+Que una variable sea significativa en la *permutation importance* no garantiza que su asociación sea fisiopatológicamente coherente: podría reflejar un artefacto de la 
+muestra, una correlación espuria o una dirección contraria a la esperada clínicamente. Por ello, se calculó sobre la primera estancia por paciente el *odds ratio* ajustado 
+mediante regresión logística multivariante, incluyendo todas las variables del conjunto reducido y estandarizándolas previamente para hacer comparables los coeficientes. 
+La dirección del OR ajustado se contrastó con la dirección observada en los datos brutos. Cuando los pacientes positivos presentaban valores más altos de una variable pero
+el OR ajustado era menor que 1, o viceversa, se interpretó como una incoherencia de dirección compatible con supresión estadística, confusión residual o colinealidad no 
+completamente eliminada. 
 
-Las variables que mostraron esta incoherencia en alguna de las ventanas fueron eliminadas del conjunto final de esa ventana, independientemente de su significancia 
-en la permutation importance.
-
-En la ventana Medio, se eliminaron por incoherencia de dirección `creatinina_max` (valores más altos en positivos pero OR ajustado $< 1$), `ph_min` (valores más bajos
-en positivos pero OR ajustado $> 1$) y `gpt_max` (sin diferencia en medianas entre grupos pero OR ajustado marcadamente protector). En la ventana Corto, las eliminadas 
-por incoherencia fueron `creatinina_max` (misma dirección incoherente que en la ventana Medio) y `gpt_max`.
-
-En la ventana Largo, se eliminaron `ph_min` (valores más bajos en positivos pero OR ajustado $> 1$), `lactato_max` (valores más altos en positivos pero OR ajustado $< 1$)
-y `gpt_max`, que mostró sistemáticamente un comportamiento incoherente en las tres ventanas.
+Las variables que mostraron incoherencias claras entre la dirección observada en los datos brutos y el OR ajustado fueron revisadas individualmente. Cuando la inversión 
+de dirección no resultaba clínicamente justificable y era compatible con supresión estadística, confusión residual o artefactos de la muestra, la variable se excluyó del
+conjunto final de la ventana correspondiente. En la ventana media se eliminaron por este criterio `creatinina_max`, `ph_min` y `gpt_max`. En la ventana corta se eliminaron
+`creatinina_max` y `gpt_max`. En la ventana larga se eliminaron `ph_min`, `lactato_max` y `gpt_max`, esta última por mostrar un comportamiento incoherente de forma 
+repetida en las tres ventanas.
 
 ## Baseline final y métricas
 
-La elección de algoritmos respondió a tres criterios:  cubrir un espectro amplio de complejidad estadística (desde modelos lineales hasta *gradient boosting*), 
-incluir al menos un representante de cada gran familia metodológica (lineal, bayesiano, *bagging*, *boosting*), y limitar el conjunto a 
-algoritmos con implementación madura, documentación sólida e interpretabilidad factible mediante técnicas como SHAP para evitar que se convirtiesen en una "caja negra".
+La elección de algoritmos buscó cubrir distintos niveles de complejidad y familias de aprendizaje supervisado sobre datos tabulares: modelos lineales, probabilísticos, 
+ensamblados por *bagging* y métodos de *gradient boosting*. Además, se priorizaron algoritmos con implementaciones maduras, uso extendido en problemas clínicos/tabulares 
+e interpretabilidad posterior mediante SHAP, evitando modelos difícilmente auditables.
 
-Se evaluaron seis algoritmos: La **Regresión Logística**, modelo lineal de referencia. **Random Forest**, un conjunto de árboles entrenados con muestreo bootstrap y selección aleatoria de 
-variables en cada split, lo que reduce la varianza respecto a un árbol único y captura interacciones no lineales sin necesidad de especificarlas explícitamente. 
-**XGBoost**, una implementación optimizada de *gradient boosting* sobre árboles de decisión, donde cada árbol nuevo se entrena para corregir los errores del previo y dispone de mecanismos 
-integrados para gestionar el desbalance de clases. **LightGBM**, que comparte filosofía con XGBoost pero utiliza una estrategia de crecimiento de árbol por hojas (*leaf-wise*) en lugar de por 
-niveles, lo que puede traducirse en menor tiempo de entrenamiento y mejor ajuste con grandes volúmenes de datos, **CatBoost** es otro algoritmo de *gradient boosting* diseñado originalmente para
-manejar variables categóricas pero que se comporta de forma muy estable también con predictores continuos, gracias a su uso de árboles simétricos y a sus estrategias internas de regularización. Por último, 
-el **Naive Bayes Gaussiano**, que asume independencia condicional entre predictores  dado el evento; aunque esta hipótesis es claramente irreal en el contexto clínico, su inclusión sirve como segunda cota 
-inferior y permite comprobar si la estructura de dependencia entre variables aporta algo respecto a una suposición ingenua de independencia.
+Se evaluaron seis algoritmos de clasificación supervisada: regresión logística, Naive Bayes gaussiano, Random Forest, XGBoost, LightGBM y CatBoost. La regresión logística 
+se incluyó como modelo lineal de referencia, mientras que Naive Bayes actuó como modelo probabilístico basal. Random Forest representó los métodos de ensamblado por 
+*bagging*, capaces de capturar relaciones no lineales mediante múltiples árboles de decisión. XGBoost, LightGBM y CatBoost se incluyeron como implementaciones modernas 
+de *gradient boosting*, ampliamente utilizadas en problemas tabulares por su capacidad para modelar interacciones y relaciones no lineales.
 
-La prevalencia del evento positivo en el conjunto de entrenamiento se sitúa entre el 10% y el 11% según la ventana, lo que constituye un desbalance moderado. 
-En la Regresión Logística, Random Forest y LightGBM se utilizó `class_weight='balanced'` (con la variante `balanced_subsample` también incluida en el grid de Random Forest), que 
-reescala internamente la función de pérdida de forma inversamente proporcional a la frecuencia de cada clase. En XGBoost se exploraron distintos valores del parámetro `scale_pos_weight`, 
-que cumple una función equivalente penalizando más los errores sobre la clase minoritaria. CatBoost y Naive Bayes no requirieron parámetro explícito: el primero gestiona internamente el 
-desbalance mediante sus estrategias de regularización, y el segundo es naturalmente robusto a distribuciones de clase desiguales por su formulación bayesiana.
+La prevalencia del evento positivo tras el filtro de completitud se situó aproximadamente entre el 10% y el 11% según la ventana, por lo que se consideró un problema 
+con desbalance moderado de clases. Para mitigarlo, en regresión logística, Random Forest y LightGBM se emplearon esquemas de ponderación mediante `class_weight='balanced'`,
+ incluyendo también `balanced_subsample` en el caso de Random Forest. En XGBoost se exploraron distintos valores de `scale_pos_weight`, parámetro equivalente para ajustar 
+el peso relativo de la clase positiva. En CatBoost y Naive Bayes no se incorporó un parámetro específico de balanceo en el diseño experimental.
 
-El escalado se aplicó únicamente a los algoritmos cuya formulación matemática es sensible a la magnitud de las variables: la Regresión Logística, cuya optimización mediante `liblinear` depende 
-de la escala de los coeficientes, y el Naive Bayes Gaussiano, que estima parámetros de distribuciones univariantes cuya varianza depende de la escala original de cada predictor. 
-En ambos casos se utilizó `RobustScaler` en lugar del habitual `StandardScaler`. La diferencia es metodológicamente relevante: `RobustScaler` centra cada variable en su mediana 
-y la escala según el rango intercuartílico en lugar de la media y la desviación estándar, lo que lo hace más robusto a la presencia de valores extremos que, aunque ya habían sido winsorizados, 
-podían seguir influyendo en los estadísticos basados en momentos. Los algoritmos basados en árboles (Random Forest, XGBoost, LightGBM, CatBoost) no necesitan escalado, ya que sus *splits* se 
-basan en órdenes relativos de valores y son invariantes a transformaciones monótonas. 
+El escalado se aplicó únicamente a los modelos sensibles a la magnitud de las variables, concretamente la regresión logística y Naive Bayes gaussiano. 
+En ambos casos se utilizó `RobustScaler`, que centra las variables mediante la mediana y las escala según el rango intercuartílico, reduciendo la influencia de valores 
+extremos residuales tras la winsorización. Los modelos basados en árboles —Random Forest, XGBoost, LightGBM y CatBoost— no requirieron escalado, ya que sus particiones 
+dependen del orden relativo de los valores y son invariantes a transformaciones monótonas. Adicionalmente, el escalado se integró dentro del *pipeline* de scikit-learn, 
+de modo que sus parámetros (medianas y rangos intercuartílicos) se ajustaron exclusivamente sobre los datos de entrenamiento de cada fold, evitando así fuga de información 
+desde el conjunto de test.
 
-Adicionalmente, el escalado se integró dentro del *pipeline* de scikit-learn, de modo que sus parámetros (medianas y rangos intercuartílicos) se ajustaron exclusivamente sobre los datos de 
-entrenamiento de cada fold, evitando así fuga de información desde el conjunto de test.
+Para cada algoritmo se definió un *grid* específico de hiperparámetros, orientado a controlar la complejidad del modelo, la regularización, el balanceo de clases y el 
+riesgo de sobreajuste. La búsqueda se realizó mediante `GridSearchCV` dentro del bucle interno de la validación cruzada anidada. En conjunto, los *grids* exploraron el 
+parámetro de regularización $C$ en regresión logística; el número de árboles, profundidad, tamaño mínimo de hoja y selección de variables en Random Forest; número de 
+estimadores, profundidad, tasa de aprendizaje, regularización y muestreo en XGBoost, LightGBM y CatBoost; y el parámetro `var_smoothing` en Naive Bayes.
 
-Cada algoritmo dispone de un conjunto propio de hiperparámetros que controlan su capacidad de generalización y su tendencia al sobreajuste. Para cada uno se definió un *grid* específico, 
-intentando cubrir el rango habitualmente reportado en la literatura para problemas tabulares de tamaño similar.
+El rendimiento de cada modelo se estimó mediante la misma validación cruzada anidada 5×3. El bucle externo, con cinco particiones, proporcionó la estimación del rendimiento
+ sobre datos no vistos, mientras que el bucle interno, con tres particiones, se utilizó exclusivamente para la búsqueda de hiperparámetros mediante `GridSearchCV`,
+ optimizando el AUC-ROC. Ambos bucles emplearon `StratifiedGroupKFold`, manteniendo la proporción de positivos y negativos entre particiones y evitando que estancias 
+ de un mismo paciente aparecieran simultáneamente en entrenamiento y test. En cada fold externo, el modelo con los mejores hiperparámetros seleccionados en el bucle 
+ interno se reentrenó sobre el conjunto completo de entrenamiento y se evaluó una única vez sobre el conjunto de test.
 
-Para la **Regresión Logística** se exploró el parámetro de regularización inverso $C$ en doce valores distribuidos logarítmicamente entre $10^{-4}$ y $50$, lo que 
-permite contemplar tanto soluciones fuertemente regularizadas (útiles cuando hay multicolinealidad residual o predictores poco informativos) como soluciones prácticamente sin regularización.
+La evaluación combinó métricas de discriminación, rendimiento probabilístico y calibración. Como métricas discriminativas se emplearon AUC-ROC y AUC-PR. El AUC-ROC mide 
+la capacidad del modelo para ordenar correctamente a los pacientes según su riesgo, mientras que el AUC-PR resulta especialmente informativo en problemas con desbalance 
+de clases, al evaluar el rendimiento sobre la clase positiva.
 
-Para **Random Forest** se exploró un total de 1.575 combinaciones distintas, variando el número de árboles entre 300 y 1.000, la profundidad máxima entre ilimitada y 30 niveles, el número mínimo
-de muestras por hoja entre 1 y 5, la fracción de variables consideradas en cada *split* (`sqrt`, 0,3 y 0,5 sobre el total), y el esquema de balanceo de clases.
+Para evaluar el rendimiento probabilístico se calcularon el Brier score, el Brier Skill Score (BSS) y la LogLoss. El Brier score mide el error cuadrático medio entre 
+probabilidades predichas y etiquetas reales, mientras que el BSS compara dicho error frente a un modelo nulo que predice siempre la prevalencia del evento:
 
-Para **XGBoost** se barrieron 1.944 combinaciones que incluyen el número de árboles, la profundidad máxima, la tasa de aprendizaje (entre 0,005 y 0,1), las fracciones de muestreo de filas 
-(`subsample`) y de columnas (`colsample_bytree`), el parámetro de regularización L2 (`reg_lambda`) y el factor de peso de la clase positiva. La combinación de tasa de aprendizaje baja con número
-alto de árboles suele producir modelos más estables.
+$$
+\text{BSS} = 1 - \frac{\text{Brier}_\text{modelo}}{\text{Brier}_\text{nulo}}
+$$
 
-Para **LightGBM** se exploraron 1.296 combinaciones variando el número de árboles, el número máximo de hojas, la tasa de aprendizaje, el número mínimo de muestras por hoja (`min_child_samples`),
-la regularización L2, el muestreo de filas y el esquema de balanceo de clases.
+Un BSS positivo indica que el modelo mejora la predicción trivial basada únicamente en la prevalencia. La LogLoss complementa esta evaluación penalizando 
+especialmente las predicciones erróneas realizadas con alta confianza.
 
-Para **CatBoost** se barrieron 216 combinaciones que cubren el número de iteraciones, la profundidad de los árboles, la tasa de aprendizaje, la regularización L2 sobre las hojas (`l2_leaf_reg`)
- y la temperatura del muestreo bayesiano (`bagging_temperature`), que controla el grado de aleatoriedad introducido en el ensemble.
+Finalmente, la calibración se evaluó mediante el Expected Calibration Error (ECE), calculado agrupando las predicciones en 10 intervalos y comparando la probabilidad media
+ predicha con la frecuencia observada del evento. Esta métrica fue especialmente relevante porque el objetivo del sistema es mostrar probabilidades interpretables, 
+ no solo ordenar pacientes por riesgo.
 
-Para **Naive Bayes** el único hiperparámetro relevante es `var_smoothing`, que añade una pequeña cantidad a la varianza estimada de cada variable para estabilizar el cálculo cuando esta es muy
-pequeña. Se exploraron 30 valores distribuidos logarítmicamente entre $10^{-12}$ y $10^{-2}$.
+La validación cruzada anidada proporciona una estimación del rendimiento generalizable, pero no genera un único modelo final, ya que en cada fold externo se entrena un 
+modelo distinto con hiperparámetros potencialmente diferentes. Por ello, tras completar la validación, se seleccionó para cada hiperparámetro el valor más frecuente entre 
+los cinco folds externos y se reentrenó el `pipeline` completo sobre el 100% de la cohorte de MIMIC-IV. Los modelos finales se serializaron en formato `.pkl` mediante 
+`joblib`, lo que permitió reutilizarlos posteriormente en la validación externa sobre eICU-CRD y en el prototipo de *dashboard*. Las métricas reportadas, no obstante, 
+procedieron exclusivamente de la validación cruzada anidada y estiman el rendimiento esperable sobre pacientes no vistos.
 
-El rendimiento de cada modelo se estimó mediante la misma validación cruzada anidada 5×3 ya descrita en el análisis de permutation importance. El bucle externo, de 5 folds, proporciona la 
-estimación insesgada del rendimiento del modelo sobre datos no vistos. El bucle interno, de 3 folds, se dedica exclusivamente a la búsqueda de hiperparámetros mediante `GridSearchCV` 
-optimizando el AUC-ROC. Tanto el bucle externo como el interno utilizan `StratifiedGroupKFold`, lo que garantiza dos propiedades simultáneamente: por 
-un lado, mantiene la proporción de positivos y negativos estable entre particiones; por otro, asegura que todas las estancias de un mismo paciente queden íntegramente en el mismo fold, 
-eliminando la posibilidad de fuga de información entre estancias correlacionadas del mismo sujeto. En cada fold externo, el modelo con los mejores hiperparámetros seleccionados por el bucle 
-interno se reentrena sobre el bloque completo de entrenamiento y se evalúa una única vez sobre el bloque de test.
+Aunque la validación cruzada anidada proporciona la estimación principal del rendimiento, sus resultados se resumen por folds y no permiten obtener directamente curvas 
+globales de ROC, precisión-recall o calibración. Por ello, se generaron predicciones *out-of-fold* (OOF) mediante `cross_val_predict`, utilizando el mismo esquema externo 
+`StratifiedGroupKFold` con cinco particiones, semilla fija y agrupamiento por `subject_id`. De este modo, cada estancia recibió una probabilidad estimada por un modelo que
+no había visto a ese paciente durante el entrenamiento. Las probabilidades OOF concatenadas se utilizaron exclusivamente para construir curvas globales de ROC, 
+precisión-recall y calibración, permitiendo una comparación visual homogénea entre modelos. Para cada combinación de modelo y ventana temporal se generó una figura 
+compuesta por tres paneles: curva ROC con AUC, curva precisión-recall con AUC-PR y curva de calibración. En la curva precisión-recall se incluyó la línea horizontal 
+correspondiente a la prevalencia del evento como referencia basal. La curva de calibración se construyó con diez bins de igual número de muestras mediante estrategia 
+*quantile*, evitando bins vacíos en regiones de baja densidad de probabilidad predicha.
 
-La elección de métricas se diseñó para evaluar simultáneamente la capacidad discriminativa del modelo y la calidad de las probabilidades que predice. 
-Dada la presencia de desbalance de clases moderado y la naturaleza clínica del problema —donde una probabilidad mal calibrada puede llevar a decisiones 
-asistenciales incorrectas— se evaluaron seis métricas complementarias:
-
-El **AUC-ROC** mide la probabilidad de que el modelo asigne una puntuación más alta a una estancia positiva aleatoria que a una negativa aleatoria. Es la 
-métrica estándar en la literatura de aprendizaje automático médico, invariante a la prevalencia y al umbral de decisión. El **AUC-PR** (área bajo la curva precisión-recall) es especialmente
- relevante en problemas desbalanceados: mientras que el AUC-ROC puede ser engañosamente alto cuando la mayoría de las observaciones son negativas, el AUC-PR penaliza explícitamente los falsos 
-positivos y es más sensible al rendimiento sobre la clase minoritaria, que en este caso es la clínicamente relevante.
-
-El **Brier score** mide el error cuadrático medio entre las probabilidades predichas y las etiquetas reales; valores más bajos indican mejores predicciones probabilísticas. Sin embargo, 
-su valor absoluto depende de la prevalencia del evento, lo que dificulta la comparación entre ventanas con distintas frecuencias de positivos. Por este motivo se incorporó el 
-**Brier Skill Score (BSS)**, definido como $\text{BSS} = 1 - \text{Brier}_\text{modelo} / \text{Brier}_\text{nulo}$, donde el modelo nulo predice constantemente la prevalencia observada. 
-Un BSS positivo indica que el modelo aporta mejora respecto a la predicción trivial basada únicamente en la prevalencia, y su interpretación es comparable entre ventanas.
-
-El **Expected Calibration Error (ECE)** mide la diferencia media entre la probabilidad predicha y la frecuencia observada de positivos, agrupando las predicciones en 10 *bins* equiespaciados. 
-Un ECE bajo indica buena calibración: cuando el modelo predice 30% de probabilidad de inicio de noradrenalina, aproximadamente el 30% de esos pacientes realmente inician el tratamiento. 
-La calibración es especialmente importante en este contexto clínico, donde una herramienta predictiva que se utilice para apoyar decisiones asistenciales debe ofrecer probabilidades que el clínico pueda
-interpretar literalmente y no simplemente como un *ranking* relativo.
-
-Finalmente, el **LogLoss** o entropía cruzada binaria penaliza fuertemente las predicciones erróneas hechas con alta confianza, complementando al Brier score como medida global de calidad 
-probabilística.
-
-La validación cruzada anidada proporciona una estimación insesgada del rendimiento, pero no devuelve un modelo único utilizable en producción: en cada uno de los 5 folds externos se entrena un
-modelo distinto, con hiperparámetros potencialmente diferentes seleccionados por el bucle interno. Para obtener un único modelo final por ventana y algoritmo se aplicó el siguiente procedimiento:
-tras completar la CV anidada, se identificó el valor más frecuente (voto mayoritario) de cada hiperparámetro entre los 5 folds externos, y se reentrenó el pipeline completo —incluyendo escalado
-cuando correspondía— sobre el 100% de la cohorte de MIMIC-IV con esos hiperparámetros fijos. Esta estrategia garantiza que el modelo final aprovecha toda la información disponible para su ajuste,
- mientras que las métricas reportadas siguen procediendo exclusivamente de la CV anidada y son por tanto representativas del rendimiento esperable sobre pacientes nuevos.
-
-Cada modelo final se serializó mediante `joblib` en un fichero `.pkl` que contiene tanto el pipeline de preprocesamiento como el estimador entrenado. Esto permite cargar el modelo en cualquier 
-entorno con las mismas versiones de las librerías y aplicarlo directamente a nuevas observaciones sin necesidad de reentrenarlo, lo cual fue imprescindible para el desarrollo posterior del 
-dashboard interactivo y para la validación externa sobre eICU-CRD.
-
-Las métricas obtenidas en la validación cruzada anidada del baseline son la estimación más realista del rendimiento generalizable de cada modelo, ya que cada 
-predicción se realiza sobre estancias que no participaron ni en el entrenamiento ni en la búsqueda de hiperparámetros. Sin embargo, esas métricas se reportan 
-como medias y desviaciones por fold, lo que dificulta inspeccionar visualmente la curva ROC, la curva precision-recall o la calibración del modelo. Para 
-solventar esta limitación se reconstruyeron las probabilidades *out-of-fold* (OOF) de cada modelo final mediante la función `cross_val_predict` de `sklearn`, 
-aplicada sobre el mismo esquema de validación cruzada externa utilizado en el baseline: `StratifiedGroupKFold` con 5 particiones, semilla fija y agrupamiento 
-por `subject_id`. De este modo, para cada estancia se obtuvo una predicción generada por un modelo que nunca había visto a ese paciente durante su 
-entrenamiento. Las probabilidades OOF concatenadas permiten dibujar una única curva ROC, una única curva precision-recall y una única curva de calibración 
-por modelo, que reflejan de forma agregada y honesta el comportamiento esperable del modelo en datos nuevos.
-
-Para cada combinación de modelo y ventana temporal se generó una figura compuesta por tres paneles: la curva ROC con su AUC, la curva precision-recall
-con su AUC-PR (incluyendo la línea horizontal correspondiente a la prevalencia del evento como referencia del rendimiento esperable de un clasificador 
-aleatorio), y la curva de calibración construida con diez bins de igual número de muestras (estrategia *quantile*) para evitar bins vacíos en las regiones de 
-baja densidad de probabilidad predicha.
-
-[PONER ALGUNA FIG AQUÍ]
+[PONER ALGUNA FIG AQUÍ]--------------------------------------------------------------------------------------
 
 La capacidad discriminativa medida por AUC-ROC informa sobre la habilidad del modelo para ordenar correctamente a los pacientes por riesgo, pero no garantiza 
 que las probabilidades predichas se correspondan numéricamente con las frecuencias reales del evento. Un modelo puede separar perfectamente positivos 
