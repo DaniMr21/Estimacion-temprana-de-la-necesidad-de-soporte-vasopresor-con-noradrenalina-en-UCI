@@ -323,10 +323,6 @@ probabilidades hacia la prevalencia y perder capacidad informativa. Cuando ning�
 Una vez seleccionado el método, el calibrador se ajustó sobre las probabilidades OOF completas y se serializó junto con el modelo base en una clase `ModeloCalibrado`, compatible con los métodos
 `predict_proba` y `predict` de `sklearn` para su integración en el *dashboard*.
 
-::: {#fig-calibracion-ejemplo}
-![Comparación de curvas de calibración y distribución de probabilidades antes y después de la recalibración mediante Platt regularizado para XGBoost en la ventana media.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio width=100%}
-:::
-
 La interpretabilidad post-hoc se abordó mediante valores SHAP (*SHapley Additive exPlanations*), que descomponen la predicción individual de cada paciente en contribuciones atribuibles a cada 
 variable. A diferencia de la importancia por permutación, que evalúa la relevancia de los predictores a nivel agregado, SHAP permite analizar el efecto de cada variable sobre una predicción 
 concreta, así como su importancia global y la dirección de su asociación con el riesgo estimado.
@@ -337,16 +333,6 @@ representan para cada variable la magnitud del impacto sobre la predicción, la 
 los modelos asociaban mayor riesgo a patrones clínicamente esperables —hipotensión, peor oxigenación, deterioro neurológico o marcadores de disfunción orgánica— y
 comprobar que, tras el tratamiento de valores extremos, las predicciones no dependían de artefactos aislados de registro. Por tanto, SHAP no se empleó como
 técnica de selección automática de variables, sino como una capa de auditoría e interpretabilidad para reducir el carácter de ``caja negra'' de los modelos finales.
-
-::: {#fig-shap-finales}
-![Ventana corta: CatBoost, 3--12 h](img/SHAP_Corto_3_12_CAT.png){#fig-shap-corto width=95%}
-
-![Ventana media: XGBoost, 6--24 h](img/SHAP_Medio_6_24_XGB.png){#fig-shap-medio width=95%}
-
-![Ventana larga: XGBoost, 12--48 h](img/SHAP_Largo_12_48_XGB.png){#fig-shap-largo width=95%}
-
-Ejemplos de diagramas SHAP tipo *beeswarm* de los modelos por ventana temporal.
-:::
 
 Tras seleccionar y calibrar el modelo final de cada ventana, se evaluó su rendimiento por subgrupos clínicos según presencia o ausencia de sepsis. El objetivo fue comprobar si el comportamiento
  del modelo era homogéneo entre ambos grupos, dado que el inicio de noradrenalina es especialmente frecuente en el contexto del shock séptico. Este análisis se realizó exclusivamente en MIMIC-IV,
