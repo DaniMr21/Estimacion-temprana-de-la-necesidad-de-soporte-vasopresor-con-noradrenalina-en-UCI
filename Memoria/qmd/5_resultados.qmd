@@ -115,15 +115,9 @@ Curvas ROC, precisión-recall y calibración mediante predicciones *out-of-fold*
 
 :::
 
-## Calibración de los modelos candidatos
-
 Tras las pruebas de calibración, el único modelo que requirió recalibración efectiva fue XGBoost en la ventana media, ajustado mediante Platt regularizado. La @fig-calibracion-xgb-medio compara las curvas de calibración y la distribución de probabilidades antes y después de la recalibración.
 
-::: {#fig-calibracion-xgb-medio}
-
-![Comparación de curvas de calibración y distribución de probabilidades antes y después de la recalibración mediante Platt regularizado para XGBoost en la ventana media.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio-img width=95%}
-
-:::
+![Comparación de curvas de calibración y distribución de probabilidades antes y después de la recalibración mediante Platt regularizado para XGBoost en la ventana media.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio width=90%}
 
 La @fig-shap-candidatos-1 y la @fig-shap-candidatos-2 recogen los diagramas SHAP de los modelos candidatos en MIMIC-IV.
 
@@ -245,7 +239,10 @@ cat("}\n")
 cat("\\end{table}\n")
 ```
 
-En la validación externa, la ventana corta no superó a SOFA. En la ventana media, XGBoost calibrado y CatBoost mostraron un rendimiento similar al benchmark clínico. En la ventana larga, XGBoost y CatBoost obtuvieron los resultados externos más favorables, con mejor discriminación que SOFA.
+En la validación externa, la ventana corta no superó a SOFA. En la ventana media, XGBoost calibrado y CatBoost mostraron un rendimiento prácticamente equivalente al predictor clínico de 
+referencia. En cambio, en la ventana larga ambos modelos superaron a SOFA de forma estadísticamente significativa, con una mejora de AUC-ROC de +0,068 para XGBoost ($p < 0{,}001$) y de +0,064 
+para CatBoost ($p = 0{,}003$). Este resultado constituye el principal hallazgo positivo de la validación externa, ya que muestra que, cuando se dispone de una ventana de observación más amplia, 
+los modelos de aprendizaje automático aportan información predictiva adicional respecto a una escala clínica ampliamente utilizada.
 
 La @fig-validacion-externa-principal muestra las curvas ROC y de calibración de los modelos principales sobre eICU-CRD.
 
@@ -260,6 +257,8 @@ La @fig-validacion-externa-principal muestra las curvas ROC y de calibración de
 Curvas ROC y calibración de los modelos principales evaluados externamente en eICU-CRD.
 
 :::
+
+La comparación con SOFA debe interpretarse como una comparación frente a una referencia clínica de gravedad, no como una comparación frente a una escala diseñada específicamente para predecir inicio de noradrenalina.
 
 La @fig-shap-eicu-principal recoge los diagramas SHAP de los modelos principales en la cohorte externa.
 

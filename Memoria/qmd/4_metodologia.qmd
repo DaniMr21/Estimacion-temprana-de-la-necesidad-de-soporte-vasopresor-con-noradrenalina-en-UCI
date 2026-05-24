@@ -80,8 +80,9 @@ en MIMIC-IV \cite{johnson2023}\cite{mimiccode}.}
 \end{table}
 ```
 
-La puntuación SOFA se incorporó como variable predictora. La variable de sepsis se utilizó principalmente como variable de análisis diferencial por subgrupos, dada su 
-importancia clínica y su relación directa con el inicio de soporte vasopresor.
+La puntuación SOFA se incorporó como variable predictora dentro de los modelos y, adicionalmente, se utilizó como referencia clínica aislada para comparar el rendimiento de los modelos frente 
+a una escala de gravedad ampliamente empleada en UCI. La variable de sepsis se utilizó principalmente como variable de análisis diferencial por subgrupos, dada su importancia clínica y su 
+relación directa con el inicio de soporte vasopresor.
 
 La cohorte de validación externa se construyó mediante consultas SQL sobre las tablas de eICU-CRD, alojadas en el mismo entorno local que MIMIC-IV. Se aplicaron las 
 mismas restricciones de estancia mínima obligatoria utilizadas en la cohorte de desarrollo.
@@ -342,9 +343,12 @@ Para mantener una evaluación sin fuga de información, se utilizaron probabilid
 entrenamiento y se aplicaron después sobre el conjunto de test correspondiente. Las probabilidades resultantes se estratificaron según la variable `tiene_sepsis` en tres grupos: cohorte global,
 pacientes con sepsis según Sepsis-3 y pacientes sin sepsis identificada. En cada subgrupo se calcularon las mismas métricas que en la evaluación global: AUC-ROC, AUC-PR, BSS y ECE.
 
-Como referencia clínica, se comparó el rendimiento del modelo con la puntuación SOFA utilizada como predictor aislado. Dado que SOFA es una escala ordinal y no una probabilidad calibrada, 
-la comparación se limitó a métricas basadas en ranking, AUC-ROC y AUC-PR. La comparación se realizó sobre los mismos pacientes y etiquetas empleados para evaluar el modelo, de forma que las 
-diferencias observadas reflejaran la capacidad predictiva adicional del modelo frente a una escala clínica ampliamente utilizada en UCI.
+Como referencia clínica, se comparó el rendimiento de los modelos con la puntuación SOFA utilizada como predictor aislado. SOFA no se empleó como una escala específica de predicción del inicio 
+de noradrenalina, sino como referencia basal de gravedad y disfunción orgánica. Su uso se justifica porque es una escala ampliamente utilizada en UCI y resume información clínica relacionada 
+con el estado global del paciente crítico, por lo que permite valorar si los modelos de aprendizaje automático aportan información predictiva adicional respecto a una medida clínica disponible 
+y reconocible. Dado que SOFA es una escala ordinal y no una probabilidad calibrada, la comparación se limitó a métricas basadas en ranking, concretamente AUC-ROC y AUC-PR. La comparación se 
+realizó sobre los mismos pacientes y etiquetas empleados para evaluar cada modelo, de forma que las diferencias observadas reflejaran la capacidad predictiva adicional del modelo frente a SOFA 
+como predictor clínico aislado.
 
 ## Dashboard clínico y limitaciones de uso
 
@@ -352,8 +356,8 @@ Como parte final del trabajo se desarrolló un prototipo de *dashboard* clínico
 demostrar la viabilidad técnica de integrar los modelos entrenados en una interfaz sencilla, interpretable y orientada a la consulta individual de pacientes. El diseño del *dashboard* siguió 
 deliberadamente un enfoque minimalista. La aplicación permite seleccionar una ventana temporal, cargar un archivo CSV con las variables clínicas del paciente durante el periodo de observación 
 correspondiente y obtener una estimación individualizada del riesgo de inicio de noradrenalina. En la versión final del prototipo se integraron únicamente los modelos de las ventanas media y 
-larga: la ventana media estima el riesgo de inicio entre las 6 y las 24 horas, mientras que la ventana larga estima el riesgo entre las 12 y las 48 horas tras el ingreso. La ventana corta se 
-excluyó del *dashboard* final por su limitada capacidad discriminativa en la validación externa (ver en resultados).
+larga: la ventana media estima el riesgo de inicio entre las 6 y las 24 horas, mientras que la ventana larga estima el riesgo entre las 12 y las 48 horas tras el ingreso. La ventana corta se excluyó del 
+*dashboard* final por su limitada capacidad discriminativa en la validación externa, como se muestra en el Capítulo 5.
 
 El CSV de entrada contiene una fila por medición del paciente e incluye las variables clínicas necesarias para cada modelo. A partir de estos datos, la aplicación calcula automáticamente 
 los estadísticos agregados requeridos, como `map_min`, el cociente PaO$_2$/FiO$_2$, la diuresis acumulada normalizada por peso, la frecuencia cardiaca media, el SOFA máximo o los valores 
@@ -381,6 +385,14 @@ La interfaz incluye un aviso explícito indicando que se trata de un prototipo a
 en práctica clínica real. Su uso asistencial requeriría validación prospectiva, revisión clínica y ética, análisis de impacto en el flujo de trabajo e integración segura con los sistemas de 
  información hospitalarios. En conjunto, el *dashboard* demuestra que los modelos pueden desplegarse en una interfaz comprensible, reproducible e interpretable, cuya función dentro de este
 TFG es exclusivamente demostrativa: ilustrar cómo podrían presentarse las predicciones y sus explicaciones en un entorno clínico real.
+
+La Figura \ref{fig-dashboard-general} muestra una vista general del prototipo desarrollado, incluyendo la selección de ventana temporal, la carga de datos del paciente, 
+la visualización del riesgo estimado y la explicación individual asociada a la predicción.
+
+:::
+![Vista general del prototipo de dashboard desarrollado en Streamlit. La interfaz permite seleccionar la ventana temporal, cargar los datos clínicos del paciente, visualizar el riesgo estimado de 
+inicio de noradrenalina basado en percentiles y consultar la explicación individual de la predicción.](img/dashboard.png){#fig-dashboard-general width=95%}
+:::
 
 ## Metodología de Ingeniería del Software
 
