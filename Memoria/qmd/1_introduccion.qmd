@@ -1,7 +1,5 @@
 \capitulo{1}{Introducción}
 
-\textbf{Contexto clínico y relevancia del problema}
-
 El paciente crítico ingresado en la Unidad de Cuidados Intensivos (UCI) presenta con frecuencia situaciones de fallo orgánico o riesgo inminente de deterioro clínico, 
 lo que exige una monitorización continua y una respuesta terapéutica rápida. Dentro de este contexto, la inestabilidad hemodinámica constituye uno de los problemas más relevantes, 
 ya que puede comprometer la perfusión tisular y favorecer la progresión hacia disfunción multiorgánica.
@@ -12,11 +10,9 @@ distributivo e inestabilidad hemodinámica en UCI, especialmente en el shock sé
 
 La sepsis y el shock séptico representan una de las principales causas de necesidad de soporte vasopresor en pacientes críticos. A escala global, se estimaron 48,9 millones de casos de sepsis y 
 11 millones de muertes atribuibles en 2017 \cite{fleischmann2020}. En adultos hospitalizados, la incidencia de sepsis tratada en UCI alcanza aproximadamente 58 casos por cada 
-100.000 personas-año \cite{fleischmann2020}. En España, la mortalidad de los pacientes sépticos ingresados en UCI se sitúa alrededor del 30\,\% y puede alcanzar el 50\,\% en los casos de 
+100.000 personas-año \cite{fleischmann2020}. En España, la mortalidad de los pacientes sépticos ingresados en UCI se sitúa alrededor del 30% y puede alcanzar el 50% en los casos de 
 shock séptico \cite{hubu2025}. No obstante, la necesidad de noradrenalina no se limita a la sepsis, ya que otras formas de shock circulatorio pueden requerir también soporte vasopresor 
 \cite{vincent2013}. Por ello, la predicción del inicio de noradrenalina constituye un problema clínico relevante en la cohorte general de pacientes críticos, más allá de un único diagnóstico.
-
-\textbf{Justificación del problema}
 
 La decisión de iniciar noradrenalina en un paciente crítico no depende de una única variable aislada. En la práctica clínica habitual, 
 esta decisión se basa en la interpretación conjunta de múltiples señales, como la evolución de la presión arterial, la frecuencia cardiaca, el lactato, la respuesta a la fluidoterapia, 
@@ -27,8 +23,6 @@ Además, el momento óptimo de inicio de la noradrenalina continúa siendo un as
 acumulación de fluidos, mientras que una indicación innecesaria podría exponer al paciente a tratamientos invasivos no justificados. En este contexto, disponer de herramientas capaces de estimar
  de forma temprana el riesgo de requerir noradrenalina podría ayudar a complementar la valoración clínica y favorecer una vigilancia más dirigida de los pacientes con mayor probabilidad de 
  deterioro hemodinámico.
-
-\textbf{Planteamiento del trabajo}
 
 En los últimos años, el aprendizaje automático (\textit{machine learning}, ML) ha adquirido un papel creciente en el análisis de datos clínicos complejos. 
 Su capacidad para integrar simultáneamente variables fisiológicas, analíticas y demográficas resulta especialmente atractiva en el entorno de UCI, 
@@ -47,7 +41,5 @@ El trabajo incorpora tres elementos de interés práctico. En primer lugar, se d
 de anticipación clínica. En segundo lugar, se aplica interpretabilidad mediante valores SHAP, con el fin de identificar qué variables contribuyen con mayor peso a la predicción tanto a nivel 
 global como individual. En tercer lugar, se desarrolla un prototipo de \textit{dashboard} clínico en Streamlit, orientado a visualizar el riesgo estimado y los factores explicativos principales 
 de cada paciente. Finalmente, la capacidad de generalización del modelo se evalúa mediante validación externa sobre la base de datos eICU \cite{pollard2018}.
-
-\textbf{Estructura de la memoria}
 
 El presente documento se organiza en ocho capítulos. Tras este capítulo introductorio, el \textbf{Capítulo~2} recoge los objetivos del trabajo. El \textbf{Capítulo~3} desarrolla el marco teórico y el estado del arte, incluyendo los fundamentos clínicos del shock, el uso de vasopresores, las bases del aprendizaje automático aplicado a UCI y la revisión de trabajos previos relacionados. El \textbf{Capítulo~4} describe la metodología empleada, incluyendo la construcción de cohortes, la definición del evento objetivo, el preprocesamiento de datos, el entrenamiento de modelos y la validación externa. Los \textbf{Capítulos~5 y~6} presentan y discuten los resultados obtenidos. El \textbf{Capítulo~7} recoge las conclusiones principales y el \textbf{Capítulo~8} propone posibles líneas de trabajo futuro.

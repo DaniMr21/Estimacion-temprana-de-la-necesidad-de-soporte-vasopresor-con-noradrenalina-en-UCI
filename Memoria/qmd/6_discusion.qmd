@@ -25,8 +25,6 @@ Conviene matizar que la mezcla de colores en algunas variables, como la SpO$_2$,
 
 Por estos motivos se seleccionaron XGBoost calibrado en la ventana media y XGBoost en la ventana larga como modelos principales del dashboard, por ofrecer el mejor equilibrio entre rendimiento, calibración e interpretabilidad. La calibración fue un criterio relevante: en un contexto clínico no basta con ordenar correctamente a los pacientes, sino que la probabilidad mostrada debe ser numéricamente interpretable, ya que una probabilidad mal calibrada puede inducir a una lectura errónea aunque la discriminación sea aceptable. XGBoost en la ventana media requirió recalibración mediante Platt regularizado para que sus probabilidades fueran adecuadas como estimaciones de riesgo (@fig-calibracion-xgb-medio); las métricas probabilísticas externas se resumen en la Tabla \ref{tab:validacion-externa-prob}.
 
-## Limitaciones
-
 El trabajo presenta varias limitaciones que condicionan la interpretación de los resultados.
 
 El filtrado por completitud, aunque justificado para evitar imputaciones sintéticas, redujo de forma importante el tamaño muestral y seleccionó una población de mayor gravedad. La prevalencia del evento se duplicó o triplicó respecto a las cohortes brutas, reflejo de un sesgo de monitorización: los pacientes con registro analítico completo son precisamente los percibidos como más graves por el equipo asistencial. Los modelos quedan así entrenados sobre una población más enferma que la UCI general, y su extrapolación a pacientes con menor intensidad de monitorización no está garantizada.

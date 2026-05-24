@@ -143,8 +143,6 @@ Diagramas SHAP tipo *beeswarm* de los modelos candidatos en la ventana larga.
 
 :::
 
-## Validación externa en eICU-CRD
-
 Tras la selección de candidatos en MIMIC-IV, los modelos se evaluaron externamente sobre eICU-CRD. Esta validación permitió comprobar la capacidad de generalización en una cohorte independiente y multicéntrica, distinta tanto en origen hospitalario como en estructura de registro. Cada modelo se comparó además frente a SOFA como predictor clínico aislado, utilizando AUC-ROC y AUC-PR como métricas principales de discriminación. Se incluyó también el modelo de la ventana corta, no como candidato final para despliegue, sino para documentar su rendimiento externo y justificar su descarte posterior.
 
 Los resultados se presentan en dos tablas complementarias. La Tabla \ref{tab:validacion-externa-discr} recoge la discriminación de cada modelo frente a SOFA, con la diferencia de AUC y su significación mediante la prueba de DeLong. La Tabla \ref{tab:validacion-externa-prob} recoge las métricas probabilísticas y de calibración del modelo sobre la cohorte externa.

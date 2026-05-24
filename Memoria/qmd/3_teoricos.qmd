@@ -1,8 +1,6 @@
 ```{=latex}
 \capitulo{3}{Conceptos teóricos}
 
-\textbf{Inestabilidad hemodinámica en UCI y deterioro hemodinámico}
-
 Fisiopatológicamente, el shock séptico representa el estadio más crítico de la disfunción hemodinámica, caracterizado por una profunda alteración de la macro y microcirculación secundaria a 
 una respuesta desregulada del huésped frente a la infección \cite{singer2016}. Los criterios operativos establecidos por el consenso Sepsis-3 no son meros umbrales estadísticos, sino reflejos de
 hitos fisiológicos críticos. 
@@ -22,15 +20,11 @@ variables fisiológicas, donde la respuesta a tratamientos previos (como la flui
 Por consiguiente, la identificación predictiva del riesgo de requerir vasopresores excede la capacidad de las reglas de decisión clínicas fijas,
 justificando la exploración de otras metodologías capaces de modelar esta complejidad temporal de forma continua.
 
-\textbf{Uso de vasopresores y papel de la noradrenalina}
-
 Tanto las guías de la \textit{Surviving Sepsis Campaign} como el protocolo local del HUBU establecen la noradrenalina como vasopresor de primera 
 elección en el shock séptico \cite{evans2021,hubu2025}, y esta recomendación se extiende de facto a la mayoría de los escenarios de shock distributivo en UCI. Cuando se requieren dosis elevadas
 de noradrenalina para alcanzar una presión arterial media segura, puede asociarse vasopresina como segundo vasopresor. Asimismo, en presencia de disfunción miocárdica asociada o de hipoperfusión
 persistente a pesar de una adecuada presión arterial, puede considerarse el uso de dobutamina como soporte inotrópico 
 \cite{evans2021,hubu2025}. Este esquema terapéutico refleja que el tratamiento hemodinámico del paciente crítico no es estático, sino progresivo y dependiente de la evolución clínica.
-
-\textbf{Bases de datos clínicas y aprendizaje automático en UCI}
 
 El desarrollo de modelos predictivos en cuidados intensivos ha estado estrechamente ligado a la disponibilidad de bases de datos clínicas de gran escala. Entre ellas, MIMIC-IV 
 (\textit{Medical Information Mart for Intensive Care}, versión IV) ocupa un lugar destacado por tratarse de una base de datos pública, desidentificada y diseñada específicamente 
@@ -52,8 +46,6 @@ e interacciones complejas entre variables. Su atractivo radica en la capacidad p
 con reglas clínicas simples o con modelos univariantes. Sin embargo, este aumento de capacidad predictiva suele ir acompañado de una menor interpretabilidad, lo que supone una limitación 
 importante cuando el objetivo final es apoyar decisiones clínicas reales.
 
-\textbf{Interpretabilidad y explicabilidad de modelos}
-
 En aplicaciones clínicas, la interpretabilidad del modelo no constituye un elemento accesorio, sino un requisito relevante para facilitar la confianza del profesional sanitario y permitir 
 una evaluación crítica de la predicción generada. En este contexto, adquieren relevancia técnicas de explicación como SHAP (\textit{SHapley Additive exPlanations}), 
 que permiten descomponer la predicción de un modelo en la contribución individual de cada variable \cite{lundberg2017}.
@@ -61,9 +53,7 @@ que permiten descomponer la predicción de un modelo en la contribución individ
 Este enfoque ofrece una doble utilidad. Por un lado, permite identificar qué variables son más influyentes a nivel global dentro de la cohorte, 
 lo que facilita interpretar el comportamiento general del modelo. Por otro, hace posible explicar predicciones concretas a nivel individual, mostrando qué factores empujan el riesgo estimado 
 en una u otra dirección para un paciente determinado \cite{lundberg2017}. En un entorno de apoyo a la decisión clínica, esta capacidad puede resultar especialmente valiosa, 
-ya que aproxima la salida del modelo a un razonamiento más comprensible para el profesional.
-
-\textbf{Estado del arte y trabajos relacionados}    
+ya que aproxima la salida del modelo a un razonamiento más comprensible para el profesional.   
 
 Entre los estudios más próximos al objetivo de este TFG destaca el trabajo de Duval et al., que desarrollaron un modelo interpretable basado en historia clínica electrónica para predecir 
 el inicio de perfusión continua de vasopresores en pacientes sépticos ingresados en UCI a partir de datos de MIMIC-IV \cite{duval2025}. 
@@ -88,8 +78,6 @@ En paralelo, los enfoques de aprendizaje por refuerzo han intentado derivar pol�
 orientado a optimizar estrategias de tratamiento mediante recomendaciones sobre vasopresores y fluidoterapia, incorporando mecanismos para reducir ajustes bruscos de dosis \cite{zhang2024}, 
 mientras que el estudio OVISS exploró el momento óptimo de inicio de vasopresina en pacientes con shock séptico tratados con noradrenalina \cite{jama2025}. 
 Aunque estos trabajos son metodológicamente ambiciosos, responden a preguntas clínicas distintas y más complejas que la estimación temprana del primer inicio de noradrenalina.
-
-\textbf{Limitaciones de la literatura y posicionamiento del TFG}
 
 A pesar del avance metodológico observado, la literatura disponible presenta varias limitaciones recurrentes. En primer lugar, muchos estudios continúan evaluando su rendimiento principalmente
  mediante métricas de discriminación retrospectiva, especialmente el AUROC, sin trasladar de forma suficiente esos resultados a escenarios de uso clínico real \cite{shanmugam2025}. 

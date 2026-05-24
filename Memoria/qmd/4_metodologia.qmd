@@ -9,8 +9,6 @@ detección precoz de deterioro hemodinámico inminente hasta la identificación 
 casos, los predictores se extrajeron exclusivamente de periodos anteriores al inicio de la noradrenalina, evitando cualquier fuga de información desde el evento hacia
 el modelo.
 
-## Datos y variables por ventana
-
 La cohorte de entrenamiento y evaluación interna se construyó a partir de MIMIC-IV. El acceso a esta base de datos requirió completar el curso de formación en investigación con datos humanos del CITI
 Program [@citiprogram], registrar el proyecto en PhysioNet [@physionet], esperar su aprobación y firmar el correspondiente acuerdo de uso de datos. Dicho acuerdo obliga, entre otros aspectos, 
 a no intentar reidentificar pacientes, no redistribuir los datos y publicar el código necesario para la reproducibilidad del proyecto en un repositorio público.
@@ -56,26 +54,36 @@ proceden del repositorio oficial de scripts derivados de MIMIC-IV mantenido por 
 \begin{table}[htbp]
 \centering
 \small
-\begin{tabular}{p{0.42\textwidth} | p{0.50\textwidth}}
-
-\textbf{Cálculo del SOFA (ventana 24 h)} &
-\textbf{Detección de Sepsis-3} \\[4pt]
-
-\textbf{Para} cada hora $h$ de la estancia: & \textbf{Para} cada antibiótico administrado: \\[2pt]
-\quad Respiratorio: P/F$<$100$\to$4, $<$200$\to$3, $<$300$\to$2, $<$400$\to$1 & \quad \textbf{Si} cultivo en $\pm$72/24\,h del antibiótico: \\
-\quad Coagulación: plt$<$20$\to$4, $<$50$\to$3, $<$100$\to$2, $<$150$\to$1 & \quad\quad sospecha $\leftarrow$ verdadero \\
-\quad Hepático: bili$\geq$12$\to$4, $\geq$6$\to$3, $\geq$2$\to$2, $\geq$1.2$\to$1 & \quad\quad $t_s \leftarrow \min(t_\text{cultivo},\, t_\text{antibiótico})$ \\
-\quad Cardiovascular: norepi$>$0.1$\to$4, $\leq$0.1$\to$3, & \\
-\quad\quad dopamina$>$0$\to$2, MAP$<$70$\to$1 & \textbf{Para} cada evento de sospecha: \\
-\quad Neurológico: GCS$<$6$\to$4, 6--9$\to$3, 10--12$\to$2, 13--14$\to$1 & \quad \textbf{Si} $\exists$ SOFA $\geq 2$ en $[t_s-48\text{h},\; t_s+24\text{h}]$: \\
-\quad Renal: creat$\geq$5$\to$4, $\geq$3.5$\to$3, $\geq$2$\to$2, $\geq$1.2$\to$1 & \quad\quad sepsis3 $\leftarrow$ verdadero \\[4pt]
-\textbf{Componente}$_{24h}$ $\leftarrow$ MAX(componente, 23\,h) & \quad\quad $t_\text{onset}$ $\leftarrow$ primer endtime con SOFA $\geq 2$ \\[2pt]
-SOFA$_{24h}$ $\leftarrow$ $\sum$ 6 componentes$_{24h}$ & \textbf{Devolver} registro más temprano con sospecha $\wedge$ SOFA$\geq$2 \\
-
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{@{}p{0.46\textwidth} | p{0.46\textwidth}@{}}
+\textbf{Cálculo del SOFA (ventana 24 h)} & \textbf{Detección de Sepsis-3} \\
+\hline
+\rule{0pt}{2.6ex}%
+\textbf{Para} cada hora $h$ de la estancia:\newline
+\hspace*{1.5em}Respiratorio: P/F$<$100$\to$4, $<$200$\to$3, $<$300$\to$2, $<$400$\to$1\newline
+\hspace*{1.5em}Coagulación: plt$<$20$\to$4, $<$50$\to$3, $<$100$\to$2, $<$150$\to$1\newline
+\hspace*{1.5em}Hepático: bili$\geq$12$\to$4, $\geq$6$\to$3, $\geq$2$\to$2, $\geq$1{,}2$\to$1\newline
+\hspace*{1.5em}Cardiovascular: norepi$>$0{,}1$\to$4, $\leq$0{,}1$\to$3,\newline
+\hspace*{3em}dopamina$>$0$\to$2, MAP$<$70$\to$1\newline
+\hspace*{1.5em}Neurológico: GCS$<$6$\to$4, 6--9$\to$3, 10--12$\to$2, 13--14$\to$1\newline
+\hspace*{1.5em}Renal: creat$\geq$5$\to$4, $\geq$3{,}5$\to$3, $\geq$2$\to$2, $\geq$1{,}2$\to$1\newline
+\textbf{Componente}$_{24\text{h}}\leftarrow$ MAX(componente, 23\,h)\newline
+SOFA$_{24\text{h}}\leftarrow \sum$ 6 componentes$_{24\text{h}}$
+&
+\rule{0pt}{2.6ex}%
+\textbf{Para} cada antibiótico administrado:\newline
+\hspace*{1.5em}\textbf{Si} cultivo en $\pm$72/24\,h del antibiótico:\newline
+\hspace*{3em}sospecha $\leftarrow$ verdadero\newline
+\hspace*{3em}$t_s \leftarrow \min(t_{\text{cultivo}},\, t_{\text{antibiótico}})$\newline
+\textbf{Para} cada evento de sospecha:\newline
+\hspace*{1.5em}\textbf{Si} $\exists$ SOFA $\geq 2$ en $[t_s-48\text{h},\, t_s+24\text{h}]$:\newline
+\hspace*{3em}sepsis3 $\leftarrow$ verdadero\newline
+\hspace*{3em}$t_{\text{onset}} \leftarrow$ primer endtime con SOFA $\geq 2$\newline
+\textbf{Devolver} registro más temprano con sospecha $\wedge$ SOFA $\geq 2$
+\\
 \end{tabular}
-\caption{Pseudocódigo de los algoritmos del repositorio MIT-LCP para
-el cálculo horario del SOFA y la detección del \textit{onset} de Sepsis-3
-en MIMIC-IV \cite{johnson2023}\cite{mimiccode}.}
+\caption{Pseudocódigo de los algoritmos del repositorio MIT-LCP para el cálculo horario del SOFA y la detección del \textit{onset} de Sepsis-3 en MIMIC-IV \cite{johnson2023, mimiccode}.}
 \label{tab:pseudocodigo_sofa_sepsis}
 \end{table}
 ```
@@ -247,8 +255,6 @@ conjunto final de la ventana correspondiente. En la ventana media se eliminaron 
 `creatinina_max` y `gpt_max`. En la ventana larga se eliminaron `ph_min`, `lactato_max` y `gpt_max`, esta última por mostrar un comportamiento incoherente de forma 
 repetida en las tres ventanas.
 
-## Baseline final y métricas
-
 La elección de algoritmos buscó cubrir distintos niveles de complejidad y familias de aprendizaje supervisado sobre datos tabulares: modelos lineales, probabilísticos, 
 ensamblados por *bagging* y métodos de *gradient boosting*. Además, se priorizaron algoritmos con implementaciones maduras, uso extendido en problemas clínicos/tabulares 
 e interpretabilidad posterior mediante SHAP, evitando modelos difícilmente auditables.
@@ -333,7 +339,7 @@ en la regresión logística, `LinearExplainer`; y en Naive Bayes, `KernelExplain
 representan para cada variable la magnitud del impacto sobre la predicción, la dirección del efecto y el valor original de la variable. Esto permitió verificar si
 los modelos asociaban mayor riesgo a patrones clínicamente esperables —hipotensión, peor oxigenación, deterioro neurológico o marcadores de disfunción orgánica— y
 comprobar que, tras el tratamiento de valores extremos, las predicciones no dependían de artefactos aislados de registro. Por tanto, SHAP no se empleó como
-técnica de selección automática de variables, sino como una capa de auditoría e interpretabilidad para reducir el carácter de ``caja negra'' de los modelos finales.
+técnica de selección automática de variables, sino como una capa de auditoría e interpretabilidad para reducir el carácter de "caja negra" de los modelos finales.
 
 Tras seleccionar y calibrar el modelo final de cada ventana, se evaluó su rendimiento por subgrupos clínicos según presencia o ausencia de sepsis. El objetivo fue comprobar si el comportamiento
  del modelo era homogéneo entre ambos grupos, dado que el inicio de noradrenalina es especialmente frecuente en el contexto del shock séptico. Este análisis se realizó exclusivamente en MIMIC-IV,
@@ -349,8 +355,6 @@ con el estado global del paciente crítico, por lo que permite valorar si los mo
 y reconocible. Dado que SOFA es una escala ordinal y no una probabilidad calibrada, la comparación se limitó a métricas basadas en ranking, concretamente AUC-ROC y AUC-PR. La comparación se 
 realizó sobre los mismos pacientes y etiquetas empleados para evaluar cada modelo, de forma que las diferencias observadas reflejaran la capacidad predictiva adicional del modelo frente a SOFA 
 como predictor clínico aislado.
-
-## Dashboard clínico y limitaciones de uso
 
 Como parte final del trabajo se desarrolló un prototipo de *dashboard* clínico en Python utilizando Streamlit. El objetivo de esta aplicación no fue sustituir la valoración médica, sino 
 demostrar la viabilidad técnica de integrar los modelos entrenados en una interfaz sencilla, interpretable y orientada a la consulta individual de pacientes. El diseño del *dashboard* siguió 
@@ -391,8 +395,6 @@ la visualización del riesgo estimado y la explicación individual asociada a la
 
 ![Vista general del prototipo de dashboard desarrollado en Streamlit. La interfaz permite seleccionar la ventana temporal, cargar los datos clínicos del paciente, visualizar el riesgo estimado de 
 inicio de noradrenalina basado en percentiles y consultar la explicación individual de la predicción.](img/dashboard.png){#fig-dashboard-general width=95%}
-
-## Metodología de Ingeniería del Software
 
 El desarrollo software del proyecto siguió una metodología experimental e iterativa, propia de un trabajo de ciencia de datos. A diferencia de una aplicación tradicional con requisitos cerrados
 desde el inicio, el flujo de trabajo se refinó progresivamente en función de los resultados obtenidos en la construcción de cohortes, el análisis exploratorio, la selección de variables, el
