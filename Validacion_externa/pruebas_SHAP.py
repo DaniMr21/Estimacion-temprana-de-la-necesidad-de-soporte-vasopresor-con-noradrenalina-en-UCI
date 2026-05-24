@@ -40,11 +40,9 @@ def extraer_arbol_y_datos(modelo_cargado, X_inicial, columnas):
     modelo = modelo_cargado
     
     while True:
-        # Capa 1: Si es TU clase calibrada, sacamos el modelo base
         if isinstance(modelo, ModeloCalibrado):
             modelo = modelo.modelo_base
             
-        # Capa 2: Si es un Pipeline de Sklearn, transformamos datos y sacamos el final
         elif hasattr(modelo, 'steps'):
             if len(modelo.steps) > 1:
                 X_transformado = modelo[:-1].transform(X_actual)
@@ -54,11 +52,8 @@ def extraer_arbol_y_datos(modelo_cargado, X_inicial, columnas):
                     X_actual = X_transformado
             modelo = modelo.steps[-1][1]
             
-        # Capa 3: Si usaste CalibratedClassifierCV oficial
         elif hasattr(modelo, 'calibrated_classifiers_'):
             modelo = modelo.calibrated_classifiers_[0].estimator
-            
-        # Si no tiene ninguna de estas capas... ¡Hemos llegado al núcleo!
         else:
             break
             
@@ -107,7 +102,6 @@ for nombre, conf in CONFIG.items():
         df = pd.read_csv(conf['csv']).dropna(subset=conf['vars'])
         X = df[conf['vars']]
 
-        # Mágia: Pela todas las capas (tu clase -> Pipeline -> XGBoost)
         modelo_puro, X_procesado = extraer_arbol_y_datos(pipeline_crudo, X, conf['vars'])
         print(f"  [+] Corazón extraído para SHAP: {type(modelo_puro).__name__}")
 
@@ -126,9 +120,9 @@ for nombre, conf in CONFIG.items():
         plt.savefig(ruta_img, bbox_inches='tight', dpi=150)
         plt.close()
         
-        print(f"✅ ¡Logrado! Gráfico guardado en: {ruta_img}")
+        print(f"Gráfico guardado en: {ruta_img}")
         
     except Exception as e:
-        print(f"❌ Error en ventana {nombre}: {e}")
+        print(f"sError en ventana {nombre}: {e}")
 
 print("\nFIN")

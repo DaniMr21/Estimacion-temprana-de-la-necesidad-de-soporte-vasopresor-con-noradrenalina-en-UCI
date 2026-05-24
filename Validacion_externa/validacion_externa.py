@@ -37,7 +37,7 @@ from sklearn.isotonic import IsotonicRegression
 from scipy import stats
 warnings.filterwarnings('ignore')
 
-# ── WRAPPER MODELO MEDIO (nombre con caracteres cirílicos) ─────────────────────
+# ── WRAPPER MODELO MEDIO─────────────────────
 # Debe definirse ANTES de pickle.load() para que el unpickler lo encuentre.
 class ModeloCalibrado:
     def __init__(self, modelo_base, calibrador, tipo_calibrador):
@@ -212,7 +212,6 @@ for nombre_ventana, cfg in VENTANAS.items():
 
     # Cargar y limpiar datos externos
     df   = pd.read_csv(os.path.join(CARPETA_DATOS, cfg['csv']))
-    df   = df.dropna(subset=cfg['vars'])
     y    = df[cfg['etiqueta']].values.astype(int)
     X    = df[cfg['vars']].copy()
     sofa = df['sofa_max'].values.astype(float)
