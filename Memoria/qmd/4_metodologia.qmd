@@ -389,10 +389,8 @@ TFG es exclusivamente demostrativa: ilustrar cómo podrían presentarse las pred
 La Figura \ref{fig-dashboard-general} muestra una vista general del prototipo desarrollado, incluyendo la selección de ventana temporal, la carga de datos del paciente, 
 la visualización del riesgo estimado y la explicación individual asociada a la predicción.
 
-:::
 ![Vista general del prototipo de dashboard desarrollado en Streamlit. La interfaz permite seleccionar la ventana temporal, cargar los datos clínicos del paciente, visualizar el riesgo estimado de 
 inicio de noradrenalina basado en percentiles y consultar la explicación individual de la predicción.](img/dashboard.png){#fig-dashboard-general width=95%}
-:::
 
 ## Metodología de Ingeniería del Software
 
