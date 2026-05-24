@@ -1,19 +1,3 @@
-"""
-Dashboard de estimación temprana de riesgo de inicio de noradrenalina en UCI
-============================================================================
-Prototipo de investigación (TFG). Estilo minimalista B/N.
-
-Modelos:
-  Medio (6-24h): XGBoost calibrado Platt
-  Largo (12-48h): XGBoost con recalibrador Platt local de eICU
-
-Ejecución:
-  streamlit run dashboard.py
-
-Requisitos:
-  pip install streamlit shap matplotlib joblib xgboost scikit-learn
-"""
-
 import os
 import io
 import joblib
@@ -346,7 +330,7 @@ else:
                 items = sorted(shap_dict.items(), key=lambda x: x[1])
                 etiquetas = [cfg['etiquetas_var'].get(k, k) for k, _ in items]
                 valores   = [v for _, v in items]
-                colores   = ['#000000' if v < 0 else '#666666' for v in valores]
+                colores   = ["#2BFF00" if v < 0 else "#FF0000" for v in valores]
 
                 fig, ax = plt.subplots(figsize=(7, max(3, len(items) * 0.5)))
                 fig.patch.set_facecolor('white')
@@ -363,7 +347,7 @@ else:
                 st.pyplot(fig, use_container_width=True)
                 plt.close(fig)
 
-                st.caption('Negro = empuja al riesgo · Gris = protege')
+                st.caption('Rojo = empuja al riesgo · Verde = protege')
 
         except KeyError as e:
             st.error(f'Falta columna en el CSV: {e}')
