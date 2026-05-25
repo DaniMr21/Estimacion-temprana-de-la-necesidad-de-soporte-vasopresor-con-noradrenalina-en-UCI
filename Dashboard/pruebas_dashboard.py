@@ -31,17 +31,14 @@ class ModeloCalibrado:
         return np.column_stack([1 - prob_cal, prob_cal])
 
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
-CARPETA_MODELOS    = r'C:\Users\danie\TFG\Pruebas_v4_4\MODELOS_ENTRENADOS'
-CARPETA_REFERENCIA = r'C:\Users\danie\TFG\Dashboard'
-CARPETA_MIMIC      = r'C:\Users\danie\OneDrive\Escritorio\DATA'
+# ── CONFIGURACIÓN ─────────────────────────────────────────────────────────────
+# Rutas relativas: los pkl y npy deben estar en la misma carpeta que este script
+CARPETA_BASE = os.path.dirname(os.path.abspath(__file__))
 
 MODELOS = {
     'Medio': {
         'modelo_pkl' : 'modelo_Medio_6_24_XGB_calibrado.pkl',
         'calibrador' : None,
-        'csv_mimic'  : 'definitivo_v4.csv',
-        'etiqueta'   : 'etiqueta_norad_6_24',
         'vars'       : ['pf_min', 'map_min', 'diuresis_ml_kg_6h',
                         'hr_media', 'sofa_max', 'ventilacion_invasiva_6h'],
         'etiquetas_var': {
@@ -56,9 +53,7 @@ MODELOS = {
     },
     'Largo': {
         'modelo_pkl' : 'modelo_Largo_12_48_XGB.pkl',
-        'calibrador' : None,  
-        'csv_mimic'  : 'definitivo_v4l.csv',
-        'etiqueta'   : 'etiqueta_norad_12_48',
+        'calibrador' : None,
         'vars'       : ['temp_min', 'pf_min', 'spo2_min', 'bicarbonato_min',
                         'map_min', 'glucemia_min', 'sofa_max'],
         'etiquetas_var': {
@@ -74,44 +69,49 @@ MODELOS = {
     },
 }
 
+# ── DATOS DEMO ────────────────────────────────────────────────────────────────
+# Demo 1: paciente estable, riesgo bajo esperado.
+# Demo 2: paciente con deterioro hemodinámico, riesgo alto esperado.
+
+DEMO_CSV = {
+    'Demo 1 — Paciente estable (riesgo bajo esperado)': """\
+NOMBRE,APELLIDO 1,APELLIDO 2,ID,SOFA,MAP,TP,FiO2,PaO2,Diuresis_mL_kg,Frec Cardiaca,Vent. Invasiva,SpO2,Bicarbonato,Temperatura,Glucemia
+Uno,Demo,Prueba,DEMO-001,2,82,14.0,0.30,120,0.55,78,0,97,24,37.1,108
+Uno,Demo,Prueba,DEMO-001,2,79,14.0,0.30,118,0.48,80,0,97,23,36.9,112
+Uno,Demo,Prueba,DEMO-001,2,84,13.5,0.30,122,0.52,76,0,98,24,37.0,105
+Uno,Demo,Prueba,DEMO-001,2,81,14.0,0.30,119,0.50,79,0,97,23,36.8,110
+""",
+    'Demo 2 — Paciente con deterioro hemodinámico (riesgo alto esperado)': """\
+NOMBRE,APELLIDO 1,APELLIDO 2,ID,SOFA,MAP,TP,FiO2,PaO2,Diuresis_mL_kg,Frec Cardiaca,Vent. Invasiva,SpO2,Bicarbonato,Temperatura,Glucemia
+Dos,Demo,Test,DEMO-002,9,58,18.5,0.70,98,0.12,112,1,91,16,38.6,185
+Dos,Demo,Test,DEMO-002,10,54,19.0,0.75,92,0.10,118,1,89,15,38.8,192
+Dos,Demo,Test,DEMO-002,10,51,19.5,0.80,88,0.08,122,1,88,14,39.0,198
+Dos,Demo,Test,DEMO-002,11,48,20.0,0.85,84,0.07,128,1,87,13,39.2,205
+""",
+}
+
 
 # ── CARGA MODELOS (caché) ─────────────────────────────────────────────────────
 @st.cache_resource
 def cargar_modelo(nombre):
     cfg = MODELOS[nombre]
+    ruta = os.path.join(CARPETA_BASE, cfg['modelo_pkl'])
     try:
-        modelo = joblib.load(os.path.join(CARPETA_MODELOS, cfg['modelo_pkl']))
+        modelo = joblib.load(ruta)
     except Exception:
-        with open(os.path.join(CARPETA_MODELOS, cfg['modelo_pkl']), 'rb') as f:
+        with open(ruta, 'rb') as f:
             modelo = pickle.load(f)
-    calibrador = None
-    if cfg['calibrador']:
-        calibrador = joblib.load(
-            os.path.join(CARPETA_MODELOS, cfg['calibrador']))
-    return modelo, calibrador
+    return modelo, None
 
 
 @st.cache_resource
 def cargar_referencia(nombre):
-    """Distribución de probabilidades del modelo sobre MIMIC para calcular percentil.
-    Si no existe el fichero, lo genera ejecutando el modelo sobre MIMIC."""
-    cfg = MODELOS[nombre]
-    ruta_ref = os.path.join(CARPETA_REFERENCIA,
-                            f'referencia_percentiles_{nombre.lower()}.npy')
+    ruta_ref = os.path.join(
+        CARPETA_BASE, f'referencia_percentiles_{nombre.lower()}.npy')
     if os.path.exists(ruta_ref):
         return np.load(ruta_ref)
-    # Generar a partir de MIMIC
-    modelo, calibrador = cargar_modelo(nombre)
-    df = pd.read_csv(os.path.join(CARPETA_MIMIC, cfg['csv_mimic']))
-    df = df.dropna(subset=cfg['vars'])
-    X  = df[cfg['vars']]
-    prob = modelo.predict_proba(X)[:, 1]
-    if calibrador is not None:
-        prob = calibrador.predict_proba(prob.reshape(-1, 1))[:, 1]
-    prob_ord = np.sort(prob)
-    os.makedirs(CARPETA_REFERENCIA, exist_ok=True)
-    np.save(ruta_ref, prob_ord)
-    return prob_ord
+    st.error(f'No se encontró el fichero de referencia: {ruta_ref}')
+    st.stop()
 
 
 # ── AGREGACIÓN DE ANALÍTICA ───────────────────────────────────────────────────
@@ -138,7 +138,6 @@ def agregar_analitica(df_raw, nombre_modelo):
 
 # ── SHAP ──────────────────────────────────────────────────────────────────────
 def extraer_estimador(modelo):
-    """Devuelve el estimador interno (XGBoost) para TreeExplainer."""
     m = modelo
     if hasattr(m, 'modelo_base'):
         m = m.modelo_base
@@ -148,7 +147,6 @@ def extraer_estimador(modelo):
 
 
 def calcular_shap(modelo, X_fila, vars_modelo):
-    """Devuelve dict {variable: shap_value}."""
     estimador = extraer_estimador(modelo)
     explainer = shap.TreeExplainer(estimador)
     sv = explainer.shap_values(X_fila)
@@ -163,6 +161,102 @@ def calcular_percentil(prob, distribucion_referencia):
     rango = np.searchsorted(distribucion_referencia, prob, side='right')
     return int(round(100 * rango / len(distribucion_referencia)))
 
+
+# ── FUNCIÓN PRINCIPAL DE RENDERIZADO DE RESULTADOS ───────────────────────────
+def mostrar_resultados(df_raw, nombre_modelo):
+    cfg = MODELOS[nombre_modelo]
+    try:
+        X_fila = agregar_analitica(df_raw, nombre_modelo)
+        modelo, calibrador = cargar_modelo(nombre_modelo)
+        referencia = cargar_referencia(nombre_modelo)
+
+        prob = modelo.predict_proba(X_fila)[:, 1][0]
+        if calibrador is not None:
+            prob = calibrador.predict_proba(np.array([[prob]]))[:, 1][0]
+
+        percentil = calcular_percentil(prob, referencia)
+        shap_dict = calcular_shap(modelo, X_fila, cfg['vars'])
+
+        col_izq, col_der = st.columns([1, 1.4])
+
+        with col_izq:
+            st.markdown('**PERCENTIL DE RIESGO**')
+            st.markdown(
+                f'<div class="percentil-grande">{percentil}</div>',
+                unsafe_allow_html=True
+            )
+            st.markdown(
+                '<div style="border:1px solid #ccc; padding:10px; '
+                'font-size:12px; background:#f9f9f9; margin-top:10px;">'
+                '<b>¿Qué significa este valor?</b><br><br>'
+                'El percentil indica la posición del paciente dentro de la '
+                'distribución de probabilidades obtenida al aplicar el modelo '
+                'sobre la cohorte de referencia MIMIC-IV. Por ejemplo, un valor de 70 '
+                'significa que el 70&nbsp;% de los pacientes de esa cohorte '
+                'obtuvieron una probabilidad estimada inferior a la de este '
+                'paciente. No es una probabilidad directa de que ocurra el '
+                'evento, sino una medida relativa de riesgo dentro de una '
+                'población UCI de referencia.'
+                '</div>',
+                unsafe_allow_html=True
+            )
+
+            st.markdown('<br>', unsafe_allow_html=True)
+            if 'ID' in df_raw.columns:
+                pid = df_raw['ID'].iloc[0]
+                nombre = ' '.join(str(df_raw[c].iloc[0])
+                                  for c in ['NOMBRE', 'APELLIDO 1', 'APELLIDO 2']
+                                  if c in df_raw.columns)
+                st.markdown(
+                    f'**Paciente:** {nombre}  \n'
+                    f'**ID:** {pid}  \n'
+                    f'**N medidas:** {len(df_raw)}'
+                )
+
+        with col_der:
+            st.markdown('**FACTORES DE RIESGO (SHAP)**')
+            items = sorted(shap_dict.items(), key=lambda x: x[1])
+            etiquetas = [cfg['etiquetas_var'].get(k, k) for k, _ in items]
+            valores   = [v for _, v in items]
+            colores   = ['#2BFF00' if v < 0 else '#FF0000' for v in valores]
+
+            fig, ax = plt.subplots(figsize=(7, max(3, len(items) * 0.5)))
+            fig.patch.set_facecolor('white')
+            ax.barh(etiquetas, valores, color=colores,
+                    edgecolor='black', linewidth=1)
+            ax.axvline(0, color='black', lw=1)
+            ax.set_xlabel('← protege         empuja →')
+            ax.spines[['top', 'right']].set_visible(False)
+            ax.tick_params(colors='black')
+            ax.set_facecolor('white')
+            for spine in ax.spines.values():
+                spine.set_color('black')
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
+            plt.close(fig)
+
+            st.caption('Rojo = empuja al riesgo · Verde = protege')
+
+            st.markdown(
+                '<div style="border:1px solid #ccc; padding:8px; '
+                'font-size:12px; background:#f9f9f9; margin-top:6px;">'
+                '<b>¿Cómo leer este gráfico?</b><br>'
+                'Cada barra muestra cuánto contribuye esa variable a la '
+                'predicción <b>de este paciente concreto</b>. '
+                'Las barras rojas empujan el riesgo estimado hacia arriba; '
+                'las verdes lo reducen. '
+                'La longitud indica la magnitud de la contribución. '
+                'Esta explicación es local: refleja el perfil individual '
+                'del paciente, no la importancia global de la variable '
+                'en el modelo.'
+                '</div>',
+                unsafe_allow_html=True
+            )
+
+    except KeyError as e:
+        st.error(f'Falta columna en el CSV: {e}')
+    except Exception as e:
+        st.error(f'Error procesando los datos: {e}')
 
 # ── INTERFAZ ──────────────────────────────────────────────────────────────────
 st.set_page_config(page_title='Dashboard NORAD UCI', layout='wide')
@@ -194,6 +288,10 @@ st.markdown("""
     }
     div.stButton > button:hover { background-color: #000000; color: #ffffff; }
     .stFileUploader label { color: #000000; font-family: 'Courier New', monospace; }
+    div[role="radiogroup"] label { color: #000000 !important; }
+    div[role="radiogroup"] label p { color: #000000 !important; }
+    .stSelectbox label { color: #000000 !important; }
+    .stSelectbox label p { color: #000000 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -203,7 +301,6 @@ st.markdown(
     'INICIO DE NORADRENALINA EN UCI</div>',
     unsafe_allow_html=True
 )
-
 st.markdown(
     '<div class="aviso-prototipo">'
     '⚠ PROTOTIPO DE INVESTIGACIÓN — NO USAR BAJO NINGÚN CONCEPTO EN PRÁCTICA '
@@ -214,29 +311,79 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ── BOTONES DE SELECCIÓN ──────────────────────────────────────────────────────
-if 'modelo_sel' not in st.session_state:
-    st.session_state.modelo_sel = None
-if 'mostrar_manual' not in st.session_state:
-    st.session_state.mostrar_manual = False
+# ── ESTADO ────────────────────────────────────────────────────────────────────
+for clave, defecto in [
+    ('modelo_sel', None),
+    ('mostrar_manual', False),
+    ('modo_demo', False),
+]:
+    if clave not in st.session_state:
+        st.session_state[clave] = defecto
 
-c1, c2, c3 = st.columns(3)
+# ── BOTONES PRINCIPALES ───────────────────────────────────────────────────────
+c1, c2, c3, c4 = st.columns(4)
 with c1:
     if st.button('VENTANA MEDIA  (6-24h)'):
-        st.session_state.modelo_sel = 'Medio'
+        st.session_state.modelo_sel     = 'Medio'
         st.session_state.mostrar_manual = False
+        st.session_state.modo_demo      = False
 with c2:
     if st.button('VENTANA LARGA  (12-48h)'):
-        st.session_state.modelo_sel = 'Largo'
+        st.session_state.modelo_sel     = 'Largo'
         st.session_state.mostrar_manual = False
+        st.session_state.modo_demo      = False
 with c3:
+    if st.button('MODO DEMO'):
+        st.session_state.modo_demo      = True
+        st.session_state.mostrar_manual = False
+        st.session_state.modelo_sel     = None
+with c4:
     if st.button('MANUAL / INFO'):
         st.session_state.mostrar_manual = True
+        st.session_state.modo_demo      = False
 
 st.markdown('---')
 
+# ══════════════════════════════════════════════════════════════════════════════
+# ── MODO DEMO ─────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+if st.session_state.modo_demo:
+    st.markdown('### MODO DEMO')
+    st.info(
+        'Los datos mostrados son **ficticios** y se utilizan únicamente para '
+        'ilustrar el funcionamiento del dashboard. No corresponden a ningún '
+        'paciente real.'
+    )
+
+    demo_nombre = st.selectbox(
+        'Selecciona un caso de demostración:',
+        list(DEMO_CSV.keys())
+    )
+
+    ventana_demo = st.radio(
+        'Ventana temporal:',
+        ['Medio (6-24h)', 'Largo (12-48h)'],
+        horizontal=True
+    )
+    nombre_modelo_demo = 'Medio' if ventana_demo.startswith('Medio') else 'Largo'
+
+    with st.expander('Ver datos del caso de demo'):
+        df_demo_preview = pd.read_csv(io.StringIO(DEMO_CSV[demo_nombre]))
+        st.dataframe(df_demo_preview, use_container_width=True)
+
+    st.markdown('---')
+
+    df_demo = pd.read_csv(io.StringIO(DEMO_CSV[demo_nombre]))
+    cfg_demo = MODELOS[nombre_modelo_demo]
+    st.markdown(
+        f'**Modelo activo:** Ventana {nombre_modelo_demo} '
+        f'({cfg_demo["ventana"]}) — caso: _{demo_nombre}_'
+    )
+    mostrar_resultados(df_demo, nombre_modelo_demo)
+
 # ── PANEL MANUAL ──────────────────────────────────────────────────────────────
-if st.session_state.mostrar_manual:
+
+elif st.session_state.mostrar_manual:
     st.markdown('### MANUAL DE USO')
     st.markdown("""
 **Objetivo.** Estimar el riesgo de que un paciente de UCI requiera inicio de
@@ -244,115 +391,59 @@ noradrenalina en una ventana temporal determinada.
 
 **Ventanas disponibles.**
 - *Medio:* riesgo de inicio entre 6 y 24 horas a partir del momento actual.
-- *Larga:* riesgo de inicio entre 12 y 48 horas a partir del momento actual.
+- *Largo:* riesgo de inicio entre 12 y 48 horas a partir del momento actual.
 
 **Modo de uso.**
 1. Seleccione la ventana temporal con uno de los botones superiores.
-2. Cargue un CSV con las medidas del paciente dentro de 6 o 12 horas desde el ingreso en UCI y sin noradrenalina previa.
-3. Consulte el percentil de riesgo y los factores que más empujan o protegen
-   en el panel derecho.
+2. Cargue un CSV con las medidas del paciente (ver formato abajo) entre las 0 y 6 horas desde el ingreso o entre las 0 y 12 horas según corresponda.
+3. Consulte el percentil de riesgo y los factores SHAP en el panel de resultados.
 
-**Formato del CSV.** Columnas obligatorias:
+**Formato del CSV.** Una fila por medición. Columnas obligatorias:
 `NOMBRE, APELLIDO 1, APELLIDO 2, ID, SOFA, MAP, TP, FiO2, PaO2,
 Diuresis_mL_kg, Frec Cardiaca, Vent. Invasiva, SpO2, Bicarbonato,
-Temperatura, Glucemia`. Una fila por medición dentro del periodo de observación.
+Temperatura, Glucemia`
 
-**Interpretación del percentil.** El valor 1-100 representa la posición del
-paciente respecto a una cohorte UCI de referencia (MIMIC-IV). Un percentil 90
-indica que solo el 10% de los pacientes de referencia tenía mayor riesgo según
-el modelo.
+**Interpretación del percentil.**
+El valor (1–100) indica la posición del paciente dentro de la distribución
+de probabilidades obtenida sobre la cohorte de referencia MIMIC-IV.
+Un percentil de 90 significa que el 90 % de los pacientes de esa cohorte
+obtuvieron una probabilidad estimada inferior a la de este paciente.
+No es una probabilidad directa de evento, sino una medida relativa de riesgo
+dentro de una población UCI de referencia.
 
-**Interpretación SHAP.** Las barras a la derecha del cero indican
-variables que aumentan el riesgo predicho para este paciente. Las barras a la
-izquierda indican variables que lo reducen.
+**Interpretación SHAP.**
+El gráfico de barras muestra la contribución individual de cada variable
+a la predicción de *este paciente concreto*. Las barras rojas empujan el
+riesgo hacia arriba; las verdes lo reducen. Es una explicación local,
+no una medida de importancia global del modelo.
 
-**Aviso.** Prototipo académico. Cualquier decisión clínica debe basarse
+**Modo Demo.** Disponible en el botón superior para explorar el dashboard
+con dos casos ficticios sin necesidad de cargar un CSV real.
+
+**Aviso.** Prototipo académico sin validación clínica prospectiva ni
+autorización regulatoria. Cualquier decisión clínica debe basarse
 exclusivamente en la valoración del facultativo responsable.
     """)
 
+# ── MODO NORMAL (CSV REAL) ────────────────────────────────────────────────────
+
 elif st.session_state.modelo_sel is None:
-    st.info('Seleccione una ventana temporal arriba para comenzar.')
+    st.info('Seleccione una ventana temporal o pulse MODO DEMO para comenzar.')
 
 else:
     cfg = MODELOS[st.session_state.modelo_sel]
-    st.markdown(f'**Modelo activo:** Ventana {st.session_state.modelo_sel} '
-                f'({cfg["ventana"]})')
+    st.markdown(
+        f'**Modelo activo:** Ventana {st.session_state.modelo_sel} '
+        f'({cfg["ventana"]})'
+    )
 
-    # ── CARGA DE ANALÍTICA ───────────────────────────────────────────────────
-    archivo = st.file_uploader('Cargar analítica del paciente (CSV)',
-                               type=['csv'])
+    archivo = st.file_uploader('Cargar analítica del paciente (CSV)', type=['csv'])
 
     if archivo is None:
         st.info('Cargue un CSV con el formato indicado en el manual.')
     else:
-        try:
-            df_raw = pd.read_csv(archivo)
-            X_fila = agregar_analitica(df_raw, st.session_state.modelo_sel)
-
-            # Cargar modelo y referencia
-            modelo, calibrador = cargar_modelo(st.session_state.modelo_sel)
-            referencia = cargar_referencia(st.session_state.modelo_sel)
-
-            # Predicción
-            prob = modelo.predict_proba(X_fila)[:, 1][0]
-            if calibrador is not None:
-                prob = calibrador.predict_proba(
-                    np.array([[prob]]))[:, 1][0]
-
-            percentil = calcular_percentil(prob, referencia)
-
-            # SHAP
-            shap_dict = calcular_shap(modelo, X_fila, cfg['vars'])
-
-            # ── LAYOUT DE RESULTADOS ─────────────────────────────────────────
-            col_izq, col_der = st.columns([1, 1.4])
-
-            with col_izq:
-                st.markdown('**PERCENTIL DE RIESGO**')
-                st.markdown(
-                    f'<div class="percentil-grande">{percentil}</div>',
-                    unsafe_allow_html=True
-                )
-                
-                # ID paciente
-                if 'ID' in df_raw.columns:
-                    pid = df_raw['ID'].iloc[0]
-                    nombre = ' '.join(str(df_raw[c].iloc[0])
-                                      for c in ['NOMBRE', 'APELLIDO 1', 'APELLIDO 2']
-                                      if c in df_raw.columns)
-                    st.markdown(f'**Paciente:** {nombre}  \n'
-                                f'**ID:** {pid}  \n'
-                                f'**N medidas:** {len(df_raw)}')
-
-            with col_der:
-                st.markdown('**FACTORES DE RIESGO (SHAP)**')
-                # Ordenar por magnitud
-                items = sorted(shap_dict.items(), key=lambda x: x[1])
-                etiquetas = [cfg['etiquetas_var'].get(k, k) for k, _ in items]
-                valores   = [v for _, v in items]
-                colores   = ["#2BFF00" if v < 0 else "#FF0000" for v in valores]
-
-                fig, ax = plt.subplots(figsize=(7, max(3, len(items) * 0.5)))
-                fig.patch.set_facecolor('white')
-                ax.barh(etiquetas, valores, color=colores,
-                        edgecolor='black', linewidth=1)
-                ax.axvline(0, color='black', lw=1)
-                ax.set_xlabel('← protege         empuja →')
-                ax.spines[['top', 'right']].set_visible(False)
-                ax.tick_params(colors='black')
-                ax.set_facecolor('white')
-                for spine in ax.spines.values():
-                    spine.set_color('black')
-                plt.tight_layout()
-                st.pyplot(fig, use_container_width=True)
-                plt.close(fig)
-
-                st.caption('Rojo = empuja al riesgo · Verde = protege')
-
-        except KeyError as e:
-            st.error(f'Falta columna en el CSV: {e}')
-        except Exception as e:
-            st.error(f'Error procesando el CSV: {e}')
+        df_raw = pd.read_csv(archivo)
+        mostrar_resultados(df_raw, st.session_state.modelo_sel)
 
 # ── PIE ───────────────────────────────────────────────────────────────────────
 st.markdown('---')
