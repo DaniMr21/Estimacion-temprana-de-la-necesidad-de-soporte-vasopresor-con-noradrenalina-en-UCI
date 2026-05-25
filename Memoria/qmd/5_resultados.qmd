@@ -2,6 +2,7 @@
 %% ── Capítulo 5: Resultados ──────────────────────────────────
 \capitulo{5}{Resultados}
 ```
+#### Validación interna out of fold:
 
 La Tabla \ref{tab:validacion-interna-completa} resume el rendimiento interno de todos los modelos evaluados en MIMIC-IV mediante validación cruzada anidada. Se incluyen métricas discriminativas (AUC-ROC, AUC-PR), probabilísticas (Brier, BSS, LogLoss) y de calibración (ECE), expresadas como media $\pm$ desviación estándar entre folds externos. La regresión logística no aparece en la ventana corta porque, tras el proceso de selección, no conservó variables estadísticamente significativas según la importancia por permutación.
 
@@ -97,8 +98,6 @@ cat("}\n")
 cat("\\end{table}\n")
 ```
 
-A partir de estos resultados se seleccionaron los modelos candidatos para los análisis posteriores. En la ventana corta se mantuvo CatBoost, por presentar el mejor equilibrio entre discriminación, calibración y BSS positivo. En la ventana media se seleccionaron XGBoost —inicialmente sin calibrar— y CatBoost, ya que ambos mostraron los mejores resultados globales de la ventana. En la ventana larga se seleccionó XGBoost por su rendimiento discriminativo y probabilístico frente al resto de alternativas. Estos modelos candidatos fueron evaluados posteriormente en calibración, validación externa e interpretabilidad. La @fig-oof-candidatos muestra las curvas ROC, precisión-recall y calibración de estos candidatos, obtenidas a partir de predicciones *out-of-fold*.
-
 ::: {#fig-oof-candidatos}
 
 ![Corto 3--12 h: CatBoost](img/Grafica_OOF_Corto_3_12_CAT.png){#fig-oof-corto-cat width=82%}
@@ -143,9 +142,7 @@ Diagramas SHAP tipo *beeswarm* de los modelos candidatos en la ventana larga.
 
 :::
 
-Tras la selección de candidatos en MIMIC-IV, los modelos se evaluaron externamente sobre eICU-CRD. Esta validación permitió comprobar la capacidad de generalización en una cohorte independiente y multicéntrica, distinta tanto en origen hospitalario como en estructura de registro. Cada modelo se comparó además frente a SOFA como predictor clínico aislado, utilizando AUC-ROC y AUC-PR como métricas principales de discriminación. Se incluyó también el modelo de la ventana corta, no como candidato final para despliegue, sino para documentar su rendimiento externo y justificar su descarte posterior.
-
-Los resultados se presentan en dos tablas complementarias. La Tabla \ref{tab:validacion-externa-discr} recoge la discriminación de cada modelo frente a SOFA, con la diferencia de AUC y su significación mediante la prueba de DeLong. La Tabla \ref{tab:validacion-externa-prob} recoge las métricas probabilísticas y de calibración del modelo sobre la cohorte externa.
+#### Validación externa:
 
 ```{r tabla-validacion-externa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 externa <- read.csv(
@@ -188,11 +185,11 @@ tabla_discr <- data.frame(
 
 cat("\\begin{table}[htbp]\n")
 cat("\\centering\n")
-cat("\\scriptsize\n")
-cat("\\setlength{\\tabcolsep}{2pt}\n")
+cat("\\small\n")
+cat("\\setlength{\\tabcolsep}{4pt}\n")
 cat("\\caption{Validación externa sobre eICU-CRD: discriminación de cada modelo frente a SOFA como predictor aislado.}\n")
 cat("\\label{tab:validacion-externa-discr}\n")
-cat("\\resizebox{0.99\\textwidth}{!}{%\n")
+cat("\\resizebox{\\textwidth}{!}{%\n")
 
 print(knitr::kable(
   tabla_discr,
@@ -218,11 +215,11 @@ tabla_prob <- data.frame(
 
 cat("\\begin{table}[htbp]\n")
 cat("\\centering\n")
-cat("\\scriptsize\n")
-cat("\\setlength{\\tabcolsep}{3pt}\n")
+cat("\\small\n")
+cat("\\setlength{\\tabcolsep}{5pt}\n")
 cat("\\caption{Validación externa sobre eICU-CRD: métricas probabilísticas y de calibración de cada modelo.}\n")
 cat("\\label{tab:validacion-externa-prob}\n")
-cat("\\resizebox{0.75\\textwidth}{!}{%\n")
+cat("\\resizebox{0.90\\textwidth}{!}{%\n")
 
 print(knitr::kable(
   tabla_prob,
@@ -236,11 +233,6 @@ print(knitr::kable(
 cat("}\n")
 cat("\\end{table}\n")
 ```
-
-En la validación externa, la ventana corta no superó a SOFA. En la ventana media, XGBoost calibrado y CatBoost mostraron un rendimiento prácticamente equivalente al predictor clínico de 
-referencia. En cambio, en la ventana larga ambos modelos superaron a SOFA de forma estadísticamente significativa, con una mejora de AUC-ROC de +0,068 para XGBoost ($p < 0{,}001$) y de +0,064 
-para CatBoost ($p = 0{,}003$). Este resultado constituye el principal hallazgo positivo de la validación externa, ya que muestra que, cuando se dispone de una ventana de observación más amplia, 
-los modelos de aprendizaje automático aportan información predictiva adicional respecto a una escala clínica ampliamente utilizada.
 
 La @fig-validacion-externa-principal muestra las curvas ROC y de calibración de los modelos principales sobre eICU-CRD.
 
@@ -256,7 +248,7 @@ Curvas ROC y calibración de los modelos principales evaluados externamente en e
 
 :::
 
-La comparación con SOFA debe interpretarse como una comparación frente a una referencia clínica de gravedad, no como una comparación frente a una escala diseñada específicamente para predecir inicio de noradrenalina.
+#### Figuras SHAP
 
 La @fig-shap-eicu-principal recoge los diagramas SHAP de los modelos principales en la cohorte externa.
 
@@ -284,3 +276,4 @@ Diagramas SHAP complementarios de CatBoost en las ventanas media y larga durante
 
 :::
 
+FALTA LO DE GRAFICA GUAY VS MALA 

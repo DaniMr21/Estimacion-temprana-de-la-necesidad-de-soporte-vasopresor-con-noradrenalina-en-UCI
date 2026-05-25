@@ -13,20 +13,10 @@ La cohorte de entrenamiento y evaluación interna se construyó a partir de MIMI
 Program [@citiprogram], registrar el proyecto en PhysioNet [@physionet], esperar su aprobación y firmar el correspondiente acuerdo de uso de datos. Dicho acuerdo obliga, entre otros aspectos, 
 a no intentar reidentificar pacientes, no redistribuir los datos y publicar el código necesario para la reproducibilidad del proyecto en un repositorio público.
 
-Inicialmente se valoró utilizar como cohorte de validación externa datos desidentificados de la UCI del Hospital Universitario de Burgos (HUBU), con el
-objetivo de evaluar la extrapolabilidad a un contexto sanitario europeo. Esta opción fue descartada por la dificultad técnica de extraer de forma homogénea
-todas las variables requeridas y por la marcada heterogeneidad entre los sistemas asistenciales de ambas cohortes, que afectaba no solo al origen geográfico de los pacientes
-sino principalmente a criterios de ingreso en UCI, intensidad de monitorización, disponibilidad de variables y pautas de tratamiento. 
-
-A pesar de ello, se elaboró el documento requerido para el Comité de Ética en Investigación del HUBU. Una vez confirmada la viabilidad de extracción de
-las variables necesarias, se prevé solicitar su aprobación para realizar una validación externa sobre estos datos del HUBU. Esta validación
-tendría una doble finalidad: evaluar la extrapolabilidad antes mencionada y explorar su posible publicación científica una vez identificados 
-todos los aspectos a considerar.
-
-Finalmente se seleccionó eICU-CRD [@pollard2018] como cohorte de validación externa. Aunque también procede de población norteamericana, su carácter multicéntrico permite evaluar el 
+Se seleccionó eICU-CRD [@pollard2018] como cohorte de validación externa. Su carácter multicéntrico permite evaluar el 
 rendimiento de los modelos en un entorno interhospitalario heterogéneo, con variabilidad real entre centros y prácticas asistenciales, abordando una de las principales limitaciones 
 que presentaban la mayor parte de estudios publicados y mencionados en el estado del arte. Al mismo tiempo, mantiene una mayor comparabilidad estructural con MIMIC-IV que la disponible 
-inicialmente con los datos del HUBU. Los requisitos de acceso y utilización fueron equivalentes a los de MIMIC-IV, al tratarse también de una base de datos alojada en PhysioNet.
+inicialmente con datos del HUBU. Los requisitos de acceso y utilización fueron equivalentes a los de MIMIC-IV, al tratarse también de una base de datos alojada en PhysioNet.
 
 La selección inicial de variables para la cohorte de desarrollo se basó en criterios clínicos y disponibilidad en MIMIC-IV, priorizando constantes vitales, parámetros 
 analíticos, variables respiratorias y marcadores de función orgánica con relación fisiopatológica plausible con el deterioro hemodinámico. La selección se apoyó además en 
@@ -411,3 +401,21 @@ el procedimiento necesario para regenerarlos a partir de las credenciales y perm
 
 El prototipo de *dashboard* se desarrolló con Streamlit. La aplicación carga modelos entrenados y serializados, transforma un CSV de entrada en las variables
 requeridas, calcula el percentil de riesgo del paciente respecto a la cohorte de referencia y muestra una explicación individual mediante SHAP.
+
+Tras la selección de candidatos en MIMIC-IV, los modelos se evaluaron externamente sobre eICU-CRD. Esta validación permitió comprobar la capacidad de generalización en una cohorte independiente y multicéntrica, distinta tanto en origen hospitalario como en estructura de registro. Cada modelo se comparó además frente a SOFA como predictor clínico aislado, utilizando AUC-ROC y AUC-PR como métricas principales de discriminación. Se incluyó también el modelo de la ventana corta, no como candidato final para despliegue, sino para documentar su rendimiento externo y justificar su descarte posterior.
+
+Los resultados se presentan en dos tablas complementarias. La Tabla \ref{tab:validacion-externa-discr} recoge la discriminación de cada modelo frente a SOFA, con la diferencia de AUC y su significación mediante la prueba de DeLong. La Tabla \ref{tab:validacion-externa-prob} recoge las métricas probabilísticas y de calibración del modelo sobre la cohorte externa.
+
+Tras la selección de candidatos en MIMIC-IV, los modelos se evaluaron externamente sobre eICU-CRD. Esta validación permitió comprobar la capacidad de generalización en una cohorte independiente y multicéntrica, distinta tanto en origen hospitalario como en estructura de registro. Cada modelo se comparó además frente a SOFA como predictor clínico aislado, utilizando AUC-ROC y AUC-PR como métricas principales de discriminación. Se incluyó también el modelo de la ventana corta, no como candidato final para despliegue, sino para documentar su rendimiento externo y justificar su descarte posterior.
+
+Los resultados se presentan en dos tablas complementarias. La Tabla \ref{tab:validacion-externa-discr} recoge la discriminación de cada modelo frente a SOFA, con la diferencia de AUC y su significación mediante la prueba de DeLong. La Tabla \ref{tab:validacion-externa-prob} recoge las métricas probabilísticas y de calibración del modelo sobre la cohorte externa.
+
+En la validación externa, la ventana corta no superó a SOFA. En la ventana media, XGBoost calibrado y CatBoost mostraron un rendimiento prácticamente equivalente al predictor clínico de 
+referencia. En cambio, en la ventana larga ambos modelos superaron a SOFA de forma estadísticamente significativa, con una mejora de AUC-ROC de +0,068 para XGBoost ($p < 0{,}001$) y de +0,064 
+para CatBoost ($p = 0{,}003$). Este resultado constituye el principal hallazgo positivo de la validación externa, ya que muestra que, cuando se dispone de una ventana de observación más amplia, 
+los modelos de aprendizaje automático aportan información predictiva adicional respecto a una escala clínica ampliamente utilizada.
+
+La comparación con SOFA debe interpretarse como una comparación frente a una referencia clínica de gravedad, no como una comparación frente a una escala diseñada específicamente para predecir inicio de noradrenalina.
+
+
+FALTA: ORDENAR TODO ESTO + RECORTAR ANDE SE PUEDA + **SOFA**

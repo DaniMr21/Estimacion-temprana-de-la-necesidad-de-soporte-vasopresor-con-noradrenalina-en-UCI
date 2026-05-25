@@ -2,22 +2,25 @@
 %% ── Capítulo 8: Líneas de trabajo futuras ───────────────────
 \capitulo{8}{Líneas de trabajo futuras}
 ```
-La línea de trabajo más prioritaria e inmediata consiste en retomar y consolidar la validación externa planificada sobre los datos reales del Hospital Universitario de Burgos (HUBU). 
+
+**Validación externa de los modelos sobre una cohorte de pacientes de una UCI europea de referencia:** La línea de trabajo más prioritaria e inmediata consiste en retomar y consolidar la 
+validación externa planificada sobre los datos reales del Hospital Universitario de Burgos (HUBU). 
 Aunque la heterogeneidad en las estructuras de registro y las barreras técnicas de extracción obligaron a sustituir esta cohorte por la base de datos multicéntrica eICU-CRD, la transferencia 
 del modelo a una población de referencia europea sigue siendo un hito indispensable para garantizar la generalizabilidad del algoritmo sobre esta población. Una vez garantizada la viabilidad de 
 extracción desde los sistemas de información clínica de la UCI del HUBU, se procederá a la tramitación ante el Comité de Ética de Investigación del centro, y se diseñará un proceso de mapeo y 
 traducción iterativa de variables clínicas locales hacia el esquema estructurado de la pipeline actual, garantizando la homogeneidad de los predictores clave.
 
-Una segunda línea de trabajo sería la transición hacia modelos basados en series temporales. El enfoque actual utiliza métricas estáticas resumidas (mínimos, máximos o medias) dentro de una 
+**Transición de los modelos entrenados hacia series temporales:** El enfoque actual utiliza métricas estáticas resumidas (mínimos, máximos o medias) dentro de una 
 ventana fija, descartando la riqueza dinámica y la tendencia temporal de las constantes vitales. Se plantea reestructurar la arquitectura predictiva sustituyendo los árboles estáticos por 
 modelos capaces de procesar secuencias temporales. Esto incluye la implementación de redes neuronales recurrentes (LSTM) o Transformers temporales adaptados a registros clínicos tabulares, o el
  uso de librerías como tsfresh o sktime para la extracción automatizada de características dinámicas.
 
-Un tercer ejemplo es la implementación de modelos de análisis de supervivencia. La formulación binaria estricta ligada a ventanas temporales fijas limita la toma de decisiones clínicas. 
+**Implementación de modelos de análisis de supervivencia:** La formulación binaria estricta ligada a ventanas temporales fijas limita la toma de decisiones clínicas. 
 La integración de técnicas de Análisis de Supervivencia aplicado al Machine Learning permitirá modelar de forma continua el tiempo hasta el evento gestionando correctamente la censura de datos 
 (altas hospitalarias o fallecimientos prematuros antes de que ocurra el evento).
 
-Por último, podría valorarse de cara a un futuro y si estos modelos predictivos cumplen con los requisitos para convertirse en herramientas clínicas validadas, la integración de estos en el 
-software de una UCI que ya se use para monitorizar pacientes, por ejemplo, mediante conexión directa del backend con las bases de datos de monitorización en tiempo real de la unidad, ejecutando 
-el algoritmo en segundo plano de forma automática ante cada nueva analítica o constante registrada. En su defecto, también cabría explorar la posibilidad de que el Dashboard se convierta en uno 
-multipaciente que permita la vigilancia simultánea y centralizada de todas las camas del servicio.
+**Integración del dashboard en el software clínico utilizado en los boxes de la UCI del HUBU:** una línea futura sería estudiar la conexión del backend del dashboard con los sistemas de 
+información clínica y de monitorización de la unidad, de forma que el cálculo del riesgo pudiera ejecutarse de manera automática al alcanzarse las 6 o 12 horas de estancia y tras la 
+incorporación de nuevas constantes o resultados analíticos. Esta integración requeriría resolver aspectos técnicos de interoperabilidad, validación prospectiva, seguridad, trazabilidad y
+supervisión clínica antes de cualquier uso asistencial. De forma complementaria, podría explorarse una versión multipaciente del dashboard, orientada a la vigilancia centralizada de todas las 
+camas del servicio, siempre manteniendo su función como herramienta de apoyo y no como sistema autónomo de decisión.
