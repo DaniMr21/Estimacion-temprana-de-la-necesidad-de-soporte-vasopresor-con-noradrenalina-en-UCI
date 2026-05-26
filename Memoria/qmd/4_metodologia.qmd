@@ -418,4 +418,3 @@ los modelos de aprendizaje automático aportan información predictiva adicional
 La comparación con SOFA debe interpretarse como una comparación frente a una referencia clínica de gravedad, no como una comparación frente a una escala diseñada específicamente para predecir inicio de noradrenalina.
 
 Con el prototipo final del dashboard, se realizó una encuesta de satisfacción al personal de UCI donde se evaluaban tres aspectos: el entendimiento del funcionamiento general del modelo y el prototipo con el manual proporcionado, el entendimiento de los valores SHAP y factores que más empujaban al riesgo, y si consideraban q8ue este prototipo podría converirse a futuro en una herramienta clínica con potencial en la UCI.
-FALTA: ORDENAR TODO ESTO + RECORTAR ANDE SE PUEDA + **SOFA**
