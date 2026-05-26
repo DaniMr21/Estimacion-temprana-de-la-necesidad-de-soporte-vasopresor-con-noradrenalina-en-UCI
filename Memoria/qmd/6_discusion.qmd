@@ -45,4 +45,4 @@ Finalmente, las decisiones de preprocesamiento —winsorización a percentiles 2
 
 En conjunto, estos modelos no están listos para un uso clínico extendido, pero el trabajo demuestra que es posible construir, con una metodología controlada, modelos que igualan o superan a SOFA en determinados horizontes, validados externamente y con una lógica interna auditable. En ese sentido, constituye un primer paso razonable sobre el que apoyar desarrollos futuros.
 
-FALTA METER LO DEL SESGO
+FALTA METER LO DEL SESGO Y ENCUESTA

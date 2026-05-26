@@ -277,3 +277,7 @@ Diagramas SHAP complementarios de CatBoost en las ventanas media y larga durante
 :::
 
 FALTA LO DE GRAFICA GUAY VS MALA 
+
+Los resultados de las encuestas de satisfacción del uso del dashboard:
+
+[meter tabla]

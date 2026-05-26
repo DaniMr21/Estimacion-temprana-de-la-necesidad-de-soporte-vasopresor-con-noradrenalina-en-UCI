@@ -13,14 +13,18 @@ traducción iterativa de variables clínicas locales hacia el esquema estructura
 **Transición de los modelos entrenados hacia series temporales:** El enfoque actual utiliza métricas estáticas resumidas (mínimos, máximos o medias) dentro de una 
 ventana fija, descartando la riqueza dinámica y la tendencia temporal de las constantes vitales. Se plantea reestructurar la arquitectura predictiva sustituyendo los árboles estáticos por 
 modelos capaces de procesar secuencias temporales. Esto incluye la implementación de redes neuronales recurrentes (LSTM) o Transformers temporales adaptados a registros clínicos tabulares, o el
- uso de librerías como tsfresh o sktime para la extracción automatizada de características dinámicas.
+uso de librerías como tsfresh o sktime para la extracción automatizada de características dinámicas.
 
 **Implementación de modelos de análisis de supervivencia:** La formulación binaria estricta ligada a ventanas temporales fijas limita la toma de decisiones clínicas. 
 La integración de técnicas de Análisis de Supervivencia aplicado al Machine Learning permitirá modelar de forma continua el tiempo hasta el evento gestionando correctamente la censura de datos 
 (altas hospitalarias o fallecimientos prematuros antes de que ocurra el evento).
 
-**Integración del dashboard en el software clínico utilizado en los boxes de la UCI del HUBU:** una línea futura sería estudiar la conexión del backend del dashboard con los sistemas de 
+**Integración del dashboard en el software clínico utilizado en los boxes de la UCI del HUBU:** Conexión del backend del dashboard con los sistemas de 
 información clínica y de monitorización de la unidad, de forma que el cálculo del riesgo pudiera ejecutarse de manera automática al alcanzarse las 6 o 12 horas de estancia y tras la 
 incorporación de nuevas constantes o resultados analíticos. Esta integración requeriría resolver aspectos técnicos de interoperabilidad, validación prospectiva, seguridad, trazabilidad y
 supervisión clínica antes de cualquier uso asistencial. De forma complementaria, podría explorarse una versión multipaciente del dashboard, orientada a la vigilancia centralizada de todas las 
 camas del servicio, siempre manteniendo su función como herramienta de apoyo y no como sistema autónomo de decisión.
+
+**Integración del dashboard para el servicio de Urgencias o pacientes ingresados en planta:** En relación con la línea anterior se estudiaría como reentrenar estos modelos
+ con una población hospitalaria general, o del servicio de urgencias, con el fin de poder disponer de una alerta temprana en estos contextos con el fin de apoyar una 
+ decisión de trasladar un paciente enfermo a UCI en caso de que presente un riesgo alto de noradrenalina.
