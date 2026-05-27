@@ -120,25 +120,17 @@ Tras las pruebas de calibración, el único modelo que requirió recalibración 
 
 La @fig-shap-candidatos-1 y la @fig-shap-candidatos-2 recogen los diagramas SHAP de los modelos candidatos en MIMIC-IV.
 
-::: {#fig-shap-candidatos-1}
+Las métricas de la Tabla \ref{tab:validacion-interna-completa} reflejan diferencias notables de calidad entre modelos y ventanas. La @fig-contraste-calidad ilustra este contraste mediante tres casos representativos. En el extremo inferior, Random Forest en la ventana corta apenas supera el azar (AUC-ROC = 0,579) y presenta una calibración muy deficiente, con la curva claramente desviada de la diagonal ideal. En el extremo opuesto, XGBoost en la ventana media muestra buena discriminación pero, sin recalibrar, sus probabilidades aún se desvían de la frecuencia observada; tras aplicar Platt regularizado, la curva de calibración se aproxima de forma notable a la diagonal, manteniendo la capacidad discriminativa. Este contraste motivó el proceso de selección y calibración descrito en la metodología.
 
-![Corto 3--12 h: CatBoost](img/SHAP_Corto_3_12_CAT.png){#fig-shap-res-corto-cat width=86%}
+::: {#fig-contraste-calidad}
 
-![Medio 6--24 h: XGBoost](img/SHAP_Medio_6_24_XGB.png){#fig-shap-res-medio-xgb width=86%}
+![Modelo de bajo rendimiento: Random Forest en la ventana corta (AUC-ROC = 0,579), con discriminación próxima al azar y calibración deficiente.](img/Grafica_OOF_Corto_3_12_RF.png){#fig-contraste-malo width=82%}
 
-![Medio 6--24 h: CatBoost](img/SHAP_Medio_6_24_CAT.png){#fig-shap-res-medio-cat width=86%}
+![Modelo de buen rendimiento sin recalibrar: XGBoost en la ventana media.](img/Grafica_OOF_Medio_6_24_XGB.png){#fig-contraste-bueno width=82%}
 
-Diagramas SHAP tipo *beeswarm* de los modelos candidatos en las ventanas corta y media.
+![El mismo XGBoost de la ventana media tras la recalibración mediante Platt regularizado.](img/verificacion_calibracion_medio_xgb.png){#fig-contraste-calibrado width=90%}
 
-:::
-
-::: {#fig-shap-candidatos-2}
-
-![Largo 12--48 h: XGBoost](img/SHAP_Largo_12_48_XGB.png){#fig-shap-res-largo-xgb width=86%}
-
-![Largo 12--48 h: CatBoost](img/SHAP_Largo_12_48_CAT.png){#fig-shap-res-largo-cat width=86%}
-
-Diagramas SHAP tipo *beeswarm* de los modelos candidatos en la ventana larga.
+Contraste de calidad entre modelos. De arriba abajo: un caso de bajo rendimiento (Random Forest, ventana corta), un caso de buen rendimiento antes de recalibrar (XGBoost, ventana media) y ese mismo modelo tras la recalibración.
 
 :::
 
@@ -250,6 +242,28 @@ Curvas ROC y calibración de los modelos principales evaluados externamente en e
 
 #### Figuras SHAP
 
+::: {#fig-shap-candidatos-1}
+
+![Corto 3--12 h: CatBoost](img/SHAP_Corto_3_12_CAT.png){#fig-shap-res-corto-cat width=86%}
+
+![Medio 6--24 h: XGBoost](img/SHAP_Medio_6_24_XGB.png){#fig-shap-res-medio-xgb width=86%}
+
+![Medio 6--24 h: CatBoost](img/SHAP_Medio_6_24_CAT.png){#fig-shap-res-medio-cat width=86%}
+
+Diagramas SHAP tipo *beeswarm* de los modelos candidatos en las ventanas corta y media.
+
+:::
+
+::: {#fig-shap-candidatos-2}
+
+![Largo 12--48 h: XGBoost](img/SHAP_Largo_12_48_XGB.png){#fig-shap-res-largo-xgb width=86%}
+
+![Largo 12--48 h: CatBoost](img/SHAP_Largo_12_48_CAT.png){#fig-shap-res-largo-cat width=86%}
+
+Diagramas SHAP tipo *beeswarm* de los modelos candidatos en la ventana larga.
+
+:::
+
 La @fig-shap-eicu-principal recoge los diagramas SHAP de los modelos principales en la cohorte externa.
 
 ::: {#fig-shap-eicu-principal}
@@ -276,8 +290,26 @@ Diagramas SHAP complementarios de CatBoost en las ventanas media y larga durante
 
 :::
 
-FALTA LO DE GRAFICA GUAY VS MALA 
+La encuesta de satisfacción fue cumplimentada por ocho facultativos del servicio de Medicina Intensiva del HUBU.
 
-Los resultados de las encuestas de satisfacción del uso del dashboard:
-
-[meter tabla]
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{8pt}
+\renewcommand{\arraystretch}{1.2}
+\caption{Resultados de la encuesta de satisfacción sobre el prototipo de dashboard, cumplimentada por 8 facultativos del servicio de Medicina Intensiva del HUBU. Puntuaciones en escala de 1 (completamente en desacuerdo) a 10 (completamente de acuerdo).}
+\label{tab:encuesta-satisfaccion}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Encuestado} & \textbf{Entendimiento} & \textbf{Explicabilidad} & \textbf{Utilidad clínica} \\
+\midrule
+1 & 10 & 10 & 8 \\
+2 & 10 & 8  & 9  \\
+3 & 10 & 10  & 10  \\
+4 & 8  & 10  & 10 \\
+5 & 8 & 8  & 4 \\
+6 & 8  & 7  & 6  \\
+7 & 7  & 8  & 7  \\
+8 & 10  & 7 & 10 \\
+\end{tabular}
+\end{table}

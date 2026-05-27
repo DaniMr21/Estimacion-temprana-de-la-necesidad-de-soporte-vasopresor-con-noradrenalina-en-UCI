@@ -14,7 +14,7 @@ a dicha predicción en cada paciente de forma individualizada.
   \item Desarrollar modelos predictivos de aprendizaje automático entrenados sobre la base de datos MIMIC-IV que estimen la probabilidad de inicio de noradrenalina en UCI en distintas ventanas 
   temporales tras el ingreso.
 
-  \item Evaluar y comparar el rendimiento de distintos algoritmos de clasificación supervisada, incluyendo regresión logística, XGBoost, entre otros, mediante métricas de discriminación y 
+  \item Evaluar y comparar el rendimiento de distintos algoritmos, incluyendo regresión logística, XGBoost, entre otros, mediante métricas de discriminación y 
   calibración.
 
   \item Desarrollar un prototipo de \textit{dashboard} clínico interpretable que muestre, para cada paciente, la probabilidad estimada de requerir noradrenalina, 

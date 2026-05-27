@@ -3,13 +3,13 @@
 \capitulo{7}{Conclusiones}
 ```
 
-- **Comparación frente a SOFA.** En la ventana larga (12--48 h) los modelos superan a SOFA de forma estadísticamente significativa en validación externa; en la media lo igualan y en la corta no aportan ventaja. La respuesta a si el aprendizaje automático mejora las escalas clínicas establecidas es, por tanto, matizada y depende del horizonte de predicción.
+- **Comparación frente a SOFA.** En la ventana larga (12--48 h) los modelos superan a SOFA de forma estadísticamente significativa en validación externa; en la media lo igualan y en la corta no aportan ventaja. La respuesta a si los modelos mejoran las escalas clínicas establecidas es, por tanto, matizada y depende del horizonte de predicción.
 
 - **Rendimiento moderado y honesto.** Los rendimientos obtenidos son moderados (AUC-ROC 0,63--0,67) y se han reportado con validación externa. El trabajo no ofrece una herramienta cerrada, sino la viabilidad de un enfoque metodológicamente sólido que puede constituir un primer paso para desarrollos futuros.
 
 - **La métrica no es el único criterio.** La selección de los modelos del dashboard no se basó solo en AUC o BSS, sino también en la coherencia fisiopatológica de las explicaciones SHAP. Modelos con métricas competitivas fueron descartados por atribuciones difíciles de justificar clínicamente, lo que refuerza que la interpretabilidad es tan importante como el rendimiento.
 
-- **Flujo reproducible.** Se ha consolidado un flujo completo: extracción SQL sobre MIMIC-IV y eICU-CRD, tratamiento de datos faltantes y valores extremos sin imputación sintética, selección de variables en varias fases, validación cruzada anidada con agrupamiento por paciente, calibración e interpretabilidad, con trazabilidad entre resultados y código.
+- **Flujo reproducible.** Se ha consolidado un flujo completo: extracción SQL sobre MIMIC-IV y eICU-CRD, tratamiento de valores extremos sin imputación sintética, selección de variables en varias fases, validación cruzada anidada con agrupamiento por paciente, calibración e interpretabilidad, con trazabilidad entre resultados y código.
 
 - **Valor de los resultados negativos.** El descarte de la cohorte del HUBU, la imposibilidad de reconstruir la sepsis en eICU-CRD, el descarte de la ventana corta y la eliminación de variables con direcciones de efecto incoherentes orientaron las decisiones finales y constituyen una referencia para trabajos futuros.
 
