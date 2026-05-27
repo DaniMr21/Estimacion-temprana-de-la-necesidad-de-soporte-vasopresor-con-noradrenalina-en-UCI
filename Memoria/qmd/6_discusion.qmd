@@ -115,10 +115,6 @@ La validación externa, aunque multicéntrica e independiente, se realizó sobre
  estructuras asistenciales distintas a las europeas. Este sesgo geográfico e institucional limita la generalización a sistemas sanitarios como el español, 
  donde los criterios de ingreso en UCI, la intensidad de monitorización y las pautas de tratamiento vasopresor pueden diferir de forma relevante.
 
-Finalmente, las decisiones de preprocesamiento —winsorización a percentiles 2 y 98, selección de un único estadístico de resumen por variable, eliminación de 
-predictores por inversión de dirección— son razonables pero no únicas; otras elecciones igualmente defendibles podrían haber producido conjuntos de variables y
- rendimientos algo distintos.
-
 En conjunto, estos modelos no están listos para un uso clínico extendido, pero el trabajo demuestra que es posible construir, con una metodología controlada, modelos que
  igualan o superan a SOFA en determinados horizontes, validados externamente y con una lógica interna auditable. En ese sentido, constituye un primer paso razonable sobre
   el que apoyar desarrollos futuros.

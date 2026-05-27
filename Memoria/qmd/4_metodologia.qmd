@@ -241,7 +241,7 @@ adicional del modelo frente a SOFA como referencia clínica de gravedad. Los res
 
 La selección de modelos candidatos para la validación externa se basó en un conjunto de criterios combinados, no en el AUC-ROC de forma aislada. 
 Se exigió que cada candidato presentara discriminación superior al azar (AUC-ROC y AUC-PR), un BSS positivo que confirmara mejora sobre la 
-predicción trivial, y una calibración aceptable según el ECE. Se descartaron además los modelos con curvas OOF erráticas, como por ejemplo en la {#fig-contraste-calidad}. 
+predicción trivial, y una calibración aceptable según el ECE. Se descartaron además los modelos con curvas OOF erráticas, como por ejemplo en la @fig-contraste-calidad. 
 Adicionalmente, se revisaron los diagramas SHAP de cada candidato: los modelos que presentaban patrones de atribución caóticos o mezclas de 
 colores sin justificación fisiopatológica coherente fueron excluidos, independientemente de sus métricas. La calibración se evaluó siempre como criterio complementario y 
 nunca como sustituto de la discriminación.
