@@ -218,7 +218,7 @@ Como la validación anidada entrena un modelo distinto por fold, tras completarl
 Para obtener curvas globales homogéneas se generaron predicciones *out-of-fold* (OOF) con `cross_val_predict` y el mismo esquema `StratifiedGroupKFold`, de modo que cada estancia 
 recibió una probabilidad de un modelo que no la había visto en entrenamiento. Con ellas se construyeron, por modelo y ventana, curvas ROC, precisión-recall y calibración. La curva 
 precisión-recall incluyó la prevalencia como referencia basal, y la curva de calibración se calculó con diez bins mediante estrategia *quantile*. Las curvas OOF de los modelos candidatos 
-seleccionados se muestran en la Figura \ref{fig:oof-candidatos}.
+seleccionados se muestran en la Figura \ref{fig-oof-candidatos}.
 
 Como la discriminación no garantiza buena calibración, se revisaron las curvas OOF junto con ECE y BSS, identificando como candidatos a recalibración CatBoost en las ventanas corta y media,
  y XGBoost en las tres ventanas. Se evaluaron tres estrategias sobre probabilidades OOF —Platt sin regularización, Platt regularizado y regresión isotónica—, entrenando cada calibrador 
@@ -240,7 +240,12 @@ Como referencia clínica, los modelos se compararon frente a SOFA como predictor
 ranking, concretamente AUC-ROC y AUC-PR, sobre los mismos pacientes y etiquetas empleados para evaluar cada modelo. De este modo, las diferencias observadas reflejan la capacidad predictiva 
 adicional del modelo frente a SOFA como referencia clínica de gravedad. Los resultados de esta comparación externa se presentan en la Tabla \ref{tab:validacion-externa-discr}.
 
-[AMPLIAR LA SELECCION FINAL DE GANADORES Y GRAFICA FEA VS CHULA]
+La selección de modelos candidatos para la validación externa se basó en un conjunto de criterios combinados, no en el AUC-ROC de forma aislada. 
+Se exigió que cada candidato presentara discriminación superior al azar (AUC-ROC y AUC-PR), un BSS positivo que confirmara mejora sobre la 
+predicción trivial, y una calibración aceptable según el ECE. Se descartaron además los modelos con curvas OOF erráticas, como por ejemplo en la {#fig-contraste-calidad}. 
+Adicionalmente, se revisaron los diagramas SHAP de cada candidato: los modelos que presentaban patrones de atribución caóticos o mezclas de 
+colores sin justificación fisiopatológica coherente fueron excluidos, independientemente de sus métricas. La calibración se evaluó siempre como criterio complementario y 
+nunca como sustituto de la discriminación.
 
 Como parte final se desarrolló un prototipo de dashboard clínico en Python con Streamlit, no para sustituir la valoración médica sino para demostrar la viabilidad de integrar los modelos en una 
 interfaz sencilla, interpretable y orientada a la consulta individual. La aplicación permite seleccionar una ventana, cargar un CSV con las variables del paciente y obtener una estimación 
@@ -249,8 +254,8 @@ La interfaz final del prototipo se muestra en la @fig-dashboard-general.
 
 El CSV contiene una fila por medición. A partir de él, la aplicación calcula los estadísticos agregados requeridos (`map_min`, cociente PaO$_2$/FiO$_2$, diuresis acumulada normalizada por peso,
  frecuencia cardiaca media, SOFA máximo o los mínimos de SpO$_2$, bicarbonato, temperatura y glucemia, según la ventana), de modo que el usuario introduce mediciones ordinarias y no las 
- variables finales. La aplicación carga el modelo desde `.pkl` y transforma la probabilidad en un percentil de riesgo respecto a la distribución de MIMIC-IV: un percentil 90 indica un riesgo e
- stimado superior al del 90% de los pacientes de referencia. Junto al percentil, muestra una explicación SHAP individual indicando qué variables aumentan o reducen la predicción.
+ variables finales. La aplicación carga el modelo desde `.pkl` y transforma la probabilidad en un percentil de riesgo respecto a la distribución de MIMIC-IV: un percentil 90 indica un riesgo
+estimado superior al del 90% de los pacientes de referencia. Junto al percentil, muestra una explicación SHAP individual indicando qué variables aumentan o reducen la predicción.
 
 Una decisión central del diseño fue que el dashboard no emitiera recomendaciones clínicas: no indica si iniciar noradrenalina, no propone dosis, no genera alarmas ni clasifica al paciente. 
 Ofrecer recomendaciones automáticas a partir de un modelo retrospectivo no validado prospectivamente supondría un riesgo metodológico, ético y asistencial, máxime cuando el inicio de soporte
@@ -264,7 +269,7 @@ confidencial y agregado, recogía tres ítems puntuados en una escala de 1 («Co
 manual proporcionado, explicabilidad (comprensión conceptual de los valores SHAP y su justificación del riesgo) y utilidad clínica potencial en la UCI. Los resultados de la encuesta se presentan
 en la Tabla \ref{tab:encuesta-satisfaccion}.
 
-## Desarrollo software y reproducibilidad
+#### Desarrollo software y reproducibilidad
 
 El desarrollo siguió una metodología experimental e iterativa, refinándose progresivamente en función de los resultados de cada fase. 
 No se aplicó un marco formal como Scrum al ser un proyecto de un único autor guiado por objetivos metodológicos; en su lugar se siguió un ciclo incremental por versiones, con el código 

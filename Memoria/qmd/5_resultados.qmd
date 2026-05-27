@@ -1,10 +1,13 @@
 ```{=latex}
-%% ── Capítulo 5: Resultados ──────────────────────────────────
+%% ── Capítulo 5: Resultados ───────────────────────────────────
 \capitulo{5}{Resultados}
 ```
-#### Validación interna out of fold:
 
-La Tabla \ref{tab:validacion-interna-completa} resume el rendimiento interno de todos los modelos evaluados en MIMIC-IV mediante validación cruzada anidada. Se incluyen métricas discriminativas (AUC-ROC, AUC-PR), probabilísticas (Brier, BSS, LogLoss) y de calibración (ECE), expresadas como media $\pm$ desviación estándar entre folds externos. La regresión logística no aparece en la ventana corta porque, tras el proceso de selección, no conservó variables estadísticamente significativas según la importancia por permutación.
+#### Validación interna sobre MIMIC-IV
+
+La Tabla \ref{tab:validacion-interna-completa} recoge el rendimiento interno de todos los modelos evaluados mediante validación cruzada anidada en las tres ventanas 
+temporales. La regresión logística no aparece en la ventana corta porque, tras el proceso de selección, no conservó variables estadísticamente significativas según la 
+importancia por permutación.
 
 ```{r tabla-interna-completa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 metricas <- read.csv(
@@ -98,6 +101,23 @@ cat("}\n")
 cat("\\end{table}\n")
 ```
 
+Las métricas reflejan diferencias notables de calidad entre modelos y ventanas. La @fig-contraste-calidad ilustra los dos extremos de este rango: Random Forest 
+en la ventana corta apenas supera el azar (AUC-ROC = 0,579), con una curva de calibración claramente desviada de la diagonal y una curva de precisión-recall errática; 
+en contraste, XGBoost en la ventana media muestra una discriminación notablemente superior, aunque su calibración antes de recalibrar presenta una desviación 
+sistemática que motivó el ajuste posterior.
+
+::: {#fig-contraste-calidad layout-ncol=1}
+
+![Random Forest, ventana corta (3--12 h): modelo de bajo rendimiento.](img/Grafica_OOF_Corto_3_12_RF.png){#fig-contraste-malo width=82%}
+
+![XGBoost, ventana media (6--24 h): modelo con buen rendimiento discriminativo pero calibración desviada antes del ajuste.](img/Grafica_OOF_Medio_6_24_XGB.png){#fig-contraste-bueno width=82%}
+
+Contraste de calidad entre dos modelos en MIMIC-IV. Random Forest en la ventana corta muestra discriminación próxima al azar y calibración deficiente, mientras que XGBoost en la ventana media presenta una discriminación claramente superior. Ambas curvas se obtienen mediante predicciones *out-of-fold*.
+
+:::
+
+A partir del rendimiento interno se seleccionaron como candidatos a validación externa CatBoost en la ventana corta, XGBoost y CatBoost en la media, y XGBoost y CatBoost en la larga. Sus curvas OOF se muestran en la @fig-oof-candidatos.
+
 ::: {#fig-oof-candidatos}
 
 ![Corto 3--12 h: CatBoost](img/Grafica_OOF_Corto_3_12_CAT.png){#fig-oof-corto-cat width=82%}
@@ -110,31 +130,82 @@ cat("\\end{table}\n")
 
 ![Largo 12--48 h: CatBoost](img/Grafica_OOF_Largo_12_48_CAT.png){#fig-oof-largo-cat width=82%}
 
-Curvas ROC, precisión-recall y calibración mediante predicciones *out-of-fold* de los modelos candidatos seleccionados.
+Curvas ROC, precisión-recall y calibración mediante predicciones *out-of-fold* de los modelos candidatos.
 
 :::
 
-Tras las pruebas de calibración, el único modelo que requirió recalibración efectiva fue XGBoost en la ventana media, ajustado mediante Platt regularizado. La @fig-calibracion-xgb-medio compara las curvas de calibración y la distribución de probabilidades antes y después de la recalibración.
+Tras evaluar las tres estrategias de calibración descritas en la metodología, el único modelo que requirió recalibración efectiva fue XGBoost en la ventana media, 
+ajustado mediante Platt regularizado. La @fig-calibracion-xgb-medio compara las curvas de calibración y la distribución de probabilidades antes y después del ajuste.
 
-![Comparación de curvas de calibración y distribución de probabilidades antes y después de la recalibración mediante Platt regularizado para XGBoost en la ventana media.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio width=90%}
+![Curvas de calibración y distribución de probabilidades de XGBoost en la ventana media, antes y después de la recalibración mediante Platt regularizado.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio width=90%}
 
-La @fig-shap-candidatos-1 y la @fig-shap-candidatos-2 recogen los diagramas SHAP de los modelos candidatos en MIMIC-IV.
+Los diagramas SHAP de los modelos candidatos sobre MIMIC-IV se recogen en la @fig-shap-candidatos-1 (ventanas corta y media) y la @fig-shap-candidatos-2 (ventana larga).
 
-Las métricas de la Tabla \ref{tab:validacion-interna-completa} reflejan diferencias notables de calidad entre modelos y ventanas. La @fig-contraste-calidad ilustra este contraste mediante tres casos representativos. En el extremo inferior, Random Forest en la ventana corta apenas supera el azar (AUC-ROC = 0,579) y presenta una calibración muy deficiente, con la curva claramente desviada de la diagonal ideal. En el extremo opuesto, XGBoost en la ventana media muestra buena discriminación pero, sin recalibrar, sus probabilidades aún se desvían de la frecuencia observada; tras aplicar Platt regularizado, la curva de calibración se aproxima de forma notable a la diagonal, manteniendo la capacidad discriminativa. Este contraste motivó el proceso de selección y calibración descrito en la metodología.
+::: {#fig-shap-candidatos-1}
 
-::: {#fig-contraste-calidad}
+![Corto 3--12 h: CatBoost](img/SHAP_Corto_3_12_CAT.png){#fig-shap-res-corto-cat width=86%}
 
-![Modelo de bajo rendimiento: Random Forest en la ventana corta (AUC-ROC = 0,579), con discriminación próxima al azar y calibración deficiente.](img/Grafica_OOF_Corto_3_12_RF.png){#fig-contraste-malo width=82%}
+![Medio 6--24 h: XGBoost](img/SHAP_Medio_6_24_XGB.png){#fig-shap-res-medio-xgb width=86%}
 
-![Modelo de buen rendimiento sin recalibrar: XGBoost en la ventana media.](img/Grafica_OOF_Medio_6_24_XGB.png){#fig-contraste-bueno width=82%}
+![Medio 6--24 h: CatBoost](img/SHAP_Medio_6_24_CAT.png){#fig-shap-res-medio-cat width=86%}
 
-![El mismo XGBoost de la ventana media tras la recalibración mediante Platt regularizado.](img/verificacion_calibracion_medio_xgb.png){#fig-contraste-calibrado width=90%}
-
-Contraste de calidad entre modelos. De arriba abajo: un caso de bajo rendimiento (Random Forest, ventana corta), un caso de buen rendimiento antes de recalibrar (XGBoost, ventana media) y ese mismo modelo tras la recalibración.
+Diagramas SHAP tipo *beeswarm* de los modelos candidatos en las ventanas corta y media.
 
 :::
 
-#### Validación externa:
+::: {#fig-shap-candidatos-2}
+
+![Largo 12--48 h: XGBoost](img/SHAP_Largo_12_48_XGB.png){#fig-shap-res-largo-xgb width=86%}
+
+![Largo 12--48 h: CatBoost](img/SHAP_Largo_12_48_CAT.png){#fig-shap-res-largo-cat width=86%}
+
+Diagramas SHAP tipo *beeswarm* de los modelos candidatos en la ventana larga.
+
+:::
+
+#### Análisis por subgrupos según presencia de sepsis
+
+Para evaluar la estabilidad y consistencia de las predicciones frente a condiciones clínicas específicas de alta gravedad, se realizó un análisis diferencial 
+estratificando las cohortes según la presencia de sepsis (identificada bajo los criterios Sepsis-3). La Tabla \ref{tab:subgrupos-sepsis} recoge el
+ rendimiento discriminativo, probabilístico y de calibración de los modelos seleccionados para cada ventana operativa en la cohorte global, el subgrupo de pacientes 
+ sépticos y el de no sépticos, empleando la puntuación SOFA global como referencia de comparación basal.
+
+```{=latex}
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\caption{Rendimiento de los modelos principales en MIMIC-IV según presencia o ausencia de sepsis. Ventana corta: CatBoost; ventana media: XGBoost calibrado; ventana larga: XGBoost. Las métricas se calcularon mediante predicciones \textit{out-of-fold}.}
+\label{tab:subgrupos-sepsis}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+\textbf{Ventana} & \textbf{Subgrupo/modelo} & \textbf{N} & \textbf{AUC-ROC} & \textbf{AUC-PR} & \textbf{BSS} & \textbf{ECE} \\
+\midrule
+Corto 3--12 h & Global & 1667 & 0,617 & 0,151 & 0,012 & 0,009 \\
+Corto 3--12 h & Sépticos & 461 & 0,622 & 0,173 & 0,004 & 0,021 \\
+Corto 3--12 h & No sépticos & 1206 & 0,605 & 0,152 & 0,013 & 0,012 \\
+Corto 3--12 h & SOFA global & 1667 & 0,581 & 0,132 & --- & --- \\
+\midrule
+Medio 6--24 h & Global & 3282 & 0,680 & 0,208 & 0,028 & 0,033 \\
+Medio 6--24 h & Sépticos & 993 & 0,694 & 0,287 & 0,064 & 0,028 \\
+Medio 6--24 h & No sépticos & 2289 & 0,667 & 0,173 & 0,003 & 0,036 \\
+Medio 6--24 h & SOFA global & 3282 & 0,606 & 0,147 & --- & --- \\
+\midrule
+Largo 12--48 h & Global & 4088 & 0,642 & 0,170 & 0,021 & 0,017 \\
+Largo 12--48 h & Sépticos & 1343 & 0,650 & 0,209 & 0,018 & 0,030 \\
+Largo 12--48 h & No sépticos & 2745 & 0,630 & 0,150 & 0,017 & 0,011 \\
+Largo 12--48 h & SOFA global & 4088 & 0,588 & 0,149 & --- & --- \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+```
+
+#### Validación externa sobre eICU-CRD
+
+Las Tablas \ref{tab:validacion-externa-discr} y \ref{tab:validacion-externa-prob} recogen, respectivamente, las métricas de discriminación frente a SOFA y las métricas probabilísticas y de calibración de cada modelo sobre la cohorte externa.
 
 ```{r tabla-validacion-externa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 externa <- read.csv(
@@ -226,7 +297,7 @@ cat("}\n")
 cat("\\end{table}\n")
 ```
 
-La @fig-validacion-externa-principal muestra las curvas ROC y de calibración de los modelos principales sobre eICU-CRD.
+En la ventana corta, CatBoost obtuvo un AUC-ROC de 0,630 frente a 0,642 de SOFA, sin diferencia significativa ($p = 0{,}698$). En la ventana media, tanto XGBoost calibrado (AUC-ROC = 0,662) como CatBoost (0,669) igualaron prácticamente a SOFA (0,663), también sin diferencia significativa. En la ventana larga, XGBoost (0,658) y CatBoost (0,653) superaron a SOFA (0,590) de forma estadísticamente significativa, con $\Delta$AUC = +0,068 ($p < 0{,}001$) y +0,063 ($p = 0{,}003$) respectivamente. Las curvas ROC y de calibración correspondientes a los modelos principales se recogen en la @fig-validacion-externa-principal.
 
 ::: {#fig-validacion-externa-principal}
 
@@ -236,35 +307,11 @@ La @fig-validacion-externa-principal muestra las curvas ROC y de calibración de
 
 ![Validación externa en la ventana larga: XGBoost.](img/validacion_externa_Largo_12_48.png){#fig-ext-largo-xgb width=86%}
 
-Curvas ROC y calibración de los modelos principales evaluados externamente en eICU-CRD.
+Curvas ROC y de calibración de los modelos principales evaluados externamente en eICU-CRD.
 
 :::
 
-#### Figuras SHAP
-
-::: {#fig-shap-candidatos-1}
-
-![Corto 3--12 h: CatBoost](img/SHAP_Corto_3_12_CAT.png){#fig-shap-res-corto-cat width=86%}
-
-![Medio 6--24 h: XGBoost](img/SHAP_Medio_6_24_XGB.png){#fig-shap-res-medio-xgb width=86%}
-
-![Medio 6--24 h: CatBoost](img/SHAP_Medio_6_24_CAT.png){#fig-shap-res-medio-cat width=86%}
-
-Diagramas SHAP tipo *beeswarm* de los modelos candidatos en las ventanas corta y media.
-
-:::
-
-::: {#fig-shap-candidatos-2}
-
-![Largo 12--48 h: XGBoost](img/SHAP_Largo_12_48_XGB.png){#fig-shap-res-largo-xgb width=86%}
-
-![Largo 12--48 h: CatBoost](img/SHAP_Largo_12_48_CAT.png){#fig-shap-res-largo-cat width=86%}
-
-Diagramas SHAP tipo *beeswarm* de los modelos candidatos en la ventana larga.
-
-:::
-
-La @fig-shap-eicu-principal recoge los diagramas SHAP de los modelos principales en la cohorte externa.
+Los diagramas SHAP de los modelos principales sobre la cohorte externa se presentan en la @fig-shap-eicu-principal, y los correspondientes a CatBoost en las ventanas media y larga, como referencia complementaria, en la @fig-shap-eicu-catboost-complementario.
 
 ::: {#fig-shap-eicu-principal}
 
@@ -278,8 +325,6 @@ Diagramas SHAP de los modelos principales evaluados en validación externa.
 
 :::
 
-Finalmente, la @fig-shap-eicu-catboost-complementario recoge los diagramas SHAP de CatBoost en las ventanas media y larga sobre eICU-CRD.
-
 ::: {#fig-shap-eicu-catboost-complementario}
 
 ![Ventana media: CatBoost en eICU-CRD.](img/shap_eicu_medio_cat.png){#fig-shap-eicu-medio-cat width=84%}
@@ -290,8 +335,11 @@ Diagramas SHAP complementarios de CatBoost en las ventanas media y larga durante
 
 :::
 
-La encuesta de satisfacción fue cumplimentada por ocho facultativos del servicio de Medicina Intensiva del HUBU.
+#### Encuesta de satisfacción
 
+La encuesta de satisfacción fue cumplimentada por ocho facultativos del servicio de Medicina Intensiva del HUBU (Tabla \ref{tab:encuesta-satisfaccion}).
+
+```{=latex}
 \begin{table}[htbp]
 \centering
 \small
@@ -303,13 +351,14 @@ La encuesta de satisfacción fue cumplimentada por ocho facultativos del servici
 \toprule
 \textbf{Encuestado} & \textbf{Entendimiento} & \textbf{Explicabilidad} & \textbf{Utilidad clínica} \\
 \midrule
-1 & 10 & 10 & 8 \\
+1 & 10 & 10 & 10 \\
 2 & 10 & 8  & 9  \\
-3 & 10 & 10  & 10  \\
-4 & 8  & 10  & 10 \\
-5 & 8 & 8  & 4 \\
-6 & 8  & 7  & 6  \\
-7 & 7  & 8  & 7  \\
-8 & 10  & 7 & 10 \\
+3 & 10 & 10 & 8  \\
+4 & 8  & 8  & 4 \\
+5 & 10 & 7  & 10 \\
+6 & 7  & 8  & 7  \\
+7 & 8  & 7  & 6  \\
+8 & 8  & 10 & 10 \\
 \end{tabular}
 \end{table}
+```
