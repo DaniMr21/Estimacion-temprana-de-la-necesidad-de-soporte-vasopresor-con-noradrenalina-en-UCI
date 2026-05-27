@@ -35,34 +35,38 @@ scripts derivados mantenido por MIT-LCP [@mimiccode], que implementa los criteri
 ```{=latex}
 \begin{table}[htbp]
 \centering
-\small
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{10pt}
-\begin{tabular}{@{}p{0.46\textwidth} | p{0.46\textwidth}@{}}
+\footnotesize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{0.48\textwidth}|p{0.48\textwidth}@{}}
 \textbf{Cálculo del SOFA (ventana 24 h)} & \textbf{Detección de Sepsis-3} \\
 \hline
-\rule{0pt}{2.6ex}%
-\textbf{Para} cada hora $h$ de la estancia:\newline
-\hspace*{1.5em}Respiratorio: P/F$<$100$\to$4, $<$200$\to$3, $<$300$\to$2, $<$400$\to$1\newline
-\hspace*{1.5em}Coagulación: plt$<$20$\to$4, $<$50$\to$3, $<$100$\to$2, $<$150$\to$1\newline
-\hspace*{1.5em}Hepático: bili$\geq$12$\to$4, $\geq$6$\to$3, $\geq$2$\to$2, $\geq$1{,}2$\to$1\newline
-\hspace*{1.5em}Cardiovascular: norepi$>$0{,}1$\to$4, $\leq$0{,}1$\to$3,\newline
-\hspace*{3em}dopamina$>$0$\to$2, MAP$<$70$\to$1\newline
-\hspace*{1.5em}Neurológico: GCS$<$6$\to$4, 6--9$\to$3, 10--12$\to$2, 13--14$\to$1\newline
-\hspace*{1.5em}Renal: creat$\geq$5$\to$4, $\geq$3{,}5$\to$3, $\geq$2$\to$2, $\geq$1{,}2$\to$1\newline
-\textbf{Componente}$_{24\text{h}}\leftarrow$ MAX(componente, 23\,h)\newline
-SOFA$_{24\text{h}}\leftarrow \sum$ 6 componentes$_{24\text{h}}$
+\rule{0pt}{2.6ex}
+\textbf{Para} cada hora \(h\) de la estancia:\newline
+\hspace*{1em}Respiratorio: P/F\(_{\text{vent}}<100\to4\), \(<200\to3\);\newline
+\hspace*{2em}P/F\(_{\text{vent/no vent}}<300\to2\), \(<400\to1\)\newline
+\hspace*{1em}Coagulación: plt\(<20\to4\), \(<50\to3\), \(<100\to2\), \(<150\to1\)\newline
+\hspace*{1em}Hepático: bili\(\geq12\to4\), \(\geq6\to3\), \(\geq2\to2\), \(\geq1{,}2\to1\)\newline
+\hspace*{1em}Cardiovascular: dopamina\(>15\) o epi\(>0{,}1\) o norepi\(>0{,}1\to4\);\newline
+\hspace*{2em}dopamina\(>5\) o epi\(\leq0{,}1\) o norepi\(\leq0{,}1\to3\);\newline
+\hspace*{2em}dopamina\(>0\) o dobutamina\(>0\to2\); MAP\(<70\to1\)\newline
+\hspace*{1em}Neurológico: GCS\(<6\to4\), \(6\)--\(9\to3\), \(10\)--\(12\to2\), \(13\)--\(14\to1\)\newline
+\hspace*{1em}Renal: creat\(\geq5\) o diuresis\(_{24\text{h}}<200\to4\);\newline
+\hspace*{2em}creat\(\geq3{,}5\) o diuresis\(_{24\text{h}}<500\to3\);\newline
+\hspace*{2em}creat\(\geq2\to2\), \(\geq1{,}2\to1\)\newline
+\(\textbf{Componente}_{24\text{h}} \leftarrow \operatorname{COALESCE}(\operatorname{MAX}(\text{componente}_{h-23:h}))\)\newline
+\(\text{SOFA}_{24\text{h}} \leftarrow \sum 6\ \text{componentes}_{24\text{h}}\)
 &
-\rule{0pt}{2.6ex}%
+\rule{0pt}{2.6ex}
 \textbf{Para} cada antibiótico administrado:\newline
-\hspace*{1.5em}\textbf{Si} cultivo en $\pm$72/24\,h del antibiótico:\newline
-\hspace*{3em}sospecha $\leftarrow$ verdadero\newline
-\hspace*{3em}$t_s \leftarrow \min(t_{\text{cultivo}},\, t_{\text{antibiótico}})$\newline
+\hspace*{1em}\textbf{Si} cultivo en \(\pm72/24\,\text{h}\) del antibiótico:\newline
+\hspace*{2em}sospecha \(\leftarrow\) verdadero\newline
+\hspace*{2em}\(t_s \leftarrow \min(t_{\text{cultivo}}, t_{\text{antibiótico}})\)\newline
 \textbf{Para} cada evento de sospecha:\newline
-\hspace*{1.5em}\textbf{Si} $\exists$ SOFA $\geq 2$ en $[t_s-48\text{h},\, t_s+24\text{h}]$:\newline
-\hspace*{3em}sepsis3 $\leftarrow$ verdadero\newline
-\hspace*{3em}$t_{\text{onset}} \leftarrow$ primer endtime con SOFA $\geq 2$\newline
-\textbf{Devolver} registro más temprano con sospecha $\wedge$ SOFA $\geq 2$
+\hspace*{1em}\textbf{Si} \(\exists\ \text{SOFA}_{24\text{h}} \geq 2\) en \([t_s - 48\text{h}, t_s + 24\text{h}]\):\newline
+\hspace*{2em}sepsis3 \(\leftarrow\) verdadero\newline
+\hspace*{2em}\(t_{\text{onset}} \leftarrow\) primer endtime con SOFA\(_{24\text{h}} \geq 2\)\newline
+\textbf{Devolver} registro más temprano con sospecha \(\wedge\) SOFA\(_{24\text{h}} \geq 2\)
 \\
 \end{tabular}
 \caption{Pseudocódigo de los algoritmos del repositorio MIT-LCP para el cálculo horario del SOFA y la detección del \textit{onset} de Sepsis-3 en MIMIC-IV \cite{johnson2023, mimiccode}.}
@@ -78,17 +82,12 @@ PaO$_2$/FiO$_2$ (P/F), que mide la eficiencia del intercambio gaseoso pulmonar. 
  peor valor registrado en la ventana de 24 horas. El SOFA se incorporó como variable predictora y, adicionalmente, como referencia clínica aislada para comparar el rendimiento de los modelos 
  frente a una escala de gravedad ampliamente empleada en UCI. La sepsis se utilizó como variable de análisis diferencial por subgrupos.
 
-A diferencia de MIMIC-IV, eICU-CRD no dispone de tablas de referencia precalculadas para la puntuación SOFA de forma nativa, por lo que este índice se implementó de forma específica mediante 
-consultas SQL directas sobre sus componentes originales. Para lograr esta estandarización sin comprometer la estabilidad del predictor frente al dato faltante, se introdujeron adaptaciones 
-metodológicas puntuales respecto al script de referencia del MIT-LCP: en el componente respiratorio, se replicó la formulación matemática combinando la determinación de $paO2$ de la tabla lab 
-y la $FiO_2$ máxima normalizada de respiratoryCharting; en el componente cardiovascular, se simplificó el cálculo recurriendo a la presencia indexada de soporte vasopresor activo 
-(norepinephrine, epinephrine, dopamine o dobutamine) en la tabla infusionDrug en lugar de los umbrales de dosis continuas ponderadas por peso, aportando estabilidad frente a la variabilidad en 
-los protocolos de cada hospital. Esta estrategia de abstracción formal asegura un 
-indicador de gravedad robusto que, al aplicarse de manera estrictamente homogénea y no diferencial en toda la cohorte externa —afectando por igual a las estancias con etiqueta positiva y 
-negativa—, preserva la integridad de las comparaciones basadas en ranking (AUC-ROC) y consolida una solución metodológicamente sólida para manejar la variabilidad interhospitalaria en entornos
-reales.
-
-[REVISAR CÓDIGOS]
+A diferencia de MIMIC-IV, eICU-CRD no dispone de tablas derivadas nativas con la puntuación SOFA precalculada, por lo que este índice se implementó mediante consultas 
+SQL directas sobre sus componentes disponibles. Se introdujeron adaptaciones respecto al script MIT-LCP: el componente respiratorio se estimó a partir de la relación P/F,
+ combinando $PaO_2$ de laboratorio y $FiO_2$ máxima normalizada de respiratoryCharting; el cardiovascular se simplificó usando la presencia de soporte vasopresor activo
+  —norepinephrine, epinephrine, dopamine o dobutamine— en infusionDrug, en lugar de dosis ajustadas por peso. El SOFA se calculó como la suma de los seis componentes 
+  clásicos usando los peores valores observados dentro de la ventana temporal. Por tanto, debe interpretarse como una aproximación operativa y homogénea al SOFA de 
+  referencia, adaptada a la estructura y disponibilidad de datos de eICU-CRD.
 
 En eICU-CRD no fue posible obtener un indicador de sepsis equivalente. La tabla `microLab` está poco poblada por la disponibilidad limitada de interfaces de microbiología, y la aproximación
  mediante los diagnósticos de la tabla `diagnosis` (códigos ICD y descripciones) se descartó por no ser metodológicamente equivalente, ya que la codificación es introducida a mano por el personal 
