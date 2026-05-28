@@ -103,13 +103,11 @@ más tempranos, donde el margen de actuación podría ser mayor.
 Existe un riesgo de sesgo en la estimación del rendimiento. Sobre una cohorte seleccionada por completitud, la tarea de discriminación puede resultar artificialmente
  sencilla: los casos positivos tienden a ser pacientes claramente deteriorados y los negativos, pacientes con menor disfunción pero igualmente monitorizados. En una
   aplicación real sobre la población general de UCI, con un espectro clínico más heterogéneo y más casos límite, cabe esperar un rendimiento discriminativo inferior 
-  al observado aquí [@rockenschaub2025]. Este sesgo es inherente al diseño y no puede eliminarse sin relajar el criterio de completitud, lo que introduciría a su vez
-   incertidumbre por imputación.
+  al observado aquí [@rockenschaub2025].
 
 El rendimiento discriminativo es moderado y, salvo en la ventana larga, no mejora claramente a SOFA (Tabla \ref{tab:validacion-externa-discr}). El AUC-PR particularmente 
-bajo refleja la dificultad de identificar la clase positiva en un contexto de baja prevalencia y limitaría la utilidad del modelo como sistema de cribado, donde un exceso
- de falsos positivos podría generar fatiga de alarmas, un problema ampliamente documentado en los sistemas de alerta de sepsis y determinante para su viabilidad asistencial
-  [@balczewski2023].
+bajo refleja la dificultad de identificar la clase positiva en un contexto de baja prevalencia y limitaría la utilidad del modelo como sistema de cribado, una limitación operativa reconocida en
+los sistemas de alerta de sepsis, donde el equilibrio entre sensibilidad y oportunidad de la alerta condiciona su viabilidad asistencia [@balczewski2023].
 
 La validación externa, aunque multicéntrica e independiente, se realizó sobre eICU-CRD, una cohorte también norteamericana procedente de centros con prácticas y
  estructuras asistenciales distintas a las europeas. Este sesgo geográfico e institucional limita la generalización a sistemas sanitarios como el español, 

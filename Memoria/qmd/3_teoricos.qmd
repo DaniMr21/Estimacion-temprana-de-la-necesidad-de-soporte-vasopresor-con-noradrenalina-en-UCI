@@ -20,7 +20,7 @@ previas, como la fluidoterapia, modifica de forma continua la probabilidad de re
  analíticas y de soporte. Esta complejidad justifica la exploración de metodologías capaces de combinar variables heterogéneas y modelar relaciones no lineales entre ellas.
 
 Tanto las guías de la \textit{Surviving Sepsis Campaign} como el protocolo local del HUBU establecen la noradrenalina como vasopresor de primera elección en el shock séptico \cite{evans2021, 
-prescott2026surviving, hubu2025}. En este contexto, cuando se requieren dosis elevadas para alcanzar una presión arterial media segura, puede asociarse vasopresina como segundo vasopresor; 
+prescott2026surviving, hubu2025}. Cuando no se obtienen los valores de PAM adecuados tras un ajuste de dosis de noradrenalina, puede asociarse vasopresina como segundo vasopresor; 
 asimismo, en presencia de disfunción miocárdica o hipoperfusión persistente a pesar de una presión arterial adecuada, puede considerarse dobutamina como soporte inotrópico \cite{evans2021, 
 prescott2026surviving, hubu2025}. Este esquema terapéutico refleja que el tratamiento hemodinámico del paciente crítico no es estático, sino progresivo y dependiente de la evolución clínica.
 
@@ -38,7 +38,7 @@ predicción clínicamente plausibles, utilizando únicamente la información dis
 diseño retrospectivo.
 
 Dentro de este marco, el aprendizaje automático ha adquirido un papel creciente en la predicción de eventos clínicos en pacientes críticos \cite{shanmugam2025}. 
-En datos clínicos tabulares se emplean con frecuencia algoritmos como la regresión logística, Random Forest, XGBoost, LightGBM o CatBoost \cite{shanmugam2025}. Sin embargo, este aumento de 
+En datos clínicos tabulares se emplean con frecuencia algoritmos como la regresión logística, Random Forest, XGBoost, LightGBM o CatBoost. Sin embargo, este aumento de 
 capacidad predictiva suele ir acompañado de una menor interpretabilidad \cite{shanmugam2025} y de limitaciones en su generalización a nuevos entornos clínicos \cite{rockenschaub2025}, lo que
  supone una restricción importante cuando el objetivo es apoyar decisiones clínicas reales.
 

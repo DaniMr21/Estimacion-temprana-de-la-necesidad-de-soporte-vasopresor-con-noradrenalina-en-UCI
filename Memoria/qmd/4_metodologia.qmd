@@ -10,7 +10,7 @@ El trabajo se estructuró en tres fases: construcción de las cohortes, desarrol
  cualquier fuga de información desde el evento hacia el modelo.
 
 La cohorte de entrenamiento y evaluación interna se construyó a partir de MIMIC-IV. Su acceso requirió completar el curso de formación en investigación con datos humanos del CITI Program
- [@citiprogram], registrar el proyecto en PhysioNet [@physionet] y firmar el acuerdo de uso de datos, que obliga a no reidentificar pacientes, no redistribuir los datos y publicar el código
+ [@citiprogram], registrar el proyecto en PhysioNet [@physionet] y firmar el acuerdo de uso de datos, que obliga, entre otros aspectos, a no reidentificar pacientes, no redistribuir los datos y publicar el código desarrollado para el trabajo
 en un repositorio público.
 
 Como cohorte de validación externa se seleccionó eICU-CRD [@pollard2018]. Su carácter multicéntrico permite evaluar el rendimiento en un entorno interhospitalario heterogéneo, 
@@ -30,7 +30,7 @@ Cada estancia recibió etiqueta positiva (`1`) cuando el primer inicio ocurrió 
 engloba tanto a pacientes que nunca requirieron soporte vasopresor como a los que lo iniciaron fuera del horizonte evaluado.
 
 En MIMIC-IV, la presencia de sepsis se identificó mediante la tabla derivada `mimiciv_derived.sepsis3` y la puntuación SOFA mediante `mimiciv_derived.sofa`, ambas del repositorio oficial de 
-scripts derivados mantenido por MIT-LCP [@mimiccode], que implementa los criterios Sepsis-3 (Tabla \ref{tab:pseudocodigo_sofa_sepsis}).
+scripts derivados mantenido por MIT-LCP [@mimiccode], que implementa los criterios Sepsis-3 (Tabla \ref{tab:pseudocodigo_sofa_sepsis}). 
 
 ```{=latex}
 \begin{table}[htbp]
@@ -80,7 +80,7 @@ PaO$_2$/FiO$_2$ (P/F), que mide la eficiencia del intercambio gaseoso pulmonar. 
  considerando la presión arterial media (MAP) y las dosis de noradrenalina y dopamina. El componente neurológico se basa en la escala de coma de Glasgow (GCS), que cuantifica el nivel de 
  conciencia. Finalmente, el componente renal emplea la creatinina sérica como indicador de función renal. La puntuación total resulta de sumar los seis componentes, tomando para cada uno el 
  peor valor registrado en la ventana de 24 horas. El SOFA se incorporó como variable predictora y, adicionalmente, como referencia clínica aislada para comparar el rendimiento de los modelos 
- frente a una escala de gravedad ampliamente empleada en UCI. La sepsis se utilizó como variable de análisis diferencial por subgrupos.
+ frente a una escala de gravedad ampliamente empleada en UCI. La sepsis se utilizó como variable de análisis diferencial por subgrupos. 
 
 A diferencia de MIMIC-IV, eICU-CRD no dispone de tablas derivadas nativas con la puntuación SOFA precalculada, por lo que este índice se implementó mediante consultas 
 SQL directas sobre sus componentes disponibles. Se introdujeron adaptaciones respecto al script MIT-LCP: el componente respiratorio se estimó a partir de la relación P/F,
@@ -169,7 +169,7 @@ $|\rho| = 0{,}5$.
 
 Para valorar la contribución de cada variable se combinaron tres análisis. La importancia por permutación se calculó sobre el test de cada fold externo, permutando cada variable 50 veces
 y registrando la caída de AUC-ROC; una variable se consideró significativa cuando su IC95% excluía el cero. En paralelo, un análisis univariante sobre la primera estancia por paciente empleó 
-Mann-Whitney U (continuas) y chi-cuadrado (binarias), con corrección de Benjamini-Hochberg (FDR $q < 0{,}05$).
+Mann-Whitney U (continuas) y chi-cuadrado (binarias), con corrección de Benjamini-Hochberg (FDR $q < 0{,}05$) [@benjamini1995].
 
 ::: {#fig-significancia layout-ncol=3}
 ![Corto (3--12 h)](img/significancia_global_v4p.png){#fig-sig-corto}
@@ -189,7 +189,7 @@ esta última por comportamiento incoherente repetido en las tres ventanas.
 
 Se evaluaron seis algoritmos cubriendo distintas familias de aprendizaje supervisado sobre datos tabulares: regresión logística (modelo lineal de referencia), Naive Bayes gaussiano 
 (probabilístico basal), Random Forest (*bagging*) y XGBoost, LightGBM y CatBoost (*gradient boosting*). Se priorizaron implementaciones maduras, de uso extendido en problemas clínicos 
-tabulares e interpretables mediante SHAP.
+tabulares e interpretables mediante SHAP [@lundberg2017].
 
 Con una prevalencia del 10--11% (desbalance moderado), se aplicó `class_weight='balanced'` en regresión logística, Random Forest y LightGBM (con `balanced_subsample` en Random Forest) y 
 `scale_pos_weight` en XGBoost; CatBoost y Naive Bayes no incorporaron parámetro de balanceo. El escalado, mediante `RobustScaler`, se aplicó solo a regresión logística y Naive Bayes, 

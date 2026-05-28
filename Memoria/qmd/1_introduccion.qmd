@@ -8,13 +8,13 @@ Entre las intervenciones empleadas para el soporte hemodinámico se encuentra la
 vasopresor de primera elección cuando la hipotensión persiste tras la valoración y el tratamiento inicial \cite{evans2021,prescott2026surviving}. Sin embargo, la necesidad de noradrenalina no se
  limita exclusivamente a la sepsis, ya que otras formas de shock circulatorio e inestabilidad hemodinámica en UCI pueden requerir también soporte vasopresor \cite{vincent2013}.
 
-La sepsis y el shock séptico representan, no obstante, uno de los escenarios clínicos más relevantes en este ámbito. A escala global, se estimaron 48,9 millones de casos de sepsis y 11 millones
- de muertes atribuibles en 2017 \cite{fleischmann2020}. Además, el shock séptico se asocia a una elevada mortalidad y requiere una actuación precoz orientada a restaurar la perfusión tisular 
+La sepsis y el shock séptico representan, no obstante, uno de los escenarios clínicos más relevantes en este ámbito. La incidencia  hospitalaria de sepsis se estima en 189 casos por 100.000 personas-año, 
+con una mortalidad hospitalaria del 26,7\% entre los pacientes ingresados \cite{fleischmann2020}. Además, el shock séptico se asocia a una elevada mortalidad y requiere una actuación precoz orientada a restaurar la perfusión tisular 
  y prevenir el deterioro orgánico. En este contexto, anticipar qué pacientes pueden evolucionar hacia la necesidad de soporte vasopresor constituye un problema clínico relevante.
 
 La decisión de iniciar noradrenalina no depende de una única variable aislada. En la práctica clínica, integra información procedente de constantes vitales, parámetros analíticos, respuesta a la
  fluidoterapia, grado de disfunción orgánica y evolución global del paciente. Esta naturaleza multifactorial dificulta la identificación temprana de los pacientes que requerirán soporte vasopresor
- y justifica la exploración de herramientas capaces de combinar múltiples señales clínicas de forma sistemática.
+ y justifica la exploración de herramientas capaces de combinar múltiples señales clínicas de forma sistemática.  
 
 El presente Trabajo de Fin de Grado propone el desarrollo y la validación de modelos de aprendizaje automático para estimar de forma temprana el riesgo de inicio de noradrenalina en pacientes 
 adultos ingresados en UCI. Para ello, se emplean variables clínicas y analíticas disponibles durante las primeras horas de estancia y se plantean distintas ventanas temporales de observación y 
