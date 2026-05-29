@@ -114,4 +114,5 @@ Para facilitar futuras ampliaciones, se ofrecen las siguientes recomendaciones:
   \item \textbf{Mejoras de mantenibilidad} recomendadas: añadir un fichero \ruta{requirements.txt} con las versiones de las dependencias,
         consolidar el flujo definitivo en una carpeta única y separar los cuadernos de experimentación históricos en un directorio dedicado.
 \end{itemize}
+
 ```

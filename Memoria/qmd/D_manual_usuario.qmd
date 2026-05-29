@@ -83,3 +83,4 @@ las barras que empujan el riesgo al alza y las que lo reducen. Es una explicaci�
 de cargar un CSV real. Resulta útil para familiarizarse con la interfaz antes de introducir datos propios.
 
 \textbf{Aviso.} La aplicación es un prototipo académico sin validación clínica prospectiva ni autorización regulatoria, no apto para uso asistencial real. Este aviso se muestra de forma permanente en la parte superior de la interfaz.
+```

@@ -39,6 +39,8 @@ Las diferencias de tamaño entre ventanas de la misma base responden a los crite
 \subsection*{Variables incluidas en los conjuntos MIMIC-IV}
  
 Cada uno de los tres ficheros MIMIC contiene exactamente 82 columnas, distribuidas en los grupos descritos en la tabla~\ref{tab:grupos-variables}.
+
+La diferencia entre las 82 columnas totales y las 76 variables predictoras iniciales descritas en la memoria se debe a que los ficheros incluyen también identificadores, variables administrativas y columnas auxiliares de etiquetado. El análisis de correlación y selección de variables se realizó únicamente sobre el subconjunto de predictores clínicos candidatos.
  
 \begin{table}[htbp]
   \centering

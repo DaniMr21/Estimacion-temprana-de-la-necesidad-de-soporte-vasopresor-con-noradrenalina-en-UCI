@@ -4,7 +4,6 @@
 #  Universidad de Burgos · Escuela Politécnica Superior
 # ============================================================
 title: "Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable"
-author: "Daniel Marina de la Cal"
  
 format:
   pdf:
@@ -37,7 +36,6 @@ knitr:
 ```{=latex}
 %% ── Portada anexos ──────────────────────────────────────────
 \title{Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable}
-\author{\nombre}
 \date{\today}
 
 \maketitle
