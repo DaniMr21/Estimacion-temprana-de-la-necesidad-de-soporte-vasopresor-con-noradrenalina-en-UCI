@@ -116,7 +116,7 @@ La proporción de positivos oscila entre el 9,8\% y el 14,4\%, lo que indica un 
  
 \subsection*{Valores perdidos y estrategia de no-imputación}
 
-Es fundamental destacar que, bajo esta decisión metodológica y con el fin de preservar la fidelidad fisiológica de los datos reales, \textbf{en ningún momento se aplicaron técnicas de imputación artificial de datos faltantes}. En su lugar, se adoptó un enfoque de caso completo(\textit{complete-case analysis}), en el que únicamente se conservaron y analizaron aquellas estancias de UCI que presentaban la totalidad de sus variables clínicas y demográficas perfectamente medidas y pobladas.
+Es fundamental destacar que, bajo esta decisión metodológica y con el fin de preservar la fidelidad fisiológica de los datos reales, \textbf{en ningún momento se aplicaron técnicas de imputación artificial de datos faltantes}. En su lugar, se adoptó un enfoque de caso completo(\textit{complete-case analysis}), en el que únicamente se conservaron y analizaron aquellas estancias de UCI que presentaban la totalidad de sus variables clínicas y demográficas perfectamente pobladas.
 
 Como consecuencia de este diseño, la única columna que presenta valores perdidos de carácter estructural en los conjuntos de datos definitivos de MIMIC-IV es \texttt{horas\_hasta\_norad} (ausente por definición clínica en los casos negativos). Las restantes 80 columnas de variables se encuentran completamente cubiertas. En los conjuntos de validación de eICU-CRD la situación es análoga: la variable \texttt{horas\_hasta\_norad} toma el valor \texttt{NA} para los casos negativos.
 ```

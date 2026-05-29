@@ -99,7 +99,7 @@ carpetas de pruebas descrita en el apartado anterior.
 
 \subsection{Planificación económica}
 
-La Tabla~\ref{tab:costes} recoge la estimación de costes materiales del proyecto. Al tratarse de un trabajo académico, no se consideran costes de recursos humanos en sentido profesional, aunque se destaca que las horas dedicadas al presete proyecto se estiman en 360 horas.
+La Tabla~\ref{tab:costes} recoge la estimación de costes materiales del proyecto. Al tratarse de un trabajo académico, no se consideran costes de recursos humanos en sentido profesional, aunque se destaca que las horas dedicadas al presente proyecto se estiman en 360 horas.
 
 \begin{table}[H]
 \centering
