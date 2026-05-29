@@ -22,3 +22,120 @@ Se describirán las pruebas realizadas para validar el correcto funcionamiento d
 
 Se proporcionarán indicaciones y recomendaciones para facilitar futuras ampliaciones o mejoras del trabajo realizado.
 ```
+```{=latex}
+%% ══════════════════════════════════════════════════════
+%%  APÉNDICE E – Manual del Desarrollador
+%% ══════════════════════════════════════════════════════
+\apendice{Manual del programador}
+
+\section{Estructura de directorios}
+
+El proyecto se organiza en un repositorio público de GitHub. Su estructura refleja el carácter iterativo del trabajo: la mayor parte del código son archivos .py agrupados en carpetas de pruebas
+que documentan la evolución del estudio, junto con la aplicación final del \textit{dashboard} y las fuentes de la documentación. La estructura es la siguiente:
+
+\begin{verbatim}
+.
+├── README.md
+├── .gitignore
+│
+├── Pruebas IV ventana 3_12/ # Ensayos iniciales por ventana (MIMIC-IV)
+├── Pruebas IV ventana_12_48/
+│
+├── Pruebas cohorte general I/ # Refinamiento de la cohorte general
+├── Pruebas cohorte general II/
+├── Pruebas cohorte general II SIN MISSINGS/
+├── Pruebas cohorte general III/
+├── Pruebas cohorte general III restrict ventana/
+│
+├── Pruebas cohorte sepsis IV/ # Análisis del subgrupo de sepsis
+│
+├── Pruebas_v4_2/ # Versiones sucesivas del pipeline,
+├── Pruebas_v4_2_corta/ #   separadas por ventana temporal
+├── Pruebas_v4_2_larga/
+├── Pruebas_v4_3/
+├── Pruebas_v4_3_corta/
+├── Pruebas_v4_3_larga/
+├── Pruebas_v4_4/ # Iteración final del pipeline
+│
+├── eICU/ # Extracción/preparación de eICU-CRD
+├── Validacion_externa/ # Validación externa sobre eICU-CRD
+│
+├── Dashboard/ # Aplicación Streamlit
+│   ├── pruebas_dashboard.py
+│   ├── modelo_Medio_6_24_XGB_calibrado.pkl
+│   ├── modelo_Largo_12_48_XGB.pkl
+│   ├── referencia_percentiles_medio.npy
+│   └── referencia_percentiles_largo.npy
+│
+├── Memoria/ # Fuentes LaTeX/Quarto de la memoria
+└── Anexos/ # Fuentes LaTeX/Quarto de los anexos
+\end{verbatim}
+
+Las carpetas se agrupan en tres bloques funcionales:
+
+\begin{itemize}
+  \item \textbf{Carpetas de experimentación} (las \ruta{Pruebas\ldots}): documentan el desarrollo iterativo descrito en la metodología. La secuencia va desde los primeros ensayos por ventana sobre MIMIC-IV,
+        pasando por el refinamiento progresivo de la cohorte general (versiones I a III, incluyendo la eliminación de registros incompletos
+        ---\ruta{SIN MISSINGS}--- y la restricción de la ventana temporal ---\ruta{restrict ventana}---) y el análisis del subgrupo de sepsis,
+        hasta las versiones consolidadas del pipeline (\ruta{v4\_2} a \ruta{v4\_4}, con variantes por ventana \ruta{corta} y \ruta{larga}).
+  \item \textbf{Flujo definitivo}: \ruta{eICU/} contiene la extracción de la cohorte de validación externa; \ruta{Validacion\_externa/} evalúa los modelos finales sobre eICU-CRD; y 
+        \ruta{Dashboard/} contiene la aplicación de visualización junto con los modelos serializados(\ruta{.pkl}) y los ficheros de percentiles de referencia (\ruta{.npy}).
+  \item \textbf{Documentación}: \ruta{Memoria/} y \ruta{Anexos/} contienen las fuentes de este documento.
+\end{itemize}
+
+\section{Compilación, instalación y ejecución del proyecto}
+
+El proyecto está escrito en Python y no requiere compilación. Se distinguen
+dos escenarios de ejecución: la reproducción del estudio completo y la ejecución del \textit{dashboard}.
+
+\textbf{Requisitos para reproducir el estudio:}
+\begin{itemize}
+  \item Python 3.12 y un entorno compatible como VS Code.
+  \item Acceso a las bases de datos MIMIC-IV y eICU-CRD a través de PhysioNet,
+        previa formación CITI (véase el Apéndice~A, Viabilidad legal), con las
+        tablas derivadas de MIMIC-IV (esquema \ruta{mimiciv\_derived})
+        accesibles mediante SQL.
+  \item Las bibliotecas de Python empleadas a lo largo del trabajo:
+        \texttt{pandas}, \texttt{numpy}, \texttt{scipy}, \texttt{scikit-learn},
+        \texttt{xgboost}, \texttt{lightgbm}, \texttt{catboost}, \texttt{shap},
+        \texttt{matplotlib}, \texttt{seaborn} y \texttt{joblib}.
+\end{itemize}
+
+\textbf{Reproducción del flujo.} Los cuadernos siguen el orden descrito en la metodología: (1)~extracción de las cohortes mediante consultas
+SQL; (2)~preprocesamiento y selección de variables; (3)~entrenamiento y optimización mediante validación cruzada anidada; (4)~calibración de
+probabilidades; (5)~interpretabilidad con SHAP; y (6)~validación externa sobre eICU-CRD. Cada fase queda recogida en la carpeta de pruebas correspondiente,
+siendo las versiones \ruta{v4\_x} las que contienen el flujo consolidado.
+
+\textbf{Ejecución del \textit{dashboard}.} La puesta en marcha de la aplicación de visualización (instalación de dependencias y comando \ruta{streamlit run pruebas\_dashboard.py}) se detalla en el Apéndice~D
+(Documentación de usuario).
+
+\section{Pruebas del sistema}
+
+Al tratarse de un trabajo de investigación de carácter experimental, no se desarrollaron pruebas en el sentido del software de producción. La validación del sistema se abordó desde una 
+perspectiva metodológica, con las siguientes estrategias:
+
+\begin{itemize}
+  \item \textbf{Validación interna} mediante validación cruzada anidada (5$\times$3) con agrupamiento por paciente, para evitar fugas de información entre particiones.
+  \item \textbf{Validación externa} sobre la cohorte independiente y multicéntrica eICU-CRD.
+  \item \textbf{Análisis por subgrupos} según presencia de sepsis, para evaluar la estabilidad del rendimiento.
+  \item \textbf{Evaluación de la calibración} (ECE, BSS) y \textbf{auditoría de coherencia} de las explicaciones SHAP.
+  \item \textbf{Evaluación de usabilidad} del \textit{dashboard} mediante una encuesta de satisfacción a ocho facultativos del servicio de Medicina Intensiva del HUBU.
+\end{itemize}
+
+Los resultados de todas estas validaciones se recogen en los capítulos de Resultados y Discusión de la memoria.
+
+\section{Instrucciones para la modificación o mejora del proyecto}
+
+Para facilitar futuras ampliaciones, se ofrecen las siguientes recomendaciones:
+
+\begin{itemize}
+  \item \textbf{Reentrenar los modelos} con una cohorte nueva (por ejemplo, la del HUBU) requiere reproducir el flujo de extracción y preprocesamiento
+        adaptando las consultas SQL al esquema de la nueva fuente, y volver a ejecutar los ficheros de entrenamiento y calibración. Los modelos
+        resultantes se serializan con \texttt{joblib} y se sustituyen en la carpeta \ruta{Dashboard/} junto con sus ficheros de percentiles.
+  \item \textbf{Añadir una nueva ventana temporal} implica replicar la lógica de etiquetado y agregación para el nuevo horizonte y registrar el modelo correspondiente en el \textit{dashboard}.
+  \item \textbf{Evolución hacia modelos temporales} (LSTM, Transformers) o análisis de supervivencia, así como la integración del \textit{dashboard} en los sistemas de información hospitalaria, se
+        describen como líneas de trabajo futuro en la memoria.
+  \item \textbf{Mejoras de mantenibilidad} recomendadas: añadir un fichero \ruta{requirements.txt} con las versiones de las dependencias,
+        consolidar el flujo definitivo en una carpeta única y separar los cuadernos de experimentación históricos en un directorio dedicado.
+\end{itemize}
+```
