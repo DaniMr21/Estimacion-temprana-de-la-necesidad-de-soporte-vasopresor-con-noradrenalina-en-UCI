@@ -4,79 +4,44 @@
 %% ══════════════════════════════════════════════════════
 \apendice{Anexo de sostenibilización curricular}
 
-\section{Introducción}
-Este anexo incluirá una reflexión personal del alumnado sobre los aspectos de la sostenibilidad que se abordan en el trabajo.
-Se pueden incluir tantas subsecciones como sean necesarias con la intención de explicar las competencias de sostenibilidad adquiridas durante el alumnado y aplicadas al Trabajo de Fin de Grado.
+\section{Definición de Sostenibilidad en el Contexto del TFG}
 
-Más información en el documento de la CRUE \url{https://www.crue.org/wp-content/uploads/2020/02/Directrices_Sosteniblidad_Crue2012.pdf}.
+Siguiendo las directrices de la CRUE, la sostenibilidad no es solo cuidar el medio ambiente; es un compromiso ético que busca la calidad ambiental, la justicia social y una economía equitativa y viable a largo plazo. Hablar de sostenibilidad implica promover la salud de la población, garantizar el acceso igualitario a las tecnologías de la información y gestionar de forma justa los recursos disponibles. 
 
-Este anexo tendrá una extensión comprendida entre 600 y 800 palabras.
+Este Trabajo de Fin de Grado aplica estos conceptos directamente al entorno de los cuidados intensivos. No se trata de un desarrollo de software aislado, sino de una herramienta de ingeniería de la salud diseñada para ayudar a gestionar recursos sanitarios críticos y mejorar la atención de las personas en un momento de máxima vulnerabilidad.
 
+\section{Principios Genéricos de Sostenibilidad Aplicados}
 
-%% ══════════════════════════════════════════════════════
-%%  APÉNDICE H – Sostenibilidad curricular
-%% ══════════════════════════════════════════════════════
-\apendice{Anexo de sostenibilización curricular}
+El proyecto se alinea de forma directa con los principios básicos de la CRUE mediante las siguientes acciones:
 
-\section{Introducción}
+\begin{itemize}
+    \item \textbf{Principio Ético y Holístico:} Sitúa la protección de la vida como objetivo principal al intentar anticipar el deterioro de pacientes en la UCI. Además, mediante el uso de valores SHAP, se rechaza el modelo de ``caja negra'', garantizando que el médico entienda la predicción y se respete la seguridad del paciente de forma justa e integral.
+    \item \textbf{Principio de Complejidad y Glocalización:} El shock hemodinámico es un problema médico complejo que requiere combinar la ingeniería de datos con la medicina de precisión. Para resolverlo, se han usado bases de datos globales (MIMIC-IV y eICU-CRD) pero adaptando el resultado a la realidad local y las necesidades del Hospital Universitario de Burgos (HUBU).
+    \item \textbf{Principio de Transversalidad y Responsabilidad Social:} La sostenibilidad se ha integrado en el diseño del software (buscando la eficiencia del código informático) y devuelve un valor real a la sociedad mediante la colaboración directa entre la Universidad de Burgos y el servicio de salud público.
+\end{itemize}
 
-Este Trabajo de Fin de Grado se centra en el desarrollo de modelos de aprendizaje automático para estimar de forma temprana el riesgo de inicio de soporte vasopresor en pacientes ingresados 
-en unidades de cuidados intensivos. Aunque el objetivo principal del proyecto es clínico y tecnológico, también presenta implicaciones relacionadas con la sostenibilidad, especialmente en 
-tres ámbitos: el uso eficiente de recursos computacionales, la posible optimización de recursos sanitarios y la transparencia en el desarrollo de herramientas de inteligencia artificial 
-aplicadas a la salud.
+\section{Desarrollo de Competencias Transversales (SOS)}
 
-La sostenibilidad, en este contexto, no se limita únicamente a la reducción del impacto ambiental, sino que también incluye la capacidad de desarrollar soluciones técnicamente viables, 
-clínicamente útiles y socialmente responsables. Por ello, este anexo recoge cómo distintas decisiones tomadas durante el diseño, entrenamiento y evaluación de los modelos se relacionan con 
-una práctica más eficiente y prudente de la ingeniería aplicada al ámbito sanitario.
+Para cumplir con la formación universitaria en desarrollo humano sostenible, este trabajo desarrolla de forma práctica las cuatro competencias transversales exigidas por la normativa:
 
-\section{Dimensión ambiental}
+\subsection{SOS1.- Contextualización crítica del conocimiento}
+Esta competencia se cumple al interrelacionar los datos clínicos con la problemática social y económica de los hospitales. El coste humano y económico de un fallo multiorgánico en la UCI es enorme y afecta a la sostenibilidad del sistema sanitario. El modelo desarrollado no se limita a calcular probabilidades matemáticas; analiza de forma crítica variables heterogéneas para entender el riesgo de forma global y local, ayudando a tomar mejores decisiones asistenciales basadas en la evidencia.
 
-Desde el punto de vista ambiental, el proyecto ha procurado evitar un uso innecesario de recursos computacionales. El entrenamiento de modelos de aprendizaje automático puede implicar un 
-consumo energético relevante, especialmente cuando se realizan búsquedas extensas de hiperparámetros o se prueban muchas configuraciones sin criterio previo.
+\subsection{SOS2.- Utilización sostenible de recursos y prevención de impactos}
+El proyecto aborda este punto en dos niveles diferenciados:
+\begin{enumerate}
+    \item \textbf{Recursos sanitarios:} Anticipar la necesidad de noradrenalina permite una mejor planificación de camas, personal y material en la UCI. Esto ayuda a reducir estancias hospitalarias innecesarias y disminuye el desperdicio de recursos fungibles de alto coste.
+    \item \textbf{Recursos computacionales:} En lugar de entrenar redes neuronales masivas con un alto consumo energético, se han seleccionado algoritmos de árboles eficientes (XGBoost y CatBoost) y se ha optimizado la búsqueda de hiperparámetros mediante validación cruzada anidada para minimizar el tiempo de cómputo y la huella de carbono digital del proyecto.
+\end{enumerate}
 
-Por ello, durante el desarrollo se priorizó una metodología razonable y contenida. Se limitaron las combinaciones de modelos e hiperparámetros a aquellas justificadas por el problema, 
-se reutilizaron procesos de validación comunes entre modelos y se evitó incorporar análisis redundantes que no aportasen una mejora clara. Además, se emplearon implementaciones eficientes, 
-como métodos basados en histogramas en modelos de boosting, con el fin de reducir tiempos de entrenamiento y consumo de memoria.
+\subsection{SOS3.- Participación en procesos comunitarios}
+La competencia se materializa en la colaboración con la comunidad local, concretamente con el personal médico del HUBU. El dashboard desarrollado se sometió a una encuesta de satisfacción con ocho facultativos del servicio de Medicina Intensiva. Sus opiniones permitieron validar la utilidad real del sistema a pie de cama y abrieron debates sobre cómo reenfocar la herramienta hacia áreas de urgencias o planta médica para mejorar la monitorización comunitaria.
 
-También se intentó que el código fuera reutilizable y organizado, evitando ejecuciones innecesarias derivadas de errores de estructura o duplicación de procesos. Esta forma de trabajo reduce 
-el coste computacional acumulado y facilita que futuros análisis puedan realizarse de manera más controlada.
-
-Estas decisiones no eliminan el impacto ambiental asociado al uso de recursos informáticos, pero contribuyen a mantenerlo dentro de unos límites proporcionados para un Trabajo de Fin de Grado.
-
-\section{Dimensión económica}
-
-La estancia en UCI supone un uso intensivo de recursos humanos, materiales y económicos. En este contexto, disponer de herramientas que ayuden a identificar de forma temprana a pacientes con 
-riesgo de deterioro hemodinámico podría contribuir a una mejor planificación asistencial.
-
-El modelo desarrollado no sustituye la valoración clínica, pero puede servir como apoyo para priorizar la vigilancia de pacientes con mayor probabilidad de requerir noradrenalina. 
-Si este tipo de sistemas se validaran adecuadamente en entornos reales, podrían ayudar a optimizar la asignación de recursos, anticipar intervenciones y reducir complicaciones asociadas a una 
-detección tardía.
-
-Además, una predicción temprana podría favorecer una gestión más eficiente de pruebas, monitorización, personal y camas disponibles, especialmente en unidades con alta presión asistencial. 
-No obstante, cualquier aplicación práctica requeriría una validación clínica externa, integración segura en los flujos de trabajo y evaluación de su impacto real.
-
-En cualquier caso, el impacto económico del sistema no se evalúa directamente en este trabajo, por lo que debe entenderse como una posible línea de aplicación futura y no como una conclusión demostrada.
-
-\section{Dimensión social y ética}
-
-En el ámbito social y ético, el proyecto se relaciona con la seguridad del paciente, la equidad y la transparencia en el uso de inteligencia artificial clínica. Al tratarse de un sistema 
-predictivo aplicado a pacientes críticos, es fundamental que sus resultados sean interpretables y que no se utilicen de forma automática ni aislada.
-
-Por este motivo, el trabajo incorpora herramientas de interpretabilidad, como los valores SHAP, que permiten analizar qué variables contribuyen más a la predicción realizada por el modelo. 
-Esto facilita una lectura más comprensible del resultado y reduce el riesgo de tratar el modelo como una ``caja negra''.
-
-Además, el uso de bases de datos clínicas desidentificadas, como MIMIC-IV y eICU-CRD, exige respetar los acuerdos de uso, la privacidad de los pacientes y la reproducibilidad del análisis.
-En este sentido, la organización del código y la documentación del procedimiento buscan facilitar que el trabajo pueda ser revisado, auditado y, en su caso, reproducido por otros investigadores.
-
-También debe destacarse que un modelo predictivo de este tipo solo tendría sentido como herramienta de apoyo. La decisión final debe seguir correspondiendo al personal clínico, que puede valorar 
-factores contextuales no recogidos en los datos estructurados.
-
-\section{Conclusión}
-
-En conjunto, este TFG incorpora la sostenibilidad de forma transversal, principalmente mediante un uso responsable de los recursos computacionales, 
-una orientación hacia la mejora de la eficiencia asistencial y una preocupación por la transparencia de los modelos predictivos. Aunque el trabajo no mide directamente el impacto ambiental, 
-económico o social del sistema, sí plantea un desarrollo tecnológico alineado con principios de responsabilidad, reproducibilidad y apoyo a la toma de decisiones clínicas.
-
-De este modo, el proyecto muestra que la aplicación de inteligencia artificial en salud debe evaluarse no solo por su rendimiento predictivo, sino también por su eficiencia, su interpretabilidad 
-y su integración responsable en contextos clínicos reales.
+\subsection{SOS4.- Aplicación de principios éticos en el comportamiento profesional}
+Como futuro ingeniero de la salud, el desarrollo de este TFG se ha guiado por la responsabilidad profesional y el respeto a los derechos humanos:
+\begin{itemize}
+    \item Se ha garantizado el seguimiento de las restricciones de Physionet acerca del uso de las BBDD eICU y MIMIC-IV, sin redistribuirse ni publicarse en ningún momento ni las tablas originales ni las postprocesadas.
+    \item El código se ha publicado de forma abierta y transparente en GitHub para fomentar la reproducibilidad científica y el acceso libre al conocimiento.
+    \item El diseño del dashboard deja claro que la inteligencia artificial es solo una herramienta de apoyo; la decisión final siempre es del médico, respetando el principio humanista de la práctica médica.
+\end{itemize}
 ```

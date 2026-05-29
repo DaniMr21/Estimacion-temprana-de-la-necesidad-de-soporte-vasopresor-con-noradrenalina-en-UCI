@@ -4,13 +4,80 @@
 %% ══════════════════════════════════════════════════════
 \apendice{Documentación de usuario}
 
+\section{Requisitos software y hardware para ejecutar el proyecto}
 
-\section{Requisitos software y hardware para ejecutar el proyecto.}
-Se detallarán los requisitos mínimos de software y hardware necesarios para ejecutar correctamente el proyecto.
+Conviene distinguir entre el entorno de \textit{entrenamiento} y el de \textit{uso del dashboard}. Esta documentación se refiere a este último: la
+ejecución de la aplicación de visualización, que únicamente carga los modelos ya entrenados y procesa un fichero reducido de datos de un paciente. Por
+tanto, no requiere descargar las bases de datos MIMIC-IV ni eICU-CRD.
+
+\textbf{Requisitos de hardware (mínimos):}
+\begin{itemize}
+  \item Cualquier ordenador personal moderno con 4\,GB de RAM o más.
+  \item Aproximadamente 500\,MB de espacio libre para el entorno de Python y
+        las dependencias (los modelos ocupan menos de 1\,MB).
+  \item No se requiere tarjeta gráfica dedicada: la inferencia se ejecuta en CPU.
+\end{itemize}
+
+\textbf{Requisitos de software:}
+\begin{itemize}
+  \item Python 3.12 o superior.
+  \item Las siguientes bibliotecas: \texttt{streamlit}, \texttt{pandas},
+        \texttt{numpy}, \texttt{scikit-learn}, \texttt{xgboost},
+        \texttt{shap}, \texttt{matplotlib} y \texttt{joblib}.
+  \item Un navegador web actualizado (la interfaz de Streamlit se abre en el navegador).
+\end{itemize}
 
 \section{Instalación / Puesta en marcha}
-Se describirá el proceso de instalación y ejecución del sistema de forma clara y ordenada, indicando los pasos necesarios para su correcta puesta en funcionamiento.
 
-\section{Manuales y/o Demostraciones prácticas}
-Se incluirán instrucciones de uso del sistema y ejemplos prácticos que faciliten su comprensión por parte del usuario final.
-```
+La puesta en marcha descrita a continuación correspondería a personal técnico; el usuario final (el facultativo) interactúa únicamente con la interfaz ya en ejecución, descrita en la sección siguiente.
+
+La aplicación se distribuye en la carpeta \ruta{Dashboard} del repositorio, que contiene el script \ruta{pruebas\_dashboard.py}, los dos modelos serializados (\ruta{modelo\_Medio\_6\_24\_XGB\_calibrado.pkl} y
+\ruta{modelo\_Largo\_12\_48\_XGB.pkl}) y los dos ficheros de referencia de percentiles (\ruta{referencia\_percentiles\_medio.npy} y \ruta{referencia\_percentiles\_largo.npy}). Los pasos para ponerla en marcha
+son los siguientes:
+
+\begin{enumerate}
+  \item Clonar el repositorio del proyecto desde GitHub (o descargar la
+        carpeta \ruta{Dashboard} completa).
+  \item Instalar las dependencias:
+        \begin{verbatim}
+pip install streamlit pandas numpy scikit-learn xgboost shap matplotlib joblib
+        \end{verbatim}
+  \item Situarse en la carpeta \ruta{Dashboard} y lanzar la aplicación:
+        \begin{verbatim}
+streamlit run pruebas_dashboard.py
+        \end{verbatim}
+  \item La aplicación se abrirá automáticamente en el navegador (por defecto,
+        en \ruta{http://localhost:8501}). Es imprescindible que los ficheros
+        \ruta{.pkl} y \ruta{.npy} se encuentren en la misma carpeta que el
+        script.
+\end{enumerate}
+
+\section{Manuales y demostraciones prácticas}
+
+La interfaz incorpora un manual de uso accesible desde el propio \textit{dashboard} (botón \emph{Manual / Info}). Las capturas de las distintas
+pantallas se recogen en el Apéndice~C (Figuras~\ref{fig:dash-portada} a~\ref{fig:dash-manual}). El flujo de uso es el siguiente:
+
+\begin{enumerate}
+  \item \textbf{Seleccionar la ventana temporal.} Mediante los botones
+        superiores se elige la ventana \emph{Media} (riesgo de inicio entre 6
+        y 24\,h) o \emph{Larga} (entre 12 y 48\,h).
+  \item \textbf{Cargar los datos del paciente.} Se carga un fichero CSV con
+        una fila por medición. Las columnas obligatorias son: \texttt{NOMBRE,
+        APELLIDO 1, APELLIDO 2, ID, SOFA, MAP, TP, FiO2, PaO2,
+        Diuresis\_mL\_kg, Frec Cardiaca, Vent. Invasiva, SpO2, Bicarbonato,
+        Temperatura, Glucemia}.
+  \item \textbf{Consultar el resultado.} La aplicación muestra el percentil de
+        riesgo (de 1 a 100) y, a su derecha, los factores de riesgo
+        individuales según los valores SHAP.
+\end{enumerate}
+
+\textbf{Interpretación del percentil.} El valor indica la posición del paciente dentro de la distribución de probabilidades obtenida sobre la cohorte de referencia MIMIC-IV. Un percentil de 90 significa que el 90\,\% de los
+pacientes de esa cohorte obtuvieron una probabilidad estimada inferior a la de este paciente. No es una probabilidad directa de que ocurra el evento, sino una medida relativa de riesgo.
+
+\textbf{Interpretación de los valores SHAP.} El gráfico de barras muestra la contribución de cada variable a la predicción de \emph{ese paciente concreto}:
+las barras que empujan el riesgo al alza y las que lo reducen. Es una explicación local de la predicción, no una medida de importancia global del modelo.
+
+\textbf{Modo demostración.} Accesible desde el botón \emph{Modo Demo}, permite explorar el funcionamiento de la aplicación con casos ficticios, sin necesidad
+de cargar un CSV real. Resulta útil para familiarizarse con la interfaz antes de introducir datos propios.
+
+\textbf{Aviso.} La aplicación es un prototipo académico sin validación clínica prospectiva ni autorización regulatoria, no apto para uso asistencial real. Este aviso se muestra de forma permanente en la parte superior de la interfaz.

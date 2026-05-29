@@ -6,27 +6,133 @@
 
 \section{Introducción}
 
-En este apartado se describe de forma breve el propósito general del proyecto, su contexto y el alcance del trabajo realizado, indicando qué problema se aborda y qué se pretende conseguir con el TFG.
+El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de
+Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte
+vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos.
 
+El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la
+base de datos MIMIC-IV \cite{johnson2023}, con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \cite{pollard2018}, que permite evaluar la
+generalización de los modelos a entornos clínicos distintos del de desarrollo; y el desarrollo de un prototipo de \textit{dashboard} clínico interpretable implementado en Streamlit, orientado a demostrar la
+viabilidad de integrar los modelos en una interfaz funcional a pie de cama.
+
+El proyecto no incluye validación prospectiva ni despliegue clínico en entorno asistencial real, por lo que se enmarca como investigación aplicada y prueba de concepto. Las consideraciones metodológicas, económicas y
+legales relevantes se desarrollan en los apartados siguientes.
 
 \section{Metodología de ingeniería del software}
-Si procede.
-Se debe describir la metodología seguida durante el desarrollo del proyecto. En caso de existir desarrollo software, se indicará la metodología utilizada (por ejemplo, cascada, ágil o experimental)
-En cada apartado de los apéndices (A hasta el G) se deberá indicar que tarea o fase de la metodología utilizada se está realizando, o bien en este nuevo apéndice deberá quedar reflejado con detalle las tareas y fases que se han ido realizando.
-Si el TFG no contiene  todo el ciclo de vida de la metodología utilizada, deberá indicarse las fases y tareas que han quedado pendientes.
-Si el TFG no está centrado el desarrollo software, pero puede servir para un posterior desarrollo software, se deberá indicar qué metodología de desarrollo se recomienda y argumentar los motivos.
 
+La metodología seguida durante el desarrollo se describe en detalle en la sección de Metodología de la memoria. En síntesis, se empleó un enfoque
+\textbf{experimental e iterativo} con un ciclo incremental por versiones, código organizado en módulos funcionales y control de versiones con Git y
+GitHub. Este enfoque se corresponde con un modelo de desarrollo \textbf{iterativo e incremental}, próximo al prototipado evolutivo: cada
+versión del flujo de trabajo se construyó sobre la anterior y se refinó en función de los resultados obtenidos, sin un diseño cerrado definido a priori.
+
+Esta naturaleza iterativa queda reflejada en la propia estructura del repositorio, cuyas sucesivas carpetas de pruebas documentan la evolución del
+trabajo: desde los primeros ensayos por ventana sobre MIMIC-IV, pasando por los refinamientos de la cohorte general (versiones I a III, incluyendo la
+eliminación de registros incompletos y la restricción de la ventana temporal) y el análisis del subgrupo de sepsis, hasta las versiones finales
+del modelo (v4.2 a v4.4) y la validación externa sobre eICU-CRD.
+
+Las fases principales llevadas a cabo fueron:
+
+\begin{enumerate}
+  \item Revisión bibliográfica y definición del problema.
+  \item Acceso a datos: formación CITI y registro en PhysioNet.
+  \item Construcción de cohortes (SQL) sobre MIMIC-IV y eICU-CRD.
+  \item Preprocesamiento y selección de variables.
+  \item Entrenamiento, optimización y evaluación interna
+        (validación cruzada anidada).
+  \item Calibración de probabilidades e interpretabilidad (SHAP).
+  \item Validación externa sobre eICU-CRD.
+  \item Desarrollo del prototipo de \textit{dashboard} y encuesta.
+  \item Redacción de la memoria y documentación del repositorio.
+\end{enumerate}
+
+El ciclo de vida no está completo: quedan fuera del alcance de este TFG la validación externa con datos del Hospital Universitario de Burgos y la
+validación prospectiva en entorno clínico real, así como la integración del \textit{dashboard} en los sistemas de información sanitarios.
+
+Si se desease continuar con el presente trabajo para dejar lista y validada una herramienta clínica, se recomienda una metodología Scrum
+\cite{sutherland2014}, primero porque permite incorporar el \textit{feedback} continuo de los clínicos en sprints cortos y porque es de las metodologías
+más extendidas en el desarrollo de herramientas software, por ende, una de las metodologías con la que más desarrolladores están familiarizados.
 
 \section{Planificación temporal}
 
-Se presentará la planificación temporal del proyecto, preferiblemente mediante un cronograma o diagrama de Gantt, donde se reflejen las principales tareas, fases y su duración aproximada.
+La planificación inicial propuesta se representa en la
+Figura~\ref{fig:gantt} y la finalmente seguida en la
+Figura~\ref{fig:gantt-real}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{Gantt_inicial.png}
+  \caption{Planificación inicial del proyecto (marzo -- junio 2026).}
+  \label{fig:gantt}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{Gantt_real.jpeg}
+  \caption{Ejecución real del proyecto (marzo -- junio 2026).}
+  \label{fig:gantt-real}
+\end{figure}
+
+\textbf{Leyenda de colores:}
+\begin{itemize}
+  \item \textbf{Amarillo:} tarea no realizada, sustituida por la
+        obtención y uso de eICU-CRD como cohorte de validación externa.
+  \item \textbf{Rojo:} retraso en el inicio de la tarea respecto a la
+        planificación inicial.
+  \item \textbf{Barras rojas:} tiempo adicional necesario para
+        completar la tarea.
+  \item \textbf{Verde:} tarea finalizada antes de lo previsto.
+  \item \textbf{Barras verdes:} tarea iniciada con anterioridad
+        a lo planificado.
+\end{itemize}
+
+Las desviaciones respecto a la planificación inicial se debieron principalmente a dos causas. Los retrasos se produjeron al encontrar
+dificultades no anticipadas o al haber subestimado la complejidad de determinadas tareas. Los adelantos respondieron al motivo contrario: tareas
+cuya dificultad o duración resultó inferior a la estimada inicialmente.
+
+El seguimiento del proyecto se organizó en GitHub mediante \textit{milestones} e \textit{issues}, agrupando las tareas en siete fases:
+(1)~obtención de datos y formación CITI/PhysioNet, (2)~trámites universitarios y comités de ética, (3)~investigación inicial y estado del
+arte, (4)~definición de la cohorte y extracción de MIMIC-IV, (5)~validación externa sobre eICU-CRD, (6)~desarrollo del \textit{dashboard} y (7)~redacción
+de la memoria y los anexos. Las cinco primeras fases se completaron en su totalidad; el desarrollo del \textit{dashboard} y la redacción de la memoria
+constituyeron la etapa final del trabajo, concentrada en las últimas semanas de mayo y primera de junio. La experimentación interna —entrenamiento, calibración e iteración
+sucesiva de los modelos— se gestionó por versiones en el repositorio en lugar de como un \textit{milestone} independiente, tal como refleja la sucesión de
+carpetas de pruebas descrita en el apartado anterior.
 
 \subsection{Planificación económica}
 
+La Tabla~\ref{tab:costes} recoge la estimación de costes materiales del proyecto. Al tratarse de un trabajo académico, no se consideran costes de recursos humanos en sentido profesional.
+
+\begin{table}[H]
+\centering
+\caption{Estimación de costes del proyecto.}
+\label{tab:costes}
+\begin{tabular}{lll}
+\toprule
+\textbf{Categoría} & \textbf{Concepto} & \textbf{Coste} \\
+\midrule
+Hardware  & Amortización portátil (uso parcial) & 100\,€ \\
+Software  & Código abierto                      &   0\,€ \\
+Datos     & MIMIC-IV y eICU-CRD (PhysioNet)     &   0\,€ \\
+\midrule
+\multicolumn{2}{r}{\textbf{Total}} & \textbf{100\,€} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Para el desarrollo del proyecto se utilizó un equipo HP Pavilion Plus con procesador Intel Core i7 Ultra, 32\,GB de RAM, SSD de 1\,TB y tarjeta gráfica
+Nvidia RTX 4050 con 6\,GB de VRAM, adquirido en febrero de 2026 por 1.500\,€. Dado que el equipo no se destinó de forma exclusiva al proyecto y se
+aprovechará a lo largo de toda su vida útil, se ha estimado una amortización parcial de 100\,€ correspondiente a los meses de uso efectivo durante el trabajo.
+
+Aunque la GPU dedicada permitió reducir los tiempos de entrenamiento, el trabajo habría podido desarrollarse con un equipo de menores prestaciones, siempre que dispusiese de al menos 200\,GB 
+de almacenamiento libre para albergar las bases de datos completas de MIMIC-IV y eICU-CRD junto con los ficheros de código.
+
 \subsection{Viabilidad legal}
 
-Si corresponde, incluir aquí el documento de aprovación por parte de la Comisión de Bioética.
+El acceso a las bases de datos empleadas, MIMIC-IV \cite{johnson2023} y eICU-CRD \cite{pollard2018}, requirió completar el curso de formación en ética en investigación con datos humanos del 
+CITI Program (CITI Program, 2026) y firmar el acuerdo de uso de datos de PhysioNet (PhysioNet, 2026). Dicho acuerdo establece las siguientes obligaciones: no reidentificar a los
+pacientes, no redistribuir los datos originales, y publicar el código desarrollado en un repositorio público. El repositorio del presente proyecto, disponible en GitHub, cumple con este último 
+requisito.
 
-Ojo \footnote{Los anexos deben de tener su propia bibliografía, eso es tan fácil como utilizar referencias igual que en la memoria \cite{bortolot2005}}
+Al tratarse de un análisis retrospectivo sobre bases de datos públicas completamente desidentificadas por sus custodios originales, no se requirió la aprobación de ningún Comité de Ética de 
+Investigación para el desarrollo de este trabajo. No obstante, para continuar con una validación externa con datos del Hospital Universitario de Burgos
+o validar el \textit{dashboard} como herramienta clínica, se precisaría la aprobación del Comité de Ética en Investigación de dicho centro.
 ```
-
