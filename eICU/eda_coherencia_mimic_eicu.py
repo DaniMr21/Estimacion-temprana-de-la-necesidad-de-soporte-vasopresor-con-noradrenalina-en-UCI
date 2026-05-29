@@ -5,10 +5,8 @@ import seaborn as sns
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── RUTA A LA CARPETA DONDE TIENES LOS CSVS ──
 CARPETA_DATOS = r'C:\Users\danie\OneDrive\Escritorio\DATA'
 
-# ── TU DICCIONARIO COMPLETO Y EXACTO (Añadidos los CSV de MIMIC correspondientes) ──
 ventanas = {
     'Corto_3_12': {
         'mimic': os.path.join(CARPETA_DATOS, 'definitivo_v4p.csv'),
@@ -42,10 +40,9 @@ ventanas = {
     }
 }
 
-# ── DIRECTORIO DONDE SE ESTÁ EJECUTANDO ESTE SCRIPT ──
+
 directorio_actual = os.getcwd()
 
-# ── GENERACIÓN DE BOXPLOTS ──
 for key, info in ventanas.items():
     try:
         # Cargar los datos
@@ -67,12 +64,11 @@ for key, info in ventanas.items():
         fig, axes = plt.subplots(1, n_vars, figsize=(4 * n_vars, 5))
         fig.suptitle(f"EDA Comparativo: {info['label']}", fontsize=16, fontweight='bold')
         
-        # Por si solo hay 1 variable (que no pete el array de ejes)
+        #(que no pete el array de ejes)
         if n_vars == 1:
             axes = [axes]
             
         for i, var in enumerate(variables):
-            # Comprobar que la variable existe por si hay algún error de tipeo
             if var in df_junto.columns:
                 sns.boxplot(
                     x='Hospital', 
@@ -92,7 +88,6 @@ for key, info in ventanas.items():
                 
         plt.tight_layout()
         
-        # Guardar en la carpeta DONDE EJECUTAS EL CÓDIGO
         nombre_archivo = f'EDA_Boxplots_{key}.png'
         ruta_guardado = os.path.join(directorio_actual, nombre_archivo)
         

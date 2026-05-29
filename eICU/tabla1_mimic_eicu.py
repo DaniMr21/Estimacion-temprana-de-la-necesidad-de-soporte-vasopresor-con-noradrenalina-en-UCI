@@ -1,23 +1,3 @@
-"""
-Tabla 1 — Características basales MIMIC vs eICU
-================================================
-Genera una tabla comparativa de case-mix para las tres ventanas temporales.
-
-Variables incluidas (disponibles en ambas cohortes):
-  - N pacientes
-  - Edad (mediana [IQR])
-  - Género masculino n (%)
-  - Peso kg (mediana [IQR])
-  - SOFA máx (mediana [IQR])
-  - Primera estancia UCI n (%)
-  - Uso de noradrenalina — positivos n (%)
-  - Horas hasta noradrenalina en positivos (mediana [IQR])
-
-Test estadístico:
-  - Continuas: Mann-Whitney U → p-value
-  - Categóricas: Chi-cuadrado → p-value
-"""
-
 import os
 import numpy as np
 import pandas as pd
@@ -25,7 +5,6 @@ from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
 CARPETA_MIMIC  = r'C:\Users\danie\OneDrive\Escritorio\DATA'
 CARPETA_EICU   = r'C:\Users\danie\OneDrive\Escritorio\DATA'
 CARPETA_SALIDA = os.path.dirname(os.path.abspath(__file__))
@@ -48,9 +27,6 @@ VENTANAS = {
     },
 }
 
-
-# ── FUNCIONES AUXILIARES ───────────────────────────────────────────────────────
-
 def mediana_iqr(serie):
     """Devuelve string 'mediana [Q1 – Q3]'."""
     s = serie.dropna()
@@ -72,8 +48,6 @@ def n_pct(serie, valor=1):
 
 def test_continua(s1, s2):
     """Mann-Whitney U, devuelve p formateado."""
-    s1 = s1.dropna()
-    s2 = s2.dropna()
     if len(s1) < 2 or len(s2) < 2:
         return '—'
     _, p = stats.mannwhitneyu(s1, s2, alternative='two-sided')
@@ -83,9 +57,6 @@ def test_continua(s1, s2):
 
 
 def test_categorica(s1, s2, valor=1):
-    """Chi-cuadrado 2×2; si hay celda cero usa Fisher exacto."""
-    s1 = s1.dropna()
-    s2 = s2.dropna()
     tabla = [
         [int((s1 == valor).sum()), int((s1 != valor).sum())],
         [int((s2 == valor).sum()), int((s2 != valor).sum())],
@@ -104,17 +75,12 @@ def test_categorica(s1, s2, valor=1):
 
 def codificar_gender(serie):
     """Normaliza género a 1=M, 0=F independientemente del formato."""
-    # CAMBIO MÍNIMO: Evaluar de forma segura tanto tipos numéricos como texto
     s = serie.copy()
     if s.dtype in [np.int64, np.int32, np.float64, np.float32]:
         return (s == 1).astype(float)
     
-    # Si viene como objeto/texto, aplicamos tu mapeo de strings seguro
     s_str = s.astype(str).str.upper().str.strip()
     return s_str.str.startswith('M').astype(float)
-
-
-# ── GENERACIÓN DE TABLA ────────────────────────────────────────────────────────
 
 filas_totales = []
 
@@ -185,7 +151,6 @@ for ventana, cfg in VENTANAS.items():
 
 df_tabla = pd.DataFrame(filas_totales)[['Variable', 'MIMIC', 'eICU', 'p']]
 
-# ── IMPRIMIR ───────────────────────────────────────────────────────────────────
 print('\n' + '=' * 80)
 print('TABLA 1 — Características basales MIMIC (entrenamiento) vs eICU (validación)')
 print('Continuas: mediana [IQR]  |  Categóricas: n (%)  |  p: Mann-Whitney / χ²')
@@ -194,12 +159,10 @@ print(df_tabla.to_string(index=False))
 print('\n* Solo en pacientes que recibieron noradrenalina (positivos)')
 print('  IQR = rango intercuartílico  |  UCI = Unidad de Cuidados Intensivos')
 
-# ── GUARDAR CSV ────────────────────────────────────────────────────────────────
 ruta_csv = os.path.join(CARPETA_SALIDA, 'tabla1_mimic_vs_eicu.csv')
 df_tabla.to_csv(ruta_csv, index=False, encoding='utf-8-sig')
 print(f'\nCSV guardado en: {ruta_csv}')
 
-# ── GUARDAR IMAGEN ─────────────────────────────────────────────────────────────
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
