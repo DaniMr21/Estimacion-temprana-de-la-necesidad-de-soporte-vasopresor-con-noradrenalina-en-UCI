@@ -4,17 +4,120 @@
 %% ══════════════════════════════════════════════════════
 \apendice{Descripción de adquisición y tratamiento de datos}
 
+\section{Descripción formal de los datos (El Contenedor)}
 
-\section{Descripción formal de los datos}
+Los datos utilizados en este trabajo proceden de dos bases de datos clínicas de cuidados críticos: \textbf{MIMIC-IV}~\cite{johnson2023} (\textit{Medical Information Mart for Intensive Care}), empleada para el entrenamiento y la evaluación interna de los modelos, y \textbf{eICU-CRD}~\cite{pollard2018} (\textit{eICU Collaborative Research Database}), empleada para la validación externa. Ambas están alojadas en PhysioNet y su acceso requirió completar el curso de formación CITI Program, registrar el proyecto y firmar el acuerdo de uso de datos correspondiente.
+ 
+Las consultas de extracción se ejecutaron directamente sobre las tablas originales de cada base de datos, alojadas en un servidor PostgreSQL local, y los resultados se exportaron en formato CSV tras winsorizarse con la estrategia seguida por \cite{gupta2022mimic}. No se utilizó ningún otro formato de fichero. Cada fila de los CSV resultantes representa una única estancia en UCI (\texttt{stay\_id}), y cada columna una variable clínica o administrativa calculada sobre la ventana de observación correspondiente.
+ 
+\subsection*{Estructura de ficheros generados}
+ 
+El proceso de extracción y preprocesado produjo seis conjuntos de datos definitivos, uno por cada combinación de base de datos y ventana temporal. La tabla~\ref{tab:inventario-ficheros} los enumera junto con sus dimensiones.
+ 
+\begin{table}[htbp]
+  \centering
+  \caption{Inventario de los ficheros CSV definitivos.}
+  \label{tab:inventario-ficheros}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lllrrr}
+    \toprule
+    Fichero & Base & Ventana obs. & Horizonte pred. & Observaciones & Variables \\
+    \midrule
+    \texttt{definitivo\_v4p.csv}   & MIMIC-IV & 0--3\,h  & 3--12\,h  & 1\,667 & 82 \\
+    \texttt{definitivo\_v4.csv}     & MIMIC-IV & 0--6\,h  & 6--24\,h  & 3\,282 & 82 \\
+    \texttt{definitivo\_v4l.csv}   & MIMIC-IV & 0--12\,h & 12--48\,h & 4\,088 & 82 \\
+    \texttt{eICU\_3\_12\_definitivo.csv}   & eICU-CRD & 0--3\,h  & 3--12\,h  &    789 & 12 \\
+    \texttt{eICU\_6\_24\_definitivo.csv}   & eICU-CRD & 0--6\,h  & 6--24\,h  & 1\,396 & 16 \\
+    \texttt{eICU\_12\_48\_definitivo.csv}  & eICU-CRD & 0--12\,h & 12--48\,h & 2\,030 & 17 \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
+ 
+Las diferencias de tamaño entre ventanas de la misma base responden a los criterios de inclusión: la ventana larga exige una duración de estancia superior a 48\,h, las ventanas corta y media requieren únicamente más de 24\,h, pero las variables calculadas sobre apenas 3\,h de observación implican mayor presencia de datos ausentes en analíticas con baja frecuencia de extracción, lo que reduce la cohorte elegible. El menor número de variables en los CSV de eICU refleja que la validación externa se realizó únicamente con las variables seleccionadas por los modelos finales, no con el conjunto completo de 82 predictores candidatos de MIMIC-IV.
+ 
+\subsection*{Variables incluidas en los conjuntos MIMIC-IV}
+ 
+Cada uno de los tres ficheros MIMIC contiene exactamente 82 columnas, distribuidas en los grupos descritos en la tabla~\ref{tab:grupos-variables}.
+ 
+\begin{table}[htbp]
+  \centering
+  \caption{Grupos de variables en los conjuntos MIMIC-IV (82 columnas totales).}
+  \label{tab:grupos-variables}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{l r p{8.5cm}}
+    \toprule
+    Grupo & N.º columnas & Ejemplos representativos \\
+    \midrule
+    Identificadores                     &   3 & \texttt{subject\_id}, \texttt{hadm\_id}, \texttt{stay\_id} \\
+    Demográficas y administrativas      &   4 & \texttt{anchor\_age}, \texttt{gender}, \texttt{peso\_kg}, \texttt{contador\_estancia\_uci} \\
+    Clínico-proceso                     &   4 & \texttt{tiene\_sepsis}, \texttt{ventilacion\_invasiva\_*h}, \texttt{diuresis\_volumen}, \texttt{diuresis\_ml\_kg} \\
+    Constantes vitales (x3 estadísticos)& 15 & FC, FR, temperatura, SpO$_2$, PAM \\
+    Gasometría y respiratorio (x3)      & 15 & PaO$_2$, PaCO$_2$, pH, FiO$_2$, PaO$_2$/FiO$_2$ \\
+    Analítica de laboratorio (x3)       & 33 & lactato, creatinina, plaquetas, bilirrubina, TP, GPT, GOT, leucocitos, hemoglobina, bicarbonato, glucemia \\
+    Neurológica y de gravedad (x3)      &   6 & GCS, SOFA \\
+    Variable objetivo                   &   2 & \texttt{etiqueta\_norad\_*}, \texttt{horas\_hasta\_norad} \\
+    \midrule
+    \textbf{Total}                      & \textbf{82} & \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
+ 
+Las 23 variables clínicas cuantitativas continuas se representan con tres estadísticos calculados sobre la ventana de observación: valor mínimo (\texttt{\_min}), media (\texttt{\_media}) y valor máximo (\texttt{\_max}). Esta triple representación captura tanto el valor central como la variabilidad y los extremos del parámetro durante el periodo de observación, lo que resulta especialmente relevante para variables con alta fluctuación intraindividual como la frecuencia cardíaca, la glucemia o el lactato.
 
-Se describirá el tipo de datos utilizados, su formato, origen, volumen y características principales.
-Tablas, imágenes, señales, secuencias de ADN…
-    
-\section{Descripción clínica de los datos.}
+\section{Descripción clínica de los datos}
 
-Descripción y explicaciones clinicas del significado o interpretación de los datos.
+Con el objetivo de dotar a las variables predictoras de contexto médico, se detalla a continuación el significado fisiopatológico e interpretación clínica de los parámetros de mayor impacto en los modelos predictivos desarrollados:
+
+\begin{itemize}
+  \item \textbf{Presión Arterial Media (PAM) mínima (\texttt{map\_min}):} Representa la fuerza motriz de perfusión orgánica. En situaciones de shock distributivo o hipovolémico, un descenso sostenido de la PAM por debajo de 65\,mmHg sobrepasa la capacidad de autorregulación vascular de órganos críticos (como el cerebro, los riñones y el corazón), provocando isquemia tisular. Su monitorización e intervención inmediata con noradrenalina es crucial para asegurar la supervivencia celular.
+  
+  \item \textbf{Lactato máximo (\texttt{lactate\_max}):} El lactato es el subproducto metabólico derivado de la glucólisis anaerobia. Cuando existe hipoperfusión sistémica e hipoxia celular, la célula se ve obligada a desviar su metabolismo fuera de la cadena respiratoria mitocondrial. Un lactato elevado ($> 2,0$\,mmol/L) es el indicador analítico de cabecera más sensible de deuda de oxígeno tisular y disfunción microcirculatoria.
+  
+  \item \textbf{Índice de Kirby o relación PaO$_2$/FiO$_2$ mínima (\texttt{pao2\_fio2\_min}):} Evalúa la integridad del intercambio gaseoso en la membrana alveolocapilar. En pacientes sépticos, la cascada inflamatoria daña la microcirculación pulmonar, provocando edema alveolar y distrés respiratorio (SDRA). La consiguiente caída de este índice por debajo de 300\,mmHg refleja un fallo respiratorio agudo que asocia un sobreesfuerzo cardiaco que desestabiliza la hemodinámica.
+  
+  \item \textbf{Creatinina máxima (\texttt{creatinine\_max}) e índice de filtrado:} La creatinina es el metabolito muscular depurado por filtración renal. En estados de inestabilidad hemodinámica, el riñón sufre precozmente por la vasoconstricción compensatoria que prioriza el flujo hacia el cerebro y el corazón. El incremento de la creatinina es la manifestación analítica del Fracaso Renal Agudo (IRA) inducido por hipoperfusión.
+  
+  \item \textbf{Recuento de plaquetas mínimo (\texttt{platelets\_min}):} La trombocitopenia en el paciente crítico refleja un estado procoagulante destructivo. La disfunción endotelial masiva activa de forma anómala la cascada de coagulación, consumiendo plaquetas en la microvasculatura (coagulación intravascular diseminada, CID), lo que perpetúa la hipoxia microvascular y el fallo orgánico múltiple.
+\end{itemize}
+ 
+\subsection*{Variables incluidas en los conjuntos eICU-CRD}
+ 
+Los conjuntos eICU contienen exclusivamente las variables retenidas por los modelos finales tras la selección de características en MIMIC-IV: entre 12 y 17 columnas según la ventana temporal (tabla~\ref{tab:inventario-ficheros}). En todos los casos se incluyen los identificadores (\texttt{subject\_id}, \texttt{stay\_id}), las variables demográficas básicas (\texttt{anchor\_age}, \texttt{gender}, \texttt{peso\_kg}, \texttt{contador\_estancia\_uci}), la variable objetivo, y el subconjunto de predictores seleccionados, que son en todos los casos un subconjunto de los disponibles en MIMIC-IV.
+ 
+\subsection*{Variable objetivo}
+ 
+La variable objetivo binaria (\texttt{etiqueta\_norad\_*}) toma el valor 1 cuando el paciente recibió su primera dosis de noradrenalina dentro del horizonte de predicción definido para esa ventana, y 0 en caso contrario. La tabla~\ref{tab:distribucion-etiqueta} muestra la distribución en los seis conjuntos.
+ 
+\begin{table}[htbp]
+  \centering
+  \caption{Distribución de la variable objetivo en los seis conjuntos definitivos.}
+  \label{tab:distribucion-etiqueta}
+  \resizebox{0.9\textwidth}{!}{%
+  \begin{tabular}{lrrrr}
+    \toprule
+    Conjunto & Total & Positivos & Negativos & \% positivos \\
+    \midrule
+    MIMIC-IV 3 h   & 1\,667 &   172 & 1\,495 & 10,3\% \\
+    MIMIC-IV 6 h   & 3\,282 &   338 & 2\,944 & 10,3\% \\
+    MIMIC-IV 12 h  & 4\,088 &   456 & 3\,632 & 11,2\% \\
+    eICU-CRD 3 h   &    789 &   114 &    675 & 14,4\% \\
+    eICU-CRD 6 h   & 1\,396 &   166 & 1\,230 & 11,9\% \\
+    eICU-CRD 12 h  & 2\,030 &   199 & 1\,831 &  9,8\% \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
+ 
+La proporción de positivos oscila entre el 9,8\% y el 14,4\%, lo que indica un desbalanceo moderado consistente con la prevalencia real del evento en UCI. El conjunto eICU de 3\,h presenta la mayor proporción de positivos (14,4\%). La columna \texttt{horas\_hasta\_norad} registra el tiempo transcurrido entre el inicio de la ventana de observación y la primera administración de noradrenalina; esta columna es \texttt{NA} para todos los pacientes con etiqueta 0, ya que el evento no tuvo lugar.
+ 
+\subsection*{Valores perdidos y estrategia de no-imputación}
+
+Es fundamental destacar que, bajo esta decisión metodológica y con el fin de preservar la fidelidad fisiológica de los datos reales, \textbf{en ningún momento se aplicaron técnicas de imputación artificial de datos faltantes}. En su lugar, se adoptó un enfoque de caso completo(\textit{complete-case analysis}), en el que únicamente se conservaron y analizaron aquellas estancias de UCI que presentaban la totalidad de sus variables clínicas y demográficas perfectamente medidas y pobladas.
+
+Como consecuencia de este diseño, la única columna que presenta valores perdidos de carácter estructural en los conjuntos de datos definitivos de MIMIC-IV es \texttt{horas\_hasta\_norad} (ausente por definición clínica en los casos negativos). Las restantes 80 columnas de variables se encuentran completamente cubiertas. En los conjuntos de validación de eICU-CRD la situación es análoga: la variable \texttt{horas\_hasta\_norad} toma el valor \texttt{NA} para los casos negativos.
 ```
-
 
 A continuación se muestra un **ejemplo de análisis exploratorio con R**
 que produce tanto código visible como tabla y figura en el PDF:
