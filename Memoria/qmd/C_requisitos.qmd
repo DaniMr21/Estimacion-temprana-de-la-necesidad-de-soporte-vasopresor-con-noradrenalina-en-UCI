@@ -10,7 +10,7 @@
 El único subsistema interactivo del trabajo es el \textit{dashboard}; el pipeline de modelado se ejecuta de forma desatendida y no tiene usuario que
 interactúe con él, por lo que los casos de uso modelan exclusivamente la aplicación de visualización. Cabe señalar que el \textit{dashboard} es un
 \textbf{prototipo académico} (versión 0.1, en fase de prueba de concepto), sin validación clínica prospectiva ni autorización regulatoria, no apto para
-uso asistencial real. El actor único es el \textbf{facultativo de Medicina Intensiva}. La Figura~\ref{fig:casos-uso} resume las funcionalidades.
+uso asistencial real. El actor único es el facultativo de Medicina Intensiva. La Figura~\ref{fig:casos-uso} resume las funcionalidades.
 
 \begin{figure}[H]
   \centering
@@ -45,18 +45,46 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 \end{itemize}
 
 
+% ── CU-1 ──────────────────────────────────────────────
 \begin{table}[p]
 	\centering
 	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
 		\toprule
-		\textbf{CU-1} & \textbf{Cargar datos clínicos del paciente}\\
+		\textbf{CU-1} & \textbf{Seleccionar la ventana temporal}\\
 		\toprule
-		\textbf{Versión del caso de uso}              & 1.0 \\
-		\textbf{Autor}                & Daniel Marina de la Cal \\
+		\textbf{Versión del caso de uso} & 1.0 \\
+		\textbf{Autor} & Daniel Marina de la Cal \\
+		\textbf{Requisitos asociados} & RF-1 \\
+		\textbf{Descripción} & El facultativo selecciona la ventana temporal de predicción (media, 6--24\,h, o larga, 12--48\,h), que determina el modelo que se aplicará. \\
+		\textbf{Precondición} & La aplicación está en ejecución. \\
+		\textbf{Acciones} &
+		\begin{enumerate}
+			\def\labelenumi{\arabic{enumi}.}
+			\tightlist
+			\item El facultativo pulsa el botón de la ventana deseada (media o larga).
+			\item El sistema carga el modelo correspondiente a esa ventana.
+		\end{enumerate}\\
+		\textbf{Postcondición} & Queda seleccionado el modelo de la ventana elegida, listo para recibir datos. \\
+		\textbf{Excepciones} & --- \\
+		\textbf{Importancia} & Alta \\
+		\bottomrule
+	\end{tabularx}
+	\caption{CU-1 Seleccionar la ventana temporal.}
+\end{table}
+
+% ── CU-2 ──────────────────────────────────────────────
+\begin{table}[p]
+	\centering
+	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
+		\toprule
+		\textbf{CU-2} & \textbf{Cargar CSV con datos del paciente}\\
+		\toprule
+		\textbf{Versión del caso de uso} & 1.0 \\
+		\textbf{Autor} & Daniel Marina de la Cal \\
 		\textbf{Requisitos asociados} & RF-2, RF-3 \\
-		\textbf{Descripción}          & El facultativo carga un fichero CSV con las mediciones del paciente para obtener una estimación de riesgo. \\
-		\textbf{Precondición}         & Haber seleccionado una ventana temporal y disponer de un CSV con el formato esperado. \\
-		\textbf{Acciones}             &
+		\textbf{Descripción} & El facultativo carga un fichero CSV con las mediciones del paciente para obtener una estimación de riesgo. \\
+		\textbf{Precondición} & Haber seleccionado una ventana temporal (CU-1) y disponer de un CSV con el formato esperado. \\
+		\textbf{Acciones} &
 		\begin{enumerate}
 			\def\labelenumi{\arabic{enumi}.}
 			\tightlist
@@ -70,21 +98,21 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\textbf{Importancia} & Alta \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-1 Cargar datos clínicos del paciente.}
+	\caption{CU-2 Cargar CSV con datos del paciente.}
 \end{table}
 
-
+% ── CU-3 ──────────────────────────────────────────────
 \begin{table}[p]
 	\centering
 	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
 		\toprule
-		\textbf{CU-2} & \textbf{Consultar el riesgo estimado}\\
+		\textbf{CU-3} & \textbf{Consultar el percentil de riesgo y la explicación SHAP}\\
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-4 \\
-		\textbf{Descripción} & El facultativo consulta el riesgo estimado de inicio de noradrenalina, expresado como percentil respecto a la población de referencia. \\
-		\textbf{Precondición} & Datos del paciente cargados y procesados (CU-1). \\
+		\textbf{Requisitos asociados} & RF-4, RF-5, RNF-1 \\
+		\textbf{Descripción} & El facultativo consulta el riesgo estimado de inicio de noradrenalina, expresado como percentil respecto a la población de referencia, junto con la explicación individual de las variables que contribuyen a la predicción. \\
+		\textbf{Precondición} & Datos del paciente cargados y procesados (CU-2). \\
 		\textbf{Acciones} &
 		\begin{enumerate}
 			\def\labelenumi{\arabic{enumi}.}
@@ -92,39 +120,69 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 			\item El sistema aplica el modelo de la ventana seleccionada.
 			\item Calcula la probabilidad y la traduce a un percentil respecto a MIMIC-IV.
 			\item Muestra el percentil de riesgo del paciente.
+			\item Calcula los valores SHAP individuales y muestra, ordenadas, las variables que empujan o reducen el riesgo.
 		\end{enumerate}\\
-		\textbf{Postcondición} & Se muestra el percentil de riesgo estimado. \\
+		\textbf{Postcondición} & Se muestran el percentil de riesgo y la explicación individualizada de la predicción. \\
 		\textbf{Excepciones} & --- \\
 		\textbf{Importancia} & Alta \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-2 Consultar el riesgo estimado.}
+	\caption{CU-3 Consultar el percentil de riesgo y la explicación SHAP.}
 \end{table}
 
+% ── CU-4 ──────────────────────────────────────────────
 \begin{table}[p]
 	\centering
 	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
 		\toprule
-		\textbf{CU-3}    & \textbf{Consultar la explicación de la predicción}\\
+		\textbf{CU-4} & \textbf{Ejecutar el modo demostración}\\
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-5, RNF-1 \\
-		\textbf{Descripción} & El facultativo consulta qué variables contribuyen a aumentar o reducir el riesgo estimado para el paciente concreto. \\
-		\textbf{Precondición} & Predicción calculada (CU-2). \\
+		\textbf{Requisitos asociados} & RF-6 \\
+		\textbf{Descripción} & El facultativo explora el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV real. \\
+		\textbf{Precondición} & La aplicación está en ejecución. \\
 		\textbf{Acciones} &
 		\begin{enumerate}
 			\def\labelenumi{\arabic{enumi}.}
 			\tightlist
-			\item El sistema calcula los valores SHAP individuales.
-			\item Muestra, ordenadas, las variables que empujan o reducen el riesgo.
+			\item El facultativo pulsa el botón de modo demostración.
+			\item Selecciona uno de los casos de ejemplo disponibles.
+			\item El sistema muestra los datos del caso, el percentil de riesgo y la explicación SHAP correspondientes.
 		\end{enumerate}\\
-		\textbf{Postcondición} & Se muestra la explicación individualizada de la predicción. \\
+		\textbf{Postcondición} & Se muestra el resultado del caso de demostración seleccionado. \\
 		\textbf{Excepciones} & --- \\
-		\textbf{Importancia} & Media-alta \\
+		\textbf{Importancia} & Baja \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-3 Consultar la explicación de la predicción.}
+	\caption{CU-4 Ejecutar el modo demostración.}
+\end{table}
+
+% ── CU-5 ──────────────────────────────────────────────
+\begin{table}[p]
+	\centering
+	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
+		\toprule
+		\textbf{CU-5} & \textbf{Consultar el manual e información}\\
+		\toprule
+		\textbf{Versión del caso de uso} & 1.0 \\
+		\textbf{Autor} & Daniel Marina de la Cal \\
+		\textbf{Requisitos asociados} & RF-7 \\
+		\textbf{Descripción} & El facultativo consulta el manual de uso integrado, que documenta las ventanas disponibles, el formato del CSV y la interpretación de los resultados, junto con el aviso de prototipo. \\
+		\textbf{Precondición} & La aplicación está en ejecución. \\
+		\textbf{Acciones} &
+		\begin{enumerate}
+			\def\labelenumi{\arabic{enumi}.}
+			\tightlist
+			\item El facultativo pulsa el botón de manual / información.
+			\item El sistema muestra las instrucciones de uso y el aviso de prototipo sin validación clínica.
+		\end{enumerate}\\
+		\textbf{Postcondición} & Se muestra la documentación de uso en pantalla. \\
+		\textbf{Excepciones} & --- \\
+		\textbf{Importancia} & Baja-media \\
+		\bottomrule
+	\end{tabularx}
+	\caption{CU-5 Consultar el manual e información.}
 \end{table}
 
 \section{Prototipo de interfaz}

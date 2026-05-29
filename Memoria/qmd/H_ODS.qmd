@@ -40,7 +40,7 @@ La competencia se materializa en la colaboración con la comunidad local, concre
 \subsection{SOS4.- Aplicación de principios éticos en el comportamiento profesional}
 Como futuro ingeniero de la salud, el desarrollo de este TFG se ha guiado por la responsabilidad profesional y el respeto a los derechos humanos:
 \begin{itemize}
-    \item Se ha garantizado el seguimiento de las restricciones de Physionet acerca del uso de las BBDD eICU y MIMIC-IV, sin redistribuirse ni publicarse en ningún momento ni las tablas originales ni las postprocesadas.
+    \item Se ha garantizado el cumplimiento de las restricciones de Physionet acerca del uso de las BBDD eICU y MIMIC-IV, sin redistribuirse ni publicarse en ningún momento ni las tablas originales ni las postprocesadas.
     \item El código se ha publicado de forma abierta y transparente en GitHub para fomentar la reproducibilidad científica y el acceso libre al conocimiento.
     \item El diseño del dashboard deja claro que la inteligencia artificial es solo una herramienta de apoyo; la decisión final siempre es del médico, respetando el principio humanista de la práctica médica.
 \end{itemize}

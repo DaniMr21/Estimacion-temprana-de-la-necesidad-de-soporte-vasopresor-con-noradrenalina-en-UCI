@@ -29,7 +29,8 @@ tanto, no requiere descargar las bases de datos MIMIC-IV ni eICU-CRD.
 
 \section{Instalación / Puesta en marcha}
 
-La puesta en marcha descrita a continuación correspondería a personal técnico; el usuario final (el facultativo) interactúa únicamente con la interfaz ya en ejecución, descrita en la sección siguiente.
+La puesta en marcha descrita a continuación correspondería a personal técnico; el usuario final (el facultativo) interactúa únicamente con la interfaz ya en ejecución, 
+descrita en la sección siguiente.
 
 La aplicación se distribuye en la carpeta \ruta{Dashboard} del repositorio, que contiene el script \ruta{pruebas\_dashboard.py}, los dos modelos serializados (\ruta{modelo\_Medio\_6\_24\_XGB\_calibrado.pkl} y
 \ruta{modelo\_Largo\_12\_48\_XGB.pkl}) y los dos ficheros de referencia de percentiles (\ruta{referencia\_percentiles\_medio.npy} y \ruta{referencia\_percentiles\_largo.npy}). Los pasos para ponerla en marcha
@@ -40,7 +41,8 @@ son los siguientes:
         carpeta \ruta{Dashboard} completa).
   \item Instalar las dependencias:
         \begin{verbatim}
-pip install streamlit pandas numpy scikit-learn xgboost shap matplotlib joblib
+pip install streamlit pandas numpy scikit-learn
+xgboost shap matplotlib joblib
         \end{verbatim}
   \item Situarse en la carpeta \ruta{Dashboard} y lanzar la aplicación:
         \begin{verbatim}

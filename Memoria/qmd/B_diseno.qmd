@@ -11,8 +11,8 @@ planos técnicos que documentar. Las características del equipo empleado se det
 
 \section{Diseño arquitectónico}
 
-El sistema se estructura en dos subsistemas desacoplados: un \textbf{pipeline de modelado}, que transforma los datos clínicos en modelos predictivos
-entrenados y serializados, y una \textbf{aplicación de visualización} (\textit{dashboard}), que consume dichos modelos para ofrecer estimaciones individualizadas. La Figura~\ref{fig:arquitectura}
+El sistema se estructura en dos subsistemas desacoplados: un pipeline de modelado, que transforma los datos clínicos en modelos predictivos
+entrenados y serializados, y una aplicación de visualización (\textit{dashboard}), que consume dichos modelos para ofrecer estimaciones individualizadas. La Figura~\ref{fig:arquitectura}
 resume el flujo general.
 
 El pipeline de modelado sigue una secuencia lineal de etapas: extracción de las cohortes mediante consultas SQL sobre MIMIC-IV y eICU-CRD;
