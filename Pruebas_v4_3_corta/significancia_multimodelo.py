@@ -104,7 +104,6 @@ VARIABLES_CONTINUAS  = [v for v in VARIABLES_PREDICTORAS
 
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 
@@ -151,8 +150,8 @@ def calcular_significancia_univariante(df):
 
     # ── Continuas: Mann-Whitney U ──────────────────────────────────────────
     for var in VARIABLES_CONTINUAS:
-        grupo_pos = df_test.loc[df_test[ETIQUETA] == 1, var].dropna()
-        grupo_neg = df_test.loc[df_test[ETIQUETA] == 0, var].dropna()
+        grupo_pos = df_test.loc[df_test[ETIQUETA] == 1, var]
+        grupo_neg = df_test.loc[df_test[ETIQUETA] == 0, var]
 
         if len(grupo_pos) < 2 or len(grupo_neg) < 2:
             filas.append({

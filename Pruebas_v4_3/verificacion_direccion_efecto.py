@@ -130,7 +130,6 @@ def main():
     for var in VARIABLES_REVISAR:
         es_binaria = var in VARIABLES_BINARIAS
 
-        # ── Descriptivos ───────────────────────────────────────────────
         if es_binaria:
             prop_pos = positivos[var].mean()
             prop_neg = negativos[var].mean()
@@ -159,25 +158,21 @@ def main():
             val_pos_str = f'{val_pos:.1f} [IQR: {p25_pos:.1f}–{p75_pos:.1f}]'
             val_neg_str = f'{val_neg:.1f} [IQR: {p25_neg:.1f}–{p75_neg:.1f}]'
 
-        # ── OR crudo ───────────────────────────────────────────────────
         or_crudo = calcular_or_crudo(df, var, ETIQUETA)
 
-        # ── OR ajustado ────────────────────────────────────────────────
         or_aj = or_ajustado[var]
 
-        # ── Dirección ─────────────────────────────────────────────────
         dir_datos   = '↑ mayor en positivos' if val_pos >= val_neg \
                       else '↓ menor en positivos'
         dir_or_aj   = '↑ riesgo' if or_aj['coef_ajustado'] > 0 \
                       else '↓ protector aparente'
         coherente   = (val_pos >= val_neg) == (or_aj['coef_ajustado'] > 0)
 
-        # ── Impresión ──────────────────────────────────────────────────
         print(f"{'─' * 60}")
         print(f"VARIABLE: {var}  ({nombre_test})")
         print(f"{'─' * 60}")
-        print(f"  Positivos (n={len(positivos[var].dropna())}) : {val_pos_str}")
-        print(f"  Negativos (n={len(negativos[var].dropna())}) : {val_neg_str}")
+        print(f"  Positivos (n={len(positivos[var])}) : {val_pos_str}")
+        print(f"  Negativos (n={len(negativos[var])}) : {val_neg_str}")
         print(f"  Dirección en datos   : {dir_datos}")
         print(f"  p-valor ({nombre_test}) : {formatea_p(p_test)}")
         print()
@@ -218,7 +213,6 @@ def main():
             'coherente':         coherente,
         })
 
-    # ── Tabla resumen ──────────────────────────────────────────────────
     df_res = pd.DataFrame(filas)
 
     print("=" * 70)
@@ -233,7 +227,6 @@ def main():
     print(tabla_print.to_string(index=False))
     print()
 
-    # ── Guardado ───────────────────────────────────────────────────────
     ruta_salida = os.path.join(
         CARPETA_TABLAS, 'verificacion_direccion_efecto_v4.csv'
     )

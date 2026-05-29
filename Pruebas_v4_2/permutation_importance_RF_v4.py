@@ -1,24 +1,3 @@
-"""
-Permutation Importance — Random Forest sobre set REDUCIDO v4 (26 variables).
-
-Mantiene la misma estructura que baseline_v4_2.py (mismo CV anidado,
-mismo grid, mismo pipeline) y añade:
-
-  - Cálculo de permutation importance en cada fold del CV externo
-    sobre el conjunto de test del fold (datos no vistos por el modelo).
-  - Agregación de las 5 estimaciones por variable (media, desv y CI).
-  - Cálculo de p-valor empírico por variable.
-  - Identificación de variables con caída de AUC indistinguible de cero.
-
-Es el equivalente "model-agnostic" a los p-valores de la regresión
-logística, pero válido para Random Forest (capta no linealidades e
-interacciones).
-
-Salidas:
-  - tablas/permutation_importance_RF_v4_reducido.csv
-  - figuras/permutation_importance_RF_v4_reducido.png
-"""
-
 import os
 import warnings
 warnings.filterwarnings('ignore')

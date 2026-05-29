@@ -25,8 +25,6 @@ from scipy.stats import mannwhitneyu, chi2_contingency
 from statsmodels.stats.multitest import multipletests
 
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
-
 RUTA_CSV = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
 
 CARPETA_BASE   = os.path.dirname(__file__) if '__file__' in dir() else '.'
@@ -100,11 +98,8 @@ VARIABLES_CONTINUAS  = [v for v in VARIABLES_PREDICTORAS
                         if v not in VARIABLES_BINARIAS]
 
 
-# ── CARGA Y PREPARACIÓN ────────────────────────────────────────────────────────
-
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 
@@ -116,22 +111,8 @@ def preparar(df):
     return predictores, etiqueta, paciente_id
 
 
-# ── SIGNIFICANCIA UNIVARIANTE ─────────────────────────────────────────────────
-
 def calcular_significancia_univariante(df):
-    """
-    Tests univariantes para cada variable frente a la etiqueta.
-
-    Se filtra a la PRIMERA estancia por paciente para evitar dependencia
-    entre observaciones (distinto al pipeline de modelado, que usa todas
-    las estancias con agrupamiento por paciente).
-
-    Continuas : Mann-Whitney U (two-sided)
-    Binarias  : Chi-cuadrado de Pearson
-    Corrección: FDR Benjamini-Hochberg (q < 0.05)
-
-    Devuelve DataFrame con una fila por variable.
-    """
+    
     df_primera = (
         df.sort_values([COLUMNA_ID, 'contador_estancia_uci'])
           .drop_duplicates(COLUMNA_ID, keep='first')
@@ -149,10 +130,9 @@ def calcular_significancia_univariante(df):
 
     filas = []
 
-    # ── Continuas: Mann-Whitney U ──────────────────────────────────────────
     for var in VARIABLES_CONTINUAS:
-        grupo_pos = df_test.loc[df_test[ETIQUETA] == 1, var].dropna()
-        grupo_neg = df_test.loc[df_test[ETIQUETA] == 0, var].dropna()
+        grupo_pos = df_test.loc[df_test[ETIQUETA] == 1, var]
+        grupo_neg = df_test.loc[df_test[ETIQUETA] == 0, var]
 
         if len(grupo_pos) < 2 or len(grupo_neg) < 2:
             filas.append({
@@ -174,7 +154,6 @@ def calcular_significancia_univariante(df):
             'p_valor_uni': p_val,
         })
 
-    # ── Binarias: Chi-cuadrado ─────────────────────────────────────────────
     for var in VARIABLES_BINARIAS:
         tabla_contingencia = pd.crosstab(df_test[var], df_test[ETIQUETA])
         chi2, p_val, _, _ = chi2_contingency(tabla_contingencia)
@@ -189,7 +168,6 @@ def calcular_significancia_univariante(df):
 
     df_uni = pd.DataFrame(filas)
 
-    # ── Corrección FDR Benjamini-Hochberg ──────────────────────────────────
     mascara_validos = df_uni['p_valor_uni'].notna()
     p_validos = df_uni.loc[mascara_validos, 'p_valor_uni'].values
     rechaza, p_corr, _, _ = multipletests(p_validos, method='fdr_bh', alpha=0.05)
@@ -207,10 +185,6 @@ def calcular_significancia_univariante(df):
     return df_uni
 
 
-# ── DEFINICIÓN DE MODELOS ─────────────────────────────────────────────────────
-# Grids reducidos centrados en los best_params observados en el baseline.
-# Cubren el entorno óptimo conocido → AUC equivalente, tiempo ~5-10x menor.
-
 def definir_modelos():
     """
     Devuelve lista de dicts con las claves:
@@ -218,7 +192,6 @@ def definir_modelos():
     """
     modelos = [
 
-        # ── REGRESIÓN LOGÍSTICA ────────────────────────────────────────────────
         {
             'clave': 'LR',
             'nombre_legible': 'Regresión Logística',
@@ -238,7 +211,6 @@ def definir_modelos():
             'n_jobs_grid': -1,
         },
 
-        # ── RANDOM FOREST ──────────────────────────────────────────────────────
         {
             'clave': 'RF',
             'nombre_legible': 'Random Forest',
@@ -258,7 +230,6 @@ def definir_modelos():
             'n_jobs_grid': -1,
         },
 
-        # ── XGBOOST ───────────────────────────────────────────────────────────
         {
             'clave': 'XGB',
             'nombre_legible': 'XGBoost',
@@ -284,7 +255,6 @@ def definir_modelos():
             'n_jobs_grid': -1,
         },
 
-        # ── LIGHTGBM ──────────────────────────────────────────────────────────
         {
             'clave': 'LGBM',
             'nombre_legible': 'LightGBM',
@@ -308,7 +278,6 @@ def definir_modelos():
             'n_jobs_grid': -1,
         },
 
-        # ── CATBOOST ──────────────────────────────────────────────────────────
         {
             'clave': 'CAT',
             'nombre_legible': 'CatBoost',
@@ -328,10 +297,9 @@ def definir_modelos():
                 'modelo__l2_leaf_reg':        [1, 5, 15],
                 'modelo__bagging_temperature':[0, 0.5, 1],
             },
-            'n_jobs_grid': 1,   # CatBoost gestiona sus propios hilos
+            'n_jobs_grid': 1,   
         },
 
-        # ── NAIVE BAYES ───────────────────────────────────────────────────────
         {
             'clave': 'NB',
             'nombre_legible': 'Naive Bayes',
@@ -346,9 +314,6 @@ def definir_modelos():
         },
     ]
     return modelos
-
-
-# ── CV ANIDADA CON PERMUTATION IMPORTANCE ────────────────────────────────────
 
 def cv_anidada_con_permutation_importance(
         nombre_clave, nombre_legible, pipeline, espacio,
@@ -439,8 +404,6 @@ def cv_anidada_con_permutation_importance(
     }
 
 
-# ── CONSTRUCCIÓN DE TABLA DE RESULTADOS POR MODELO ───────────────────────────
-
 def construir_tabla_un_modelo(resultados_modelo):
     """
     A partir del dict devuelto por cv_anidada_con_permutation_importance,
@@ -488,15 +451,8 @@ def construir_tabla_un_modelo(resultados_modelo):
     ).reset_index(drop=True)
 
 
-# ── TABLA DE CONSENSO ─────────────────────────────────────────────────────────
-
 def construir_tabla_consenso(df_todos_modelos, claves_modelos):
-    """
-    Pivota df_todos_modelos para tener una fila por variable y una columna
-    por modelo con la caída de AUC (pp) y el indicador IC_excluye_cero.
-
-    Añade columna 'n_modelos_significativos' y 'consenso'.
-    """
+    
     variables = (df_todos_modelos['variable']
                  .drop_duplicates()
                  .tolist())
@@ -539,18 +495,8 @@ def construir_tabla_consenso(df_todos_modelos, claves_modelos):
     return df_consenso
 
 
-# ── TABLA RESUMEN GLOBAL ──────────────────────────────────────────────────────
-
 def construir_tabla_resumen_global(df_consenso, df_univariante, claves_modelos):
-    """
-    Fusiona los resultados univariantes con el consenso multimodelo en una
-    única tabla, una fila por variable.
-
-    Columnas resultado:
-      variable | p_uni | p_uni_BH | sig_uni | <clave>_sig (x6) |
-      <clave>_caida_pp (x6) | n_modelos_sig | consenso_multimodelo |
-      consenso_global
-    """
+    
     # Seleccionar sólo lo necesario del univariante
     df_uni_slim = df_univariante[
         ['variable', 'test', 'p_valor_uni', 'p_valor_uni_BH', 'sig_uni_BH']
@@ -592,20 +538,10 @@ def construir_tabla_resumen_global(df_consenso, df_univariante, claves_modelos):
     return df_resumen
 
 
-# ── VISUALIZACIÓN ─────────────────────────────────────────────────────────────
-
 def graficar_significancia_global(df_resumen_global, df_todos_modelos,
                                   claves_modelos, nombres_legibles_por_clave,
                                   ruta_figura):
-    """
-    Figura de dos paneles lado a lado:
-      Panel izquierdo : columna de significancia univariante (binaria, verde/rojo)
-      Panel derecho   : heatmap de caída de AUC por modelo (continuo, RdYlGn)
-    Las filas (variables) están ordenadas igual en ambos paneles.
-    ★ marca las celdas donde IC95% excluye cero (panel derecho) o
-      donde BH-FDR q<0.05 (panel izquierdo).
-    """
-    # ── Pivote de caída de AUC ─────────────────────────────────────────────
+
     tabla_caida = df_todos_modelos.pivot_table(
         index='variable', columns='modelo', values='caida_AUC_pp'
     )
@@ -635,7 +571,6 @@ def graficar_significancia_global(df_resumen_global, df_todos_modelos,
     n_vars   = len(orden_variables)
     n_modelos = len(claves_modelos)
 
-    # ── Layout ────────────────────────────────────────────────────────────
     ancho_uni   = 1.2
     ancho_ml    = n_modelos * 1.5
     fig, (ax_uni, ax_ml) = plt.subplots(
@@ -644,7 +579,6 @@ def graficar_significancia_global(df_resumen_global, df_todos_modelos,
         gridspec_kw={'width_ratios': [ancho_uni, ancho_ml]},
     )
 
-    # ── Panel izquierdo: univariante ───────────────────────────────────────
     cmap_binario = matplotlib.colors.ListedColormap(['#d62728', '#2ca02c'])
     sns.heatmap(
         uni_valores,
@@ -672,7 +606,7 @@ def graficar_significancia_global(df_resumen_global, df_todos_modelos,
     ax_uni.tick_params(axis='y', labelsize=8)
     ax_uni.tick_params(axis='x', labelsize=8, rotation=0)
 
-    # ── Panel derecho: permutation importance ──────────────────────────────
+
     vmax_abs = max(abs(tabla_caida.values.max()),
                    abs(tabla_caida.values.min()), 0.5)
     sns.heatmap(
@@ -724,8 +658,6 @@ def graficar_significancia_global(df_resumen_global, df_todos_modelos,
     print(f"  Figura guardada en: {ruta_figura}")
 
 
-# ── MAIN ──────────────────────────────────────────────────────────────────────
-
 def main():
     print("=" * 70)
     print("SIGNIFICANCIA GLOBAL — UNIVARIANTE + PERMUTATION IMPORTANCE MULTIMODELO")
@@ -750,7 +682,6 @@ def main():
 
     tiempo_global = time.time()
 
-    # ── [1] SIGNIFICANCIA UNIVARIANTE ─────────────────────────────────────────
     print("─" * 70)
     print("[1/2] ANÁLISIS UNIVARIANTE")
     print("─" * 70)
@@ -774,7 +705,6 @@ def main():
               f"{p_str:>12} {pb_str:>10} {sig_str:>5}")
     print()
 
-    # ── [2] PERMUTATION IMPORTANCE MULTIMODELO ────────────────────────────────
     print("─" * 70)
     print("[2/2] PERMUTATION IMPORTANCE MULTIMODELO")
     print("─" * 70)
@@ -820,12 +750,10 @@ def main():
     df_todos_modelos = pd.concat(lista_tablas, ignore_index=True)
     df_consenso      = construir_tabla_consenso(df_todos_modelos, claves_modelos)
 
-    # ── TABLA RESUMEN GLOBAL ──────────────────────────────────────────────────
     df_resumen_global = construir_tabla_resumen_global(
         df_consenso, df_univariante, claves_modelos
     )
 
-    # ── RESUMEN FINAL EN CONSOLA ──────────────────────────────────────────────
     tiempo_horas = (time.time() - tiempo_global) / 3600
     print()
     print("=" * 70)
@@ -894,7 +822,6 @@ def main():
             print(f"    - {v}")
     print()
 
-    # ── GUARDADO ──────────────────────────────────────────────────────────────
     ruta_uni = os.path.join(
         CARPETA_TABLAS, 'significancia_univariante_multimodelo_v4.csv'
     )

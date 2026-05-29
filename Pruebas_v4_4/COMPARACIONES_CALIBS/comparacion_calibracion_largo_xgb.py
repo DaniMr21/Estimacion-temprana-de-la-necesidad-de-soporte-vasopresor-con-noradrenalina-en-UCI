@@ -13,7 +13,6 @@ from sklearn.metrics import roc_auc_score, brier_score_loss
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
 RUTA_CSV   = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
 RUTA_PKL   = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           'MODELOS_ENTRENADOS', 'modelo_Largo_12_48_XGB.pkl')
@@ -24,8 +23,6 @@ VARIABLES  = ['temp_min', 'pf_min', 'spo2_min', 'bicarbonato_min',
 N_SPLITS    = 5
 RANDOM_SEED = 42
 N_BINS_CAL  = 10
-
-# ── FUNCIONES MÉTRICAS ─────────────────────────────────────────────────────────
 
 def calcular_ece(probabilidades, etiquetas, n_bins=N_BINS_CAL):
     limites = np.linspace(0.0, 1.0, n_bins + 1)
@@ -55,7 +52,6 @@ def metricas_resumen(probabilidades, etiquetas, nombre):
     print(f"  [{nombre:12s}]  AUC={auc:.4f}  Brier={bs:.4f}  BSS={bss:+.4f}  ECE={ece:.4f}")
     return {'nombre': nombre, 'auc': auc, 'brier': bs, 'bss': bss, 'ece': ece}
 
-# ── CARGA ──────────────────────────────────────────────────────────────────────
 print("Cargando datos y modelo...")
 df     = pd.read_csv(RUTA_CSV)
 y      = df[ETIQUETA].values.astype(int)
@@ -65,7 +61,6 @@ modelo = joblib.load(RUTA_PKL)
 
 print(f"  Pacientes: {len(y)} | Positivos: {y.sum()} ({y.mean():.3f})")
 
-# ── PROBABILIDADES OOF HONESTAS ────────────────────────────────────────────────
 cv = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_SEED)
 
 prob_sin_cal = np.zeros(len(y))
@@ -95,7 +90,6 @@ for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X, y, grupos)):
 
     print(f"  Fold {fold_idx + 1}/{N_SPLITS} — test n={len(idx_test)}, positivos={y_test.sum()}")
 
-# ── MÉTRICAS ───────────────────────────────────────────────────────────────────
 print("\n=== MÉTRICAS OOF COMPARATIVAS ===")
 resultados = [
     metricas_resumen(prob_sin_cal, y, 'Sin calibrar'),
@@ -104,7 +98,6 @@ resultados = [
 ]
 df_resultados = pd.DataFrame(resultados)
 
-# ── GRÁFICA ────────────────────────────────────────────────────────────────────
 fig = plt.figure(figsize=(16, 5))
 fig.suptitle('Comparación empírica calibración OOF — XGB | Largo_12_48',
              fontsize=14, fontweight='bold')
@@ -163,7 +156,6 @@ plt.savefig(ruta_figura, dpi=200, bbox_inches='tight')
 plt.show()
 print(f"\nGráfica guardada en: {ruta_figura}")
 
-# ── VEREDICTO ──────────────────────────────────────────────────────────────────
 ece_base  = df_resultados.loc[df_resultados['nombre'] == 'Sin calibrar', 'ece'].values[0]
 ece_mejor = df_resultados['ece'].min()
 mejor_cal = df_resultados.loc[df_resultados['ece'].idxmin(), 'nombre']
@@ -173,14 +165,14 @@ bss_mejor = df_resultados.loc[df_resultados['ece'].idxmin(), 'bss'].values[0]
 
 print("\n=== VEREDICTO ===")
 if mejor_cal == 'Sin calibrar':
-    print("  La calibración NO mejora el modelo. Usar sin calibrar.")
+    print("  La calibración NO mejora el modelo")
 elif mejora < 0.005:
     print(f"  Mejora ECE con {mejor_cal}: {mejora:.4f} (marginal).")
-    print("  La calibración apenas aporta. Recomendado: usar sin calibrar.")
+    print("  La calibración apenas aporta")
 else:
     perdida_bss = bss_base - bss_mejor
     print(f"  Mejor calibrador: {mejor_cal} | Mejora ECE: {mejora:.4f}")
     if perdida_bss > 0.005:
-        print(f"  ADVERTENCIA: mejora ECE pero empeora BSS en {perdida_bss:.4f}. Evaluar tradeoff.")
+        print(f" empeora BSS en {perdida_bss:.4f}. Evaluar tradeoff.")
     else:
-        print(f"  Calibrar con {mejor_cal} mejora ECE sin penalizar BSS. Recomendado.")
+        print(f"  Calibrar con {mejor_cal} mejora ECE sin penalizar BSS.")

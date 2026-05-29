@@ -1,24 +1,3 @@
-"""
-Evalua la capacidad predictiva de la variable `tiene_sepsis` respecto
-a la etiqueta `etiqueta_norad_6_24` (inicio de noradrenalina en 6-24h).
-
-Se calculan varias métricas complementarias, porque una sola no cuenta
-toda la historia:
-
-  1. Tabla de contingencia (2x2): conteos crudos.
-  2. Prevalencia del evento en cada grupo (con/sin sepsis).
-  3. Riesgo relativo y odds ratio con intervalos de confianza al 95%.
-  4. Sensibilidad, especificidad, VPP, VPN, prevalencia global.
-  5. AUC (sepsis como único predictor).
-  6. Información mutua con la etiqueta.
-  7. Test chi-cuadrado de independencia.
-  8. Rendimiento univariante vs. rendimiento añadido a un baseline
-     con el resto de variables (con CV de 5 folds agrupada).
-
-Todo lo que aporta información al modelo DEBE superar al azar en al menos
-una de estas pruebas. Si no lo hace en ninguna, es redundante.
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -40,7 +19,7 @@ from sklearn.pipeline import Pipeline
 
 RUTA = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
 df = pd.read_csv(RUTA)
-df = df.dropna(subset=['pf_max'])
+df = df.dropna(subset=['pf_max']) #PORSIACASO
 
 x = df['tiene_sepsis'].astype(int).values
 y = df['etiqueta_norad_6_24'].astype(int).values

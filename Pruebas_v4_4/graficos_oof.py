@@ -9,7 +9,7 @@ from sklearn.model_selection import StratifiedGroupKFold, cross_val_predict
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── 1. RUTAS Y CARPETAS ────────────────────────────────────────────────────────
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
 MODELOS_DIR = os.path.join(BASE_DIR, 'MODELOS_ENTRENADOS')
 GRAFICAS_DIR = os.path.join(BASE_DIR, 'GRAFICAS_HONESTAS_OOF') # Carpeta nueva
@@ -17,7 +17,7 @@ GRAFICAS_DIR = os.path.join(BASE_DIR, 'GRAFICAS_HONESTAS_OOF') # Carpeta nueva
 os.makedirs(GRAFICAS_DIR, exist_ok=True)
 COLUMNA_ID = 'subject_id'
 
-# ── 2. DICCIONARIO COMPLETO ────────────────────────────────────────────────────
+
 CONFIG_VENTANAS = {
     'Corto_3_12': {
         'ruta':     r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv',
@@ -56,7 +56,6 @@ CONFIG_VENTANAS = {
     }
 }
 
-# ── 3. BUCLE DE GENERACIÓN OOF ─────────────────────────────────────────────────
 plt.style.use('seaborn-v0_8-whitegrid')
 
 for ventana, conf in CONFIG_VENTANAS.items():
@@ -95,7 +94,6 @@ for ventana, conf in CONFIG_VENTANAS.items():
             method='predict_proba'
         )[:, 1]
         
-        # --- DIBUJAR LOS 3 PANELES ---
         fig, axes = plt.subplots(1, 3, figsize=(18, 5.5))
         fig.suptitle(f'Rendimiento Validación Cruzada (OOF): {modelo_nombre} | Ventana: {ventana}', fontsize=16, fontweight='bold', y=1.05)
         

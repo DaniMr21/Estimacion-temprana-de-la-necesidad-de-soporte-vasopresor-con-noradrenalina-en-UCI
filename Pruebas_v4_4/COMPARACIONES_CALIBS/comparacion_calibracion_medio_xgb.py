@@ -13,7 +13,6 @@ from sklearn.metrics import roc_auc_score, brier_score_loss
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
 RUTA_CSV    = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
 RUTA_PKL    = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'MODELOS_ENTRENADOS\modelo_Medio_6_24_XGB.pkl')
 ETIQUETA    = 'etiqueta_norad_6_24'
@@ -23,7 +22,6 @@ N_SPLITS    = 5
 RANDOM_SEED = 42
 N_BINS_CAL  = 10   # bins para ECE y curva de calibración
 
-# ── FUNCIONES MÉTRICAS ─────────────────────────────────────────────────────────
 
 def calcular_ece(probabilidades, etiquetas, n_bins=N_BINS_CAL):
     """Expected Calibration Error con bins de igual anchura."""
@@ -57,7 +55,6 @@ def metricas_resumen(probabilidades, etiquetas, nombre):
     print(f"  [{nombre:12s}]  AUC={auc:.4f}  Brier={bs:.4f}  BSS={bss:+.4f}  ECE={ece:.4f}")
     return {'nombre': nombre, 'auc': auc, 'brier': bs, 'bss': bss, 'ece': ece}
 
-# ── CARGA ──────────────────────────────────────────────────────────────────────
 print("Cargando datos y modelo...")
 df      = pd.read_csv(RUTA_CSV)
 y       = df[ETIQUETA].values.astype(int)
@@ -67,7 +64,6 @@ modelo  = joblib.load(RUTA_PKL)
 
 print(f"  Pacientes: {len(y)} | Positivos: {y.sum()} ({y.mean():.3f})")
 
-# ── GENERACIÓN DE PROBABILIDADES OOF HONESTAS ─────────────────────────────────
 # Mismo StratifiedGroupKFold que en graficos_oof.py
 cv = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_SEED)
 
@@ -83,9 +79,6 @@ for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X, y, grupos)):
     X_train, X_test = X.iloc[idx_train], X.iloc[idx_test]
     y_train, y_test = y[idx_train], y[idx_test]
 
-    # ── Re-entrenar el modelo en los datos de este fold (igual que cross_val_predict)
-    # No se usa el modelo pre-entrenado: se clona con los mismos hiperparámetros
-    # y se re-ajusta SOLO con los datos de entrenamiento del fold
     modelo_fold = clone(modelo)
     modelo_fold.fit(X_train, y_train)
 
@@ -108,7 +101,6 @@ for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X, y, grupos)):
     print(f"  Fold {fold_idx + 1}/{N_SPLITS} completado "
           f"(test n={len(idx_test)}, positivos={y_test.sum()})")
 
-# ── MÉTRICAS COMPARATIVAS ──────────────────────────────────────────────────────
 print("\n=== MÉTRICAS OOF COMPARATIVAS ===")
 resultados = [
     metricas_resumen(prob_sin_cal, y, 'Sin calibrar'),
@@ -119,7 +111,6 @@ df_resultados = pd.DataFrame(resultados)
 print()
 print(df_resultados.to_string(index=False))
 
-# ── GRÁFICA COMPARATIVA ────────────────────────────────────────────────────────
 fig = plt.figure(figsize=(16, 5))
 fig.suptitle(
     'Comparación empírica calibración OOF — XGB | Medio_6_24',
@@ -191,7 +182,6 @@ plt.savefig(ruta_figura, dpi=200, bbox_inches='tight')
 plt.show()
 print(f"\nGráfica guardada en: {ruta_figura}")
 
-# ── VEREDICTO AUTOMÁTICO ───────────────────────────────────────────────────────
 ece_base   = df_resultados.loc[df_resultados['nombre'] == 'Sin calibrar', 'ece'].values[0]
 ece_mejor  = df_resultados['ece'].min()
 mejor_cal  = df_resultados.loc[df_resultados['ece'].idxmin(), 'nombre']
@@ -203,13 +193,12 @@ print("\n=== VEREDICTO ===")
 if mejor_cal == 'Sin calibrar':
     print("  La calibración NO mejora el modelo. Usar sin calibrar.")
 elif mejora_ece < 0.005:
-    print(f"  Mejora de ECE con {mejor_cal}: {mejora_ece:.4f} (marginal, <0.005).")
-    print("  La calibración apenas aporta. Recomendado: usar sin calibrar.")
+    print(f"  Mejora de ECE con {mejor_cal}: {mejora_ece:.4f}.")
+    print("La calibración apenas aporta")
 else:
     perdida_bss = bss_base - bss_mejor
     print(f"  Mejor calibración: {mejor_cal} | Mejora ECE: {mejora_ece:.4f}")
     if perdida_bss > 0.005:
         print(f"  ADVERTENCIA: calibrar mejora ECE pero empeora BSS en {perdida_bss:.4f}.")
-        print("  Evaluar tradeoff según objetivo clínico.")
     else:
-        print(f"  Calibrar con {mejor_cal} mejora ECE sin penalizar BSS. Recomendado.")
+        print(f"  Calibrar con {mejor_cal} mejora ECE sin penalizar BSS.")

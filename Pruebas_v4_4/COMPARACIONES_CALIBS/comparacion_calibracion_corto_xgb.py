@@ -13,7 +13,6 @@ from sklearn.metrics import roc_auc_score, brier_score_loss
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
 RUTA_CSV   = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
 RUTA_PKL   = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           'MODELOS_ENTRENADOS', 'modelo_Corto_3_12_XGB.pkl')
@@ -24,11 +23,9 @@ N_SPLITS    = 5
 RANDOM_SEED = 42
 N_BINS_CAL  = 10
 
-# Métricas conocidas del CAT Corto (del CSV resultados_metricas_multiventana)
-# Se usan solo para la tabla comparativa final — no se tocan los modelos
+
 CAT_CORTO_REF = {'modelo': 'CAT Corto (referencia)', 'auc': 0.6231, 'bss': 0.0116, 'ece': 0.0201}
 
-# ── FUNCIONES MÉTRICAS ─────────────────────────────────────────────────────────
 
 def calcular_ece(probabilidades, etiquetas, n_bins=N_BINS_CAL):
     limites = np.linspace(0.0, 1.0, n_bins + 1)
@@ -57,7 +54,7 @@ def metricas_resumen(probabilidades, etiquetas, nombre):
     print(f"  [{nombre:16s}]  AUC={auc:.4f}  BSS={bss:+.4f}  ECE={ece:.4f}")
     return {'nombre': nombre, 'auc': auc, 'bss': bss, 'ece': ece}
 
-# ── CARGA ──────────────────────────────────────────────────────────────────────
+
 print("Cargando datos y modelo XGB Corto...")
 df     = pd.read_csv(RUTA_CSV)
 y      = df[ETIQUETA].values.astype(int)
@@ -67,7 +64,6 @@ modelo = joblib.load(RUTA_PKL)
 
 print(f"  Pacientes: {len(y)} | Positivos: {y.sum()} ({y.mean():.3f})")
 
-# ── PROBABILIDADES OOF HONESTAS ────────────────────────────────────────────────
 cv = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_SEED)
 
 prob_sin_cal = np.zeros(len(y))
@@ -97,7 +93,6 @@ for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X, y, grupos)):
 
     print(f"  Fold {fold_idx + 1}/{N_SPLITS} — test n={len(idx_test)}, positivos={y_test.sum()}")
 
-# ── MÉTRICAS ───────────────────────────────────────────────────────────────────
 print("\n=== MÉTRICAS OOF — XGB Corto_3_12 ===")
 resultados = [
     metricas_resumen(prob_sin_cal, y, 'XGB sin calibrar'),
@@ -106,7 +101,6 @@ resultados = [
 ]
 df_resultados = pd.DataFrame(resultados)
 
-# ── COMPARATIVA CONTRA CAT CORTO ──────────────────────────────────────────────
 print("\n=== COMPARATIVA XGB CALIBRADO vs CAT CORTO (referencia) ===")
 mejor_xgb = df_resultados.loc[df_resultados['ece'].idxmin()]
 print(f"  {'Modelo':<22} {'AUC':>7} {'BSS':>8} {'ECE':>8}")
@@ -117,7 +111,6 @@ for _, fila in df_resultados.iterrows():
 print(f"  {CAT_CORTO_REF['modelo']:<22} {CAT_CORTO_REF['auc']:>7.4f} "
       f"{CAT_CORTO_REF['bss']:>+8.4f} {CAT_CORTO_REF['ece']:>8.4f}  ← modelo actual")
 
-# ── GRÁFICA ────────────────────────────────────────────────────────────────────
 fig = plt.figure(figsize=(16, 5))
 fig.suptitle('Comparación empírica calibración OOF — XGB | Corto_3_12',
              fontsize=14, fontweight='bold')

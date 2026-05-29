@@ -1,16 +1,3 @@
-"""
-RF CON vs SIN gpt_max — set reducido v4.
- 
-Entrena dos modelos RF con grid reducido en la misma ejecución:
-  - Modelo A: 26 variables (incluye gpt_max)
-  - Modelo B: 25 variables (sin gpt_max)
- 
-Misma semilla, mismos folds, mismo grid → comparación justa.
- 
-Grid reducido basado en los best_params observados en el baseline original
-(36 combinaciones vs 630 originales, ~17x más rápido).
-"""
- 
 import warnings
 warnings.filterwarnings('ignore')
  

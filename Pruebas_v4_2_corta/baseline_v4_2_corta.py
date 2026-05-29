@@ -21,7 +21,6 @@ from catboost import CatBoostClassifier
 def cargar_datos():
     ruta = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
     df = pd.read_csv(ruta)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 

@@ -1,17 +1,3 @@
-"""
-Permutation Importance — CatBoost, ventana CORTA v4p (26 variables).
-Observación: 0-3h | Predicción: 3-12h
-Etiqueta: etiqueta_norad_3_12
-
-Misma estructura que baseline_v4_2_corta.py: mismo CV anidado,
-mismo grid de CatBoost. Añade permutation importance sobre el
-test set de cada fold externo (50 permutaciones por variable).
-
-Salidas:
-  - tablas/permutation_importance_CAT_v4p.csv
-  - figuras/permutation_importance_CAT_v4p.png
-"""
-
 import os
 import warnings
 warnings.filterwarnings('ignore')
@@ -53,10 +39,9 @@ variables_predictoras = [
     'glucemia_min', 'temp_min', 'sofa_max',
 ]
 
-# ── CARGA Y PREPARACIÓN ────────────────────────────────────────────────────────
+#CARGA Y PREPARACIÓN
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 def preparar(df):
@@ -66,7 +51,7 @@ def preparar(df):
     paciente_id= df['subject_id'].copy()
     return predictores, etiqueta, paciente_id
 
-# ── PIPELINE Y GRID (idéntico a baseline_v4_2_corta.py) ───────────────────────
+#PIPELINE Y GRID (idéntico a baseline_v4_2_corta.py)
 pipeline = Pipeline([
     ('modelo', CatBoostClassifier(
         loss_function='Logloss', eval_metric='AUC',
@@ -81,7 +66,7 @@ espacio = {
     'modelo__bagging_temperature':[0, 0.5, 1],
 }
 
-# ── CV ANIDADO + PERMUTATION IMPORTANCE ───────────────────────────────────────
+#CV ANIDADO + PERMUTATION IMPORTANCE
 def run_cv(predictores, etiqueta, paciente_id):
     cv_ext = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
     cv_int = StratifiedGroupKFold(n_splits=3, shuffle=True, random_state=RANDOM_STATE)
@@ -134,7 +119,7 @@ def run_cv(predictores, etiqueta, paciente_id):
     return dict(aucs=aucs, auc_medio=auc_m, auc_desv=auc_s,
                 imp_medias=imp_medias, todas_perm=todas_perm, nombres=nombres)
 
-# ── TABLA RESUMEN ──────────────────────────────────────────────────────────────
+#TABLA RESUMEN
 def tabla_resumen(res):
     nombres, imp_folds, todas = res['nombres'], res['imp_medias'], res['todas_perm']
     filas = []
@@ -152,7 +137,7 @@ def tabla_resumen(res):
                           p_emp_menor_005=(p_emp < 0.05)))
     return pd.DataFrame(filas).sort_values('caida_AUC_pp', ascending=False).reset_index(drop=True)
 
-# ── FIGURA ─────────────────────────────────────────────────────────────────────
+#FIGURA
 def graficar(df_res, ruta, auc_m):
     df_p = df_res.sort_values('caida_AUC_pp').copy()
     colores = ['#2ca02c' if r else '#d62728' for r in df_p['IC_excluye_cero']]
@@ -172,7 +157,7 @@ def graficar(df_res, ruta, auc_m):
     plt.tight_layout()
     plt.savefig(ruta, dpi=150, bbox_inches='tight'); plt.close()
 
-# ── MAIN ───────────────────────────────────────────────────────────────────────
+#MAIN
 def main():
     print("─" * 60)
     print("PERMUTATION IMPORTANCE — CatBoost v4p CORTA")

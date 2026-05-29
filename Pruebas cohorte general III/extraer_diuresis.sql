@@ -1,3 +1,6 @@
+--AVISO: ESTE SCRIPT SE OBTUVO DIRECTAMENTE A TRAVÉS DEL REPOSITORIO DEL MIT-LCP PARA TRABAJAR CON MIMIC-IV: https://github.com/MIT-LCP/mimic-code
+
+
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
 DROP TABLE IF EXISTS mimiciv_derived.weight_durations; CREATE TABLE mimiciv_derived.weight_durations AS
 /* This query extracts weights for adult ICU patients with start/stop times */ /* if an admission weight is given, then this is assigned from intime to outtime */

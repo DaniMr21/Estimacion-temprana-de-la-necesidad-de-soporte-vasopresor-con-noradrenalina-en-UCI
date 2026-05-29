@@ -82,7 +82,6 @@ UMBRAL_CAIDA = 0.005  # si AUC baja más de esto, parar
 # ── FUNCIONES ─────────────────────────────────────────────────────────────────
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 

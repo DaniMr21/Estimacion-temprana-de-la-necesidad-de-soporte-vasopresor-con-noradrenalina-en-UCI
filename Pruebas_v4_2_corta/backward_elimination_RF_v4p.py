@@ -1,29 +1,3 @@
-"""
-Backward elimination — RF v4p CORTA (sin gpt_max).
-Mismo enfoque que la ventana principal: RF con grid reducido (36 combinaciones).
-
-Orden de eliminación (de menos a más importante según permutation importance CAT v4p):
-  1.  peso_kg               (-0.26 pp)
-  2.  glucemia_min          (-0.23 pp)
-  3.  hemoglobina_min       (-0.22 pp)
-  4.  creatinina_max        (-0.14 pp)
-  5.  ventilacion_invasiva_3h(-0.13 pp)
-  6.  leucocitos_min        (-0.11 pp)
-  7.  plaquetas_min         (-0.05 pp)
-  8.  gender                (-0.00 pp)
-  9.  contador_estancia_uci ( 0.03 pp)
-  10. bicarbonato_min       ( 0.03 pp)
-  11. tp_max                ( 0.09 pp)
-  12. anchor_age            ( 0.17 pp)
-  13. fio2_max              ( 0.22 pp)
-  14. hr_media              ( 0.29 pp)
-  15. lactato_max           ( 0.65 pp)
-  16. spo2_min              ( 0.97 pp)
-  17. ph_min                ( 0.98 pp)
-  18. rr_max                ( 1.30 pp)
-  19. diuresis_ml_kg_3h     ( 1.48 pp)
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -36,7 +10,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import roc_auc_score
 from sklearn.ensemble import RandomForestClassifier
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
+#CONFIGURACIÓN
 RUTA_CSV     = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
 ETIQUETA     = 'etiqueta_norad_3_12'
 UMBRAL_CAIDA = 0.005
@@ -81,7 +55,7 @@ VARIABLES_INICIO = [
 ]
 # 25 variables (sin gpt_max)
 
-# ── PIPELINE Y GRID REDUCIDO (idéntico a ventana principal) ───────────────────
+#PIPELINE Y GRID REDUCIDO (idéntico a ventana principal)
 pipeline = Pipeline([
     ('modelo', RandomForestClassifier(random_state=42, n_jobs=-1))
 ])
@@ -94,10 +68,9 @@ espacio = {
 }
 # 36 combinaciones
 
-# ── FUNCIONES ─────────────────────────────────────────────────────────────────
+#FUNCIONES
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=[ETIQUETA, 'subject_id', 'pf_min'])
     return df
 
 
@@ -127,7 +100,7 @@ def entrenar_rf(predictores, etiqueta, paciente_id):
     return np.mean(aucs), np.std(aucs)
 
 
-# ── MAIN ───────────────────────────────────────────────────────────────────────
+# MAIN
 def main():
     print("=" * 65)
     print("BACKWARD ELIMINATION — RF v4p CORTA (sin gpt_max)")

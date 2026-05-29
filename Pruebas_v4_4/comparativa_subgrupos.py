@@ -1,11 +1,3 @@
-"""
-Análisis de Subgrupos y Benchmark Clínico (SOFA) — Ventana Medio_6_24
-======================================================================
-1. Genera predicciones honestas (OOF) calibradas con Platt.
-2. Evalúa métricas en subgrupos: Global, Sépticos y No Sépticos.
-3. Evalúa el score SOFA aislado como baseline clínico (solo AUCs).
-"""
-
 import os
 import joblib
 import numpy as np
@@ -17,7 +9,6 @@ from sklearn.base import clone
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── 1. CONFIGURACIÓN ───────────────────────────────────────────────────────────
 RUTA_CSV   = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
 RUTA_PKL   = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'MODELOS_ENTRENADOS\modelo_Medio_6_24_XGB.pkl')
 ETIQUETA   = 'etiqueta_norad_6_24'
@@ -26,7 +17,7 @@ VARIABLES  = ['pf_min', 'map_min', 'diuresis_ml_kg_6h', 'hr_media', 'sofa_max', 
 N_SPLITS   = 5
 RANDOM_SEED = 42
 
-# ── 2. FUNCIONES DE MÉTRICAS ───────────────────────────────────────────────────
+
 def calcular_ece(probabilidades, etiquetas, n_bins=10):
     limites = np.linspace(0.0, 1.0, n_bins + 1)
     ece = 0.0
@@ -43,7 +34,6 @@ def calcular_bss(probabilidades, etiquetas):
     bs_clima = brier_score_loss(etiquetas, np.full_like(probabilidades, prevalencia))
     return float(1 - bs_modelo / bs_clima) if bs_clima != 0 else np.nan
 
-# ── 3. CARGA DE DATOS ──────────────────────────────────────────────────────────
 print("Cargando datos y modelo...")
 df = pd.read_csv(RUTA_CSV)
 
@@ -55,7 +45,6 @@ sofa_score = df['sofa_max'].values  # Score crudo para el benchmark
 
 modelo = joblib.load(RUTA_PKL)
 
-# ── 4. GENERAR PROBABILIDADES OOF CALIBRADAS ───────────────────────────────────
 print(f"Generando predicciones OOF honestas ({N_SPLITS} folds)...")
 cv = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_SEED)
 prob_oof_calibrada = np.zeros(len(y))
@@ -74,7 +63,6 @@ for idx_train, idx_test in cv.split(X, y, grupos):
     
     prob_oof_calibrada[idx_test] = calibrador.predict_proba(prob_test.reshape(-1, 1))[:, 1]
 
-# ── 5. EVALUACIÓN POR SUBGRUPOS Y BENCHMARK ────────────────────────────────────
 print("\n" + "="*70)
 print(f"{'SUBGRUPO / MODELO':<25} | {'N (Pacientes)':<13} | {'AUC-ROC':<7} | {'AUC-PR':<7} | {'BSS':<7} | {'ECE':<7}")
 print("-" * 70)
@@ -84,7 +72,6 @@ def imprimir_fila(nombre, n_pacientes, auc, aupr, bss, ece):
     ece_str = f"{ece:.4f}" if not np.isnan(ece) else "  ---  "
     print(f"{nombre:<25} | n={n_pacientes:<11} | {auc:.4f}  | {aupr:.4f}  | {bss_str:<7} | {ece_str:<7}")
 
-# A. EVALUACIÓN DEL XGBOOST CALIBRADO EN SUBGRUPOS
 mascaras = {
     'GLOBAL (Todos)': np.ones_like(y, dtype=bool),
     'SÉPTICOS (tiene_sepsis=1)': sepsis == 1,
@@ -108,8 +95,8 @@ for nombre, mascara in mascaras.items():
 
 print("-" * 70)
 
-# B. BENCHMARK DEL SOFA AISLADO (Solo Global)
-# Como el SOFA no es probabilidad, solo calculamos AUCs
+
+# Como el SOFA no es probabilidad, solo ses sacan AUCs
 auc_sofa  = roc_auc_score(y, sofa_score)
 aupr_sofa = average_precision_score(y, sofa_score)
 imprimir_fila('SOFA (Baseline Clínico)', len(y), auc_sofa, aupr_sofa, np.nan, np.nan)

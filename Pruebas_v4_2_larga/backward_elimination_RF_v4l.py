@@ -1,24 +1,3 @@
-"""
-Backward elimination — RF v4l LARGA (sin gpt_max).
-Mismo enfoque que la ventana principal: RF con grid reducido (36 combinaciones).
-
-Orden de eliminación (de menos a más importante según permutation importance CAT v4l):
-  1.  peso_kg
-  2.  hemoglobina_min
-  3.  creatinina_max
-  4.  plaquetas_min
-  5.  contador_estancia_uci
-  6.  leucocitos_min
-  7.  gender
-  8.  ph_min
-  9.  anchor_age
-  10. tp_max
-  11. ventilacion_invasiva_12h
-  12. gcs_min
-  13. lactato_max
-  14. hr_media
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -31,7 +10,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import roc_auc_score
 from sklearn.ensemble import RandomForestClassifier
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
+# CONFIGURACIÓN
 RUTA_CSV     = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
 ETIQUETA     = 'etiqueta_norad_12_48'
 UMBRAL_CAIDA = 0.005
@@ -87,7 +66,6 @@ espacio = {
 # ── FUNCIONES ─────────────────────────────────────────────────────────────────
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=[ETIQUETA, 'subject_id', 'pf_min'])
     return df
 
 

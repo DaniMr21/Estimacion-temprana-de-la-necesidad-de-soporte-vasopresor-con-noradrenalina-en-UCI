@@ -1,23 +1,3 @@
-"""
-Evalua la capacidad predictiva de la variable `tiene_sepsis` respecto
-a la etiqueta `etiqueta_norad_3_12` (inicio de noradrenalina en 3-12h),
-sobre la ventana PRECOZ (observación 0-3h).
-
-Replica el mismo análisis que se hizo sobre v4 (0-6h / 6-24h) para poder
-comparar cómo cambia el valor informativo de la sepsis al reducir la
-ventana de observación.
-
-  1. Tabla de contingencia (2x2): conteos crudos.
-  2. Prevalencia del evento en cada grupo (con/sin sepsis).
-  3. Riesgo relativo y odds ratio con intervalos de confianza al 95%.
-  4. Sensibilidad, especificidad, VPP, VPN.
-  5. AUC (sepsis como único predictor).
-  6. Información mutua con la etiqueta.
-  7. Test chi-cuadrado de independencia.
-  8. Ganancia marginal: AUC del modelo con/sin tiene_sepsis
-     (regresión logística, CV 5-fold agrupada por paciente).
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 

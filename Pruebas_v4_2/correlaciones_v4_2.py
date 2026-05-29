@@ -1,13 +1,3 @@
-"""
- Salidas:
-  - figuras/correlacion_spearman_v4_reducido.png
-  - figuras/dendrograma_v4_reducido.png
-  - tablas/matriz_spearman_v4_reducido.csv
-  - tablas/pares_alta_correlacion_v4_reducido.csv
-  - tablas/vif_v4_reducido.csv
-  - tablas/asociaciones_binarias_v4_reducido.csv
-"""
- 
 import os
 import warnings
 warnings.filterwarnings('ignore')
@@ -36,7 +26,6 @@ print("ANÁLISIS DE CORRELACIÓN — SET REDUCIDO v4 (26 variables)")
 print("-----------------------------")
  
 df = pd.read_csv(RUTA_CSV)
-df = df.dropna(subset=['pf_max'])
 print(f"\nDataset cargado:")
 print(f"  Estancias totales      : {len(df)}")
 print(f"  Pacientes únicos       : {df['subject_id'].nunique()}")

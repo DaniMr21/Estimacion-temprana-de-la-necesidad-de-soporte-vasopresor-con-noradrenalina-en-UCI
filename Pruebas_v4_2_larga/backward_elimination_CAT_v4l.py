@@ -1,30 +1,3 @@
-"""
-Backward elimination — CatBoost v4l LARGA (ventana 0-12h / predicción 12-48h).
-
-Parte de las variables originales SIN gpt_max y elimina una a una las no
-significativas (IC95% incluye 0 en permutation importance), empezando por
-la menos importante.
-
-Orden de eliminación estimado desde la figura de permutation importance
-(de menos a más importante entre las no significativas):
-  1.  peso_kg               (más negativa)
-  2.  hemoglobina_min
-  3.  creatinina_max
-  4.  plaquetas_min
-  5.  contador_estancia_uci
-  6.  leucocitos_min
-  7.  gender
-  8.  ph_min
-  9.  anchor_age
-  10. tp_max
-  11. ventilacion_invasiva_12h
-  12. gcs_min
-  13. lactato_max
-  14. hr_media
-
-Grid CatBoost reducido: 48 combinaciones vs 240 originales (~5x más rápido).
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -37,7 +10,7 @@ from sklearn.metrics import roc_auc_score
 from catboost import CatBoostClassifier
 import os
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
+#CONFIGURACIÓN
 RUTA_CSV     = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
 ETIQUETA     = 'etiqueta_norad_12_48'
 UMBRAL_CAIDA = 0.005
@@ -77,7 +50,7 @@ VARIABLES_INICIO = [
 ]
 # 24 variables (sin gpt_max, sin fio2_max que ya se quitó en v4l)
 
-# ── PIPELINE Y GRID REDUCIDO ───────────────────────────────────────────────────
+#PIPELINE Y GRID REDUCIDO
 pipeline = Pipeline([
     ('modelo', CatBoostClassifier(
         loss_function='Logloss', eval_metric='AUC',
@@ -91,13 +64,10 @@ espacio = {
     'modelo__l2_leaf_reg':         [1, 5],
     'modelo__bagging_temperature': [0, 1],
 }
-# 2*2*3*2*2 = 48 combinaciones
 
-
-# ── FUNCIONES ─────────────────────────────────────────────────────────────────
+# FUNCIONES
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 
@@ -124,7 +94,7 @@ def entrenar_cat(predictores, etiqueta, paciente_id):
     return np.mean(aucs), np.std(aucs)
 
 
-# ── MAIN ───────────────────────────────────────────────────────────────────────
+#MAIN
 def main():
     print("=" * 65)
     print("BACKWARD ELIMINATION — CatBoost v4l LARGA (sin gpt_max)")

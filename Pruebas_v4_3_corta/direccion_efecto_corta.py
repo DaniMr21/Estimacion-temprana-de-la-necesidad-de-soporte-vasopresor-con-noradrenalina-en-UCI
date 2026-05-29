@@ -37,7 +37,6 @@ VARIABLES_BINARIAS = ['gender', 'ventilacion_invasiva_3h']
 
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
-    df = df.dropna(subset=['pf_max'])
     # Primera estancia por paciente para evitar dependencia
     df = (df.sort_values([COLUMNA_ID, 'contador_estancia_uci'])
             .drop_duplicates(COLUMNA_ID, keep='first')
@@ -49,7 +48,7 @@ def cargar_datos():
 def calcular_or_crudo(df, var, etiqueta):
     """OR crudo de regresión logística univariante."""
     try:
-        x = df[[var]].copy().fillna(df[var].median())
+        x = df[[var]].copy()
         escalador = StandardScaler()
         x_std = escalador.fit_transform(x)
         x_sm  = sm.add_constant(x_std)
@@ -71,7 +70,6 @@ def calcular_or_crudo(df, var, etiqueta):
 def calcular_or_ajustado(df, etiqueta):
     """OR ajustado de regresión logística multivariante con todas las variables."""
     x = df[VARIABLES_MODELO].copy()
-    x = x.fillna(x.median(numeric_only=True))
     escalador = StandardScaler()
     x_std = pd.DataFrame(
         escalador.fit_transform(x),
@@ -132,7 +130,6 @@ def main():
     for var in VARIABLES_REVISAR:
         es_binaria = var in VARIABLES_BINARIAS
 
-        # ── Descriptivos ───────────────────────────────────────────────
         if es_binaria:
             prop_pos = positivos[var].mean()
             prop_neg = negativos[var].mean()
@@ -152,8 +149,8 @@ def main():
             p25_neg = negativos[var].quantile(0.25)
             p75_neg = negativos[var].quantile(0.75)
             stat, p_test = mannwhitneyu(
-                positivos[var].dropna(),
-                negativos[var].dropna(),
+                positivos[var],
+                negativos[var],
                 alternative='two-sided'
             )
             estadistico = stat
@@ -161,25 +158,21 @@ def main():
             val_pos_str = f'{val_pos:.1f} [IQR: {p25_pos:.1f}–{p75_pos:.1f}]'
             val_neg_str = f'{val_neg:.1f} [IQR: {p25_neg:.1f}–{p75_neg:.1f}]'
 
-        # ── OR crudo ───────────────────────────────────────────────────
         or_crudo = calcular_or_crudo(df, var, ETIQUETA)
 
-        # ── OR ajustado ────────────────────────────────────────────────
         or_aj = or_ajustado[var]
 
-        # ── Dirección ─────────────────────────────────────────────────
         dir_datos   = '↑ mayor en positivos' if val_pos >= val_neg \
                       else '↓ menor en positivos'
         dir_or_aj   = '↑ riesgo' if or_aj['coef_ajustado'] > 0 \
                       else '↓ protector aparente'
         coherente   = (val_pos >= val_neg) == (or_aj['coef_ajustado'] > 0)
 
-        # ── Impresión ──────────────────────────────────────────────────
         print(f"{'─' * 60}")
         print(f"VARIABLE: {var}  ({nombre_test})")
         print(f"{'─' * 60}")
-        print(f"  Positivos (n={len(positivos[var].dropna())}) : {val_pos_str}")
-        print(f"  Negativos (n={len(negativos[var].dropna())}) : {val_neg_str}")
+        print(f"  Positivos (n={len(positivos[var])}) : {val_pos_str}")
+        print(f"  Negativos (n={len(negativos[var])}) : {val_neg_str}")
         print(f"  Dirección en datos   : {dir_datos}")
         print(f"  p-valor ({nombre_test}) : {formatea_p(p_test)}")
         print()
@@ -203,8 +196,8 @@ def main():
             'variable':          var,
             'tipo':              'binaria' if es_binaria else 'continua',
             'test':              nombre_test,
-            'n_positivos':       len(positivos[var].dropna()),
-            'n_negativos':       len(negativos[var].dropna()),
+            'n_positivos':       len(positivos[var]),
+            'n_negativos':       len(negativos[var]),
             'valor_positivos':   round(val_pos, 4),
             'valor_negativos':   round(val_neg, 4),
             'p_test':            p_test,
@@ -220,7 +213,6 @@ def main():
             'coherente':         coherente,
         })
 
-    # ── Tabla resumen ──────────────────────────────────────────────────
     df_res = pd.DataFrame(filas)
 
     print("=" * 70)
@@ -235,7 +227,6 @@ def main():
     print(tabla_print.to_string(index=False))
     print()
 
-    # ── Guardado ───────────────────────────────────────────────────────
     ruta_salida = os.path.join(
         CARPETA_TABLAS, 'verificacion_direccion_efecto_v4p.csv'
     )

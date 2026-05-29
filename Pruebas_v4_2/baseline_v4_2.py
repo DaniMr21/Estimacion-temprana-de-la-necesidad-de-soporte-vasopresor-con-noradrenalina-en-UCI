@@ -1,17 +1,3 @@
-"""
-Baseline v4 con set REDUCIDO de variables.
-
-Exclusiones razonadas respecto al set completo (76 variables):
-  - PaO2 (todas): redundante con P/F (PaO2/FiO2).
-  - GOT (todas): mismo cluster hepatocelular que GPT.
-  - tiene_sepsis: información ya capturada por SOFA y sus componentes;
-                   su única información única (sospecha de infección)
-                   no es objetivamente medible.
-
-Mismo grid de hiperparámetros y mismo CV anidado que baseline_v4.py para
-permitir comparación directa AUC reducido vs AUC completo.
-"""
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -33,7 +19,6 @@ from sklearn.naive_bayes import GaussianNB
 def cargar_datos():
     ruta = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
     df = pd.read_csv(ruta)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 

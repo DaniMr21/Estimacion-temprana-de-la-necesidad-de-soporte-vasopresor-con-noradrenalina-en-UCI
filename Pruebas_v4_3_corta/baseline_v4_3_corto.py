@@ -16,8 +16,6 @@ from catboost import CatBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
-
 RUTA_CSV = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
 
 # Variables significativas por modelo (IC95% permutation importance excluye 0)
@@ -44,8 +42,6 @@ ETIQUETA   = 'etiqueta_norad_3_12'
 COLUMNA_ID = 'subject_id'
 
 
-# ── CARGA Y PREPARACIÓN ────────────────────────────────────────────────────────
-
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
     return df
@@ -59,8 +55,6 @@ def preparar(df, variables):
     paciente_id = df[COLUMNA_ID].copy()
     return predictores, etiqueta, paciente_id
 
-
-# ── CV ANIDADA ─────────────────────────────────────────────────────────────────
 
 def validacion_cruzada_anidada(nombre_modelo, pipeline, espacio,
                                predictores, etiqueta, paciente_id,
@@ -111,8 +105,6 @@ def validacion_cruzada_anidada(nombre_modelo, pipeline, espacio,
     return auc_medio, auc_desv, mejores_params_por_fold
 
 
-# ── MAIN ───────────────────────────────────────────────────────────────────────
-
 def main():
 
     df = cargar_datos()
@@ -129,7 +121,7 @@ def main():
     tiempo_global = time.time()
     resultados    = {}
 
-    # ── 2. RANDOM FOREST ───────────────────────────────────────────────────────
+
     print("─" * 50)
     print(f"Random Forest  ({len(VARIABLES_POR_MODELO['RF'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['RF']}")
@@ -150,7 +142,6 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── 3. XGBOOST ────────────────────────────────────────────────────────────
     print("─" * 50)
     print(f"XGBoost  ({len(VARIABLES_POR_MODELO['XGB'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['XGB']}")
@@ -176,7 +167,6 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── 4. LIGHTGBM ───────────────────────────────────────────────────────────
     print("─" * 50)
     print(f"LightGBM  ({len(VARIABLES_POR_MODELO['LGBM'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['LGBM']}")
@@ -201,7 +191,6 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── 5. CATBOOST ───────────────────────────────────────────────────────────
     print("─" * 50)
     print(f"CatBoost  ({len(VARIABLES_POR_MODELO['CAT'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['CAT']}")
@@ -226,7 +215,6 @@ def main():
         n_jobs=1,
     )
 
-    # ── 6. NAIVE BAYES ────────────────────────────────────────────────────────
     print("─" * 50)
     print(f"Naive Bayes  ({len(VARIABLES_POR_MODELO['NB'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['NB']}")
@@ -244,7 +232,6 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── RESUMEN FINAL ──────────────────────────────────────────────────────────
     tiempo_total_horas = (time.time() - tiempo_global) / 3600
     print()
     print("=" * 65)

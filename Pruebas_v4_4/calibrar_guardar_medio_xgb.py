@@ -12,7 +12,6 @@ from sklearn.base import clone
 import warnings
 warnings.filterwarnings('ignore')
  
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
 RUTA_CSV   = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
 RUTA_PKL   = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'MODELOS_ENTRENADOS\modelo_Medio_6_24_XGB.pkl')
 RUTA_SALIDA = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'MODELOS_ENTRENADOS\modelo_Medio_6_24_XGB_calibrado.pkl')
@@ -22,9 +21,6 @@ COLUMNA_ID = 'subject_id'
 VARIABLES  = ['pf_min', 'map_min', 'diuresis_ml_kg_6h', 'hr_media', 'sofa_max', 'ventilacion_invasiva_6h']
 N_SPLITS   = 5
 RANDOM_SEED = 42
- 
- 
-# ── FUNCIONES MÉTRICAS ─────────────────────────────────────────────────────────
  
 def calcular_ece(probabilidades, etiquetas, n_bins=10):
     limites = np.linspace(0.0, 1.0, n_bins + 1)
@@ -46,7 +42,6 @@ def calcular_bss(probabilidades, etiquetas):
     return float(1 - bs_modelo / bs_climatologia) if bs_climatologia != 0 else np.nan
  
  
-# ── CARGA ──────────────────────────────────────────────────────────────────────
 print("Cargando datos y modelo...")
 df     = pd.read_csv(RUTA_CSV)
 y      = df[ETIQUETA].values.astype(int)
@@ -56,7 +51,7 @@ modelo = joblib.load(RUTA_PKL)
  
 print(f"  Pacientes: {len(y)} | Positivos: {y.sum()} ({y.mean():.3f})")
  
-# ── PASO 1: PROBABILIDADES OOF HONESTAS ───────────────────────────────────────
+
 print(f"\nGenerando probabilidades OOF ({N_SPLITS} folds)...")
 cv = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_SEED)
  
@@ -90,14 +85,14 @@ for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X, y, grupos)):
     prob_platt_reg[idx_test] = cal_platt_reg.predict_proba(
         prob_bruta_test.reshape(-1, 1))[:, 1]
  
-    # Isotónica (no paramétrica — más flexible pero necesita más datos)
+    # Isotónica 
     cal_iso = IsotonicRegression(out_of_bounds='clip')
     cal_iso.fit(prob_bruta_train, y_train)
     prob_isoton[idx_test] = cal_iso.predict(prob_bruta_test)
  
     print(f"  Fold {fold_idx + 1}/{N_SPLITS} — test n={len(idx_test)}, positivos={y[idx_test].sum()}")
  
-# ── PASO 2: COMPARACIÓN DE CALIBRADORES ───────────────────────────────────────
+
 print(f"\n{'Calibrador':<20} {'AUC':>7} {'BSS':>8} {'ECE':>8}")
 print("-" * 47)
 candidatos = {
@@ -126,7 +121,7 @@ else:
 print(f"\n  → Mejor calibrador: {mejor_nombre}")
 prob_calibrada = candidatos[mejor_nombre]
  
-# ── PASO 3: WRAPPER Y GUARDADO ─────────────────────────────────────────────────
+#PASO 3: WRAPPER Y GUARDADO ─────────────────────────────────────────────────
  
 class ModeloCalibrado:
    
@@ -172,7 +167,7 @@ modelo_calibrado = ModeloCalibrado(modelo_completo, calibrador_final, mejor_nomb
 joblib.dump(modelo_calibrado, RUTA_SALIDA)
 print(f"Modelo calibrado ({mejor_nombre}) guardado en: {RUTA_SALIDA}")
  
-# ── PASO 4: GRÁFICA DE VERIFICACIÓN ───────────────────────────────────────────
+
 colores_graf = {
     'Sin calibrar'  : '#ff7f0e',
     'Platt puro'    : '#1f77b4',
@@ -218,7 +213,7 @@ plt.show()
 print(f"\nGráfica guardada en: {ruta_fig}")
 print("\n[Fin] El modelo calibrado está listo para validación externa.")
 
-# ── PASO 5: AÑADIR RESULTADOS AL CSV GENERAL ──────────────────────────────────
+
 from sklearn.metrics import average_precision_score, log_loss
 
 print("\nCalculando métricas por fold para el CSV...")

@@ -28,7 +28,6 @@ print("Ventana: observación 0-12h / predicción 12-48h")
 print("=" * 70)
 
 df = pd.read_csv(RUTA_CSV)
-df = df.dropna(subset=['pf_max'])
 
 print(f"\nDataset cargado:")
 print(f"  Estancias totales : {len(df)}")

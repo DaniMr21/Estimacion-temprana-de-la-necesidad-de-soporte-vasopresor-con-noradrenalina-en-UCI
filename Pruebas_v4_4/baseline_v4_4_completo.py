@@ -22,9 +22,6 @@ from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 
-
-# ── DIRECTORIOS ────────────────────────────────────────────────────────────────
-
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__)) \
               if '__file__' in globals() else os.getcwd()
 TABLAS_DIR  = os.path.join(BASE_DIR, 'TABLAS')
@@ -36,8 +33,6 @@ os.makedirs(MODELOS_DIR, exist_ok=True)
 RUTA_CSV_RESULTADOS = os.path.join(TABLAS_DIR, 'resultados_metricas_multiventana.csv')
 COLUMNA_ID          = 'subject_id'
 
-
-# ── CONFIGURACIÓN DE VENTANAS ──────────────────────────────────────────────────
 
 CONFIG_VENTANAS = {
 
@@ -79,11 +74,6 @@ CONFIG_VENTANAS = {
         }
     }
 }
-
-# ── PIPELINES Y GRIDS ──────────────────────────────────────────────────────────
-# IMPORTANTE: XGB y LGBM con n_jobs=1 dentro del pipeline.
-# GridSearchCV ya usa n_jobs=-1 para paralelizar combinaciones.
-# Combinar ambos n_jobs=-1 duplica los hilos y revienta la RAM.
 
 ESPACIOS = {
     'LR': (
@@ -173,8 +163,6 @@ ESPACIOS = {
 }
 
 
-# ── MÉTRICAS ───────────────────────────────────────────────────────────────────
-
 def brier_skill_score(y_true, y_prob):
     prevalencia  = np.mean(y_true)
     prob_nula    = np.full_like(y_true, prevalencia, dtype=float)
@@ -196,8 +184,6 @@ def expected_calibration_error(y_true, y_prob, n_bins=10):
     return ece
 
 
-# ── CARGA DE DATOS ─────────────────────────────────────────────────────────────
-
 def preparar_datos(ruta, variables, etiqueta):
     df = pd.read_csv(ruta)
     x  = df[variables].copy()
@@ -208,14 +194,8 @@ def preparar_datos(ruta, variables, etiqueta):
     return x, y, ids
 
 
-# ── CV ANIDADA (métricas) ──────────────────────────────────────────────────────
-
 def ejecutar_cv(pipeline, espacio, x, y, ids):
-    """
-    CV anidada 5x3 para obtener métricas imparciales.
-    Devuelve medias, desviaciones y los mejores parámetros de cada fold
-    (para luego reentrenar el modelo final sobre todos los datos).
-    """
+    
     cv_externo = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
     cv_interno = StratifiedGroupKFold(n_splits=3, shuffle=True, random_state=42)
 
@@ -252,8 +232,6 @@ def ejecutar_cv(pipeline, espacio, x, y, ids):
     return medias, desviaciones, lista_params
 
 
-# ── MODELO FINAL SOBRE TODOS LOS DATOS ────────────────────────────────────────
-
 def entrenar_modelo_final(pipeline, espacio, x, y, ids, lista_params):
     """
     Reentrena sobre TODOS los datos con los hiperparámetros más frecuentes
@@ -270,8 +248,6 @@ def entrenar_modelo_final(pipeline, espacio, x, y, ids, lista_params):
     pipeline_final.fit(x, y)
     return pipeline_final, mejores_params
 
-
-# ── MAIN ───────────────────────────────────────────────────────────────────────
 
 def main():
     # Inicializar CSV si no existe
@@ -317,24 +293,24 @@ def main():
 
                 pipeline, espacio = ESPACIOS[nombre_modelo]
 
-                # ── CV anidada → métricas ──────────────────────────────
+                
                 medias, desviaciones, lista_params = ejecutar_cv(
                     pipeline, espacio, x, y, ids
                 )
 
-                # ── Modelo final sobre todos los datos ─────────────────
+                
                 modelo_final, params_finales = entrenar_modelo_final(
                     pipeline, espacio, x, y, ids, lista_params
                 )
 
-                # ── Guardar .pkl ───────────────────────────────────────
+                
                 ruta_pkl = os.path.join(
                     MODELOS_DIR,
                     f'modelo_{nombre_ventana}_{nombre_modelo}.pkl'
                 )
                 joblib.dump(modelo_final, ruta_pkl)
 
-                # ── Guardar métricas en CSV ────────────────────────────
+                
                 fila = {
                     'Ventana': nombre_ventana,
                     'Modelo':  nombre_modelo,

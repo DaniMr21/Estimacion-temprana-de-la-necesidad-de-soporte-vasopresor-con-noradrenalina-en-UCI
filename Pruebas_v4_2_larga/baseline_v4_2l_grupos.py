@@ -79,7 +79,6 @@ ETIQUETA = 'etiqueta_norad_12_48'
 def cargar_datos():
     ruta = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
     df = pd.read_csv(ruta)
-    df = df.dropna(subset=['pf_max'])
     return df
 
 
@@ -104,8 +103,6 @@ def preparar_subgrupo(df, nombre_subgrupo):
     paciente_id = df_sub['subject_id'].copy()
 
     return predictores, etiqueta, paciente_id
-
-
 
 # CV ANIDADA 
 

@@ -8,14 +8,12 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-# ── RUTAS Y CARPETAS ───────────────────────────────────────────────────────────
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
 MODELOS_DIR = os.path.join(BASE_DIR, 'MODELOS_ENTRENADOS')
 SHAP_DIR    = os.path.join(BASE_DIR, 'GRAFICAS_SHAP')
 
 os.makedirs(SHAP_DIR, exist_ok=True)
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
 CONFIG_VENTANAS = {
     'Corto_3_12': {
         'ruta': r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv',
@@ -66,10 +64,7 @@ CONFIG_VENTANAS = {
 
 
 def extraer_componentes(pipeline):
-    """
-    Devuelve (escalador_o_None, estimador_puro) desde un Pipeline de sklearn.
-    Si el objeto no es un Pipeline, devuelve (None, objeto).
-    """
+    
     if not hasattr(pipeline, 'named_steps'):
         return None, pipeline
 
@@ -88,24 +83,14 @@ def extraer_componentes(pipeline):
 
 
 def calcular_shap(modelo_nombre, escalador, estimador, X_crudo):
-    """
-    Calcula SHAP values eligiendo el explainer adecuado.
-    - RF, XGB, LGBM, CAT: TreeExplainer sobre X_crudo (no necesitan escalado)
-    - LR: LinearExplainer sobre X_escalado (necesita escalado previo)
-    - NB: KernelExplainer con muestra de fondo sobre X_escalado
-    Devuelve (shap_values, X_para_grafica) donde X_para_grafica mantiene
-    los nombres de columna originales para que el beeswarm sea legible.
-    """
+    
     if modelo_nombre in ('RF', 'XGB', 'LGBM', 'CAT'):
-        # TreeExplainer es exacto y rápido para modelos de árboles.
-        # No necesita escalado porque los árboles son invariantes a la escala.
         explainer   = shap.TreeExplainer(estimador)
         shap_values = explainer.shap_values(X_crudo)
         if isinstance(shap_values, list):
             shap_values = shap_values[1]   # clase positiva en RF
         return shap_values, X_crudo
 
-    # Para LR y NB hay que pasar X escalado al explainer
     if escalador is not None:
         X_escalado = pd.DataFrame(
             escalador.transform(X_crudo),
@@ -116,7 +101,6 @@ def calcular_shap(modelo_nombre, escalador, estimador, X_crudo):
         X_escalado = X_crudo
 
     if modelo_nombre == 'LR':
-        # LinearExplainer es exacto para regresión logística
         explainer   = shap.LinearExplainer(
             estimador,
             X_escalado,
@@ -125,7 +109,6 @@ def calcular_shap(modelo_nombre, escalador, estimador, X_crudo):
         shap_values = explainer.shap_values(X_escalado)
         return shap_values, X_escalado
 
-    # NB: KernelExplainer aproximado con muestra de fondo
     np.random.seed(42)
     fondo = shap.sample(X_escalado, min(200, len(X_escalado)))
 
@@ -137,8 +120,6 @@ def calcular_shap(modelo_nombre, escalador, estimador, X_crudo):
     shap_values = explainer.shap_values(muestra, nsamples=100)
     return shap_values, muestra
 
-
-# ── BUCLE PRINCIPAL ────────────────────────────────────────────────────────────
 plt.style.use('seaborn-v0_8-whitegrid')
 
 for ventana, conf in CONFIG_VENTANAS.items():

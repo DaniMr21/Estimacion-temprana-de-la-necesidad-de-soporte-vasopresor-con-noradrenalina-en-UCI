@@ -16,7 +16,7 @@ from catboost import CatBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
+#CONFIGURACIÓN
 
 RUTA_CSV = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4.csv'
 
@@ -54,7 +54,7 @@ ETIQUETA   = 'etiqueta_norad_6_24'
 COLUMNA_ID = 'subject_id'
 
 
-# ── CARGA Y PREPARACIÓN ────────────────────────────────────────────────────────
+# CARGA Y PREPARACIÓN
 
 def cargar_datos():
     df = pd.read_csv(RUTA_CSV)
@@ -70,7 +70,7 @@ def preparar(df, variables):
     return predictores, etiqueta, paciente_id
 
 
-# ── CV ANIDADA ─────────────────────────────────────────────────────────────────
+#CV ANIDADA
 
 def validacion_cruzada_anidada(nombre_modelo, pipeline, espacio,
                                predictores, etiqueta, paciente_id,
@@ -121,7 +121,7 @@ def validacion_cruzada_anidada(nombre_modelo, pipeline, espacio,
     return auc_medio, auc_desv, mejores_params_por_fold
 
 
-# ── MAIN ───────────────────────────────────────────────────────────────────────
+#MAIN
 
 def main():
 
@@ -139,7 +139,7 @@ def main():
     tiempo_global = time.time()
     resultados    = {}
 
-    # ── 1. REGRESIÓN LOGÍSTICA ─────────────────────────────────────────────────
+    #1. REGRESIÓN LOGÍSTICA
     print("─" * 50)
     print(f"Regresión Logística  ({len(VARIABLES_POR_MODELO['LR'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['LR']}")
@@ -161,7 +161,7 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── 2. RANDOM FOREST ───────────────────────────────────────────────────────
+    #2. RANDOM FOREST
     print("─" * 50)
     print(f"Random Forest  ({len(VARIABLES_POR_MODELO['RF'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['RF']}")
@@ -182,7 +182,7 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── 3. XGBOOST ────────────────────────────────────────────────────────────
+    #3. XGBOOST
     print("─" * 50)
     print(f"XGBoost  ({len(VARIABLES_POR_MODELO['XGB'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['XGB']}")
@@ -208,7 +208,7 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── 4. LIGHTGBM ───────────────────────────────────────────────────────────
+    #4. LIGHTGBM
     print("─" * 50)
     print(f"LightGBM  ({len(VARIABLES_POR_MODELO['LGBM'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['LGBM']}")
@@ -233,7 +233,7 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── 5. CATBOOST ───────────────────────────────────────────────────────────
+    # 5. CATBOOST
     print("─" * 50)
     print(f"CatBoost  ({len(VARIABLES_POR_MODELO['CAT'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['CAT']}")
@@ -258,7 +258,7 @@ def main():
         n_jobs=1,
     )
 
-    # ── 6. NAIVE BAYES ────────────────────────────────────────────────────────
+    #6. NAIVE BAYES
     print("─" * 50)
     print(f"Naive Bayes  ({len(VARIABLES_POR_MODELO['NB'])} variables)")
     print(f"  {VARIABLES_POR_MODELO['NB']}")
@@ -276,7 +276,7 @@ def main():
         predictores, etiqueta, paciente_id,
     )
 
-    # ── RESUMEN FINAL ──────────────────────────────────────────────────────────
+    #RESUMEN FINAL
     tiempo_total_horas = (time.time() - tiempo_global) / 3600
     print()
     print("=" * 65)

@@ -28,7 +28,7 @@ print("ANÁLISIS DE CORRELACIÓN Y MULTICOLINEALIDAD — DATASET v4")
 print("=" * 70)
 
 df = pd.read_csv(RUTA_CSV)
-df = df.dropna(subset=['pf_max'])
+df = df.dropna(subset=['pf_max']) #porsiacaso
 print(f"\nDataset cargado:")
 print(f"  Estancias totales      : {len(df)}")
 print(f"  Pacientes únicos       : {df['subject_id'].nunique()}")
@@ -163,8 +163,6 @@ print("----------------------------")
 print("[3/4] VIF (multicolinealidad multivariante)")
 print("------------------------")
 
-# El VIF requiere que las variables sean continuas y que el modelo lineal
-# pueda ajustarse sin singularidades. Excluimos binarias.
 X_continuas = X[variables_continuas].copy()
 
 # Estandarización suave para que el VIF sea numéricamente estable
@@ -201,15 +199,15 @@ print(f"\n  Tabla guardada en    : {ruta_vif}")
 print()
 
 
-# 6. ASOCIACIONES DE VARIABLES BINARIAS (reporte separado)
+# 6. ASOCIACIONES DE VARIABLES BINARIAS
 
 print("--------------------")
 print("Análisis separado de variables binarias")
 print("----------------------------------")
 
-# Para variables binarias usamos:
+# Para variables binaria:
 #  - asociación entre binarias: phi (= Pearson sobre 0/1, equivalente a chi^2 normalizado)
-#  - asociación entre binaria y continua: rho de Spearman (válido como rank-biserial)
+#  - asociación entre binaria y continua: rho de Spearman
 
 filas = []
 # Entre binarias

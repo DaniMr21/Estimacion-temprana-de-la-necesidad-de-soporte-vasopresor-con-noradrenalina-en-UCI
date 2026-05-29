@@ -1,18 +1,3 @@
-"""
-Regresión logística multivariante — ventana CORTA v4p (26 variables).
-Observación: 0-3h | Predicción: 3-12h
-Etiqueta: etiqueta_norad_3_12
-
-Reporta coeficiente estandarizado, OR con IC95% y p-valor de Wald
-para cada variable, condicionado al resto (multivariante).
-Corrección por comparaciones múltiples: BH-FDR.
-Comparación automática con el análisis univariante si existe el CSV.
-
-Salidas:
-  - tablas/regresion_logistica_multivariante_v4p.csv
-  - tablas/comparacion_univariante_vs_multivariante_v4p.csv
-"""
-
 import os
 import warnings
 warnings.filterwarnings('ignore')
@@ -44,13 +29,12 @@ variables_predictoras = [
     'glucemia_min', 'temp_min', 'sofa_max',
 ]
 
-# ── CARGA Y FILTRADO ───────────────────────────────────────────────────────────
+#CARGA 
 print("─" * 60)
 print("REGRESIÓN LOGÍSTICA MULTIVARIANTE — v4p CORTA (26 variables)")
 print("─" * 60)
 
 df = pd.read_csv(RUTA_CSV)
-df = df.dropna(subset=['pf_max'])
 print(f"\nEstancias totales      : {len(df)}")
 df = (df.sort_values(['subject_id', 'contador_estancia_uci'])
         .drop_duplicates('subject_id', keep='first')
@@ -58,23 +42,15 @@ df = (df.sort_values(['subject_id', 'contador_estancia_uci'])
 print(f"Tras filtrar 1ª estancia: {len(df)}")
 print(f"Positivos: {df[ETIQUETA].sum()} ({100*df[ETIQUETA].mean():.2f}%)\n")
 
-# ── PREPARACIÓN ────────────────────────────────────────────────────────────────
+#PREPARACIÓN
 X = df[variables_predictoras].copy()
 X['gender'] = (X['gender'] == 'M').astype(int)
 y = df[ETIQUETA].astype(int)
 
-nans = X.isna().sum()
-cols_nan = nans[nans > 0]
-if len(cols_nan):
-    print("Imputación por mediana:")
-    for col, n in cols_nan.items():
-        print(f"  {col}: {n} NaN")
-    X = X.fillna(X.median(numeric_only=True))
-
 escalador = StandardScaler()
 X_std = pd.DataFrame(escalador.fit_transform(X), columns=X.columns, index=X.index)
 
-# ── AJUSTE ─────────────────────────────────────────────────────────────────────
+#AJUSTE
 print("[1/3] Ajustando modelo...")
 X_sm = sm.add_constant(X_std)
 modelo = sm.Logit(y, X_sm).fit(disp=0)
@@ -84,7 +60,7 @@ print(f"  LLR p-value   : {modelo.llr_pvalue:.2e}")
 print(f"  AIC           : {modelo.aic:.2f}")
 print(f"  Convergencia  : {'OK' if modelo.mle_retvals['converged'] else 'NO CONVERGIÓ'}\n")
 
-# ── TABLA ──────────────────────────────────────────────────────────────────────
+#TABLA
 ic = modelo.conf_int(); ic.columns = ['IC_inf', 'IC_sup']
 tabla = pd.DataFrame({
     'variable':    modelo.params.index,
@@ -127,7 +103,7 @@ print("NO significativas:")
 for v in tabla_vars[~tabla_vars['significativa_BH']]['variable']:
     print(f"  - {v}")
 
-# ── COMPARACIÓN CON UNIVARIANTE ────────────────────────────────────────────────
+#COMPARACIÓN CON UNIVARIANTE
 print("\n[3/3] Comparación con univariante...")
 ruta_uni = os.path.join(CARPETA_TABLAS, 'significancia_univariante_v4p.csv')
 if os.path.exists(ruta_uni):

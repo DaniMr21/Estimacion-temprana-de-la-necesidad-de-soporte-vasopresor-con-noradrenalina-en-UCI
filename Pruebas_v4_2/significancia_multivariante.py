@@ -1,25 +1,3 @@
-"""
-Análisis multivariante con regresión logística — set reducido v4 (26 variables).
-
-Ajusta una regresión logística con TODAS las variables predictoras a la vez
-y reporta para cada una:
-  - Coeficiente (sobre variables estandarizadas, comparables entre sí)
-  - Odds Ratio (OR) con su intervalo de confianza al 95%
-  - p-valor de Wald
-  - p-valor corregido por FDR (Benjamini-Hochberg)
-
-A diferencia del análisis univariante, aquí cada variable se evalúa
-CONDICIONADA al resto. Una variable significativa aquí aporta información
-única que no es redundante con las otras 25.
-
-IMPORTANTE: Como en el análisis de correlaciones y univariante, se filtra
-a una estancia por paciente para evitar dependencia entre observaciones.
-
-Salidas:
-  - tablas/regresion_logistica_multivariante_v4_reducido.csv
-  - tablas/comparacion_univariante_vs_multivariante_v4.csv
-"""
-
 import os
 import warnings
 warnings.filterwarnings('ignore')
@@ -119,17 +97,6 @@ print()
 X = df[variables_predictoras].copy()
 X['gender'] = (X['gender'] == 'M').astype(int)
 y = df[ETIQUETA].astype(int)
-
-# Imputación simple por mediana para que statsmodels pueda ajustar
-# (statsmodels no acepta NaN)
-nans_por_columna = X.isna().sum()
-columnas_con_nan = nans_por_columna[nans_por_columna > 0]
-if len(columnas_con_nan) > 0:
-    print("Imputación por mediana en columnas con NaN:")
-    for col, n in columnas_con_nan.items():
-        print(f"  {col:<28} : {n} NaN ({100*n/len(X):.1f}%)")
-    X = X.fillna(X.median(numeric_only=True))
-    print()
 
 # Estandarización: coeficientes comparables entre variables
 escalador = StandardScaler()

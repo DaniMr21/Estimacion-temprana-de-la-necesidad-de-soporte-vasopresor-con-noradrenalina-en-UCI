@@ -15,8 +15,6 @@ from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 
-# CONFIGURACIÓN
-
 # Set reducido idéntico al de baseline_v4_reducido.py.
 # OJO: tiene_sepsis NO se incluye aquí porque al filtrar por subgrupo es constante y no aporta información dentro del subgrupo.
 

@@ -9,7 +9,6 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── 1. 
 class ModeloCalibrado:
     def __init__(self, modelo_base, calibrador, tipo_calibrador):
         self.modelo_base     = modelo_base
@@ -28,8 +27,6 @@ class ModeloCalibrado:
     def predict(self, X, umbral=0.5):
         return (self.predict_proba(X)[:, 1] >= umbral).astype(int)
 
-
-# ── 2. EL PELADOR DE CAPAS DEFINITIVO ────────────────────────────────────────
 def extraer_arbol_y_datos(modelo_cargado, X_inicial, columnas):
     """
     Bucle infinito que pela todas las capas del modelo (ModeloCalibrado, 
@@ -60,7 +57,6 @@ def extraer_arbol_y_datos(modelo_cargado, X_inicial, columnas):
     return modelo, X_actual
 
 
-# ── 3. CONFIGURACIÓN DE RUTAS ────────────────────────────────────────────────
 BASE_DIR = r'C:\Users\danie\TFG\Pruebas_v4_4'
 DATA_DIR = r'C:\Users\danie\OneDrive\Escritorio\DATA'
 
@@ -92,7 +88,6 @@ CONFIG = {
     }
 }
 
-# ── 4. BUCLE PRINCIPAL ───────────────────────────────────────────────────────
 for nombre, conf in CONFIG.items():
     print(f"\n--- Generando SHAP para {nombre} (eICU) ---")
     

@@ -9,8 +9,7 @@ SALIDA  = os.path.join(CARPETA, 'definitivo_v4p.csv')
 df = pd.read_csv(ENTRADA)
 
 def compute_outlier_winsorize(arr, left_thresh, right_thresh):
-    """Winsorización 2-98%.
-    Uso nanpercentile porque la tabla ya está agregada por estancia y puede tener NaN."""
+    """Winsorización 2-98%"""
     arr = arr.copy().astype(float)
 
     if arr.notna().sum() == 0:
@@ -26,10 +25,6 @@ def compute_outlier_winsorize(arr, left_thresh, right_thresh):
     arr[arr > perc_alto] = perc_alto
     return arr, n_bajo, n_alto
 
-# Se excluyen de la winsorización:
-#  - IDs y etiquetas (no son clínicas).
-#  - Binarias (tiene_sepsis, ventilacion_invasiva_3h): 0/1, winsorizar no tiene sentido.
-#  - GCS (3-15) y SOFA (0-24): rangos acotados por definición del score.
 excluir = [
     'subject_id', 'hadm_id', 'stay_id',
     'anchor_age', 'gender',

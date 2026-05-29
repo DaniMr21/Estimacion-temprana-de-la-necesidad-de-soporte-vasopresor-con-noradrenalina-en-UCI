@@ -1,18 +1,3 @@
-"""
-Análisis de significancia univariante — ventana CORTA v4p (26 variables).
-Observación: 0-3h | Predicción: 3-12h
-Etiqueta: etiqueta_norad_3_12
-
-Tests:
-  - Variables continuas (24): Mann-Whitney U
-  - Variables binarias  (2) : Chi-cuadrado
-Corrección: Benjamini-Hochberg (FDR, alpha=0.05)
-Filtrado a 1ª estancia por paciente antes de los tests.
-
-Salidas:
-  - tablas/significancia_univariante_v4p.csv
-"""
-
 import os
 import warnings
 warnings.filterwarnings('ignore')
@@ -22,7 +7,7 @@ import numpy as np
 from scipy.stats import mannwhitneyu, chi2_contingency
 from statsmodels.stats.multitest import multipletests
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
+#CONFIGURACIÓN
 RUTA_CSV    = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4p.csv'
 ETIQUETA    = 'etiqueta_norad_3_12'
 
@@ -45,13 +30,12 @@ variables_predictoras = [
 variables_binarias   = ['gender', 'ventilacion_invasiva_3h']
 variables_continuas  = [v for v in variables_predictoras if v not in variables_binarias]
 
-# ── CARGA Y FILTRADO ───────────────────────────────────────────────────────────
+#CARGA Y FILTRADO
 print("─" * 60)
 print("SIGNIFICANCIA UNIVARIANTE — v4p CORTA (26 variables)")
 print("─" * 60)
 
 df = pd.read_csv(RUTA_CSV)
-df = df.dropna(subset=['pf_max'])
 print(f"\nEstancias totales      : {len(df)}")
 print(f"Pacientes únicos       : {df['subject_id'].nunique()}")
 
@@ -65,7 +49,7 @@ print(f"  Positivos  : {df[ETIQUETA].sum()} ({100*df[ETIQUETA].mean():.2f}%)\n")
 df_test = df.copy()
 df_test['gender'] = (df_test['gender'] == 'M').astype(int)
 
-# ── TESTS ──────────────────────────────────────────────────────────────────────
+#TESTS
 filas = []
 
 for var in variables_continuas:
@@ -96,7 +80,7 @@ for var in variables_binarias:
 
 resultados = pd.DataFrame(filas)
 
-# ── CORRECCIÓN FDR ─────────────────────────────────────────────────────────────
+#CORRECCIÓN FDR
 mask = resultados['p_valor'].notna()
 rechaza, p_corr, _, _ = multipletests(resultados.loc[mask, 'p_valor'], method='fdr_bh', alpha=0.05)
 resultados['p_valor_BH']     = np.nan
@@ -106,7 +90,7 @@ resultados.loc[mask, 'significativa_BH'] = rechaza
 resultados['significativa_bruta'] = resultados['p_valor'] < 0.05
 resultados = resultados.sort_values('p_valor').reset_index(drop=True)
 
-# ── RESULTADOS ─────────────────────────────────────────────────────────────────
+#RESULTADOS
 def fmt_p(p):
     return 'NaN' if pd.isna(p) else (f'{p:.2e}' if p < 1e-4 else f'{p:.4f}')
 

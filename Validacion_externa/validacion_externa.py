@@ -1,24 +1,3 @@
-"""
-Validación Externa — Modelos noradrenalina UCI
-==============================================
-Cohorte interna:  MIMIC-IV
-Cohorte externa:  eICU-CRD
-
-Modelos:
-  Corto  3-12h  : CatBoost  — modelo_Corto_3_12_CAT.pkl
-  Medio  6-24h  : XGBoost   — modelo_Medio_6_24_XGB_calibrado.pkl
-  Largo 12-48h  : XGBoost   — modelo_Largo_12_48_XGB.pkl
-
-Métricas (IC95% bootstrap 1000 iter.):
-  AUC-ROC, AUC-PR, Brier Score, BSS, ECE
-
-Comparativa modelo vs SOFA: DeLong test (bootstrap)
-
-Salidas:
-  validacion_externa_metricas.csv
-  validacion_externa_{ventana}.png  (ROC + Calibración)
-"""
-
 import os
 import pickle
 import joblib
@@ -37,8 +16,6 @@ from sklearn.isotonic import IsotonicRegression
 from scipy import stats
 warnings.filterwarnings('ignore')
 
-# ── WRAPPER MODELO MEDIO─────────────────────
-# Debe definirse ANTES de pickle.load() para que el unpickler lo encuentre.
 class ModeloCalibrado:
     def __init__(self, modelo_base, calibrador, tipo_calibrador):
         self.modelo_base     = modelo_base
@@ -58,7 +35,6 @@ class ModeloCalibrado:
         return (self.predict_proba(X)[:, 1] >= umbral).astype(int)
 
 
-# ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
 CARPETA_MODELOS = r'C:\Users\danie\TFG\Pruebas_v4_4\MODELOS_ENTRENADOS'
 CARPETA_DATOS   = r'C:\Users\danie\OneDrive\Escritorio\Data'
 CARPETA_SALIDA  = r'C:\Users\danie\TFG\Validacion_externa'
@@ -82,7 +58,7 @@ VENTANAS = {
                      'hr_media', 'sofa_max', 'ventilacion_invasiva_6h'],
         'label'   : 'Medio 6-24h (XGBoost cal.)',
     },
-    # ── NUEVO ──────────────────────────────────────────────────────────────────
+
     'Medio_6_24_CAT': {
         'pkl'     : 'modelo_Medio_6_24_CAT.pkl',
         'csv'     : 'eICU_6_24_definitivo.csv',
@@ -99,7 +75,7 @@ VENTANAS = {
                      'map_min', 'glucemia_min', 'sofa_max'],
         'label'   : 'Largo 12-48h (XGBoost)',
     },
-    # ── NUEVO ──────────────────────────────────────────────────────────────────
+
     'Largo_12_48_CAT': {
         'pkl'     : 'modelo_Largo_12_48_CAT.pkl',
         'csv'     : 'eICU_12_48_definitivo.csv',
@@ -109,9 +85,6 @@ VENTANAS = {
         'label'   : 'Largo 12-48h (CatBoost)',
     },
 }
-
-
-# ── FUNCIONES MÉTRICAS ─────────────────────────────────────────────────────────
 
 def calcular_ece(probabilidades, etiquetas, n_bins=10):
     limites  = np.linspace(0.0, 1.0, n_bins + 1)
@@ -193,9 +166,6 @@ def fmt_ic(val, ic):
 def fmt_p(p):
     return '<0.001' if p < 0.001 else f'{p:.3f}'
 
-
-# ── BUCLE PRINCIPAL ────────────────────────────────────────────────────────────
-
 filas_tabla = []
 
 for nombre_ventana, cfg in VENTANAS.items():
@@ -203,7 +173,6 @@ for nombre_ventana, cfg in VENTANAS.items():
     print(f'  {cfg["label"]}')
     print(f'{"="*60}')
 
-    # Cargar modelo (joblib para todos — compatible con pickle y joblib)
     try:
         modelo = joblib.load(os.path.join(CARPETA_MODELOS, cfg['pkl']))
     except Exception:
@@ -257,7 +226,6 @@ for nombre_ventana, cfg in VENTANAS.items():
         'ECE'            : fmt_ic(m_mod['ece'],       ic_mod['ece']),
     })
 
-    # ── FIGURA ─────────────────────────────────────────────────────────────────
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     fig.suptitle(f'Validación Externa — {cfg["label"]}',
                  fontsize=12, fontweight='bold')
@@ -306,8 +274,6 @@ for nombre_ventana, cfg in VENTANAS.items():
     plt.close(fig)
     print(f'  Figura: {ruta_fig}')
 
-
-# ── TABLA RESUMEN ──────────────────────────────────────────────────────────────
 df_tabla  = pd.DataFrame(filas_tabla)
 ruta_csv  = os.path.join(CARPETA_SALIDA, 'validacion_externa_metricas.csv')
 df_tabla.to_csv(ruta_csv, index=False, encoding='utf-8-sig')

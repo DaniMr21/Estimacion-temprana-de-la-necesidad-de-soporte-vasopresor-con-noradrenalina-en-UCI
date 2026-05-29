@@ -1,8 +1,3 @@
-"""
-Análisis de Subgrupos y Benchmark Clínico (SOFA) — Ventana Larga_12_48
-======================================================================
-"""
-
 import os
 import joblib
 import numpy as np
@@ -13,7 +8,6 @@ from sklearn.base import clone
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── 1. CONFIGURACIÓN ───────────────────────────────────────────────────────────
 RUTA_CSV   = r'C:\Users\danie\OneDrive\Escritorio\DATA\definitivo_v4l.csv'
 RUTA_PKL   = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'MODELOS_ENTRENADOS\modelo_Largo_12_48_XGB.pkl')
 ETIQUETA   = 'etiqueta_norad_12_48'
@@ -22,7 +16,6 @@ VARIABLES  = ['temp_min', 'pf_min', 'spo2_min', 'bicarbonato_min', 'map_min', 'g
 N_SPLITS   = 5
 RANDOM_SEED = 42
 
-# ── 2. FUNCIONES DE MÉTRICAS ───────────────────────────────────────────────────
 def calcular_ece(probabilidades, etiquetas, n_bins=10):
     limites = np.linspace(0.0, 1.0, n_bins + 1)
     ece = 0.0
@@ -44,7 +37,6 @@ def imprimir_fila(nombre, n_pacientes, auc, aupr, bss, ece):
     ece_str = f"{ece:.4f}" if not np.isnan(ece) else "  ---  "
     print(f"{nombre:<25} | n={n_pacientes:<11} | {auc:.4f}  | {aupr:.4f}  | {bss_str:<7} | {ece_str:<7}")
 
-# ── 3. CARGA DE DATOS ──────────────────────────────────────────────────────────
 print("Cargando datos y modelo (Ventana LARGA)...")
 df = pd.read_csv(RUTA_CSV)
 
@@ -56,7 +48,6 @@ sofa_score = df['sofa_max'].values
 
 modelo = joblib.load(RUTA_PKL)
 
-# ── 4. GENERAR PROBABILIDADES OOF (DE FÁBRICA) ─────────────────────────────────
 print(f"Generando predicciones OOF honestas ({N_SPLITS} folds)...")
 cv = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_SEED)
 prob_oof = np.zeros(len(y))
@@ -66,7 +57,7 @@ for idx_train, idx_test in cv.split(X, y, grupos):
     modelo_fold.fit(X.iloc[idx_train], y[idx_train])
     prob_oof[idx_test] = modelo_fold.predict_proba(X.iloc[idx_test])[:, 1]
 
-# ── 5. EVALUACIÓN POR SUBGRUPOS Y BENCHMARK ────────────────────────────────────
+
 print("\n" + "="*70)
 print(f"{'SUBGRUPO / MODELO':<25} | {'N (Pacientes)':<13} | {'AUC-ROC':<7} | {'AUC-PR':<7} | {'BSS':<7} | {'ECE':<7}")
 print("-" * 70)

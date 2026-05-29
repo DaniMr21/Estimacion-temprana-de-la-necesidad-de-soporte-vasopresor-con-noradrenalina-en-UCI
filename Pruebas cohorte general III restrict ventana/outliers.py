@@ -9,8 +9,7 @@ SALIDA  = os.path.join(CARPETA, 'definitivo_v3_2.csv')
 df = pd.read_csv(ENTRADA)
 
 def compute_outlier_winsorize(arr, left_thresh, right_thresh):
-    """Winsorización 2-98% como en Gupta et al. 2022 (MIMIC-IV-Data-Pipeline).
-    Uso nanpercentile porque la tabla ya está agregada por estancia y puede tener NaN."""
+    """Winsorización 2-98% como en Gupta et al. 2022 (MIMIC-IV-Data-Pipeline)"""
     arr = arr.copy().astype(float)
 
     if arr.notna().sum() == 0:

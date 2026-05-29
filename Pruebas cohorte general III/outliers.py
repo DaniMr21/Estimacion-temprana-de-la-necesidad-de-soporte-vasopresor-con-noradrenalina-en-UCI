@@ -50,4 +50,4 @@ print(f"Positivos: {df['etiqueta_norad_6_24'].sum()}")
 print(f"Prevalencia: {100*df['etiqueta_norad_6_24'].mean():.2f}%")
 
 df.to_csv(SALIDA, index=False)
-print(f"✅ Guardado en {SALIDA}")
+print(f"Guardado en {SALIDA}")
