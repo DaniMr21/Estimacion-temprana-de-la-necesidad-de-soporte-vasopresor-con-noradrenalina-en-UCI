@@ -12,8 +12,6 @@ from sklearn.isotonic import IsotonicRegression
 import warnings
 warnings.filterwarnings('ignore')
 
-
-# ── WRAPPER MODELO MEDIO ──────────────────────────────────────────────────────
 class ModeloCalibrado:
     """Wrapper necesario para deserializar el pkl del Medio calibrado."""
     def __init__(self, modelo_base, calibrador, tipo_calibrador):
@@ -30,9 +28,6 @@ class ModeloCalibrado:
                 prob_bruta.reshape(-1, 1))[:, 1]
         return np.column_stack([1 - prob_cal, prob_cal])
 
-
-# ── CONFIGURACIÓN ─────────────────────────────────────────────────────────────
-# Rutas relativas: los pkl y npy deben estar en la misma carpeta que este script
 CARPETA_BASE = os.path.dirname(os.path.abspath(__file__))
 
 MODELOS = {
@@ -69,10 +64,6 @@ MODELOS = {
     },
 }
 
-# ── DATOS DEMO ────────────────────────────────────────────────────────────────
-# Demo 1: paciente estable, riesgo bajo esperado.
-# Demo 2: paciente con deterioro hemodinámico, riesgo alto esperado.
-
 DEMO_CSV = {
     'Demo 1 — Paciente estable (riesgo bajo esperado)': """\
 NOMBRE,APELLIDO 1,APELLIDO 2,ID,SOFA,MAP,TP,FiO2,PaO2,Diuresis_mL_kg,Frec Cardiaca,Vent. Invasiva,SpO2,Bicarbonato,Temperatura,Glucemia
@@ -90,8 +81,6 @@ Dos,Demo,Test,DEMO-002,11,48,20.0,0.85,84,0.07,128,1,87,13,39.2,205
 """,
 }
 
-
-# ── CARGA MODELOS (caché) ─────────────────────────────────────────────────────
 @st.cache_resource
 def cargar_modelo(nombre):
     cfg = MODELOS[nombre]
@@ -113,8 +102,6 @@ def cargar_referencia(nombre):
     st.error(f'No se encontró el fichero de referencia: {ruta_ref}')
     st.stop()
 
-
-# ── AGREGACIÓN DE ANALÍTICA ───────────────────────────────────────────────────
 def agregar_analitica(df_raw, nombre_modelo):
     """Convierte CSV bruto del paciente en vector de variables del modelo."""
     pf = (df_raw['PaO2'] / df_raw['FiO2']).replace([np.inf, -np.inf], np.nan)
@@ -135,8 +122,6 @@ def agregar_analitica(df_raw, nombre_modelo):
     fila = {v: valores[v] for v in vars_modelo}
     return pd.DataFrame([fila])
 
-
-# ── SHAP ──────────────────────────────────────────────────────────────────────
 def extraer_estimador(modelo):
     m = modelo
     if hasattr(m, 'modelo_base'):
@@ -155,14 +140,10 @@ def calcular_shap(modelo, X_fila, vars_modelo):
     vals = sv[0] if sv.ndim == 2 else sv
     return dict(zip(vars_modelo, vals))
 
-
-# ── PERCENTIL ─────────────────────────────────────────────────────────────────
 def calcular_percentil(prob, distribucion_referencia):
     rango = np.searchsorted(distribucion_referencia, prob, side='right')
     return int(round(100 * rango / len(distribucion_referencia)))
 
-
-# ── FUNCIÓN PRINCIPAL DE RENDERIZADO DE RESULTADOS ───────────────────────────
 def mostrar_resultados(df_raw, nombre_modelo):
     cfg = MODELOS[nombre_modelo]
     try:
@@ -258,7 +239,6 @@ def mostrar_resultados(df_raw, nombre_modelo):
     except Exception as e:
         st.error(f'Error procesando los datos: {e}')
 
-# ── INTERFAZ ──────────────────────────────────────────────────────────────────
 st.set_page_config(page_title='Dashboard NORAD UCI', layout='wide')
 
 st.markdown("""
@@ -295,7 +275,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── ENCABEZADO ────────────────────────────────────────────────────────────────
 st.markdown(
     '<div class="titulo-principal">DASHBOARD DE ESTIMACIÓN TEMPRANA DE RIESGO DE '
     'INICIO DE NORADRENALINA EN UCI</div>',
@@ -311,7 +290,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ── ESTADO ────────────────────────────────────────────────────────────────────
 for clave, defecto in [
     ('modelo_sel', None),
     ('mostrar_manual', False),
@@ -320,7 +298,6 @@ for clave, defecto in [
     if clave not in st.session_state:
         st.session_state[clave] = defecto
 
-# ── BOTONES PRINCIPALES ───────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
 with c1:
     if st.button('VENTANA MEDIA  (6-24h)'):
@@ -344,9 +321,8 @@ with c4:
 
 st.markdown('---')
 
-# ══════════════════════════════════════════════════════════════════════════════
-# ── MODO DEMO ─────────────────────────────────────────────────────────────────
-# ══════════════════════════════════════════════════════════════════════════════
+#MODO DEMO
+
 if st.session_state.modo_demo:
     st.markdown('### MODO DEMO')
     st.info(
@@ -380,8 +356,6 @@ if st.session_state.modo_demo:
         f'({cfg_demo["ventana"]}) — caso: _{demo_nombre}_'
     )
     mostrar_resultados(df_demo, nombre_modelo_demo)
-
-# ── PANEL MANUAL ──────────────────────────────────────────────────────────────
 
 elif st.session_state.mostrar_manual:
     st.markdown('### MANUAL DE USO')
@@ -425,7 +399,7 @@ autorización regulatoria. Cualquier decisión clínica debe basarse
 exclusivamente en la valoración del facultativo responsable.
     """)
 
-# ── MODO NORMAL (CSV REAL) ────────────────────────────────────────────────────
+#MODO NORMAL (CSV REAL)
 
 elif st.session_state.modelo_sel is None:
     st.info('Seleccione una ventana temporal o pulse MODO DEMO para comenzar.')
@@ -445,7 +419,6 @@ else:
         df_raw = pd.read_csv(archivo)
         mostrar_resultados(df_raw, st.session_state.modelo_sel)
 
-# ── PIE ───────────────────────────────────────────────────────────────────────
 st.markdown('---')
 st.markdown(
     f'<div style="text-align:right; font-family: Courier New, monospace; '
