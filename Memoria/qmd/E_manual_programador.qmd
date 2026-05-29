@@ -2,30 +2,6 @@
 %% ══════════════════════════════════════════════════════
 %%  APÉNDICE E – Manual del Desarrollador
 %% ══════════════════════════════════════════════════════
-\apendice{Manual del desarrollador / programador / investigador.} % usar el término que mejor se corresponda.
-
-\section{Estructura de directorios}
-
-Descripción de la estructura de carpetas y archivos entregados junto con el proyecto.
-
-\section{Compilación, instalación y ejecución del proyecto}
-
-En caso necesario, se detallarán los pasos técnicos para compilar, instalar y ejecutar el proyecto.
-
-\section{Pruebas del sistema}
-Esta sección puede ser opcional.
-
-Se describirán las pruebas realizadas para validar el correcto funcionamiento del sistema, tales como pruebas unitarias, funcionales o validaciones con usuarios.
-
-
-\section{Instrucciones para la modificación o mejora del proyecto.}
-
-Se proporcionarán indicaciones y recomendaciones para facilitar futuras ampliaciones o mejoras del trabajo realizado.
-```
-```{=latex}
-%% ══════════════════════════════════════════════════════
-%%  APÉNDICE E – Manual del Desarrollador
-%% ══════════════════════════════════════════════════════
 \apendice{Manual del programador}
 
 \section{Estructura de directorios}
@@ -35,40 +11,40 @@ que documentan la evolución del estudio, junto con la aplicación final del \te
 
 \begin{verbatim}
 .
-├── README.md
-├── .gitignore
-│
-├── Pruebas IV ventana 3_12/ # Ensayos iniciales por ventana (MIMIC-IV)
-├── Pruebas IV ventana_12_48/
-│
-├── Pruebas cohorte general I/ # Refinamiento de la cohorte general
-├── Pruebas cohorte general II/
-├── Pruebas cohorte general II SIN MISSINGS/
-├── Pruebas cohorte general III/
-├── Pruebas cohorte general III restrict ventana/
-│
-├── Pruebas cohorte sepsis IV/ # Análisis del subgrupo de sepsis
-│
-├── Pruebas_v4_2/ # Versiones sucesivas del pipeline,
-├── Pruebas_v4_2_corta/ #   separadas por ventana temporal
-├── Pruebas_v4_2_larga/
-├── Pruebas_v4_3/
-├── Pruebas_v4_3_corta/
-├── Pruebas_v4_3_larga/
-├── Pruebas_v4_4/ # Iteración final del pipeline
-│
-├── eICU/ # Extracción/preparación de eICU-CRD
-├── Validacion_externa/ # Validación externa sobre eICU-CRD
-│
-├── Dashboard/ # Aplicación Streamlit
-│   ├── pruebas_dashboard.py
-│   ├── modelo_Medio_6_24_XGB_calibrado.pkl
-│   ├── modelo_Largo_12_48_XGB.pkl
-│   ├── referencia_percentiles_medio.npy
-│   └── referencia_percentiles_largo.npy
-│
-├── Memoria/ # Fuentes LaTeX/Quarto de la memoria
-└── Anexos/ # Fuentes LaTeX/Quarto de los anexos
++-- README.md
++-- .gitignore
+|
++-- Pruebas IV ventana 3_12/ # Ensayos iniciales por ventana (MIMIC-IV)
++-- Pruebas IV ventana_12_48/
+|
++-- Pruebas cohorte general I/ # Refinamiento de la cohorte general
++-- Pruebas cohorte general II/
++-- Pruebas cohorte general II SIN MISSINGS/
++-- Pruebas cohorte general III/
++-- Pruebas cohorte general III restrict ventana/
+|
++-- Pruebas cohorte sepsis IV/ # Analisis del subgrupo de sepsis
+|
++-- Pruebas_v4_2/  # Versiones sucesivas del pipeline
++-- Pruebas_v4_2_corta/  # separadas por ventana temporal
++-- Pruebas_v4_2_larga/
++-- Pruebas_v4_3/
++-- Pruebas_v4_3_corta/
++-- Pruebas_v4_3_larga/
++-- Pruebas_v4_4/ # Iteracion final del pipeline
+|
++-- eICU/  # Extraccion/preparacion de eICU-CRD
++-- Validacion_externa/ # Validacion externa sobre eICU-CRD
+|
++-- Dashboard/ # Aplicacion Streamlit
+|   +-- pruebas_dashboard.py
+|   +-- modelo_Medio_6_24_XGB_calibrado.pkl
+|   +-- modelo_Largo_12_48_XGB.pkl
+|   +-- referencia_percentiles_medio.npy
+|   +-- referencia_percentiles_largo.npy
+|
++-- Memoria/ # Fuentes LaTeX/Quarto de la memoria
++-- Anexos/ # Fuentes LaTeX/Quarto de los anexos
 \end{verbatim}
 
 Las carpetas se agrupan en tres bloques funcionales:
