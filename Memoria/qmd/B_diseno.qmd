@@ -27,7 +27,7 @@ el entrenamiento y la inferencia quedan completamente separados.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{arquitectura.png}
+  \includegraphics[width=\textwidth]{arquitectura.jpeg}
   \caption{Arquitectura del sistema: pipeline de modelado (entrenamiento) y
            aplicación de visualización (inferencia), desacoplados a través de
            los modelos serializados en \texttt{.pkl}.}

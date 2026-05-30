@@ -121,45 +121,204 @@ Es fundamental destacar que, bajo esta decisión metodológica y con el fin de p
 Como consecuencia de este diseño, la única columna que presenta valores perdidos de carácter estructural en los conjuntos de datos definitivos de MIMIC-IV es \texttt{horas\_hasta\_norad} (ausente por definición clínica en los casos negativos). Las restantes 80 columnas de variables se encuentran completamente cubiertas. En los conjuntos de validación de eICU-CRD la situación es análoga: la variable \texttt{horas\_hasta\_norad} toma el valor \texttt{NA} para los casos negativos.
 ```
 
-A continuación se muestra un **ejemplo de análisis exploratorio con R**
-que produce tanto código visible como tabla y figura en el PDF:
+\subsection*{Análisis exploratorio comparativo de las cohortes}
 
-```{r datos-summary}
-#| label: tbl-resumen-datos
-#| tbl-cap: "Resumen estadístico del conjunto de datos mtcars"
+Para caracterizar los datos más allá de su descripción formal se realizó
+un análisis exploratorio sobre los seis conjuntos definitivos. Dado que
+MIMIC-IV actúa como cohorte de desarrollo y eICU-CRD como cohorte de
+validación externa, el análisis se orienta a cuantificar las diferencias
+estructurales entre ambas, ya que estas condicionan la interpretación del
+rendimiento obtenido en la validación externa. Todas las tablas y figuras
+que siguen se calculan directamente sobre los ficheros definitivos en
+tiempo de compilación.
 
-library(knitr)
+```{r}
+#| label: setup-eda
+#| echo: true
+#| message: false
+#| warning: false
+
 library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
 
-mtcars |>
-  select(mpg, cyl, hp, wt) |>
-  summarise(across(everything(),
-    list(media = mean, sd = sd, min = min, max = max),
-    .names = "{.col}_{.fn}"
-  )) |>
-  tidyr::pivot_longer(everything(),
-    names_to  = c("variable", "estadístico"),
-    names_sep = "_"
-  ) |>
-  tidyr::pivot_wider(names_from = estadístico, values_from = value) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
-  kable(booktabs = TRUE, format = "latex",
-        col.names = c("Variable", "Media", "SD", "Mín", "Máx"))
+ruta_datos <- "C:/Users/danie/OneDrive/Escritorio/DATA"
+
+cargar_conjunto <- function(fichero, columna_etiqueta, base, ventana) {
+  marco <- read.csv(file.path(ruta_datos, fichero), stringsAsFactors = FALSE, check.names = FALSE)
+  names(marco)[names(marco) == columna_etiqueta] <- "etiqueta"
+  marco |>
+    mutate(
+      sexo    = case_when(gender %in% c("M", "Male")   ~ "Hombre",
+                          gender %in% c("F", "Female") ~ "Mujer"),
+      base    = base,
+      ventana = ventana
+    )
+}
+
+mimic_corta  <- cargar_conjunto("definitivo_v4p.csv",        "etiqueta_norad_3_12",  "MIMIC-IV", "3 h")
+mimic_media  <- cargar_conjunto("definitivo_v4.csv",         "etiqueta_norad_6_24",  "MIMIC-IV", "6 h")
+mimic_larga  <- cargar_conjunto("definitivo_v4l.csv",        "etiqueta_norad_12_48", "MIMIC-IV", "12 h")
+eicu_corta  <- cargar_conjunto("eICU_3_12_definitivo.csv",  "etiqueta_norad_3_12",  "eICU-CRD", "3 h")
+eicu_media  <- cargar_conjunto("eICU_6_24_definitivo.csv",  "etiqueta_norad_6_24",  "eICU-CRD", "6 h")
+eicu_larga  <- cargar_conjunto("eICU_12_48_definitivo.csv", "etiqueta_norad_12_48", "eICU-CRD", "12 h")
 ```
 
-```{r datos-figura}
-#| label: fig-correlacion
-#| fig-cap: "Relación entre peso del vehículo y consumo (mpg) en mtcars"
+La @tbl-comparacion-cohortes resume las características basales de las seis
+cohortes. Las dos bases presentan una edad y una distribución por sexo
+similares (en torno a 60 años, con leve predominio masculino).
 
-library(ggplot2)
+```{r}
+#| label: tbl-comparacion-cohortes
+#| tbl-cap: "Características de las cohortes de desarrollo (MIMIC-IV) y de validación externa (eICU-CRD) en las tres ventanas temporales."
 
-ggplot(mtcars, aes(x = wt, y = mpg)) +
-  geom_point(aes(color = factor(cyl)), size = 2.5) +
-  geom_smooth(method = "lm", se = TRUE, color = "grey40") +
-  labs(
-    x     = "Peso (1000 lbs)",
-    y     = "Consumo (mpg)",
-    color = "Cilindros"
-  ) +
-  theme_minimal(base_size = 11)
+resumir_cohorte <- function(marco) {
+  n <- nrow(marco)
+  tibble(
+    Conjunto      = paste(unique(marco$base), unique(marco$ventana)),
+    N             = n,
+    Edad          = sprintf("%.1f \u00b1 %.1f", mean(marco$anchor_age), sd(marco$anchor_age)),
+    Hombres       = sprintf("%.1f %%", 100 * sum(marco$sexo == "Hombre") / n),
+    Peso          = sprintf("%.1f \u00b1 %.1f", mean(marco$peso_kg, na.rm = TRUE), sd(marco$peso_kg, na.rm = TRUE)),
+    Noradrenalina = sprintf("%.1f %%", 100 * sum(marco$etiqueta == 1) / n),
+    SOFA          = sprintf("%.0f [%.0f\u2013%.0f]", median(marco$sofa_max),
+                            quantile(marco$sofa_max, 0.25), quantile(marco$sofa_max, 0.75))
+  )
+}
+
+tabla_cohortes <- bind_rows(
+  resumir_cohorte(mimic_corta), resumir_cohorte(mimic_media), resumir_cohorte(mimic_larga),
+  resumir_cohorte(eicu_corta),  resumir_cohorte(eicu_media),  resumir_cohorte(eicu_larga)
+)
+
+kable(tabla_cohortes, booktabs = TRUE, format = "latex", align = "lrrrrrr",
+      col.names = c("Conjunto", "N", "Edad (a\u00f1os)", "Hombres", "Peso (kg)",
+                    "Noradrenalina", "SOFA m\u00e1x"))
+```
+
+El contraste se confirma al examinar los predictores compartidos por ambas bases en la ventana media (@tbl-predictores-comparados): eICU-CRD presenta
+una PAM mínima más baja y un SOFA máximo más alto, mientras que el cociente PaO2/FiO2 mínimo es mayor; en conjunto, un perfil hemodinámico más comprometido
+pero con mejor oxigenación basal. Estas diferencias no invalidan la validación externa, sino que delimitan el grado de extrapolación exigido a los modelos.
+
+```{r}
+#| label: tbl-predictores-comparados
+#| tbl-cap: "Distribución de las variables predictoras compartidas por MIMIC-IV y eICU-CRD en la ventana media (observación 0--6 h). Mediana [P25--P75]."
+
+variables_compartidas <- c("map_min", "pf_min", "sofa_max", "hr_media", "rr_max", "glucemia_min", "diuresis_ml_kg_6h")
+etiquetas_compartidas <- c("PAM m\u00edn (mmHg)", "PaO2/FiO2 m\u00edn", "SOFA m\u00e1x","FC media (lpm)", "FR m\u00e1x (rpm)", "Glucemia m\u00edn (mg/dL)", "Diuresis (mL/kg/6 h)")
+
+resumir_variable <- function(x) {sprintf("%.1f [%.1f\u2013%.1f]", median(x, na.rm = TRUE), quantile(x, 0.25, na.rm = TRUE), quantile(x, 0.75, na.rm = TRUE))
+}
+
+tabla_predictores <- tibble(
+  Variable = etiquetas_compartidas,
+  mimic    = unname(sapply(variables_compartidas, function(v) resumir_variable(mimic_media[[v]]))),
+  eicu     = unname(sapply(variables_compartidas, function(v) resumir_variable(eicu_media[[v]])))
+)
+
+kable(tabla_predictores, booktabs = TRUE, format = "latex", align = "lcc",
+      col.names = c("Variable",
+                    paste0("MIMIC-IV (n = ", nrow(mimic_media), ")"),
+                    paste0("eICU-CRD (n = ", nrow(eicu_media), ")")))
+```
+
+Las distribuciones de la @fig-densidades-comparadas hacen visible ese desplazamiento de dominio: las densidades de eICU-CRD aparecen desplazadas
+respecto a las de MIMIC-IV en la mayoría de los predictores, de forma más acusada en el SOFA máximo y en el cociente PaO2/FiO2 mínimo.
+
+```{r}
+#| label: fig-densidades-comparadas
+#| fig-cap: "Distribuciones comparadas de las variables predictoras compartidas entre MIMIC-IV y eICU-CRD (ventana de observación 0--6 h). Las diferencias de forma reflejan el desplazamiento de dominio entre la cohorte de desarrollo y la de validación externa."
+#| fig-width: 7
+#| fig-height: 4.5
+
+variables_densidad <- c("map_min", "pf_min", "hr_media", "rr_max", "glucemia_min", "sofa_max")
+etiquetas_densidad <- c("PAM m\u00edn (mmHg)", "PaO2/FiO2 m\u00edn", "FC media (lpm)",
+                       "FR m\u00e1x (rpm)", "Glucemia m\u00edn (mg/dL)", "SOFA m\u00e1x")
+names(etiquetas_densidad) <- variables_densidad
+
+datos_densidad <- bind_rows(
+  mimic_media |> select(base, all_of(variables_densidad)),
+  eicu_media  |> select(base, all_of(variables_densidad))
+) |>
+  pivot_longer(all_of(variables_densidad), names_to = "variable", values_to = "valor") |>
+  mutate(variable = factor(variable, levels = variables_densidad,
+                           labels = unname(etiquetas_densidad[variables_densidad])))
+
+ggplot(datos_densidad, aes(x = valor, fill = base)) +
+  geom_density(alpha = 0.55, color = NA) +
+  facet_wrap(~ variable, scales = "free", ncol = 3) +
+  scale_fill_manual(values = c("MIMIC-IV" = "#3B6EA5", "eICU-CRD" = "#E07B39")) +
+  labs(x = NULL, y = "Densidad", fill = "Base de datos") +
+  theme_minimal(base_size = 10) +
+  theme(legend.position = "bottom")
+```
+
+Pese a esas diferencias de partida, la dirección de la asociación con el desenlace se conserva entre cohortes (@fig-predictores-desenlace): tanto en
+MIMIC-IV como en eICU-CRD, los pacientes que recibieron noradrenalina presentan una PAM mínima y un cociente PaO2/FiO2 mínimo inferiores y un SOFA
+máximo superior. Esta coherencia en el sentido del efecto es lo que hace plausible la transferencia de los modelos a la cohorte externa.
+
+```{r}
+#| label: fig-predictores-desenlace
+#| fig-cap: "Predictores hemodinámicos y de gravedad clave según el desenlace (inicio de noradrenalina) en ambas cohortes (ventana 0--6 h). La dirección de la asociación se mantiene entre la cohorte de desarrollo y la de validación."
+#| fig-width: 7
+#| fig-height: 4
+
+variables_desenlace <- c("map_min", "pf_min", "sofa_max")
+etiquetas_desenlace <- c("PAM m\u00edn (mmHg)", "PaO2/FiO2 m\u00edn", "SOFA m\u00e1x")
+names(etiquetas_desenlace) <- variables_desenlace
+
+datos_desenlace <- bind_rows(
+  mimic_media |> select(base, etiqueta, all_of(variables_desenlace)),
+  eicu_media  |> select(base, etiqueta, all_of(variables_desenlace))
+) |>
+  pivot_longer(all_of(variables_desenlace), names_to = "variable", values_to = "valor") |>
+  mutate(
+    variable  = factor(variable, levels = variables_desenlace,
+                       labels = unname(etiquetas_desenlace[variables_desenlace])),
+    desenlace = factor(etiqueta, levels = c(0, 1),
+                       labels = c("No noradrenalina", "Noradrenalina"))
+  )
+
+ggplot(datos_desenlace, aes(x = base, y = valor, fill = desenlace)) +
+  geom_boxplot(outlier.size = 0.4, alpha = 0.85, width = 0.6) +
+  facet_wrap(~ variable, scales = "free_y") +
+  scale_fill_manual(values = c("No noradrenalina" = "#7FB069", "Noradrenalina" = "#D1495B")) +
+  labs(x = NULL, y = "Valor", fill = "Desenlace") +
+  theme_minimal(base_size = 10) +
+  theme(legend.position = "bottom")
+```
+
+Por último, el tiempo desde el inicio de la ventana de observación hasta la primera dosis de noradrenalina (@fig-tiempo-norad) escala con el horizonte de
+predicción —mediana en torno a 6, 11 y 20 h para las ventanas corta, media y larga, respectivamente— y resulta muy similar entre MIMIC-IV y eICU-CRD. Los
+valores respetan en todos los casos los límites inferiores de cada horizonte, lo que confirma la consistencia del etiquetado entre ambas bases y la ausencia
+de fugas de información desde el evento.
+
+```{r}
+#| label: fig-tiempo-norad
+#| fig-cap: "Tiempo desde el inicio de la ventana de observación hasta la primera administración de noradrenalina, en los pacientes con desenlace positivo. Los valores respetan los límites de cada horizonte de predicción y son consistentes entre ambas bases."
+#| fig-width: 7
+#| fig-height: 3.5
+
+seleccionar_tiempo <- function(marco) {
+  select(marco, base, ventana, etiqueta, horas_hasta_norad)
+}
+
+datos_tiempo <- bind_rows(
+  seleccionar_tiempo(mimic_corta), seleccionar_tiempo(mimic_media), seleccionar_tiempo(mimic_larga),
+  seleccionar_tiempo(eicu_corta),  seleccionar_tiempo(eicu_media),  seleccionar_tiempo(eicu_larga)
+) |>
+  filter(etiqueta == 1, !is.na(horas_hasta_norad)) |>
+  mutate(ventana = factor(ventana, levels = c("3 h", "6 h", "12 h"),
+                          labels = c("Ventana corta (3\u201312 h)",
+                                     "Ventana media (6\u201324 h)",
+                                     "Ventana larga (12\u201348 h)")))
+
+ggplot(datos_tiempo, aes(x = horas_hasta_norad, fill = base)) +
+  geom_histogram(bins = 25, position = "identity", alpha = 0.6, color = "white") +
+  facet_wrap(~ ventana, scales = "free", ncol = 3) +
+  scale_fill_manual(values = c("MIMIC-IV" = "#3B6EA5", "eICU-CRD" = "#E07B39")) +
+  labs(x = "Horas hasta noradrenalina", y = "N\u00famero de pacientes", fill = "Base de datos") +
+  theme_minimal(base_size = 10) +
+  theme(legend.position = "bottom")
 ```
