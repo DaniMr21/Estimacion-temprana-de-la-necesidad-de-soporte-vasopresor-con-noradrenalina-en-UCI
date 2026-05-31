@@ -5,20 +5,16 @@
 
 \apendice{Registro de interacciones con sistemas de IA}
 
-% ── PLANTILLA ──
-% \begin{table}[H]
-% \centering
-% \begin{tabularx}{\linewidth}{ p{0.22\columnwidth} X }
-% \toprule
-% \textbf{Interacción} & \textbf{Nº X} \\
-% \toprule
-% \textbf{Claude by Anthropic}   & [Sonnet 4.6] \\
-% \textbf{Fecha}         & [fecha aproximada] \\
-% \textbf{Prompt}        & [texto del prompt] \\
-% \textbf{Uso posterior} & Ideación / Corrección / Código \\
-% \bottomrule
-% \end{tabularx}
-% \caption{Interacción X.}
-% \end{table}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\linewidth}{ p{0.22\columnwidth} X }
+\toprule
+\textbf{Herramienta} & Claude Sonnet 4.6 \\
+\textbf{Fecha} & marzo de 2026 \\
+\textbf{Prompt} & Cómo transformo con case when en SQL las temperaturas de MIMIC que están en Farenheit a Celsius porque están mezcladas \\
+\textbf{Uso posterior} & Ideación y Código \\
+\bottomrule
+\end{tabularx}
+\end{table}
 ```
 
