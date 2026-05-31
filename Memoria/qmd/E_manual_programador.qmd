@@ -43,8 +43,7 @@ que documentan la evolución del estudio, junto con la aplicación final del \te
 |   +-- referencia_percentiles_medio.npy
 |   +-- referencia_percentiles_largo.npy
 |
-+-- Memoria/ # Fuentes LaTeX/Quarto de la memoria
-+-- Anexos/ # Fuentes LaTeX/Quarto de los anexos
++-- Memoria/ # Fuentes LaTeX/Quarto de la memoria y los anexos
 \end{verbatim}
 
 Las carpetas se agrupan en tres bloques funcionales:
