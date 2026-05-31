@@ -70,7 +70,7 @@ pantallas se recogen en el Apéndice~C (Figuras~\ref{fig:dash-portada} a~\ref{fi
         Temperatura, Glucemia}.
   \item \textbf{Consultar el resultado.} La aplicación muestra el percentil de
         riesgo (de 1 a 100) y, a su derecha, los factores de riesgo
-        individuales según los valores SHAP.
+        individuales según los valores SHAP \cite{lundberg2017}.
 \end{enumerate}
 
 \textbf{Interpretación del percentil.} El valor indica la posición del paciente dentro de la distribución de probabilidades obtenida sobre la cohorte de referencia MIMIC-IV. Un percentil de 90 significa que el 90\,\% de los

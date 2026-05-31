@@ -5,13 +5,6 @@
 
 \apendice{Registro de interacciones con sistemas de IA}
 
-Durante la realización de este trabajo se han empleado herramientas de inteligencia artificial generativa como apoyo puntual. Su uso no sustituye la
-autoría del trabajo: las decisiones de diseño, la metodología, el análisis y las conclusiones son propias, y la IA se ha utilizado como herramienta de
-corrección de código y asistencia técnica. A continuación se registran las interacciones más significativas, indicando la herramienta, la fecha
-aproximada, el contenido de la consulta y el uso posterior dado a la respuesta.
-
-\section{Registro de interacciones con sistemas de IA}
-
 % ── PLANTILLA ──
 % \begin{table}[H]
 % \centering
@@ -19,16 +12,13 @@ aproximada, el contenido de la consulta y el uso posterior dado a la respuesta.
 % \toprule
 % \textbf{Interacción} & \textbf{Nº X} \\
 % \toprule
-% \textbf{Herramienta}   & [modelo utilizado] \\
+% \textbf{Claude by Anthropic}   & [Sonnet 4.6] \\
 % \textbf{Fecha}         & [fecha aproximada] \\
 % \textbf{Prompt}        & [texto del prompt] \\
-% \textbf{Respuesta}     & [resumen o fragmento; opcional] \\
 % \textbf{Uso posterior} & Ideación / Corrección / Código \\
 % \bottomrule
 % \end{tabularx}
 % \caption{Interacción X.}
 % \end{table}
-
-
 ```
 

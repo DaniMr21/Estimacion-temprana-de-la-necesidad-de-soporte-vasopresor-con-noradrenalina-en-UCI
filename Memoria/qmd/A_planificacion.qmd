@@ -8,7 +8,7 @@
 
 El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de
 Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte
-vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos.
+vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos \cite{evans2021,firzli2023}.
 
 El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la
 base de datos MIMIC-IV \cite{johnson2023}, con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \cite{pollard2018}, que permite evaluar la
@@ -34,7 +34,7 @@ Las fases principales llevadas a cabo fueron:
 
 \begin{enumerate}
   \item Revisión bibliográfica y definición del problema.
-  \item Acceso a datos: formación CITI y registro en PhysioNet.
+  \item Acceso a datos: formación CITI y registro en PhysioNet \cite{citiprogram,physionet}.
   \item Construcción de cohortes (SQL) sobre MIMIC-IV y eICU-CRD.
   \item Preprocesamiento y selección de variables.
   \item Entrenamiento, optimización y evaluación interna
@@ -110,7 +110,7 @@ La Tabla~\ref{tab:costes} recoge la estimación de costes materiales del proyect
 \textbf{Categoría} & \textbf{Concepto} & \textbf{Coste} \\
 \midrule
 Hardware  & Amortización portátil (uso parcial) & 100\,€ \\
-Software  & Código abierto                      &   0\,€ \\
+Software  & Código abierto (python, SQL y R) en VScode y PostgreSQL &   0\,€ \\
 Datos     & MIMIC-IV y eICU-CRD (PhysioNet)     &   0\,€ \\
 \midrule
 \multicolumn{2}{r}{\textbf{Total}} & \textbf{100\,€} \\
@@ -128,11 +128,11 @@ de almacenamiento libre para albergar las bases de datos completas de MIMIC-IV y
 \subsection{Viabilidad legal}
 
 El acceso a las bases de datos empleadas, MIMIC-IV \cite{johnson2023} y eICU-CRD \cite{pollard2018}, requirió completar el curso de formación en ética en investigación con datos humanos del 
-CITI Program (CITI Program, 2026) y firmar el acuerdo de uso de datos de PhysioNet (PhysioNet, 2026). Dicho acuerdo establece las siguientes obligaciones: no reidentificar a los
+CITI Program (CITI Program, 2026) \cite{citiprogram} y firmar el acuerdo de uso de datos de PhysioNet (PhysioNet, 2026) \cite{physionet}. Dicho acuerdo establece las siguientes obligaciones: no reidentificar a los
 pacientes, no redistribuir los datos originales, y publicar el código desarrollado en un repositorio público. El repositorio del presente proyecto, disponible en GitHub, cumple con este último 
 requisito.
 
-Al tratarse de un análisis retrospectivo sobre bases de datos públicas completamente desidentificadas por sus custodios originales, no se requirió la aprobación de ningún Comité de Ética de 
+Al tratarse de un análisis retrospectivo sobre bases de datos públicas completamente desidentificadas por sus custodios originales \cite{johnson2023,pollard2018,physionet}, no se requirió la aprobación de ningún Comité de Ética de 
 Investigación para el desarrollo de este trabajo. No obstante, para continuar con una validación externa con datos del Hospital Universitario de Burgos
 o validar el \textit{dashboard} como herramienta clínica, se precisaría la aprobación del Comité de Ética en Investigación de dicho centro.
 ```

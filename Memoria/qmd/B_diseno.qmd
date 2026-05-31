@@ -22,7 +22,7 @@ posterior sin reentrenamiento.
 
 La aplicación de visualización, implementada en Streamlit, carga los modelos serializados y, a partir de un CSV con las mediciones de un paciente, calcula
 los estadísticos agregados requeridos, obtiene la probabilidad estimada, la traduce a un percentil de riesgo respecto a la distribución de MIMIC-IV y
-muestra la explicación individual mediante valores SHAP. Ambos subsistemas se comunican exclusivamente a través de los artefactos serializados, de modo que
+muestra la explicación individual mediante valores SHAP \cite{lundberg2017}. Ambos subsistemas se comunican exclusivamente a través de los artefactos serializados, de modo que
 el entrenamiento y la inferencia quedan completamente separados.
 
 \begin{figure}[H]
