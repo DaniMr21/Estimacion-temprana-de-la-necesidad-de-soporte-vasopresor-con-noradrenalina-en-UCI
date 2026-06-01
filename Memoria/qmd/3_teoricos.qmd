@@ -12,6 +12,10 @@ La evaluación de este estado de shock en la práctica asistencial requiere la i
  indicadores analíticos y funcionales de fallo orgánico, tales como el ritmo diurético, la función renal (creatinina), el perfil hepático (bilirrubina), la coagulación (recuento plaquetario) 
  y el intercambio gaseoso (relación PaO$_2$/FiO$_2$) \cite{hubu2025}. Esta aproximación permite al clínico componer un mapa del estado hemodinámico y de la reserva funcional del paciente crítico.
 
+ El SOFA (\textit{Sequential Organ Failure Assessment}) cuantifica el grado de disfunción orgánica evaluando seis sistemas: respiratorio, coagulación, hepático, cardiovascular, neurológico y 
+ renal. Cada componente se puntúa de 0 (normal) a 4 (disfunción grave) según umbrales clínicamente establecidos, y la puntuación total resulta de sumar el peor valor registrado en cada componente
+  dentro de una ventana de 24 horas \cite{vincent1996}.
+
 Sin embargo, la traducción de estas variables analíticas y constantes vitales en una decisión terapéutica concreta, como el inicio de soporte vasopresor con noradrenalina, revela las limitaciones
 inherentes de los sistemas de puntuación tradicionales. El deterioro hemodinámico en el paciente crítico es un proceso dinámico, en el que pueden coexistir hipovolemia, vasoplejía, disfunción 
 miocárdica y alteraciones de la perfusión periférica, con contribuciones variables a lo largo de la evolución clínica \cite{sanchez2026subphenotyping}. Además, la respuesta a intervenciones 
