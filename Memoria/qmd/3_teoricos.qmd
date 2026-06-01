@@ -16,7 +16,7 @@ Sin embargo, la traducción de estas variables analíticas y constantes vitales 
 inherentes de los sistemas de puntuación tradicionales. El deterioro hemodinámico en el paciente crítico es un proceso dinámico, en el que pueden coexistir hipovolemia, vasoplejía, disfunción 
 miocárdica y alteraciones de la perfusión periférica, con contribuciones variables a lo largo de la evolución clínica \cite{sanchez2026subphenotyping}. Además, la respuesta a intervenciones 
 previas, como la fluidoterapia, modifica de forma continua la probabilidad de requerir vasopresores y obliga a una reevaluación clínica frecuente \cite{prescott2026surviving}. Por consiguiente,
- la identificación temprana del riesgo de requerir noradrenalina no puede reducirse a una única regla fija ni a un umbral aislado, sino que requiere integrar múltiples señales fisiológicas, 
+ la identificación temprana de la necesidad de soporte vasopresor con noradrenalina no puede reducirse a una única regla fija ni a un umbral aislado, sino que requiere integrar múltiples señales fisiológicas, 
  analíticas y de soporte. Esta complejidad justifica la exploración de metodologías capaces de combinar variables heterogéneas y modelar relaciones no lineales entre ellas.
 
 Tanto las guías de la \textit{Surviving Sepsis Campaign} como el protocolo local del HUBU establecen la noradrenalina como vasopresor de primera elección en el shock séptico \cite{evans2021, 
@@ -33,7 +33,7 @@ El desarrollo de modelos predictivos en cuidados intensivos ha estado estrechame
 Para la evaluación de la generalización de los modelos fuera del entorno de desarrollo, la base de datos eICU-CRD (\textit{eICU Collaborative Research Database}) constituye un recurso 
 complementario de gran relevancia \cite{pollard2018}. A diferencia de MIMIC-IV, eICU-CRD agrega datos de centenares de hospitales de Estados Unidos, lo que permite evaluar si un modelo entrenado
  en un único centro mantiene su rendimiento en una población más heterogénea y con prácticas clínicas potencialmente distintas \cite{pollard2018}. Esta característica la convierte en un entorno
-especialmente adecuado para la validación externa de modelos desarrollados sobre MIMIC-IV. La estimación del riesgo de inicio de noradrenalina exige definir ventanas de observación y de 
+especialmente adecuado para la validación externa de modelos desarrollados sobre MIMIC-IV. La estimación temprana de la necesidad de soporte vasopresor con noradrenalina exige definir ventanas de observación y de 
 predicción clínicamente plausibles, utilizando únicamente la información disponible antes del evento. Ambas bases de datos comparten una estructura temporal que hace posible este tipo de 
 diseño retrospectivo.
 
@@ -88,8 +88,8 @@ la alerta respecto al inicio de la sepsis y de su viabilidad en el flujo asisten
  Esta perspectiva es especialmente relevante en este trabajo, donde las tres ventanas temporales plantean un compromiso distinto entre anticipación clínica y disponibilidad de información.
 
 A partir de esta revisión, el nicho del presente TFG queda claramente definido. El interés del trabajo no reside únicamente en desarrollar un modelo predictivo adicional, 
-sino en abordar un problema clínico concreto y accionable: la estimación temprana del riesgo de inicio de noradrenalina en pacientes críticos a partir de variables disponibles durante las 
-primeras horas de estancia, sobre una cohorte general de adultos en UCI sin restricción diagnóstica. La propuesta añade, además, tres elementos de interés práctico: el uso de modelos con 
-selección de variables por ventana, la traducción del resultado a una interfaz funcional tipo dashboard y la validación externa sobre una cohorte independiente y multicéntrica. 
+sino en abordar un problema clínico concreto y accionable: la estimación temprana de la necesidad de soporte vasopresor con noradrenalina en pacientes críticos a partir de variables disponibles 
+durante las  primeras horas de estancia, sobre una cohorte general de adultos en UCI sin restricción diagnóstica. La propuesta añade, además, tres elementos de interés práctico: el uso de 
+modelos con selección de variables por ventana, la traducción del resultado a una interfaz funcional tipo dashboard y la validación externa sobre una cohorte independiente y multicéntrica. 
 De este modo, el trabajo se orienta no solo a la obtención de un buen rendimiento predictivo, sino también a su posible utilidad como herramienta de apoyo a la decisión clínica.
 ```

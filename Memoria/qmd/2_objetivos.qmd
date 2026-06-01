@@ -3,24 +3,24 @@
 
 \textbf{Objetivo principal}
 
-El objetivo principal de este Trabajo de Fin de Grado es desarrollar y validar modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en 
-pacientes adultos ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. 
-Esto se materializará en un \textit{dashboard} interpretable diseñado para su uso a pie de cama, que permitirá visualizar el riesgo estimado y los factores clínicos con mayor contribución
-a dicha predicción en cada paciente de forma individualizada.
+El objetivo principal de este Trabajo de Fin de Grado es desarrollar y validar modelos de aprendizaje automático para la estimación temprana de la necesidad
+de soporte vasopresor con noradrenalina en pacientes adultos ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas
+disponibles durante las primeras horas de estancia. Como parte de este desarrollo, se construye un \textit{dashboard} interpretable que permite
+visualizar la probabilidad estimada y los factores clínicos con mayor contribución a dicha predicción para cada paciente de forma individualizada.
 
 \textbf{Objetivos específicos}
 
 \begin{enumerate}
-  \item Desarrollar modelos predictivos de aprendizaje automático entrenados sobre la base de datos MIMIC-IV que estimen la probabilidad de inicio de noradrenalina en UCI en distintas ventanas 
-  temporales tras el ingreso.
+  \item Desarrollar modelos predictivos de aprendizaje automático entrenados sobre la base de datos MIMIC-IV que estimen la probabilidad de requerir
+  soporte vasopresor con noradrenalina en UCI en distintas ventanas temporales tras el ingreso.
 
   \item Evaluar y comparar el rendimiento de distintos algoritmos, incluyendo regresión logística, XGBoost, entre otros, mediante métricas de discriminación y 
   calibración.
 
   \item Desarrollar un prototipo de \textit{dashboard} clínico interpretable que muestre, para cada paciente, la probabilidad estimada de requerir noradrenalina, 
-  los factores con mayor peso en la predicción y una clasificación orientativa del nivel de riesgo basada en percentiles.
+  los factores con mayor peso en la predicción y una contextualización del riesgo estimado mediante percentiles respecto a la cohorte de referencia.
 
-  \item Realizar una validación externa de los modelos predictivos con datos de pacientes reales provenientes de otro repositorio distinto del de entrenamiento.
+  \item Realizar una validación externa de los modelos predictivos con datos de eICU-CRD, una cohorte externa e independiente de la empleada para el entrenamiento.
 
   \item Medir la usabilidad del \textit{dashboard} mediante una encuesta de satisfacción dirigida al personal clínico de la UCI del Hospital Universitario de Burgos.
 \end{enumerate}
@@ -28,18 +28,18 @@ a dicha predicción en cada paciente de forma individualizada.
 \textbf{Objetivos técnicos}
 
 \begin{enumerate}
-  \item Definir y construir a partir de MIMIC-IV la cohorte general de pacientes adultos de UCI, registrando la presencia de sepsis como variable para el análisis de rendimiento diferencial por subgrupos.
+  \item Definir a partir de MIMIC-IV la cohorte general de pacientes adultos de UCI, registrando la presencia de sepsis como variable para el análisis de rendimiento diferencial por subgrupos.
 
   \item Extraer y preprocesar las variables predictoras relevantes disponibles en las primeras horas del ingreso en UCI, incluyendo constantes vitales, parámetros analíticos y otros 
   indicadores de disfunción orgánica y perfusión tisular.
 
   \item Identificar el evento objetivo, definido como el inicio de noradrenalina, a partir de la tabla \texttt{inputevents} de MIMIC-IV, distinguiendo entre diferentes ventanas temporales de predicción.
 
-  \item Implementar técnicas de manejo del desequilibrio de clases, imputación de datos faltantes y evaluación de calibración, adaptadas a las características habituales de los datos clínicos reales de UCI.
+  \item Implementar técnicas de manejo del desequilibrio de clases y evaluación de calibración, adaptadas a las características habituales de los datos clínicos reales de UCI.
 
-  \item Aplicar técnicas de interpretabilidad basadas en valores SHAP (\textit{SHapley Additive exPlanations}) para cuantificar la contribución individual de cada variable a la predicción, tanto a nivel global de la cohorte como a nivel de paciente individual \cite{lundberg2017}.
+  \item Aplicar técnicas de interpretabilidad basadas en valores SHAP (\textit{SHapley Additive exPlanations}) para cuantificar la contribución individual de cada variable a la predicción \cite{lundberg2017}.
 
-  \item Desarrollar la interfaz del prototipo del \textit{dashboard} utilizando Python (Streamlit), incorporando visualización del riesgo estimado, explicación por variables y clasificación orientativa del nivel de alerta.
+  \item Desarrollar la interfaz del prototipo del \textit{dashboard} utilizando Python (Streamlit), incorporando visualización del riesgo estimado, explicación por variables y contextualización mediante percentiles respecto a la cohorte de referencia.
 
   \item Documentar todo el proceso de desarrollo en el repositorio GitHub del proyecto, con el objetivo de favorecer la reproducibilidad del código y del entorno de trabajo.
 \end{enumerate}

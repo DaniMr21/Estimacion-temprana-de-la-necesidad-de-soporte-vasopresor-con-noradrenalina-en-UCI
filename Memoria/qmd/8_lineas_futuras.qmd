@@ -27,4 +27,4 @@ camas del servicio, siempre manteniendo su función como herramienta de apoyo y 
 
 **Integración del dashboard para el servicio de Urgencias o pacientes ingresados en planta:** En relación con la línea anterior se estudiaría como reentrenar estos modelos
  con una población hospitalaria general, o del servicio de urgencias, con el fin de poder disponer de una alerta temprana en estos contextos con el fin de apoyar una 
- decisión de trasladar un paciente enfermo a UCI en caso de que presente un riesgo alto de noradrenalina.
+ decisión de trasladar un paciente enfermo a UCI en caso de que presente un riesgo alto de necesidad de soporte vasopresor con noradrenalina.
