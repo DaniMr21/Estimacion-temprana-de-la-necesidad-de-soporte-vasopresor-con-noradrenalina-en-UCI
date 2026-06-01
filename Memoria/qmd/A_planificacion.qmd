@@ -99,31 +99,126 @@ carpetas de pruebas descrita en el apartado anterior.
 
 \subsection{Planificación económica}
 
-La Tabla~\ref{tab:costes} recoge la estimación de costes materiales del proyecto. Al tratarse de un trabajo académico, no se consideran costes de recursos humanos en sentido profesional, aunque se destaca que las horas dedicadas al presente proyecto se estiman en 360 horas.
+La Tabla~\ref{tab:costes_materiales} recoge la estimación de costes materiales asociados al desarrollo del proyecto. El software empleado es de código abierto
+o de libre acceso, y las bases de datos utilizadas no tienen coste económico directo para fines de investigación.
 
 \begin{table}[H]
 \centering
-\caption{Estimación de costes del proyecto.}
-\label{tab:costes}
+\caption{Estimación de costes materiales del proyecto.}
+\label{tab:costes_materiales}
 \begin{tabular}{lll}
 \toprule
 \textbf{Categoría} & \textbf{Concepto} & \textbf{Coste} \\
 \midrule
-Hardware  & Amortización portátil (uso parcial) & 100\,€ \\
-Software  & Código abierto (python, SQL y R) en VScode y PostgreSQL &   0\,€ \\
-Datos     & MIMIC-IV y eICU-CRD (PhysioNet)     &   0\,€ \\
+Hardware  & Amortización proporcional del portátil & 60,27\,€ \\
+Software  & Python, SQL y R en VS Code y PostgreSQL & 0\,€ \\
+Datos     & MIMIC-IV y eICU-CRD (PhysioNet) & 0\,€ \\
 \midrule
-\multicolumn{2}{r}{\textbf{Total}} & \textbf{100\,€} \\
+\multicolumn{2}{r}{\textbf{Total costes materiales}} & \textbf{60,27\,€} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Para el desarrollo del proyecto se utilizó un equipo HP Pavilion Plus con procesador Intel Core i7 Ultra, 32\,GB de RAM, SSD de 1\,TB y tarjeta gráfica
-Nvidia RTX 4050 con 6\,GB de VRAM, adquirido en febrero de 2026 por 1.500\,€. Dado que el equipo no se destinó de forma exclusiva al proyecto y se
-aprovechará a lo largo de toda su vida útil, se ha estimado una amortización parcial de 100\,€ correspondiente a los meses de uso efectivo durante el trabajo.
+Para el desarrollo del proyecto se utilizó un equipo HP Pavilion Plus con
+procesador Intel Core Ultra 7, 32\,GB de RAM, SSD de 1\,TB y tarjeta gráfica
+Nvidia RTX 4050 con 6\,GB de VRAM, adquirido en febrero de 2026 por 1.500\,€.
 
-Aunque la GPU dedicada permitió reducir los tiempos de entrenamiento, el trabajo habría podido desarrollarse con un equipo de menores prestaciones, siempre que dispusiese de al menos 200\,GB 
-de almacenamiento libre para albergar las bases de datos completas de MIMIC-IV y eICU-CRD junto con los ficheros de código.
+Para estimar el coste imputable al proyecto se ha supuesto una vida útil laboral del equipo de cinco años. Considerando la jornada anual máxima de 1.792 horas
+establecida en el convenio de referencia, la vida útil total estimada del equipo es:
+
+\[
+1.792 \times 5 = 8.960\,h
+\]
+
+Por tanto, el coste horario de amortización del equipo es:
+
+\[
+\frac{1.500}{8.960} = 0,167 EUR
+\]
+
+Dado que el proyecto ha requerido 360 horas de trabajo, el coste de hardware imputable al proyecto asciende a:
+
+\[
+0,167 \times 360 = 60,27 EUR
+\]
+
+Además de los costes materiales, se ha estimado el coste laboral que tendría el desarrollo del proyecto para una empresa. Para ello se toma como referencia el
+XX Convenio colectivo nacional de empresas de ingeniería, oficinas de estudios técnicos, inspección, supervisión y control técnico y de calidad, publicado en
+el BOE. Según las tablas salariales vigentes desde 2024, un graduado universitario se encuadra en el Nivel Salarial 2, con una retribución anual de 22.224,26\,€
+brutos.
+
+Considerando una jornada anual máxima de 1.792 horas, el coste salarial horario
+equivalente es:
+
+\[
+\frac{22.224,26}{1.792} = 12,40 EUR/h
+\]
+
+Dado que la duración estimada del proyecto es de 360 horas, el salario bruto
+proporcional asociado al desarrollo del proyecto asciende a:
+
+\[
+12,40 \times 360 = 4.464,70 EUR
+\]
+
+A este importe se añaden las cotizaciones empresariales a la Seguridad Social. Para una estimación general se consideran contingencias comunes, desempleo,
+FOGASA, formación profesional, Mecanismo de Equidad Intergeneracional y contingencias profesionales. En conjunto, se estima un recargo empresarial del
+32,30\,\% sobre el salario bruto:
+
+\[
+4.464,70 \times 0,3230 = 1.442,10 EUR
+\]
+
+Por tanto, el coste laboral total estimado para una empresa sería:
+
+\[
+4.464,70 + 1.442,10 = 5.906,80 EUR
+\]
+
+La Tabla~\ref{tab:coste_laboral} resume el coste laboral estimado del proyecto.
+
+\begin{table}[H]
+\centering
+\caption{Estimación del coste laboral del proyecto para una empresa.}
+\label{tab:coste_laboral}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Concepto} & \textbf{Cálculo} & \textbf{Importe} \\
+\midrule
+Salario bruto proporcional & 12,40\,€/h $\times$ 360\,h & 4.464,70\,€ \\
+Cotizaciones empresariales a la Seguridad Social & 32,30\,\% & 1.442,10\,€ \\
+\midrule
+\textbf{Coste laboral total} &  & \textbf{5.906,80\,€} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Finalmente, sumando los costes materiales imputables y el coste laboral total,
+el coste económico estimado del proyecto para una empresa sería:
+
+\[
+5.906,80 + 60,27 = 5.967,07\,€
+\]
+
+\begin{table}[H]
+\centering
+\caption{Coste total estimado del proyecto.}
+\label{tab:coste_total}
+\begin{tabular}{lr}
+\toprule
+\textbf{Concepto} & \textbf{Importe} \\
+\midrule
+Costes materiales & 60,27\,€ \\
+Coste laboral total para empresa & 5.906,80\,€ \\
+\midrule
+\textbf{Coste total estimado} & \textbf{5.967,07\,€} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Por tanto, bajo las hipótesis consideradas, el coste total que supondría para una empresa desarrollar este proyecto se estima en 5.967,07\,€. Este importe no
+representa un precio de venta o facturación al cliente, sino una estimación del coste interno de ejecución, considerando costes materiales amortizados, salario
+bruto proporcional y cotizaciones empresariales a la Seguridad Social.
 
 \subsection{Viabilidad legal}
 
