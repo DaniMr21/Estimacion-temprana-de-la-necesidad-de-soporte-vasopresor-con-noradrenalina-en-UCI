@@ -1,0 +1,257 @@
+```{=latex}
+%% ── Capítulo 4: Metodología ─────────────────────────────────
+\capitulo{4}{Metodología}
+```
+
+El trabajo se estructuró en tres fases: construcción de las cohortes, desarrollo y evaluación interna de los modelos sobre MIMIC-IV, y validación externa sobre eICU-CRD. Se definieron tres
+ ventanas temporales clínicamente diferenciadas: corta (observación 0--3 h, predicción 3--12 h), media (observación 0--6 h, predicción 6--24 h) y larga (observación 0--12 h, predicción 12--48 h).
+ Se escogieron estas ventanas con el fin de cubrir distintos escenarios asistenciales, desde la detección precoz de deterioro hemodinámico inminente hasta la identificación de pacientes con 
+ riesgo de evolución desfavorable en un plazo más amplio. En todos los casos, los predictores se extrajeron exclusivamente de periodos anteriores al inicio de la noradrenalina, evitando 
+ cualquier fuga de información desde el evento hacia el modelo.
+
+La cohorte de entrenamiento y evaluación interna se construyó a partir de MIMIC-IV. Su acceso requirió completar el curso de formación en investigación con datos humanos del CITI Program
+ [@citiprogram], registrar el proyecto en PhysioNet [@physionet] y firmar el acuerdo de uso de datos, que obliga, entre otros aspectos, a no reidentificar pacientes, no redistribuir los datos y publicar el código desarrollado para el trabajo
+en un repositorio público.
+
+Como cohorte de validación externa se seleccionó eICU-CRD [@pollard2018]. Su carácter multicéntrico permite evaluar el rendimiento en un entorno interhospitalario heterogéneo, 
+abordando una de las principales limitaciones de los estudios previos, y mantiene una comparabilidad estructural con MIMIC-IV mayor que la disponible inicialmente con datos del HUBU. 
+Los requisitos de acceso fueron equivalentes, al estar también alojada en PhysioNet.
+
+La selección inicial de variables se basó en criterios clínicos y disponibilidad en MIMIC-IV, priorizando constantes vitales, parámetros analíticos, variables respiratorias y marcadores de 
+función orgánica con relación fisiopatológica plausible con el deterioro hemodinámico. La selección se apoyó además en el Protocolo Código Sepsis del HUBU, garantizando relevancia clínica 
+además de disponibilidad técnica. Variables como la procalcitonina o la proteína C reactiva se descartaron por no estar disponibles de forma suficientemente completa o estructurada.
+
+Se identificaron todas las estancias en UCI y se exigió una duración mínima que garantizara que el horizonte de predicción quedara contenido dentro del seguimiento disponible: más de 24 h para
+ las ventanas corta y media, y más de 48 h para la larga. Este criterio evita falsos negativos en estancias demasiado breves para observar el evento.
+
+El evento objetivo fue el primer inicio de perfusión de noradrenalina durante la estancia en UCI, localizado en MIMIC-IV mediante el `itemid` 221906 de la tabla `inputevents`. Se excluyeron 
+las estancias con noradrenalina iniciada antes del comienzo de la ventana de observación, garantizando que todos los predictores procedieran de un periodo libre de tratamiento vasopresor. 
+Cada estancia recibió etiqueta positiva (`1`) cuando el primer inicio ocurrió estrictamente dentro del intervalo de predicción, y negativa (`0`) en caso contrario; la etiqueta negativa 
+engloba tanto a pacientes que nunca requirieron soporte vasopresor como a los que lo iniciaron fuera del horizonte evaluado.
+
+En MIMIC-IV, la presencia de sepsis se identificó mediante la tabla derivada `mimiciv_derived.sepsis3` y la puntuación SOFA mediante `mimiciv_derived.sofa`, ambas del repositorio oficial de 
+scripts derivados mantenido por MIT-LCP [@mimiccode], que implementa los criterios Sepsis-3 (Tabla \ref{tab:pseudocodigo_sofa_sepsis}). 
+
+```{=latex}
+\begin{table}[htbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{0.48\textwidth}|p{0.48\textwidth}@{}}
+\textbf{Cálculo del SOFA (ventana 24 h)} & \textbf{Detección de Sepsis-3} \\
+\hline
+\rule{0pt}{2.6ex}
+\textbf{Para} cada hora \(h\) de la estancia:\newline
+\hspace*{1em}Respiratorio: P/F\(_{\text{vent}}<100\to4\), \(<200\to3\);\newline
+\hspace*{2em}P/F\(_{\text{vent/no vent}}<300\to2\), \(<400\to1\)\newline
+\hspace*{1em}Coagulación: plt\(<20\to4\), \(<50\to3\), \(<100\to2\), \(<150\to1\)\newline
+\hspace*{1em}Hepático: bili\(\geq12\to4\), \(\geq6\to3\), \(\geq2\to2\), \(\geq1{,}2\to1\)\newline
+\hspace*{1em}Cardiovascular: dopamina\(>15\) o epi\(>0{,}1\) o norepi\(>0{,}1\to4\);\newline
+\hspace*{2em}dopamina\(>5\) o epi\(\leq0{,}1\) o norepi\(\leq0{,}1\to3\);\newline
+\hspace*{2em}dopamina\(>0\) o dobutamina\(>0\to2\); MAP\(<70\to1\)\newline
+\hspace*{1em}Neurológico: GCS\(<6\to4\), \(6\)--\(9\to3\), \(10\)--\(12\to2\), \(13\)--\(14\to1\)\newline
+\hspace*{1em}Renal: creat\(\geq5\) o diuresis\(_{24\text{h}}<200\to4\);\newline
+\hspace*{2em}creat\(\geq3{,}5\) o diuresis\(_{24\text{h}}<500\to3\);\newline
+\hspace*{2em}creat\(\geq2\to2\), \(\geq1{,}2\to1\)\newline
+\(\textbf{Componente}_{24\text{h}} \leftarrow \operatorname{COALESCE}(\operatorname{MAX}(\text{componente}_{h-23:h}))\)\newline
+\(\text{SOFA}_{24\text{h}} \leftarrow \sum 6\ \text{componentes}_{24\text{h}}\)
+&
+\rule{0pt}{2.6ex}
+\textbf{Para} cada antibiótico administrado:\newline
+\hspace*{1em}\textbf{Si} cultivo en \(\pm72/24\,\text{h}\) del antibiótico:\newline
+\hspace*{2em}sospecha \(\leftarrow\) verdadero\newline
+\hspace*{2em}\(t_s \leftarrow \min(t_{\text{cultivo}}, t_{\text{antibiótico}})\)\newline
+\textbf{Para} cada evento de sospecha:\newline
+\hspace*{1em}\textbf{Si} \(\exists\ \text{SOFA}_{24\text{h}} \geq 2\) en \([t_s - 48\text{h}, t_s + 24\text{h}]\):\newline
+\hspace*{2em}sepsis3 \(\leftarrow\) verdadero\newline
+\hspace*{2em}\(t_{\text{onset}} \leftarrow\) primer endtime con SOFA\(_{24\text{h}} \geq 2\)\newline
+\textbf{Devolver} registro más temprano con sospecha \(\wedge\) SOFA\(_{24\text{h}} \geq 2\)
+\\
+\end{tabular}
+\caption{Pseudocódigo de los algoritmos del repositorio MIT-LCP para el cálculo horario del SOFA y la detección del \textit{onset} de Sepsis-3 en MIMIC-IV \cite{johnson2023, mimiccode}.}
+\label{tab:pseudocodigo_sofa_sepsis}
+\end{table}
+```
+
+El SOFA evalúa la disfunción de seis sistemas orgánicos, asignando a cada uno una puntuación de 0 (normal) a 4 (disfunción grave). El componente respiratorio se basa en el cociente 
+PaO$_2$/FiO$_2$ (P/F), que mide la eficiencia del intercambio gaseoso pulmonar. El componente de coagulación emplea el recuento de plaquetas, cuyo descenso refleja consumo o fallo en la
+ hemostasia. El componente hepático utiliza la bilirrubina como marcador de función hepática. El componente cardiovascular valora la hipotensión y la necesidad de soporte vasopresor, 
+ considerando la presión arterial media (MAP) y las dosis de noradrenalina y dopamina. El componente neurológico se basa en la escala de coma de Glasgow (GCS), que cuantifica el nivel de 
+ conciencia. Finalmente, el componente renal emplea la creatinina sérica como indicador de función renal. La puntuación total resulta de sumar los seis componentes, tomando para cada uno el 
+ peor valor registrado en la ventana de 24 horas. El SOFA se incorporó como variable predictora y, adicionalmente, como referencia clínica aislada para comparar el rendimiento de los modelos 
+ frente a una escala de gravedad ampliamente empleada en UCI. La sepsis se utilizó como variable de análisis diferencial por subgrupos. 
+
+A diferencia de MIMIC-IV, eICU-CRD no dispone de tablas derivadas nativas con la puntuación SOFA precalculada, por lo que este índice se implementó mediante consultas 
+SQL directas sobre sus componentes disponibles. Se introdujeron adaptaciones respecto al script MIT-LCP: el componente respiratorio se estimó a partir de la relación P/F,
+ combinando $PaO_2$ de laboratorio y $FiO_2$ máxima normalizada de respiratoryCharting; el cardiovascular se simplificó usando la presencia de soporte vasopresor activo
+  —norepinephrine, epinephrine, dopamine o dobutamine— en infusionDrug, en lugar de dosis ajustadas por peso. El SOFA se calculó como la suma de los seis componentes 
+  clásicos usando los peores valores observados dentro de la ventana temporal. Por tanto, debe interpretarse como una aproximación operativa y homogénea al SOFA de 
+  referencia, adaptada a la estructura y disponibilidad de datos de eICU-CRD.
+
+En eICU-CRD no fue posible obtener un indicador de sepsis equivalente. La tabla `microLab` está poco poblada por la disponibilidad limitada de interfaces de microbiología, y la aproximación
+ mediante los diagnósticos de la tabla `diagnosis` (códigos ICD y descripciones) se descartó por no ser metodológicamente equivalente, ya que la codificación es introducida a mano por el personal 
+ médico, pudiendo esto inducir errores humanos o codificar patologías parecidas pero no iguales. Por tanto, el análisis diferencial por sepsis se realizó únicamente sobre MIMIC-IV.
+
+La cohorte de validación se construyó mediante consultas SQL sobre eICU-CRD, aplicando las mismas restricciones de estancia mínima que en desarrollo. El evento se identificó en la tabla 
+`infusionDrug`, buscando perfusiones cuyo nombre contuviera *norepinephrine* o *levophed* y excluyendo las que contenían *volume*, para evitar falsos positivos por soluciones de reposición. 
+Se registró el primer inicio en horas desde el ingreso y se aplicaron los mismos criterios de exclusión de noradrenalina precoz y de etiquetado que en MIMIC-IV. El rendimiento externo se evaluó 
+mediante métricas discriminativas, probabilísticas y de calibración; los resultados se recogen en las Tablas \ref{tab:validacion-externa-discr} y \ref{tab:validacion-externa-prob}, y las curvas
+ principales en la @fig-validacion-externa-principal.
+
+El tratamiento de los datos faltantes se abordó mediante un criterio de completitud estricta. No se aplicó imputación estadística sobre las variables predictoras, con el fin de evitar la 
+introducción de valores sintéticos en variables clínicas y analíticas cuya ausencia podía estar condicionada por el contexto asistencial. Para cada ventana temporal se conservaron únicamente 
+las estancias que presentaban registros completos en el conjunto de variables requerido por el modelo correspondiente.
+
+Este filtrado se aplicó después de la extracción y agregación de las variables por estancia y antes del entrenamiento de los modelos. De este modo, todos los modelos se entrenaron sobre 
+determinaciones clínicas efectivamente registradas. El efecto de este criterio sobre el tamaño final de las cohortes y la prevalencia del evento se presenta en el capítulo de resultados.
+
+Para el tratamiento de valores extremos se aplicó winsorización sobre las variables agregadas por estancia y ventana temporal. Siguiendo una estrategia coherente con el preprocesamiento 
+propuesto por Gupta et al. [@gupta2022mimic], los valores inferiores al percentil 2 y superiores al percentil 98 fueron sustituidos por los límites correspondientes. Se descartó la eliminación 
+directa de filas, ya que en pacientes críticos un valor extremo puede reflejar gravedad real y no necesariamente un error de registro. La winsorización se aplicó sobre los estadísticos 
+utilizados como predictores finales, como media, mínimo o máximo dentro de la ventana de observación, y no sobre cada medición individual en bruto. El objetivo fue limitar la influencia de
+valores extremos sobre el entrenamiento sin eliminar información clínica relevante.
+
+Para identificar redundancias se calculó la matriz de correlación de Spearman sobre las 76 variables iniciales, usando solo la primera estancia por paciente para no inflar las asociaciones. 
+Se eligió Spearman por su robustez ante distribuciones asimétricas, relaciones no lineales monótonas y valores extremos residuales.
+
+::: {#fig-correlaciones layout-ncol=2}
+![Matriz de Spearman](img/correlacion_spearman_v4.png){#fig-correlacion-spearman}
+
+![Dendrograma](img/dendrograma_v4.png){#fig-dendrograma}
+
+Análisis de correlación y estructura de agrupamiento de las 76 variables predictoras (MIMIC-IV, ventana Medio). Izquierda: matriz de correlación de Spearman. Derecha: dendrograma jerárquico con corte en $|\rho| = 0{,}7$.
+:::
+
+La matriz mostró bloques de alta redundancia entre los tres estadísticos de resumen de una misma variable (media, mínimo, máximo), con correlaciones sistemáticamente superiores a 0,7, así como 
+asociaciones moderadas-altas entre variables fisiopatológicamente relacionadas (P/F y sus componentes, o GPT, GOT y bilirrubina). El dendrograma jerárquico sobre la distancia $1 - |\rho|$ 
+confirmó estos agrupamientos.
+
+A partir de ahí se redujo el espacio de predictores. Primero se seleccionó un único estadístico de resumen por variable según criterio clínico: el mínimo cuando el peor estado se asocia a 
+valores bajos (MAP, P/F, SpO$_2$, GCS, pH, bicarbonato, plaquetas, hemoglobina) y el máximo cuando se asocia a valores altos (creatinina, lactato, frecuencia respiratoria, tiempo de protrombina,
+ SOFA, FiO$_2$). Cuando había varios estadísticos plausibles, la elección se apoyó en un desempate por AUC univariante y $d$ de Cohen, priorizando la coherencia fisiopatológica y la menor 
+ redundancia. Después se eliminaron predictores solapados: la PaO$_2$ y FiO$_2$ por estar ya ambas en el cociente P/F, la GOT por su correlación con GPT, y `tiene_sepsis` por reservarse al análisis 
+ por subgrupos.
+
+El conjunto final quedó en 25 variables, con una correlación máxima residual de $|\rho| = 0{,}514$ (corta), $0{,}473$ (media) y $0{,}516$ (larga), muy por debajo del umbral de 0,7, lo que 
+indica ausencia de multicolinealidad relevante.
+
+::: {#fig-dendrogramas-reducidos layout-ncol=3}
+![Corto (3--12 h)](img/dendrograma_v4p_reducido.png){#fig-dendro-corto}
+
+![Medio (6--24 h)](img/dendrograma_v4_reducido.png){#fig-dendro-medio}
+
+![Largo (12--48 h)](img/dendrograma_v4l_reducido.png){#fig-dendro-largo}
+
+Dendrogramas de agrupamiento jerárquico sobre el conjunto final de variables predictoras en cada ventana temporal. Distancia $= 1 - |\rho|$; línea roja: $|\rho| = 0{,}7$; línea naranja: 
+$|\rho| = 0{,}5$.
+:::
+
+Para valorar la contribución de cada variable se combinaron tres análisis. La importancia por permutación se calculó sobre el test de cada fold externo, permutando cada variable 50 veces
+y registrando la caída de AUC-ROC; una variable se consideró significativa cuando su IC95% excluía el cero. En paralelo, un análisis univariante sobre la primera estancia por paciente empleó 
+Mann-Whitney U (continuas) y chi-cuadrado (binarias), con corrección de Benjamini-Hochberg (FDR $q < 0{,}05$) [@benjamini1995].
+
+::: {#fig-significancia layout-ncol=3}
+![Corto (3--12 h)](img/significancia_global_v4p.png){#fig-sig-corto}
+
+![Medio (6--24 h)](img/significancia_global_v4.png){#fig-sig-medio}
+
+![Largo (12--48 h)](img/significancia_global_v4l.png){#fig-sig-largo}
+
+Importancia por permutación de cada variable para los seis algoritmos evaluados, en cada ventana temporal. Las barras representan la caída media de AUC-ROC al permutar la variable; los intervalos
+de confianza al 95% se calcularon sobre los 5 folds externos.
+:::
+
+Como la significancia estadística no garantiza coherencia fisiopatológica, se calculó además el *odds ratio* ajustado mediante regresión logística multivariante sobre la primera estancia por 
+paciente, contrastando su dirección con la observada en datos brutos. Las variables con inversión de dirección no justificable clínicamente —compatible con supresión estadística, 
+confusión residual o colinealidad— se excluyeron: `creatinina_max`, `ph_min` y `gpt_max` en la media; `creatinina_max` y `gpt_max` en la corta; `ph_min`, `lactato_max` y `gpt_max` en la larga, 
+esta última por comportamiento incoherente repetido en las tres ventanas.
+
+Se evaluaron seis algoritmos cubriendo distintas familias de aprendizaje supervisado sobre datos tabulares: regresión logística (modelo lineal de referencia), Naive Bayes gaussiano 
+(probabilístico basal), Random Forest (*bagging*) y XGBoost, LightGBM y CatBoost (*gradient boosting*). Se priorizaron implementaciones maduras, de uso extendido en problemas clínicos 
+tabulares e interpretables mediante SHAP [@lundberg2017].
+
+Con una prevalencia del 10--11% (desbalance moderado), se aplicó `class_weight='balanced'` en regresión logística, Random Forest y LightGBM (con `balanced_subsample` en Random Forest) y 
+`scale_pos_weight` en XGBoost; CatBoost y Naive Bayes no incorporaron parámetro de balanceo. El escalado, mediante `RobustScaler`, se aplicó solo a regresión logística y Naive Bayes, 
+integrado en el `pipeline` para ajustarse exclusivamente sobre el entrenamiento de cada fold; los modelos de árboles no lo requieren por ser invariantes a transformaciones monótonas.
+
+El rendimiento se estimó mediante validación cruzada anidada 5×3: el bucle externo dividió las estancias en cinco particiones con `StratifiedGroupKFold`, manteniendo la proporción de clases y 
+agrupando todas las estancias de un paciente en el mismo fold para evitar fuga de información; el bucle interno (tres particiones) realizó la búsqueda de hiperparámetros con `GridSearchCV`, 
+optimizando AUC-ROC. Los *grids* exploraron la regularización $C$ (regresión logística); número de árboles, profundidad, tamaño mínimo de hoja y selección de variables (Random Forest); 
+número de estimadores, profundidad, tasa de aprendizaje, regularización y muestreo (XGBoost, LightGBM, CatBoost); y `var_smoothing` (Naive Bayes). \ref{tab:validacion-interna-completa}.
+
+La evaluación combinó discriminación, rendimiento probabilístico y calibración. Como discriminación se usaron AUC-ROC (capacidad de ordenar pacientes por riesgo) y AUC-PR 
+(especialmente informativa con desbalance). El rendimiento probabilístico se midió con Brier score, Brier Skill Score (BSS) y LogLoss; el BSS compara el error frente a un modelo nulo que 
+predice siempre la prevalencia:
+
+$$
+\text{BSS} = 1 - \frac{\text{Brier}_\text{modelo}}{\text{Brier}_\text{nulo}}
+$$
+
+Un BSS positivo indica mejora sobre la predicción trivial. La calibración se evaluó con el Expected Calibration Error (ECE), agrupando las predicciones en 10 intervalos y comparando la 
+probabilidad media predicha con la frecuencia observada, métrica especialmente relevante porque el dashboard muestra probabilidades interpretables, no solo un ranking.
+
+Como la validación anidada entrena un modelo distinto por fold, tras completarla se seleccionó para cada hiperparámetro el valor más frecuente entre los cinco folds y se reentrenó el 
+`pipeline` sobre el 100% de MIMIC-IV, serializando los modelos en `.pkl` con `joblib` para su reutilización en validación externa y dashboard.
+
+Para obtener curvas globales homogéneas se generaron predicciones *out-of-fold* (OOF) con `cross_val_predict` y el mismo esquema `StratifiedGroupKFold`, de modo que cada estancia 
+recibió una probabilidad de un modelo que no la había visto en entrenamiento. Con ellas se construyeron, por modelo y ventana, curvas ROC, precisión-recall y calibración. La curva 
+precisión-recall incluyó la prevalencia como referencia basal, y la curva de calibración se calculó con diez bins mediante estrategia *quantile*. Las curvas OOF de los modelos candidatos 
+seleccionados se muestran en la Figura \ref{fig-oof-candidatos}.
+
+Como la discriminación no garantiza buena calibración, se revisaron las curvas OOF junto con ECE y BSS, identificando como candidatos a recalibración CatBoost en las ventanas corta y media,
+ y XGBoost en las tres ventanas. Se evaluaron tres estrategias sobre probabilidades OOF —Platt sin regularización, Platt regularizado y regresión isotónica—, entrenando cada calibrador 
+ dentro de los folds externos sobre las probabilidades del entrenamiento y aplicándolo al test, manteniendo el principio de no fuga de información. El calibrador final se eligió priorizando 
+ el menor ECE entre los métodos con BSS positivo, evitando comprimir las probabilidades hacia la prevalencia; cuando ninguno cumplía el criterio, se conservó el modelo sin calibrar. 
+ El resultado del proceso de calibración se resume visualmente en la @fig-calibracion-xgb-medio, correspondiente al único modelo que requirió recalibración efectiva.
+
+La interpretabilidad post-hoc se abordó con valores SHAP, que descomponen la predicción individual en contribuciones por variable y permiten analizar tanto el efecto sobre una predicción 
+concreta como la importancia global y la dirección de la asociación. Se usó `TreeExplainer` en los modelos de árboles, `LinearExplainer` en la regresión logística y `KernelExplainer` en 
+Naive Bayes, con visualización mediante diagramas *beeswarm*. Esto permitió verificar que los modelos asociaban mayor riesgo a patrones clínicamente esperables y que las predicciones no 
+dependían de artefactos de registro. SHAP no se empleó para seleccionar variables, sino como capa de auditoría para reducir el carácter de caja negra de los modelos finales. 
+Los diagramas SHAP generados sobre MIMIC-IV se presentan en la @fig-shap-candidatos-1 y la @fig-shap-candidatos-2, mientras que los correspondientes a la validación externa se recogen en la @fig-shap-eicu-principal y la @fig-shap-eicu-catboost-complementario.
+
+Tras seleccionar y calibrar el modelo de cada ventana, se evaluó su rendimiento por subgrupos según presencia de sepsis, usando probabilidades OOF calibradas y estratificando en cohorte global,
+pacientes con sepsis (Sepsis-3) y sin sepsis, con las mismas métricas (AUC-ROC, AUC-PR, BSS, ECE). Este análisis se realizó solo en MIMIC-IV por la imposibilidad de reconstruir la sepsis en
+ eICU-CRD.
+
+Como referencia clínica, los modelos se compararon frente a SOFA como predictor aislado. Al ser SOFA una escala ordinal y no una probabilidad calibrada, la comparación se limitó a métricas de 
+ranking, concretamente AUC-ROC y AUC-PR, sobre los mismos pacientes y etiquetas empleados para evaluar cada modelo. De este modo, las diferencias observadas reflejan la capacidad predictiva 
+adicional del modelo frente a SOFA como referencia clínica de gravedad. Los resultados de esta comparación externa se presentan en la Tabla \ref{tab:validacion-externa-discr}.
+
+La selección de modelos candidatos para la validación externa se basó en un conjunto de criterios combinados, no en el AUC-ROC de forma aislada. 
+Se exigió que cada candidato presentara discriminación superior al azar (AUC-ROC y AUC-PR), un BSS positivo que confirmara mejora sobre la 
+predicción trivial, y una calibración aceptable según el ECE. Se descartaron además los modelos con curvas OOF erráticas, como por ejemplo en la @fig-contraste-calidad. 
+Adicionalmente, se revisaron los diagramas SHAP de cada candidato: los modelos que presentaban patrones de atribución caóticos o mezclas de 
+colores sin justificación fisiopatológica coherente fueron excluidos, independientemente de sus métricas. La calibración se evaluó siempre como criterio complementario y 
+nunca como sustituto de la discriminación.
+
+Como parte final se desarrolló un prototipo de dashboard clínico en Python con Streamlit, no para sustituir la valoración médica sino para demostrar la viabilidad de integrar los modelos en una 
+interfaz sencilla, interpretable y orientada a la consulta individual. La aplicación permite seleccionar una ventana, cargar un CSV con las variables del paciente y obtener una estimación 
+individualizada del riesgo. Se integraron solo los modelos de las ventanas media (6--24 h) y larga (12--48 h); la corta se excluyó por su limitada capacidad discriminativa en validación externa.
+La interfaz final del prototipo se muestra en la @fig-dashboard-general.
+
+El CSV contiene una fila por medición. A partir de él, la aplicación calcula los estadísticos agregados requeridos (`map_min`, cociente PaO$_2$/FiO$_2$, diuresis acumulada normalizada por peso,
+ frecuencia cardiaca media, SOFA máximo o los mínimos de SpO$_2$, bicarbonato, temperatura y glucemia, según la ventana), de modo que el usuario introduce mediciones ordinarias y no las 
+ variables finales. La aplicación carga el modelo desde `.pkl` y transforma la probabilidad en un percentil de riesgo respecto a la distribución de MIMIC-IV: un percentil 90 indica un riesgo
+estimado superior al del 90% de los pacientes de referencia. Junto al percentil, muestra una explicación SHAP individual indicando qué variables aumentan o reducen la predicción.
+
+Una decisión central del diseño fue que el dashboard no emitiera recomendaciones clínicas: no indica si iniciar noradrenalina, no propone dosis, no genera alarmas ni clasifica al paciente. 
+Ofrecer recomendaciones automáticas a partir de un modelo retrospectivo no validado prospectivamente supondría un riesgo metodológico, ético y asistencial, máxime cuando el inicio de soporte
+ vasopresor depende de factores no recogidos en los datos estructurados (exploración, respuesta a fluidoterapia, contexto quirúrgico, criterio del equipo). La interfaz incluye un aviso explícito
+  de que es un prototipo académico sin validación clínica prospectiva ni autorización regulatoria, no apto para uso asistencial real.
+
+![Vista general del prototipo de dashboard desarrollado en Streamlit. La interfaz permite seleccionar la ventana temporal, cargar los datos clínicos del paciente, visualizar el riesgo estimado de inicio de noradrenalina basado en percentiles y consultar la explicación individual de la predicción.](img/dashboard.png){#fig-dashboard-general width=95%}
+
+Para evaluar la usabilidad del prototipo se diseñó una encuesta de satisfacción dirigida al personal médico del servicio de Medicina Intensiva del HUBU. La encuesta, anónima y de tratamiento 
+confidencial y agregado, recogía tres ítems puntuados en una escala de 1 («Completamente en desacuerdo») a 10 («Completamente de acuerdo»): entendimiento del prototipo y su interfaz con el 
+manual proporcionado, explicabilidad (comprensión conceptual de los valores SHAP y su justificación del riesgo) y utilidad clínica potencial en la UCI. Los resultados de la encuesta se presentan
+en la Tabla \ref{tab:encuesta-satisfaccion}.
+
+#### Desarrollo software y reproducibilidad
+
+El desarrollo siguió una metodología experimental e iterativa, refinándose progresivamente en función de los resultados de cada fase. 
+No se aplicó un marco formal como Scrum al ser un proyecto de un único autor guiado por objetivos metodológicos; en su lugar se siguió un ciclo incremental por versiones, con el código 
+organizado en módulos funcionales (extracción SQL, preprocesamiento, análisis exploratorio, ventanas temporales, selección de variables, entrenamiento, calibración, interpretabilidad, 
+validación externa y dashboard), manteniendo la trazabilidad entre resultados y scripts. El control de versiones se realizó con Git y GitHub; el repositorio incluye el código para reproducir 
+el flujo respetando las restricciones de uso de MIMIC-IV y eICU-CRD, que impiden redistribuir los datos.
