@@ -38,7 +38,7 @@ Tras aplicar el proceso de reducción descrito en la metodología, el conjunto f
 Dendrogramas de agrupamiento jerárquico sobre el conjunto final de variables predictoras en cada ventana temporal. Distancia $= 1 - |\rho|$; línea roja: $|\rho| = 0{,}7$; línea naranja: $|\rho| = 0{,}5$.
 :::
 
-La auditoría mediante importancia por permutación permitió identificar qué predictores producían una pérdida relevante de AUC-ROC al ser permutados en cada modelo. Se consideró que una variable contribuía de forma significativa cuando el intervalo de confianza al 95\% de la caída de AUC-ROC no incluía el cero. La @fig-significancia resume estos resultados para las tres ventanas temporales.
+La auditoría mediante importancia por permutación permitió identificar qué predictores producían una pérdida relevante de AUC-ROC al ser permutados en cada modelo. La @fig-significancia resume estos resultados para las tres ventanas temporales.
 
 ::: {#fig-significancia layout-ncol=3}
 ![Corto (3--12 h)](img/significancia_global_v4p.png){#fig-sig-corto}
@@ -52,7 +52,7 @@ Importancia por permutación de las variables predictoras en los seis algoritmos
 
 En la ventana corta, la regresión logística no presentó ninguna variable con contribución significativa según este criterio, por lo que quedó excluida de la evaluación en esa ventana.
 
-Como comprobación adicional, se revisó la dirección del efecto mediante regresión logística multivariante ajustada. La @tbl-direccion-efecto resume las principales variables descartadas por presentar una dirección ajustada no coherente con la dirección observada en los datos brutos o con la interpretación clínica esperada. Los odds ratio corresponden a variables estandarizadas.
+Como comprobación adicional, se revisó la dirección del efecto mediante regresión logística multivariante ajustada. La @tbl-direccion-efecto resume las principales variables descartadas por presentar una dirección ajustada no coherente con la interpretación clínica esperada. Los odds ratio corresponden a variables estandarizadas.
 
 | Ventana | Variable | Mediana positivos | Mediana negativos | OR ajustado (IC95\%) |
 |-----------------|-----------------------|---------------|---------------|-----------------------|
@@ -65,12 +65,9 @@ Como comprobación adicional, se revisó la dirección del efecto mediante regre
 
 : Principales variables descartadas tras la verificación de dirección del efecto mediante regresión logística multivariante ajustada. El descarte se basó en la incoherencia entre la dirección del efecto ajustado y la observada en los datos brutos o la esperada clínicamente; `gpt_max` se descartó en las tres ventanas por presentar este comportamiento de forma reiterada. {#tbl-direccion-efecto}
 
-Conviene señalar que el objetivo de esta comprobación no fue contrastar la significación individual de cada predictor, sino evitar la inclusión de variables cuya dirección ajustada resultase difícil de defender clínicamente. Este comportamiento puede aparecer por supresión estadística, confusión residual o solapamiento con otros predictores.
-
 #### Rendimiento interno de los modelos en MIMIC-IV
 
-Una vez consolidadas las cohortes y el espacio definitivo de variables, se evaluaron los seis algoritmos, en su versión base sin recalibrar, mediante el esquema de validación cruzada anidada. La Tabla~\ref{tab:validacion-interna-completa} resume los resultados analíticos de la evaluación interna en las tres ventanas temporales, desglosando el comportamiento de los clasificadores en discriminación, rendimiento probabilístico y calibración.
-
+Una vez consolidadas las cohortes y el espacio definitivo de variables, se evaluaron los seis algoritmos, en su versión base sin recalibrar, mediante el esquema de validación cruzada anidada. La Tabla~\ref{tab:validacion-interna-completa} resume los resultados analíticos de la evaluación interna en las tres ventanas temporales.
 ```{r tabla-interna-completa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 metricas <- read.csv(
   "../Pruebas_v4_4/TABLAS/resultados_metricas_multiventana.csv",
@@ -81,7 +78,6 @@ metricas <- read.csv(
 metricas <- unique(metricas)
 
 # Mantener solo los seis algoritmos base.
-# Las versiones recalibradas se presentan en el apartado de selección y calibración.
 modelos_base <- c("LR", "RF", "XGB", "LGBM", "CAT", "NB")
 metricas <- metricas[metricas$Modelo %in% modelos_base, ]
 
@@ -168,13 +164,14 @@ cat("}\n")
 cat("\\end{table}\n")
 ```
 
-Los resultados discriminativos internos mostraron un rendimiento variable entre algoritmos y ventanas temporales. En conjunto, los modelos basados en \textit{gradient boosting}, 
-especialmente XGBoost y CatBoost, concentraron los mejores valores de AUC-ROC y Brier Skill Score (BSS). Random Forest y Naive Bayes mostraron un comportamiento menos competitivo, 
-mientras que la regresión logística funcionó como referencia lineal frente a los modelos no lineales.
+En conjunto, los modelos basados en \textit{gradient boosting}, especialmente XGBoost y CatBoost, concentraron los mejores valores de AUC-ROC y Brier Skill Score (BSS). Random Forest y Naive 
+Bayes mostraron un comportamiento menos competitivo, mientras que la regresión logística funcionó como referencia lineal frente a los modelos no lineales.
 
 #### Selección de modelos y calibración
 
-Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-contraste-calidad ilustra dos comportamientos opuestos: Random Forest en la ventana corta obtuvo un rendimiento cercano al azar (AUC-ROC = 0,579), con peor estabilidad en la curva precisión-recall y una calibración alejada de la diagonal; en contraste, XGBoost en la ventana media mostró una discriminación superior, aunque con desviación inicial en la calibración que motivó el ajuste posterior. Conviene precisar que los valores de AUC-ROC mostrados en las curvas \textit{out-of-fold} de esta y las siguientes figuras corresponden al área calculada sobre las predicciones \textit{out-of-fold} agrupadas de todas las particiones, por lo que pueden diferir ligeramente del AUC-ROC medio entre folds externos recogido en la Tabla~\ref{tab:validacion-interna-completa}.
+Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-contraste-calidad ilustra dos comportamientos opuestos: Random Forest en la ventana corta obtuvo un rendimiento 
+cercano al azar (AUC-ROC = 0,579), con peor estabilidad en la curva precisión-recall y una calibración alejada de la diagonal; en contraste, XGBoost en la ventana media mostró una discriminación
+superior, aunque con desviación inicial en la calibración que motivó el ajuste posterior. Conviene precisar que los valores de AUC-ROC mostrados en las curvas \textit{out-of-fold} de esta y las siguientes figuras corresponden al área calculada sobre las predicciones \textit{out-of-fold} agrupadas de todas las particiones, por lo que pueden diferir ligeramente del AUC-ROC medio entre folds externos recogido en la Tabla~\ref{tab:validacion-interna-completa}.
 
 ::: {#fig-contraste-calidad layout-ncol=1}
 
@@ -185,7 +182,7 @@ Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-
 Contraste de calidad entre dos modelos en MIMIC-IV. Random Forest en la ventana corta muestra discriminación próxima al azar y calibración deficiente, mientras que XGBoost en la ventana media presenta una discriminación superior. Ambas curvas se obtienen mediante predicciones \textit{out-of-fold}.
 :::
 
-Tras aplicar los criterios de selección descritos en la metodología sobre los seis algoritmos evaluados, los modelos de \textit{gradient boosting} concentraron el mejor equilibrio entre discriminación, rendimiento probabilístico, calibración y estabilidad visual de las curvas \textit{out-of-fold} (OOF). Las curvas ROC, precisión-recall y calibración iniciales de los modelos preseleccionados se presentan en la @fig-oof-candidatos.
+Las curvas ROC, precisión-recall y calibración iniciales de los modelos preseleccionados se presentan en la @fig-oof-candidatos.
 
 ::: {#fig-oof-candidatos layout-ncol=2}
 ![Corta 3--12 h: CatBoost](img/Grafica_OOF_Corto_3_12_CAT.png){#fig-oof-corto-cat}
@@ -211,8 +208,7 @@ Este conjunto se utilizó en los análisis posteriores de interpretabilidad, sub
 
 #### Interpretabilidad de los modelos seleccionados
 
-La contribución individual y la dirección aproximada del efecto de los predictores sobre las estimaciones de riesgo se auditaron mediante valores SHAP sobre la cohorte de desarrollo. 
-Los diagramas de tipo *beeswarm* resultantes se presentan en la @fig-shap-candidatos-1 para los horizontes corto y medio, y en la @fig-shap-candidatos-2 para el horizonte largo.
+Los diagramas de SHAP tipo *beeswarm* resultantes se presentan en la @fig-shap-candidatos-1 para los horizontes corto y medio, y en la @fig-shap-candidatos-2 para el horizonte largo.
 
 ::: {#fig-shap-candidatos-1 layout-ncol=2}
 ![Corta 3--12 h: CatBoost](img/SHAP_Corto_3_12_CAT.png){#fig-shap-res-corto-cat}
@@ -262,8 +258,7 @@ discriminación se mantuvo por debajo de la del subgrupo séptico, pero por enci
 
 #### Validación externa en eICU-CRD
 
-La capacidad de generalización de los modelos seleccionados se evaluó sobre la cohorte externa eICU-CRD. Para cada ventana temporal se aplicó el modelo correspondiente entrenado en MIMIC-IV y
- se comparó su discriminación frente a la puntuación SOFA utilizada como predictor aislado. 
+Para cada ventana temporal se aplicó el modelo correspondiente entrenado en MIMIC-IV y se comparó su discriminación frente a la puntuación SOFA utilizada como predictor aislado. 
  
 ```{r tabla-validacion-externa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 externa <- read.csv(
@@ -410,7 +405,8 @@ Diagramas SHAP de los modelos principales evaluados en validación externa.
 Diagramas SHAP complementarios de CatBoost en las ventanas media y larga durante la validación externa.
 :::
 
-En conjunto, la validación externa mostró que el rendimiento fue más limitado en las ventanas corta y media, donde los modelos no superaron de forma significativa a SOFA. En cambio, en la ventana larga los dos modelos evaluados superaron significativamente la discriminación de SOFA, lo que sugiere una mayor transferibilidad del patrón predictivo cuando existe una ventana de observación clínica más amplia.
+En conjunto, la validación externa mostró que el rendimiento fue más limitado en las ventanas corta y media, donde los modelos no superaron de forma significativa a SOFA. 
+En cambio, en la ventana larga los dos modelos evaluados superaron significativamente la discriminación de SOFA.
 
 #### Prototipo de dashboard y encuesta de usabilidad
 
