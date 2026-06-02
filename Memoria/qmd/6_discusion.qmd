@@ -16,17 +16,27 @@ Los valores de AUC-ROC y AUC-PR obtenidos deben interpretarse en el contexto de 
   la vasopresina [@scheibner2022]. Estas comparaciones, no obstante, deben hacerse con cautela: las cohortes, las etiquetas, los horizontes de predicción y los
   objetivos clínicos difieren sustancialmente entre estudios, de modo que un AUC más alto no implica un mejor abordaje clínico del mismo problema.
 
-En el análisis del subgrupo de sepsis (detallado en la Tabla \ref{tab:subgrupos-sepsis}), se observó que el rendimiento discriminativo fue sistemáticamente superior 
+No obstante, la validación externa sobre eICU-CRD debe interpretarse como una prueba de transferencia multicéntrica, no como una validación local equivalente al entorno asistencial del HUBU.
+ Aunque eICU-CRD aporta heterogeneidad hospitalaria y permite evaluar los modelos fuera de MIMIC-IV, presenta diferencias relevantes en estructura de datos, codificación de variables, 
+ disponibilidad analítica, prácticas de monitorización y registro de fármacos. Por ello, el buen comportamiento relativo observado en la ventana larga no elimina la necesidad de una validación 
+ posterior sobre una cohorte europea o local.
+
+En el análisis del subgrupo de sepsis (detallado en la @tbl-subgrupos-sepsis), se observó que el rendimiento discriminativo fue sistemáticamente superior 
 en el subgrupo de pacientes sépticos que en los no sépticos en las tres ventanas temporales analizadas. Esta diferencia fue especialmente evidente en el 
 horizonte medio (6--24 h), donde el modelo de clasificación alcanzó un AUC-ROC de 0,694 y un AUC-PR de 0,287 en pacientes sépticos, en contraste con el 0,667 y 0,173 
 registrado en pacientes no sépticos. Este patrón es plenamente coherente con la estrecha relación fisiopatológica existente entre el síndrome séptico, 
 el desarrollo de disfunción orgánica distributiva y la necesidad de soporte vasopresor. No obstante, los clasificadores mantuvieron una capacidad discriminativa
  aceptable en pacientes sin sospecha de sepsis activa, reportando un AUC-ROC de 0,605 en la ventana corta, 0,667 en la media y 0,630 en la larga 
- (Tabla \ref{tab:subgrupos-sepsis}). Este hallazgo respalda la hipótesis de que el algoritmo no se limita a memorizar un patrón unívoco de shock séptico,
+ (@tbl-subgrupos-sepsis). Este hallazgo respalda la hipótesis de que el algoritmo no se limita a memorizar un patrón unívoco de shock séptico,
   sino que es capaz de identificar señales generales y multiorgánicas de deterioro hemodinámico en el paciente crítico. 
+
+  Este análisis por subgrupos se limitó a MIMIC-IV, donde la identificación de sepsis se apoyó en las tablas derivadas oficiales basadas en criterios Sepsis-3. No se replicó de forma 
+  equivalente en eICU-CRD, ya que reconstruir una variable de sepsis completamente comparable habría requerido armonizar sospecha de infección, disfunción orgánica, disponibilidad temporal de
+   SOFA y criterios de codificación bajo una estructura de datos distinta. Forzar esta estratificación externa con una definición menos robusta habría introducido una fuente adicional de 
+   incertidumbre, por lo que se prefirió reservar el análisis diferencial por sepsis a la cohorte de desarrollo.
   
 En comparación directa con el índice SOFA como referencia clínica basal de gravedad global, los modelos principales mostraron un incremento del AUC-ROC en todas las ventanas 
-evaluadas dentro de MIMIC-IV (Tabla \ref{tab:subgrupos-sepsis}), aunque esta ganancia debe interpretarse estrictamente como una validación de coherencia interna y
+evaluadas dentro de MIMIC-IV (@tbl-subgrupos-sepsis), aunque esta ganancia debe interpretarse estrictamente como una validación de coherencia interna y
  no como una prueba de superioridad en el escenario de decisión a pie de cama.
 
 Conviene además considerar la naturaleza de los datos y de la etiqueta. Los modelos se entrenaron con variables tabulares agregadas en ventanas temporales, no con series 
@@ -46,6 +56,11 @@ soporte vasopresor a causa de la heterogeneidad de los protocolos sanitarios y l
 Aunque SOFA no es una escala diseñada para predecir el inicio de noradrenalina, constituye una referencia clínica razonable, ya que resume la disfunción orgánica y se 
 emplea habitualmente para caracterizar la gravedad del paciente crítico. Compararse frente a SOFA permite valorar si el modelo aporta información adicional respecto a una
  medida clínica ampliamente utilizada.
+
+En la validación externa, esta comparación debe entenderse únicamente como una referencia discriminativa frente a una escala clínica de gravedad, no como una prueba de superioridad clínica
+ directa. SOFA no proporciona una probabilidad calibrada de inicio de noradrenalina ni fue diseñado específicamente para anticipar este evento. 
+ Además, su reconstrucción y disponibilidad pueden variar entre bases de datos, por lo que la comparación permite contextualizar el rendimiento del modelo, pero no establece por sí sola una
+  ventaja operativa en la práctica asistencial.
 
 En la ventana corta, CatBoost no superó a SOFA en la muestra multicéntrica, lo que limita su utilidad práctica en este horizonte temporal 
 (Tabla \ref{tab:validacion-externa-discr}). Una ventana de tres horas desde el ingreso ofrece una fotografía muy inicial del paciente, condicionada por el motivo de ingreso,
@@ -88,9 +103,13 @@ criterio relevante: en un contexto clínico no basta con ordenar correctamente a
 ya que una probabilidad mal calibrada puede inducir a una lectura errónea aunque la discriminación sea aceptable.
 
 La valoración preliminar del dashboard por parte de ocho facultativos de Medicina Intensiva del HUBU fue globalmente positiva, registrándose puntuaciones 
-promedio elevadas en las tres dimensiones evaluadas (Tabla \ref{tab:encuesta-satisfaccion}): 8,87 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica
+promedio elevadas en las tres dimensiones evaluadas (@tbl-encuesta-satisfaccion): 8,87 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica
  potencial. Estos resultados sugieren que el prototipo fue percibido como comprensible y potencialmente útil, aunque deben interpretarse con cautela por el tamaño reducido
  de la muestra y por tratarse de una evaluación exploratoria.
+
+ Esta valoración no debe interpretarse como una validación clínica del sistema, sino como una evaluación preliminar de comprensión, explicabilidad percibida y utilidad potencial. 
+ La encuesta no midió impacto sobre decisiones reales, seguridad asistencial, reducción de eventos adversos ni mejora de resultados clínicos. Por tanto, sus resultados apoyan la aceptabilidad 
+ inicial del prototipo, pero no autorizan ninguna conclusión sobre eficacia clínica o implantación asistencial.
 
 No obstante, los comentarios adicionales recogidos durante esta valoración matizan la interpretación de la utilidad clínica dentro de la UCI. Varios clínicos señalaron que una 
 herramienta de este tipo podría tener incluso mayor potencial en contextos previos al ingreso en cuidados intensivos, como urgencias o planta de hospitalización, donde 
@@ -114,6 +133,11 @@ los sistemas de alerta de sepsis, donde el equilibrio entre sensibilidad y oport
 La validación externa, aunque multicéntrica e independiente, se realizó sobre eICU-CRD, una cohorte también norteamericana procedente de centros con prácticas y
  estructuras asistenciales distintas a las europeas. Este sesgo geográfico e institucional limita la generalización a sistemas sanitarios como el español, 
  donde los criterios de ingreso en UCI, la intensidad de monitorización y las pautas de tratamiento vasopresor pueden diferir de forma relevante.
+
+ La validación inicialmente prevista sobre datos reales del Hospital Universitario de Burgos no pudo incorporarse como evaluación externa final dentro del alcance del trabajo. 
+ La principal dificultad no fue conceptual, sino técnica y de armonización: las diferencias entre los sistemas locales de registro y las estructuras de MIMIC-IV/eICU-CRD impedían 
+ reconstruir con garantías suficientes el mismo conjunto de variables, ventanas temporales y evento objetivo. Esta limitación no invalida la validación externa realizada sobre eICU-CRD, 
+ pero sí deja pendiente la comprobación más relevante desde el punto de vista de transferencia al entorno asistencial local.
 
 En conjunto, estos modelos no están listos para un uso clínico extendido, pero el trabajo demuestra que es posible construir, con una metodología controlada, modelos que
  igualan o superan a SOFA en determinados horizontes, validados externamente y con una lógica interna auditable. En ese sentido, constituye un primer paso razonable sobre

@@ -70,6 +70,7 @@ En segundo lugar, se revisaron variables que representaban información clínica
 Para valorar la contribución predictiva de las variables candidatas se combinaron tres análisis complementarios. En primer lugar, se calculó la importancia por permutación dentro del esquema 
 de validación cruzada, aplicándola sobre el conjunto de prueba de cada fold externo. Para cada variable se realizaron 50 permutaciones y se registró la caída media de AUC-ROC respecto al modelo
  sin permutar. Este análisis permitió estimar la pérdida de rendimiento asociada a alterar cada predictor, manteniendo el resto del flujo de validación sin fuga de información.
+ Cuando un modelo no presentaba ninguna variable con contribución significativa en una ventana determinada según este criterio, se excluyó de la evaluación posterior en esa ventana.
 
 En segundo lugar, se realizó un análisis univariante sobre la primera estancia de cada paciente, evitando que pacientes con múltiples ingresos contribuyeran varias veces al contraste estadístico.
  Para las variables continuas se empleó la prueba de Mann--Whitney U, y para las variables binarias la prueba de chi-cuadrado. La corrección por comparaciones múltiples se realizó mediante el 
