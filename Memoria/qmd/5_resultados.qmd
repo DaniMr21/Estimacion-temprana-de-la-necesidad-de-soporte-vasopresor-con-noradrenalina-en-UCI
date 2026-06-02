@@ -70,7 +70,7 @@ Como comprobación adicional, se revisó la dirección del efecto mediante regre
 Una vez consolidadas las cohortes y el espacio definitivo de variables, se evaluaron los seis algoritmos, en su versión base sin recalibrar, mediante el esquema de validación cruzada anidada. La Tabla \ref{tab:validacion-interna-completa} resume los resultados analíticos de la evaluación interna en las tres ventanas temporales.
 ```{r tabla-interna-completa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 metricas <- read.csv(
-  "../Pruebas_v4_4/TABLAS/resultados_metricas_multiventana.csv",
+  "../Pipeline/FINAL/TABLAS/resultados_metricas_multiventana.csv",
   stringsAsFactors = FALSE,
   check.names = FALSE
 )
