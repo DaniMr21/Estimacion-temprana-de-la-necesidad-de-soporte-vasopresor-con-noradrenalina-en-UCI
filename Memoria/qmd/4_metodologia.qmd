@@ -93,7 +93,7 @@ $$
 \text{BSS} = 1 - \frac{\text{Brier}_\text{modelo}}{\text{Brier}_\text{nulo}}
 $$
 
-Un BSS positivo indica que el modelo mejora la predicción probabilística respecto a esta referencia trivial. La \textit{LogLoss} penaliza especialmente los errores cometidos con alta confianza
+Un BSS positivo indica que el modelo mejora la predicción probabilística respecto a esta referencia trivial. La \textit{LogLoss} penaliza especialmente los errores cometidos con alta confianza.
 
 La calibración se evaluó mediante el Expected Calibration Error (ECE), agrupando las predicciones en 10 intervalos de probabilidad y comparando, en cada intervalo, la probabilidad media 
 predicha con la frecuencia observada del evento. Esta evaluación fue especialmente relevante porque el prototipo de \textit{dashboard} muestra probabilidades de riesgo interpretables, no 
@@ -197,7 +197,7 @@ estimado. Por ello, incorpora un aviso explícito indicando que no dispone de va
 Para valorar la usabilidad inicial del prototipo se diseñó una encuesta exploratoria, anónima y de tratamiento confidencial, dirigida a facultativos del servicio de Medicina Intensiva del HUBU 
 que hubieran utilizado previamente el prototipo junto con el manual proporcionado. Fue completada por ocho intensivistas y constó de tres ítems puntuados de 1 («Completamente en desacuerdo») a 
 10 («Completamente de acuerdo»): comprensión del funcionamiento y la interfaz, comprensión conceptual de los valores SHAP y utilidad clínica potencial percibida. Los resultados se presentan en 
-la @tbl-encuesta-satisfaccion y el cuestionario completo puede consultarse en el Apéndice G.
+la @tbl-encuesta-usabilidad y el cuestionario completo puede consultarse en el Apéndice G.
 
 #### Desarrollo software y reproducibilidad
 

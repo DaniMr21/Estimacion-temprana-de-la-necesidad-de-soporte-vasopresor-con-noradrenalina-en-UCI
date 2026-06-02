@@ -5,7 +5,7 @@
 
 Los valores de AUC-ROC y AUC-PR obtenidos deben interpretarse en el contexto de una tarea clínicamente compleja y ruidosa. El trabajo más próximo a este TFG, el de Duval
  et al., que predice el inicio de vasopresores en pacientes sépticos sobre MIMIC-IV, alcanzó un AUROC de 0,75 con un Random Forest, si bien en validación interna y sobre 
- una cohorte restringida a sepsis [@duval2025]. Los modelos desarrollados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de 
+ una cohorte restringida a sepsis [@duval2025]. Los modelos desarrollados y seleccionados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de 
  AUC-ROC de 0,62 a 0,70 según la ventana temporal evaluada (Tabla \ref{tab:validacion-interna-completa}), operando sobre una cohorte general de UCI sin restricción 
  diagnóstica. 
  
@@ -30,10 +30,10 @@ el desarrollo de disfunción orgánica distributiva y la necesidad de soporte va
  (@tbl-subgrupos-sepsis). Este hallazgo respalda la hipótesis de que el algoritmo no se limita a memorizar un patrón unívoco de shock séptico,
   sino que es capaz de identificar señales generales y multiorgánicas de deterioro hemodinámico en el paciente crítico. 
 
-  Este análisis por subgrupos se limitó a MIMIC-IV, donde la identificación de sepsis se apoyó en las tablas derivadas oficiales basadas en criterios Sepsis-3. No se replicó de forma 
-  equivalente en eICU-CRD, ya que reconstruir una variable de sepsis completamente comparable habría requerido armonizar sospecha de infección, disfunción orgánica, disponibilidad temporal de
-   SOFA y criterios de codificación bajo una estructura de datos distinta. Forzar esta estratificación externa con una definición menos robusta habría introducido una fuente adicional de 
-   incertidumbre, por lo que se prefirió reservar el análisis diferencial por sepsis a la cohorte de desarrollo.
+Este análisis por subgrupos se limitó a MIMIC-IV, donde la identificación de sepsis se apoyó en las tablas derivadas oficiales basadas en criterios Sepsis-3. En eICU-CRD no fue posible obtener 
+un indicador de sepsis equivalente. La tabla microLab está poco poblada por la disponibilidad limitada de interfaces de microbiología, y la aproximación mediante los diagnósticos de la tabla 
+diagnosis (códigos ICD y descripciones) se descartó por no ser metodológicamente equivalente, ya que la codificación es introducida manualmente por el personal médico y puede reflejar 
+diagnósticos relacionados, pero no necesariamente una reconstrucción homogénea de Sepsis-3. Por tanto, el análisis diferencial por sepsis se realizó únicamente sobre MIMIC-IV.
   
 En comparación directa con el índice SOFA como referencia clínica basal de gravedad global, los modelos principales mostraron un incremento del AUC-ROC en todas las ventanas 
 evaluadas dentro de MIMIC-IV (@tbl-subgrupos-sepsis), aunque esta ganancia debe interpretarse estrictamente como una validación de coherencia interna y
@@ -53,14 +53,10 @@ soporte vasopresor a causa de la heterogeneidad de los protocolos sanitarios y l
    y el interés del análisis no reside en el AUC absoluto sino en tres ejes complementarios: la comparación frente a SOFA, la calibración y la coherencia fisiopatológica 
    de las explicaciones SHAP.
 
-Aunque SOFA no es una escala diseñada para predecir el inicio de noradrenalina, constituye una referencia clínica razonable, ya que resume la disfunción orgánica y se 
-emplea habitualmente para caracterizar la gravedad del paciente crítico. Compararse frente a SOFA permite valorar si el modelo aporta información adicional respecto a una
- medida clínica ampliamente utilizada.
-
-En la validación externa, esta comparación debe entenderse únicamente como una referencia discriminativa frente a una escala clínica de gravedad, no como una prueba de superioridad clínica
- directa. SOFA no proporciona una probabilidad calibrada de inicio de noradrenalina ni fue diseñado específicamente para anticipar este evento. 
- Además, su reconstrucción y disponibilidad pueden variar entre bases de datos, por lo que la comparación permite contextualizar el rendimiento del modelo, pero no establece por sí sola una
-  ventaja operativa en la práctica asistencial.
+Aunque SOFA no es una escala diseñada para predecir el inicio de noradrenalina, constituye una referencia clínica razonable porque resume la disfunción orgánica y se emplea habitualmente para 
+caracterizar la gravedad del paciente crítico. Por tanto, la comparación frente a SOFA permite contextualizar si el modelo aporta información adicional respecto a una medida ampliamente 
+utilizada, pero debe interpretarse solo como una referencia discriminativa: SOFA no proporciona una probabilidad calibrada del evento, su reconstrucción puede variar entre bases de datos y una 
+mejora en AUC-ROC no establece por sí sola una ventaja operativa en la práctica asistencial.
 
 En la ventana corta, CatBoost no superó a SOFA en la muestra multicéntrica, lo que limita su utilidad práctica en este horizonte temporal 
 (Tabla \ref{tab:validacion-externa-discr}). Una ventana de tres horas desde el ingreso ofrece una fotografía muy inicial del paciente, condicionada por el motivo de ingreso,
@@ -103,7 +99,7 @@ criterio relevante: en un contexto clínico no basta con ordenar correctamente a
 ya que una probabilidad mal calibrada puede inducir a una lectura errónea aunque la discriminación sea aceptable.
 
 La valoración preliminar del dashboard por parte de ocho facultativos de Medicina Intensiva del HUBU fue globalmente positiva, registrándose puntuaciones 
-promedio elevadas en las tres dimensiones evaluadas (@tbl-encuesta-satisfaccion): 8,87 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica
+promedio elevadas en las tres dimensiones evaluadas (@tbl-encuesta-usabilidad): 8,87 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica
  potencial. Estos resultados sugieren que el prototipo fue percibido como comprensible y potencialmente útil, aunque deben interpretarse con cautela por el tamaño reducido
  de la muestra y por tratarse de una evaluación exploratoria.
 
