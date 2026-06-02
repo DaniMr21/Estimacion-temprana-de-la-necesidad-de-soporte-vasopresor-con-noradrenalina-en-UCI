@@ -1,3 +1,21 @@
+-- ============================================================================ OJO!!!
+-- CONSTRUCCIÓN DE LA COHORTE v4 (MIMIC-IV) — ventana base
+--
+-- REQUISITO PREVIO: este script asume que el esquema `mimiciv_derived` ya existe
+-- en la base de datos. Esas tablas NO forman parte de MIMIC-IV base; se generan
+-- ejecutando los scripts de "concepts" del repo oficial MIT-LCP/mimic-code
+-- (https://github.com/MIT-LCP/mimic-code) sobre la instancia local de MIMIC-IV,
+-- ANTES de lanzar este script.
+--
+-- Tablas derivadas utilizadas aquí:
+--   mimiciv_derived.sepsis3            (Sepsis-3)
+--   mimiciv_derived.sofa               (SOFA por hora, columna sofa_24hours)
+--   mimiciv_derived.urine_output       (diuresis)
+--   mimiciv_derived.weight_durations   (peso, para diuresis en ml/kg)
+--   mimiciv_derived.ventilation        (ventilación invasiva)
+--
+-- Salida final: tabla public.dataset_modelo_v4p (cohorte + variables agregadas 0-3h).
+-- ============================================================================
 
 -- 1. NORADRENALINA: primer inicio por estancia (igual que v4)
 
