@@ -14,7 +14,7 @@
 --   mimiciv_derived.weight_durations   (peso, para diuresis en ml/kg)
 --   mimiciv_derived.ventilation        (ventilación invasiva)
 --
--- Salida final: tabla public.dataset_modelo_v4 (cohorte + variables agregadas 0-12h).
+-- Salida final: tabla public.dataset_modelo_v4l (cohorte + variables agregadas 0-12h).
 -- ============================================================================
 -- 1. NORADRENALINA: primer inicio por estancia
 
