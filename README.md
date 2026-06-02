@@ -8,7 +8,7 @@ El trabajo incluye:
 * Selección de variables e interpretación mediante SHAP.
 * Calibración probabilística.
 * Validación externa sobre eICU-CRD.
-* Desarrollo de un prototipo de dashboard interpretable en **Streamlit**.
+* Desarrollo de un prototipo de dashboard interpretable en Streamlit.
 * Documentación académica completa del TFG.
 
 ---
