@@ -4,7 +4,7 @@
 ```
 
 Los valores de AUC-ROC y AUC-PR obtenidos deben interpretarse en el contexto de una tarea clínicamente compleja y ruidosa. El trabajo más próximo a este TFG, el de Duval et al., que predice 
-el inicio de vasopresores en pacientes sépticos sobre MIMIC-IV, alcanzó un AUROC de 0,75 con un Random Forest, si bien en validación interna y sobre una cohorte restringida a sepsis [@duval2025].
+el inicio de vasopresores en pacientes sépticos sobre MIMIC-IV, alcanzó un AUC-ROC de 0,75 con un Random Forest, si bien en validación interna y sobre una cohorte restringida a sepsis [@duval2025].
  Los modelos desarrollados y seleccionados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de AUC-ROC de 0,62 a 0,70 según la ventana temporal 
  evaluada (Tabla 5.3), operando sobre una cohorte general de UCI sin restricción diagnóstica.
 
@@ -15,7 +15,7 @@ Sin embargo, a diferencia de aquel estudio, los modelos desarrollados en este tr
  clínicos difieren sustancialmente entre estudios, de modo que un AUC más alto no implica un mejor abordaje clínico del mismo problema.
 
 En el análisis del subgrupo de sepsis (detallado en la Tabla 5.4), se observó que el rendimiento discriminativo fue sistemáticamente superior en el subgrupo de pacientes sépticos que en los no 
-sépticos en las tres ventanas temporales analizas. Esta diferencia fue especialmente evidente en el horizonte medio (6–24 h), donde el modelo de clasificación alcanzó un AUC-ROC de 0,694 y un 
+sépticos en las tres ventanas temporales analizadas. Esta diferencia fue especialmente evidente en el horizonte medio (6–24 h), donde el modelo de clasificación alcanzó un AUC-ROC de 0,694 y un 
 AUC-PR de 0,287 en pacientes sépticos, en contraste con el 0,667 y 0,173 registrado en pacientes no sépticos. Este patrón es plenamente coherente con la estrecha relación fisiopatológica 
 existente entre el síndrome séptico, el desarrollo de disfunción orgánica distributiva y la necesidad de soporte vasopresor. No obstante, los clasificadores mantuvieron una capacidad 
 discriminativa aceptable en pacientes sin sospecha de sepsis activa, reportando un AUC-ROC de 0,605 en la ventana corta, 0,667 en la media y 0,630 en la larga (Tabla 5.4). Este hallazgo 
@@ -57,7 +57,7 @@ Conviene matizar que la mezcla de colores en algunas variables, como la $\text{S
   inducir a una lectura errónea aunque la discriminación sea aceptable.
 
 La valoración preliminar del *dashboard* por parte de ocho facultativos de Medicina Intensiva del HUBU fue globalmente positiva, registrándose puntuaciones promedio elevadas en las tres 
-dimensiones evaluadas (Tabla 5.7): 8,87 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica potencial. Estos resultados sugieren que el prototipo fue percibido
+dimensiones evaluadas (Tabla 5.7): 8,88 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica potencial. Estos resultados sugieren que el prototipo fue percibido
  como comprensible y potencialmente útil, aunque deben interpretarse con cautela por el tamaño reducido de la muestra y por tratarse de una evaluación exploratoria.
 
 Esta valoración no debe interpretarse como una validación clínica del sistema, sino como una evaluación preliminar de comprensión, explicabilidad percibida y utilidad potencial. 
@@ -75,7 +75,7 @@ destaca el sesgo introducido por el criterio de completitud de los datos. Al ent
  negativos representan a individuos con menor disfunción orgánica pero con un nivel de monitorización equivalente. Como consecuencia de este diseño, cabe esperar que en un escenario de 
  aplicación real sobre la población general de la UCI el rendimiento discriminativo sufra una degradación respecto al obtenido en este estudio retrospectivo, dada la mayor presencia de casos 
  límite en la práctica asistencial [@rockenschaub2025]. La caída de rendimiento observada entre la validación interna y la externa es coherente con esta premisa: la revisión de Rockenschaub 
- et al. documentó que los algoritmos predictivos aplicados en UCI pierden de media entre un 7 % y un 23 % de AUROC al validarse en centros externos [@rockenschaub2025], de modo que la 
+ et al. documentó que los algoritmos predictivos aplicados en UCI pierden de media entre un 7 % y un 23 % de AUC-ROC al validarse en centros externos [@rockenschaub2025], de modo que la 
  moderada degradación registrada aquí entra dentro de los márgenes normales y no sugiere un sobreajuste anómalo.
 
 En segundo lugar, conviene considerar la naturaleza de los datos y de la etiqueta objetivo. Los modelos se entrenaron con variables tabulares agregadas y no con series continuas de alta 
