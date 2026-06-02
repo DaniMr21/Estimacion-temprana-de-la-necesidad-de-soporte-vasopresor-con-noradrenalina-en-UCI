@@ -276,8 +276,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown(
-    '<div class="titulo-principal">DASHBOARD DE ESTIMACIÓN TEMPRANA DE RIESGO DE '
-    'INICIO DE NORADRENALINA EN UCI</div>',
+    '<div class="titulo-principal">DASHBOARD DE ESTIMACIÓN TEMPRANA'
+    'DE LA NECESIDAD DE INICIO DE NORADRENALINA EN UCI</div>',
     unsafe_allow_html=True
 )
 st.markdown(
@@ -360,12 +360,11 @@ if st.session_state.modo_demo:
 elif st.session_state.mostrar_manual:
     st.markdown('### MANUAL DE USO')
     st.markdown("""
-**Objetivo.** Estimar el riesgo de que un paciente de UCI requiera inicio de
-noradrenalina en una ventana temporal determinada.
+**Objetivo.** Estimar de manera temprana la probabilidad de la necesidad de soporte vasopresor con noradrenalina en UCI
 
 **Ventanas disponibles.**
-- *Medio:* riesgo de inicio entre 6 y 24 horas a partir del momento actual.
-- *Largo:* riesgo de inicio entre 12 y 48 horas a partir del momento actual.
+- *Medio:* probabilidad de inicio entre 6 y 24 horas a partir del momento actual.
+- *Largo:* probabilidad de inicio entre 12 y 48 horas a partir del momento actual.
 
 **Modo de uso.**
 1. Seleccione la ventana temporal con uno de los botones superiores.
