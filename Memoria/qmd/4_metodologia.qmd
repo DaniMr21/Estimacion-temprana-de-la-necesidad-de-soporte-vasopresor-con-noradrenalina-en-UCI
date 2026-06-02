@@ -39,8 +39,7 @@ ampliamente empleada en UCI.
 
 Para detectar redundancias entre predictores se realizó un análisis exploratorio de la estructura de correlación de las variables iniciales. Este análisis se aplicó sobre las variables 
 agregadas por estancia y ventana temporal, utilizando únicamente la primera estancia de cada paciente para evitar que pacientes con múltiples ingresos inflaran artificialmente las asociaciones.
-La redundancia se evaluó mediante una matriz de correlaciones de Spearman y un agrupamiento jerárquico basado en la distancia $1 - |\rho|$. La correlación de Spearman se empleó por tratarse
- de una medida no paramétrica adecuada para variables clínicas con distribuciones asimétricas y posibles relaciones monótonas no lineales. El dendrograma permitió visualizar grupos de variables
+La redundancia se evaluó mediante una matriz de correlaciones de Spearman y un agrupamiento jerárquico basado en la distancia $1 - |\rho|$. El dendrograma permitió visualizar grupos de variables
   con información solapada y apoyar la reducción del espacio de predictores.
 
 A partir de este análisis se aplicó una selección en dos pasos. En primer lugar, cuando una misma variable clínica disponía de varios estadísticos de resumen dentro de la ventana de observación,
