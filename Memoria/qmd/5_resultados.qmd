@@ -262,7 +262,9 @@ discriminación se mantuvo por debajo de la del subgrupo séptico, pero por enci
 
 #### Validación externa en eICU-CRD
 
-La capacidad de generalización de los modelos seleccionados se evaluó sobre la cohorte externa eICU-CRD. Para cada ventana temporal se aplicó el modelo correspondiente entrenado en MIMIC-IV y se comparó su discriminación frente a la puntuación SOFA utilizada como predictor aislado. Las métricas de discriminación se recogen en la @tab:validacion-externa-discr, mientras que las métricas probabilísticas y de calibración se muestran en la @tab:validacion-externa-prob.
+La capacidad de generalización de los modelos seleccionados se evaluó sobre la cohorte externa eICU-CRD. Para cada ventana temporal se aplicó el modelo correspondiente entrenado en MIMIC-IV y
+ se comparó su discriminación frente a la puntuación SOFA utilizada como predictor aislado. 
+ 
 ```{r tabla-validacion-externa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 externa <- read.csv(
   "../Validacion_externa/validacion_externa_metricas.csv",
@@ -427,6 +429,6 @@ Intensiva del HUBU. Las puntuaciones se registraron en una escala de 1 a 10, don
 | 8 | 8 | 10 | 10 |
 : Resultados individuales de la encuesta de satisfacción sobre el prototipo de dashboard. {#tbl-encuesta-satisfaccion}
 
-Las valoraciones medias fueron de 8,88 en entendimiento, 8,50 en explicabilidad y 8,00 en utilidad clínicas.
+Las valoraciones medias fueron de 8,88 en entendimiento, 8,50 en explicabilidad y 8,00 en utilidad clínica.
 
 Las capturas de la interfaz del prototipo pueden consultarse en el Apéndice D.

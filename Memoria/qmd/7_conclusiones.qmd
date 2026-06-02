@@ -11,7 +11,7 @@
 
 - **Flujo reproducible.** Se ha consolidado un flujo completo: extracción SQL sobre MIMIC-IV y eICU-CRD, tratamiento de valores extremos sin imputación sintética, selección de variables en varias fases, validación cruzada anidada con agrupamiento por paciente, calibración e interpretabilidad, con trazabilidad entre resultados y código.
 
-- **Valor de los resultados negativos.** El descarte de la cohorte del HUBU, la imposibilidad de reconstruir la sepsis en eICU-CRD, el descarte de la ventana corta y la eliminación de variables con direcciones de efecto incoherentes orientaron las decisiones finales y constituyen una referencia para trabajos futuros.
+- **Valor de los resultados negativos.** El descarte de la cohorte del HUBU, la imposibilidad de reconstruir la sepsis en eICU-CRD, el rendimiento limitado de la ventana corta y la eliminación de variables con direcciones de efecto incoherentes orientaron las decisiones finales y constituyen una referencia para trabajos futuros.
 
 - **Dashboard interpretable.** Los modelos pueden integrarse en una interfaz comprensible que presenta el riesgo como percentil acompañado de explicaciones individuales, manteniendo el carácter de herramienta de apoyo y no de sistema de decisión automática. El feedback recibido por el personal clínico de UCI respaldaría estos aspectos aunque a futuro pueda reenfocarse hacia pacientes de otras áreas o a la necesidad de un segundo vasopresor.
 

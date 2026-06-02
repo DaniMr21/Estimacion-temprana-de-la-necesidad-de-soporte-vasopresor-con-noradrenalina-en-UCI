@@ -237,8 +237,8 @@ facultativos de UCI.
 
 La encuesta no recogió datos personales y sus respuestas se trataron de forma confidencial y agregada. Se estructuró en tres ítems puntuados en una escala de 1 a 10, donde 1 correspondía a 
 «Completamente en desacuerdo» y 10 a «Completamente de acuerdo». Los ítems evaluaron: comprensión del funcionamiento general y de la interfaz del prototipo con ayuda del manual, comprensión 
-conceptual de los valores SHAP y de su relación con el riesgo estimado, y utilidad clínica potencial percibida para la práctica futura en UCI. Los resultados de la encuesta se presentan en la Tabla 
-\ref{tab:encuesta-satisfaccion}, y el cuestionario completo puede consultarse en el Apéndice G.
+conceptual de los valores SHAP y de su relación con el riesgo estimado, y utilidad clínica potencial percibida para la práctica futura en UCI. Los resultados de la encuesta se presentan en la 
+@tbl-encuesta-satisfaccion, y el cuestionario completo puede consultarse en el Apéndice G.
 
 #### Desarrollo software y reproducibilidad
 
