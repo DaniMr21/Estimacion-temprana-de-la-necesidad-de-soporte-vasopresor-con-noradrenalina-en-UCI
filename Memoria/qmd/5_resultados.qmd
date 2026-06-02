@@ -174,7 +174,7 @@ mientras que la regresión logística funcionó como referencia lineal frente a 
 
 #### Selección de modelos y calibración
 
-Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-contraste-calidad ilustra dos comportamientos opuestos: Random Forest en la ventana corta obtuvo un rendimiento cercano al azar (AUC-ROC = 0,579), con peor estabilidad en la curva precisión-recall y una calibración alejada de la diagonal; en contraste, XGBoost en la ventana media mostró una discriminación superior, aunque con desviación inicial en la calibración que motivó el ajuste posterior.
+Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-contraste-calidad ilustra dos comportamientos opuestos: Random Forest en la ventana corta obtuvo un rendimiento cercano al azar (AUC-ROC = 0,579), con peor estabilidad en la curva precisión-recall y una calibración alejada de la diagonal; en contraste, XGBoost en la ventana media mostró una discriminación superior, aunque con desviación inicial en la calibración que motivó el ajuste posterior. Conviene precisar que los valores de AUC-ROC mostrados en las curvas \textit{out-of-fold} de esta y las siguientes figuras corresponden al área calculada sobre las predicciones \textit{out-of-fold} agrupadas de todas las particiones, por lo que pueden diferir ligeramente del AUC-ROC medio entre folds externos recogido en la Tabla~\ref{tab:validacion-interna-completa}.
 
 ::: {#fig-contraste-calidad layout-ncol=1}
 
@@ -262,7 +262,7 @@ discriminación se mantuvo por debajo de la del subgrupo séptico, pero por enci
 
 #### Validación externa en eICU-CRD
 
-La capacidad de generalización de los modelos seleccionados se evaluó sobre la cohorte externa eICU-CRD. Para cada ventana temporal se aplicó el modelo correspondiente entrenado en MIMIC-IV y se comparó su discriminación frente a la puntuación SOFA utilizada como predictor aislado. Las métricas de discriminación se recogen en la Tabla~\ref{tab:validacion-externa-discr}, mientras que las métricas probabilísticas y de calibración se muestran en la Tabla~\ref{tab:validacion-externa-prob}.
+La capacidad de generalización de los modelos seleccionados se evaluó sobre la cohorte externa eICU-CRD. Para cada ventana temporal se aplicó el modelo correspondiente entrenado en MIMIC-IV y se comparó su discriminación frente a la puntuación SOFA utilizada como predictor aislado. Las métricas de discriminación se recogen en la @tab:validacion-externa-discr, mientras que las métricas probabilísticas y de calibración se muestran en la @tab:validacion-externa-prob.
 ```{r tabla-validacion-externa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 externa <- read.csv(
   "../Validacion_externa/validacion_externa_metricas.csv",
@@ -290,6 +290,13 @@ if (is.na(col_delta)) {
   col_delta <- names(externa)[grepl("AUC", names(externa))][3]
 }
 
+# --- Formato español: punto decimal -> coma; millar inglés -> punto ---
+pto_a_coma <- function(x) gsub("\\.", ",", as.character(x))
+millar_es  <- function(x) {
+  n <- as.integer(gsub("[^0-9]", "", as.character(x)))
+  formatC(n, format = "d", big.mark = ".")
+}
+
 tabla_discr <- data.frame(
   `Modelo/ventana` = externa$Ventana,
   N = externa$N,
@@ -301,6 +308,10 @@ tabla_discr <- data.frame(
   `AUC-PR` = externa[["AUC-PR"]],
   check.names = FALSE
 )
+
+cols_coma <- setdiff(names(tabla_discr), "N")
+tabla_discr[cols_coma] <- lapply(tabla_discr[cols_coma], pto_a_coma)
+tabla_discr$N <- millar_es(tabla_discr$N)
 
 cat("\\begin{table}[htbp]\n")
 cat("\\centering\n")
@@ -331,6 +342,10 @@ tabla_prob <- data.frame(
   ECE = externa$ECE,
   check.names = FALSE
 )
+
+cols_coma <- setdiff(names(tabla_prob), "N")
+tabla_prob[cols_coma] <- lapply(tabla_prob[cols_coma], pto_a_coma)
+tabla_prob$N <- millar_es(tabla_prob$N)
 
 cat("\\begin{table}[htbp]\n")
 cat("\\centering\n")
@@ -397,8 +412,6 @@ En conjunto, la validación externa mostró que el rendimiento fue más limitado
 
 #### Prototipo de dashboard y encuesta de usabilidad
 
-Las capturas de la interfaz del prototipo se recogen en el anexo correspondiente.
-
 Para valorar la comprensión, explicabilidad percibida y utilidad clínica del prototipo, se recogió una encuesta de satisfacción cumplimentada por ocho facultativos del servicio de Medicina 
 Intensiva del HUBU. Las puntuaciones se registraron en una escala de 1 a 10, donde valores más altos indican una valoración más favorable. 
 
@@ -413,3 +426,7 @@ Intensiva del HUBU. Las puntuaciones se registraron en una escala de 1 a 10, don
 | 7 | 8 | 7 | 6 |
 | 8 | 8 | 10 | 10 |
 : Resultados individuales de la encuesta de satisfacción sobre el prototipo de dashboard. {#tbl-encuesta-satisfaccion}
+
+Las valoraciones medias fueron de 8,88 en entendimiento, 8,50 en explicabilidad y 8,00 en utilidad clínicas.
+
+Las capturas de la interfaz del prototipo pueden consultarse en el Apéndice D.

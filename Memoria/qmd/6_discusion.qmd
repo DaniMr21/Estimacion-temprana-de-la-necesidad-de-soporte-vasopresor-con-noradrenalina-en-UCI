@@ -93,10 +93,10 @@ interpretar la dirección del efecto (como puede auditarse comparando los gráfi
 patrones de atribución más ordenados y clínicamente defendibles, en los que los valores compatibles con mayor gravedad —peor oxigenación, mayor disfunción orgánica, 
 alteraciones hemodinámicas— tendían a desplazar la predicción hacia mayor riesgo de forma monótona.
 
-Conviene matizar que la mezcla de colores en algunas variables, como la SpO$_2$ (ilustrada en los diagramas beeswarm de la @fig-shap-res-medio-xgb y la 
-@fig-shap-eicu-principal), no implica necesariamente que el modelo haya aprendido una relación errónea. En pacientes críticos, una saturación elevada puede coexistir 
-con mayor gravedad si el paciente recibe oxigenoterapia intensiva o ventilación mecánica: la oxigenación observada depende entonces de la FiO$_2$, de la presión positiva
- aplicada y de la situación hemodinámica global, no solo del estado pulmonar subyacente.
+Conviene matizar que la mezcla de colores en algunas variables, como la SpO$_2$ (ilustrada en los diagramas beeswarm de la @fig-shap-res-largo-xgb y la @fig-shap-eicu-largo-xgb), no implica 
+necesariamente que el modelo haya aprendido una relación errónea. En pacientes críticos, una saturación elevada puede coexistir con mayor gravedad si el paciente recibe oxigenoterapia 
+intensiva o ventilación mecánica: la oxigenación observada depende entonces de la FiO$_2$, de la presión positiva aplicada y de la situación hemodinámica global, no solo del estado pulmonar 
+subyacente.
 
 Por estos motivos se seleccionaron XGBoost calibrado en la ventana media y XGBoost en la ventana larga como modelos principales del dashboard. La calibración fue un 
 criterio relevante: en un contexto clínico no basta con ordenar correctamente a los pacientes, sino que la probabilidad mostrada debe ser numéricamente interpretable, 

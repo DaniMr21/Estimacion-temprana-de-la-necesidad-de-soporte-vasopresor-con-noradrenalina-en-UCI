@@ -5,7 +5,7 @@
 
 - **Comparación frente a SOFA.** En la ventana larga (12--48 h) los modelos superan a SOFA de forma estadísticamente significativa en validación externa; en la media lo igualan y en la corta no aportan ventaja. La respuesta a si los modelos mejoran las escalas clínicas establecidas es, por tanto, matizada y depende del horizonte de predicción.
 
-- **Rendimiento moderado y honesto.** Los rendimientos obtenidos son moderados (AUC-ROC 0,63--0,67) y se han reportado con validación externa. El trabajo no ofrece una herramienta cerrada, sino la viabilidad de un enfoque metodológicamente sólido que puede constituir un primer paso para desarrollos futuros.
+- **Rendimiento moderado.** Los rendimientos obtenidos son moderados (AUC-ROC 0,63--0,67) y se han reportado con validación externa. El trabajo no ofrece una herramienta cerrada, sino la viabilidad de un enfoque metodológicamente sólido que puede constituir un primer paso para desarrollos futuros.
 
 - **La métrica no es el único criterio.** La selección de los modelos del dashboard no se basó solo en AUC o BSS, sino también en la coherencia fisiopatológica de las explicaciones SHAP. Modelos con métricas competitivas fueron descartados por atribuciones difíciles de justificar clínicamente, lo que refuerza que la interpretabilidad es tan importante como el rendimiento.
 

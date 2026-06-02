@@ -124,7 +124,7 @@ estadísticamente significativa en la ventana larga ($\Delta$AUC-ROC $+0{,}068$;
 
 \renewcommand*\abstractname{Descriptores}
 \begin{abstract}
-Aprendizaje automático, Predicción, Dashboard, Sepsis, UCI, Noradrenalina, vasopresor.
+Aprendizaje automático, Predicción, Dashboard, Sepsis, UCI, Noradrenalina, Vasopresor.
 \end{abstract}
 
 \clearpage
@@ -151,7 +151,7 @@ as a clinical decision support tool.
 
 \renewcommand*\abstractname{Keywords}
 \begin{abstract}
-Machine Learning, Sepsis, Prediction, Dashboard, ICU, norepinephrine, vasopressor.
+Machine Learning, Sepsis, Prediction, Dashboard, ICU, Norepinephrine, Vasopressor.
 \end{abstract}
 
 \clearpage
