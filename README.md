@@ -56,7 +56,7 @@ El proceso metodológico seguido en el TFG se divide en las siguientes etapas:
 6. **Evaluación de rendimiento** mediante métricas de discriminación, calibración y rendimiento probabilístico.
 7. **Calibración** de los modelos seleccionados.
 8. **Análisis de interpretabilidad** local y global mediante valores SHAP.
-9. **Comparación** del rendimiento predictivo frente a la escala clínica **SOFA**.
+9. **Comparación** del rendimiento predictivo frente a la escala clínica SOFA.
 10. **Validación externa** sobre la base de datos eICU-CRD.
 11. **Integración** de los resultados en un dashboard interactivo.
 
