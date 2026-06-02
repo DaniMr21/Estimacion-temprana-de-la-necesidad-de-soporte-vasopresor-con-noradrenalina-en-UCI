@@ -1,0 +1,364 @@
+```{=latex}
+%% ── Capítulo 5: Resultados ───────────────────────────────────
+\capitulo{5}{Resultados}
+```
+
+#### Validación interna sobre MIMIC-IV
+
+La Tabla \ref{tab:validacion-interna-completa} recoge el rendimiento interno de todos los modelos evaluados mediante validación cruzada anidada en las tres ventanas 
+temporales. La regresión logística no aparece en la ventana corta porque, tras el proceso de selección, no conservó variables estadísticamente significativas según la 
+importancia por permutación.
+
+```{r tabla-interna-completa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
+metricas <- read.csv(
+  "../Pruebas_v4_4/TABLAS/resultados_metricas_multiventana.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+metricas <- unique(metricas)
+
+cols_num <- c(
+  "n_vars",
+  "AUC_ROC", "AUC_ROC_std",
+  "AUC_PR", "AUC_PR_std",
+  "Brier", "Brier_std",
+  "BSS", "BSS_std",
+  "ECE", "ECE_std",
+  "LogLoss", "LogLoss_std"
+)
+
+for (col in cols_num) {
+  metricas[[col]] <- suppressWarnings(as.numeric(metricas[[col]]))
+}
+
+metricas$BSS[metricas$BSS < -5 | metricas$BSS > 5] <- NA
+metricas$BSS_std[metricas$BSS_std < 0 | metricas$BSS_std > 5] <- NA
+metricas$ECE[metricas$ECE < 0 | metricas$ECE > 1] <- NA
+metricas$ECE_std[metricas$ECE_std < 0 | metricas$ECE_std > 1] <- NA
+
+fmt <- function(x, digits = 3) {
+  ifelse(
+    is.na(x),
+    "---",
+    formatC(x, format = "f", digits = digits, decimal.mark = ",")
+  )
+}
+
+fmt_pm <- function(media, sd, digits = 3) {
+  ifelse(
+    is.na(media),
+    "---",
+    paste0(fmt(media, digits), " $\\pm$ ", fmt(sd, digits))
+  )
+}
+
+metricas$Ventana <- factor(
+  metricas$Ventana,
+  levels = c("Corto_3_12", "Medio_6_24", "Largo_12_48"),
+  labels = c("Corto", "Medio", "Largo")
+)
+
+metricas$Modelo <- factor(
+  metricas$Modelo,
+  levels = c("LR", "RF", "XGB", "XGB_Calibrado", "LGBM", "CAT", "NB"),
+  labels = c("LR", "RF", "XGB", "XGB cal.", "LGBM", "CAT", "NB")
+)
+
+metricas <- metricas[order(metricas$Ventana, metricas$Modelo), ]
+
+tabla_interna <- data.frame(
+  Vent. = as.character(metricas$Ventana),
+  Modelo = as.character(metricas$Modelo),
+  Vars = metricas$n_vars,
+  `AUC-ROC` = fmt_pm(metricas$AUC_ROC, metricas$AUC_ROC_std),
+  `AUC-PR` = fmt_pm(metricas$AUC_PR, metricas$AUC_PR_std),
+  Brier = fmt_pm(metricas$Brier, metricas$Brier_std),
+  BSS = fmt_pm(metricas$BSS, metricas$BSS_std),
+  ECE = fmt_pm(metricas$ECE, metricas$ECE_std),
+  LogLoss = fmt_pm(metricas$LogLoss, metricas$LogLoss_std),
+  check.names = FALSE
+)
+
+cat("\\begin{table}[htbp]\n")
+cat("\\centering\n")
+cat("\\tiny\n")
+cat("\\setlength{\\tabcolsep}{1.4pt}\n")
+cat("\\caption{Rendimiento interno de todos los modelos evaluados en MIMIC-IV mediante validación cruzada anidada. Las métricas se muestran como media $\\pm$ desviación estándar entre folds externos.}\n")
+cat("\\label{tab:validacion-interna-completa}\n")
+cat("\\resizebox{0.99\\textwidth}{!}{%\n")
+
+print(knitr::kable(
+  tabla_interna,
+  format = "latex",
+  booktabs = TRUE,
+  escape = FALSE,
+  row.names = FALSE,
+  align = c("l", "l", "c", "c", "c", "c", "c", "c", "c")
+))
+
+cat("}\n")
+cat("\\end{table}\n")
+```
+
+Las métricas reflejan diferencias notables de calidad entre modelos y ventanas. La @fig-contraste-calidad ilustra los dos extremos de este rango: Random Forest 
+en la ventana corta apenas supera el azar (AUC-ROC = 0,579), con una curva de calibración claramente desviada de la diagonal y una curva de precisión-recall errática; 
+en contraste, XGBoost en la ventana media muestra una discriminación notablemente superior, aunque su calibración antes de recalibrar presenta una desviación 
+sistemática que motivó el ajuste posterior.
+
+::: {#fig-contraste-calidad layout-ncol=1}
+
+![Random Forest, ventana corta (3--12 h): modelo de bajo rendimiento.](img/Grafica_OOF_Corto_3_12_RF.png){#fig-contraste-malo width=82%}
+
+![XGBoost, ventana media (6--24 h): modelo con buen rendimiento discriminativo pero calibración desviada antes del ajuste.](img/Grafica_OOF_Medio_6_24_XGB.png){#fig-contraste-bueno width=82%}
+
+Contraste de calidad entre dos modelos en MIMIC-IV. Random Forest en la ventana corta muestra discriminación próxima al azar y calibración deficiente, mientras que XGBoost en la ventana media presenta una discriminación claramente superior. Ambas curvas se obtienen mediante predicciones *out-of-fold*.
+
+:::
+
+A partir del rendimiento interno se seleccionaron como candidatos a validación externa CatBoost en la ventana corta, XGBoost y CatBoost en la media, y XGBoost y CatBoost en la larga. Sus curvas OOF se muestran en la @fig-oof-candidatos.
+
+::: {#fig-oof-candidatos}
+
+![Corto 3--12 h: CatBoost](img/Grafica_OOF_Corto_3_12_CAT.png){#fig-oof-corto-cat width=82%}
+
+![Medio 6--24 h: XGBoost](img/Grafica_OOF_Medio_6_24_XGB.png){#fig-oof-medio-xgb width=82%}
+
+![Medio 6--24 h: CatBoost](img/Grafica_OOF_Medio_6_24_CAT.png){#fig-oof-medio-cat width=82%}
+
+![Largo 12--48 h: XGBoost](img/Grafica_OOF_Largo_12_48_XGB.png){#fig-oof-largo-xgb width=82%}
+
+![Largo 12--48 h: CatBoost](img/Grafica_OOF_Largo_12_48_CAT.png){#fig-oof-largo-cat width=82%}
+
+Curvas ROC, precisión-recall y calibración mediante predicciones *out-of-fold* de los modelos candidatos.
+
+:::
+
+Tras evaluar las tres estrategias de calibración descritas en la metodología, el único modelo que requirió recalibración efectiva fue XGBoost en la ventana media, 
+ajustado mediante Platt regularizado. La @fig-calibracion-xgb-medio compara las curvas de calibración y la distribución de probabilidades antes y después del ajuste.
+
+![Curvas de calibración y distribución de probabilidades de XGBoost en la ventana media, antes y después de la recalibración mediante Platt regularizado.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio width=90%}
+
+Los diagramas SHAP de los modelos candidatos sobre MIMIC-IV se recogen en la @fig-shap-candidatos-1 (ventanas corta y media) y la @fig-shap-candidatos-2 (ventana larga).
+
+::: {#fig-shap-candidatos-1}
+
+![Corto 3--12 h: CatBoost](img/SHAP_Corto_3_12_CAT.png){#fig-shap-res-corto-cat width=86%}
+
+![Medio 6--24 h: XGBoost](img/SHAP_Medio_6_24_XGB.png){#fig-shap-res-medio-xgb width=86%}
+
+![Medio 6--24 h: CatBoost](img/SHAP_Medio_6_24_CAT.png){#fig-shap-res-medio-cat width=86%}
+
+Diagramas SHAP tipo *beeswarm* de los modelos candidatos en las ventanas corta y media.
+
+:::
+
+::: {#fig-shap-candidatos-2}
+
+![Largo 12--48 h: XGBoost](img/SHAP_Largo_12_48_XGB.png){#fig-shap-res-largo-xgb width=86%}
+
+![Largo 12--48 h: CatBoost](img/SHAP_Largo_12_48_CAT.png){#fig-shap-res-largo-cat width=86%}
+
+Diagramas SHAP tipo *beeswarm* de los modelos candidatos en la ventana larga.
+
+:::
+
+#### Análisis por subgrupos según presencia de sepsis
+
+Para evaluar la estabilidad y consistencia de las predicciones frente a condiciones clínicas específicas de alta gravedad, se realizó un análisis diferencial 
+estratificando las cohortes según la presencia de sepsis (identificada bajo los criterios Sepsis-3). La Tabla \ref{tab:subgrupos-sepsis} recoge el
+ rendimiento discriminativo, probabilístico y de calibración de los modelos seleccionados para cada ventana operativa en la cohorte global, el subgrupo de pacientes 
+ sépticos y el de no sépticos, empleando la puntuación SOFA global como referencia de comparación basal.
+
+```{=latex}
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\caption{Rendimiento de los modelos principales en MIMIC-IV según presencia o ausencia de sepsis. Ventana corta: CatBoost; ventana media: XGBoost calibrado; ventana larga: XGBoost. Las métricas se calcularon mediante predicciones \textit{out-of-fold}.}
+\label{tab:subgrupos-sepsis}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+\textbf{Ventana} & \textbf{Subgrupo/modelo} & \textbf{N} & \textbf{AUC-ROC} & \textbf{AUC-PR} & \textbf{BSS} & \textbf{ECE} \\
+\midrule
+Corto 3--12 h & Global & 1667 & 0,617 & 0,151 & 0,012 & 0,009 \\
+Corto 3--12 h & Sépticos & 461 & 0,622 & 0,173 & 0,004 & 0,021 \\
+Corto 3--12 h & No sépticos & 1206 & 0,605 & 0,152 & 0,013 & 0,012 \\
+Corto 3--12 h & SOFA global & 1667 & 0,581 & 0,132 & --- & --- \\
+\midrule
+Medio 6--24 h & Global & 3282 & 0,680 & 0,208 & 0,028 & 0,033 \\
+Medio 6--24 h & Sépticos & 993 & 0,694 & 0,287 & 0,064 & 0,028 \\
+Medio 6--24 h & No sépticos & 2289 & 0,667 & 0,173 & 0,003 & 0,036 \\
+Medio 6--24 h & SOFA global & 3282 & 0,606 & 0,147 & --- & --- \\
+\midrule
+Largo 12--48 h & Global & 4088 & 0,642 & 0,170 & 0,021 & 0,017 \\
+Largo 12--48 h & Sépticos & 1343 & 0,650 & 0,209 & 0,018 & 0,030 \\
+Largo 12--48 h & No sépticos & 2745 & 0,630 & 0,150 & 0,017 & 0,011 \\
+Largo 12--48 h & SOFA global & 4088 & 0,588 & 0,149 & --- & --- \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+```
+
+#### Validación externa sobre eICU-CRD
+
+Las Tablas \ref{tab:validacion-externa-discr} y \ref{tab:validacion-externa-prob} recogen, respectivamente, las métricas de discriminación frente a SOFA y las métricas probabilísticas y de calibración de cada modelo sobre la cohorte externa.
+
+```{r tabla-validacion-externa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
+externa <- read.csv(
+  "../Validacion_externa/validacion_externa_metricas.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE,
+  fileEncoding = "UTF-8-BOM"
+)
+
+names(externa) <- trimws(names(externa))
+
+orden_modelos <- c(
+  "Corto 3-12h (CatBoost)",
+  "Medio 6-24h (XGBoost cal.)",
+  "Medio 6-24h (CatBoost)",
+  "Largo 12-48h (XGBoost)",
+  "Largo 12-48h (CatBoost)"
+)
+
+externa <- externa[match(orden_modelos, externa$Ventana), ]
+
+col_delta <- grep("AUC", names(externa), value = TRUE)
+col_delta <- col_delta[grepl("Δ|Delta|delta|Dif|dif", col_delta)][1]
+
+if (is.na(col_delta)) {
+  col_delta <- names(externa)[grepl("AUC", names(externa))][3]
+}
+
+tabla_discr <- data.frame(
+  `Modelo/ventana` = externa$Ventana,
+  N = externa$N,
+  Prev. = externa[["Prevalencia (%)"]],
+  `AUC modelo` = externa[["AUC-ROC modelo"]],
+  `AUC SOFA` = externa[["AUC-ROC SOFA"]],
+  `Dif. AUC` = externa[[col_delta]],
+  `p DeLong` = externa[["p DeLong"]],
+  `AUC-PR` = externa[["AUC-PR"]],
+  check.names = FALSE
+)
+
+cat("\\begin{table}[htbp]\n")
+cat("\\centering\n")
+cat("\\small\n")
+cat("\\setlength{\\tabcolsep}{4pt}\n")
+cat("\\caption{Validación externa sobre eICU-CRD: discriminación de cada modelo frente a SOFA como predictor aislado.}\n")
+cat("\\label{tab:validacion-externa-discr}\n")
+cat("\\resizebox{\\textwidth}{!}{%\n")
+
+print(knitr::kable(
+  tabla_discr,
+  format = "latex",
+  booktabs = TRUE,
+  escape = TRUE,
+  row.names = FALSE,
+  align = c("l", "c", "c", "c", "c", "c", "c", "c")
+))
+
+cat("}\n")
+cat("\\end{table}\n")
+
+tabla_prob <- data.frame(
+  `Modelo/ventana` = externa$Ventana,
+  N = externa$N,
+  Prev. = externa[["Prevalencia (%)"]],
+  Brier = externa$Brier,
+  BSS = externa$BSS,
+  ECE = externa$ECE,
+  check.names = FALSE
+)
+
+cat("\\begin{table}[htbp]\n")
+cat("\\centering\n")
+cat("\\small\n")
+cat("\\setlength{\\tabcolsep}{5pt}\n")
+cat("\\caption{Validación externa sobre eICU-CRD: métricas probabilísticas y de calibración de cada modelo.}\n")
+cat("\\label{tab:validacion-externa-prob}\n")
+cat("\\resizebox{0.90\\textwidth}{!}{%\n")
+
+print(knitr::kable(
+  tabla_prob,
+  format = "latex",
+  booktabs = TRUE,
+  escape = TRUE,
+  row.names = FALSE,
+  align = c("l", "c", "c", "c", "c", "c")
+))
+
+cat("}\n")
+cat("\\end{table}\n")
+```
+
+En la ventana corta, CatBoost obtuvo un AUC-ROC de 0,630 frente a 0,642 de SOFA, sin diferencia significativa ($p = 0{,}698$). En la ventana media, tanto XGBoost calibrado (AUC-ROC = 0,662) como CatBoost (0,669) igualaron prácticamente a SOFA (0,663), también sin diferencia significativa. En la ventana larga, XGBoost (0,658) y CatBoost (0,653) superaron a SOFA (0,590) de forma estadísticamente significativa, con $\Delta$AUC = +0,068 ($p < 0{,}001$) y +0,063 ($p = 0{,}003$) respectivamente. Las curvas ROC y de calibración correspondientes a los modelos principales se recogen en la @fig-validacion-externa-principal.
+
+::: {#fig-validacion-externa-principal}
+
+![Validación externa en la ventana corta: CatBoost.](img/validacion_externa_Corto_3_12.png){#fig-ext-corto-cat width=86%}
+
+![Validación externa en la ventana media: XGBoost calibrado.](img/validacion_externa_Medio_6_24.png){#fig-ext-medio-xgb-cal width=86%}
+
+![Validación externa en la ventana larga: XGBoost.](img/validacion_externa_Largo_12_48.png){#fig-ext-largo-xgb width=86%}
+
+Curvas ROC y de calibración de los modelos principales evaluados externamente en eICU-CRD.
+
+:::
+
+Los diagramas SHAP de los modelos principales sobre la cohorte externa se presentan en la @fig-shap-eicu-principal, y los correspondientes a CatBoost en las ventanas media y larga, como referencia complementaria, en la @fig-shap-eicu-catboost-complementario.
+
+::: {#fig-shap-eicu-principal}
+
+![Ventana corta: CatBoost en eICU-CRD.](img/shap_eicu_corto_cat.png){#fig-shap-eicu-corto-cat width=84%}
+
+![Ventana media: XGBoost calibrado en eICU-CRD.](img/shap_eicu_medio_xgb_cal.png){#fig-shap-eicu-medio-xgb-cal width=84%}
+
+![Ventana larga: XGBoost en eICU-CRD.](img/shap_eicu_largo_xgb.png){#fig-shap-eicu-largo-xgb width=84%}
+
+Diagramas SHAP de los modelos principales evaluados en validación externa.
+
+:::
+
+::: {#fig-shap-eicu-catboost-complementario}
+
+![Ventana media: CatBoost en eICU-CRD.](img/shap_eicu_medio_cat.png){#fig-shap-eicu-medio-cat width=84%}
+
+![Ventana larga: CatBoost en eICU-CRD.](img/shap_eicu_largo_cat.png){#fig-shap-eicu-largo-cat width=84%}
+
+Diagramas SHAP complementarios de CatBoost en las ventanas media y larga durante la validación externa.
+
+:::
+
+#### Encuesta de satisfacción
+
+La encuesta de satisfacción fue cumplimentada por ocho facultativos del servicio de Medicina Intensiva del HUBU (Tabla \ref{tab:encuesta-satisfaccion}).
+
+```{=latex}
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{8pt}
+\renewcommand{\arraystretch}{1.2}
+\caption{Resultados de la encuesta de satisfacción sobre el prototipo de dashboard, cumplimentada por 8 facultativos del servicio de Medicina Intensiva del HUBU. Puntuaciones en escala de 1 (completamente en desacuerdo) a 10 (completamente de acuerdo).}
+\label{tab:encuesta-satisfaccion}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Encuestado} & \textbf{Entendimiento} & \textbf{Explicabilidad} & \textbf{Utilidad clínica} \\
+\midrule
+1 & 10 & 10 & 10 \\
+2 & 10 & 8  & 9  \\
+3 & 10 & 10 & 8  \\
+4 & 8  & 8  & 4 \\
+5 & 10 & 7  & 10 \\
+6 & 7  & 8  & 7  \\
+7 & 8  & 7  & 6  \\
+8 & 8  & 10 & 10 \\
+\end{tabular}
+\end{table}
+```

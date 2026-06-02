@@ -1,0 +1,28 @@
+# ──────────────────
+# Dependencias del proyecto
+# ──────────────────
+ 
+# Datos y cálculo
+pandas
+numpy
+scipy
+statsmodels
+ 
+# Modelos
+scikit-learn
+xgboost
+lightgbm
+catboost
+ 
+# Interpretabilidad
+shap
+ 
+# Gráficos
+matplotlib
+seaborn
+ 
+# Serialización de modelos
+joblib
+ 
+# Dashboard
+streamlit
