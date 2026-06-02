@@ -33,7 +33,7 @@ El trabajo incluye:
   * Memoria principal y anexos.
   * Fuentes en Quarto / Markdown (`.qmd`).
   * Figuras e imágenes utilizadas en el documento (`img/`).
-* **`Pipeline/FINAL/`**: **Carpeta principal para consultar los resultados de los modelos** Contiene la versión definitiva del flujo experimental utilizada para generar los resultados de la memoria, modelos y sus gráficas:
+* **`Pipeline/FINAL/`**: **Carpeta principal para consultar los resultados de los modelos** Contiene la versión definitiva del flujo experimental utilizada para generar los resultados de la memoria, modelos, tablas y figuras asociadas:
   * Modelos entrenados y tablas de métricas.
   * Curvas de validación interna y de calibración.
   * Figuras SHAP y comparaciones entre modelos/calibradores.
@@ -92,9 +92,16 @@ El dashboard interactivo tiene como objetivo mostrar de forma gráfica e interpr
 Debido a estrictas restricciones de uso y privacidad, **los datos originales de MIMIC-IV y eICU-CRD no se incluyen en este repositorio**.
 
 Para reproducir completamente este análisis es necesario:
-1. Disponer de acceso autorizado a **PhysioNet** y cumplir los acuerdos de uso correspondientes.
-2. Contar con un entorno de **Python** compatible (ver archivo de requerimientos si aplica).
-3. Descargar las bases de datos originales y adaptar las rutas locales en los scripts de la carpeta `Pipeline/FINAL/`.
+1. Realizar el curso de Ética en Investigación con Datos Humanos de CITI Program, disponer de acceso autorizado a **PhysioNet** y cumplir los acuerdos de uso correspondientes.
+2. Contar con un entorno de **Python** compatible (versión 3.12 en adelante)
+3. Descargar las bases de datos originales y adaptar las rutas locales en los scripts de la carpeta `Pipeline`.
+
+La reproducción del trabajo puede entenderse en dos niveles:
+
+- **Consulta de resultados finales**: la carpeta principal es `Pipeline/FINAL/`, donde se encuentran los modelos entrenados, tablas, figuras, curvas de calibración, gráficos OOF y análisis SHAP utilizados en la memoria.
+- **Trazabilidad del desarrollo**: la carpeta `Pipeline/Experimentos/` conserva las versiones intermedias que documentan la construcción de cohortes, consultas, selección de variables y decisiones metodológicas previas a la versión final.
+
+La carpeta `Archivo/` contiene pruebas preliminares más antiguas y no constituye la referencia principal para interpretar los resultados finales.
 
 ---
 
