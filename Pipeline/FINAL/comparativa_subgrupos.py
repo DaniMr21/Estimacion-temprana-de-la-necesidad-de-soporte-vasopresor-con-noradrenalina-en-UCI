@@ -104,4 +104,4 @@ print("="*70)
 
 # Comparativa final
 mejora_auc = prob_oof_calibrada.sum() * 0 # Truco visual
-print(f"\n✅XGBoost Calibrado supera al SOFA en {(roc_auc_score(y, prob_oof_calibrada) - auc_sofa)*100:.1f} puntos porcentuales de AUC-ROC.")
+print(f"\nXGBoost Calibrado supera al SOFA en {(roc_auc_score(y, prob_oof_calibrada) - auc_sofa)*100:.1f} puntos porcentuales de AUC-ROC.")

@@ -68,6 +68,9 @@ La decisión final de conservar o descartar variables no se basó en un único c
  Esta selección permitió comparar modelos simples e interpretables con métodos no lineales de mayor capacidad predictiva. Se priorizaron implementaciones maduras, ampliamente utilizadas en
   problemas tabulares y compatibles con herramientas de interpretación como SHAP [@lundberg2017].
 
+Dado el desbalance entre las clases, se aplicaron estrategias de ponderación específicas de cada algoritmo cuando este lo permitía; la configuración concreta de balanceo por modelo se detalla 
+en el *Apéndice G*.
+
 El escalado de variables se aplicó únicamente a los modelos sensibles a la escala de los predictores, concretamente regresión logística y Naive Bayes, mediante `RobustScaler`. Este escalado se 
 integró dentro del `pipeline` de entrenamiento, de forma que los parámetros de transformación se ajustaron exclusivamente sobre el conjunto de entrenamiento de cada partición. Los modelos basados
 en árboles no requirieron escalado, al ser invariantes a transformaciones monótonas de las variables.
@@ -97,7 +100,7 @@ se comprimieran en exceso las probabilidades hacia la prevalencia basal; cuando 
 comparados se detallan en el *Apéndice G*, mientras que los modelos concretos evaluados y el resultado final de este proceso se presentan en el capítulo de resultados.
 
 La interpretabilidad post-hoc se abordó mediante valores SHAP, tanto para analizar predicciones individuales como para resumir la importancia global de los predictores y la dirección de su 
-asociación con el riesgo estimado. El método de cálculo se adaptó a la familia de cada modelo. Las explicaciones globales se representaron
+asociación con el riesgo estimado. El método de cálculo se adaptó a la familia de cada modelo (véase el *Apéndice G*).. Las explicaciones globales se representaron
  mediante diagramas \textit{beeswarm}, que muestran simultáneamente la magnitud de la contribución de cada variable y el sentido de su efecto sobre la predicción. SHAP no se empleó como 
  criterio de selección de variables, sino como auditoría posterior de los modelos, para facilitar la revisión clínica de los patrones aprendidos y detectar dependencias espurias o 
  artefactos de registro.
@@ -129,7 +132,8 @@ La cohorte de validación externa se construyó mediante consultas SQL sobre eIC
 la cohorte de desarrollo: corta, media y larga. También se mantuvieron los mismos requisitos de duración mínima de estancia.
 
 El evento objetivo se definió de forma análoga a MIMIC-IV como el primer inicio de perfusión de noradrenalina durante la estancia en UCI, identificado en eICU-CRD sobre la tabla `infusionDrug` 
-mediante criterios de búsqueda y exclusión por nombre de fármaco. Para cada estancia se calculó el tiempo desde el ingreso en UCI hasta el primer registro compatible con noradrenalina.
+mediante criterios de búsqueda y exclusión por nombre de fármaco que se detallan en el *Apéndice G*. Para cada estancia se calculó el tiempo desde el ingreso en UCI hasta el primer registro 
+compatible con noradrenalina.
 
 La asignación de etiquetas y la exclusión de estancias con noradrenalina previa al fin de la observación siguieron exactamente el mismo criterio definido para la cohorte de desarrollo.
 

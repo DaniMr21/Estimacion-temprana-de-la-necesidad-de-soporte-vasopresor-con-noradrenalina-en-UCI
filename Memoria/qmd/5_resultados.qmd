@@ -237,31 +237,47 @@ fisiológica, peor situación respiratoria, mayor compromiso hemodinámico o may
 
 #### Análisis por subgrupos según sepsis
 
-La @tbl-subgrupos-sepsis resume el rendimiento discriminativo, probabilístico y de calibración en la cohorte global, en pacientes sépticos y en pacientes no sépticos. Además, se incluye la 
-puntuación SOFA global como referencia basal de comparación.
+La @tbl-subgrupos-sepsis resume el rendimiento discriminativo, probabilístico y de calibración de los modelos preseleccionados en cada ventana, evaluados sobre la cohorte global, los pacientes sépticos y los no sépticos. Se incluye además la puntuación SOFA global como referencia basal de comparación.
 
-| Ventana | Subgrupo/modelo | N | AUC-ROC | AUC-PR | BSS | ECE |
-|---------|-----------------|---:|--------:|-------:|----:|----:|
-| Corta (3--12 h) | Global | 1667 | 0,617 | 0,151 | 0,012 | 0,009 |
-| Corta (3--12 h) | Sépticos | 461 | 0,622 | 0,173 | 0,004 | 0,021 |
-| Corta (3--12 h) | No sépticos | 1206 | 0,605 | 0,152 | 0,013 | 0,012 |
+| Ventana | Modelo / subgrupo | N | AUC-ROC | AUC-PR | BSS | ECE |
+|---------|--------------------------------------|---:|--------:|-------:|----:|----:|
+| Corta (3--12 h) | CatBoost · Global | 1667 | 0,617 | 0,151 | 0,012 | 0,009 |
+| Corta (3--12 h) | CatBoost · Sépticos | 461 | 0,622 | 0,173 | 0,004 | 0,021 |
+| Corta (3--12 h) | CatBoost · No sépticos | 1206 | 0,605 | 0,152 | 0,013 | 0,012 |
 | Corta (3--12 h) | SOFA global | 1667 | 0,581 | 0,132 | --- | --- |
-| Media (6--24 h) | Global | 3282 | 0,680 | 0,208 | 0,028 | 0,033 |
-| Media (6--24 h) | Sépticos | 993 | 0,694 | 0,287 | 0,064 | 0,028 |
-| Media (6--24 h) | No sépticos | 2289 | 0,667 | 0,173 | 0,003 | 0,036 |
+| Media (6--24 h) | XGBoost recal. · Global | 3282 | 0,680 | 0,208 | 0,028 | 0,033 |
+| Media (6--24 h) | XGBoost recal. · Sépticos | 993 | 0,694 | 0,287 | 0,064 | 0,028 |
+| Media (6--24 h) | XGBoost recal. · No sépticos | 2289 | 0,667 | 0,173 | 0,003 | 0,036 |
+| Media (6--24 h) | CatBoost · Global | 3282 | 0,694 | 0,216 | 0,010 | 0,030 |
+| Media (6--24 h) | CatBoost · Sépticos | 993 | 0,691 | 0,283 | 0,060 | 0,038 |
+| Media (6--24 h) | CatBoost · No sépticos | 2289 | 0,692 | 0,192 | -0,023 | 0,028 |
 | Media (6--24 h) | SOFA global | 3282 | 0,606 | 0,147 | --- | --- |
-| Larga (12--48 h) | Global | 4088 | 0,642 | 0,170 | 0,021 | 0,017 |
-| Larga (12--48 h) | Sépticos | 1343 | 0,650 | 0,209 | 0,018 | 0,030 |
-| Larga (12--48 h) | No sépticos | 2745 | 0,630 | 0,150 | 0,017 | 0,011 |
+| Larga (12--48 h) | XGBoost · Global | 4088 | 0,642 | 0,170 | 0,021 | 0,017 |
+| Larga (12--48 h) | XGBoost · Sépticos | 1343 | 0,650 | 0,209 | 0,018 | 0,030 |
+| Larga (12--48 h) | XGBoost · No sépticos | 2745 | 0,630 | 0,150 | 0,017 | 0,011 |
+| Larga (12--48 h) | CatBoost · Global | 4088 | 0,635 | 0,173 | 0,021 | 0,006 |
+| Larga (12--48 h) | CatBoost · Sépticos | 1343 | 0,644 | 0,199 | 0,016 | 0,029 |
+| Larga (12--48 h) | CatBoost · No sépticos | 2745 | 0,626 | 0,164 | 0,019 | 0,014 |
 | Larga (12--48 h) | SOFA global | 4088 | 0,588 | 0,149 | --- | --- |
 
-: rendimiento de los modelos principales en MIMIC-IV según presencia o ausencia de sepsis. Ventana corta: CatBoost; ventana media: XGBoost recalibrado; ventana larga: XGBoost. Las métricas 
-se calcularon mediante predicciones *out-of-fold*. {#tbl-subgrupos-sepsis}
+: rendimiento de los modelos preseleccionados en MIMIC-IV según presencia o ausencia de sepsis, frente al SOFA como referencia basal. Ventana corta: CatBoost; ventana media: XGBoost recalibrado y CatBoost; ventana larga: XGBoost y CatBoost. Las métricas se calcularon mediante predicciones *out-of-fold*. {#tbl-subgrupos-sepsis}
 
-El rendimiento fue ligeramente superior en pacientes sépticos en las tres ventanas, con el valor más alto en la ventana media (AUC-ROC 0,694; AUC-PR 0,287). En pacientes no sépticos, la 
-discriminación se mantuvo por debajo de la del subgrupo séptico, pero por encima de la referencia basada en SOFA global en términos de AUC-ROC. La ventana media presentó la mayor discriminación global.
+En los modelos principales, el rendimiento fue ligeramente superior en pacientes sépticos en las tres ventanas, con el valor más alto en la ventana media (AUC-ROC 0,694; AUC-PR 0,287); en 
+pacientes no sépticos, la discriminación se mantuvo por debajo de la del subgrupo séptico pero por encima del SOFA global en términos de AUC-ROC. CatBoost ofreció una discriminación comparable, 
+incluso algo superior a nivel global en la ventana media (AUC-ROC 0,694 frente a 0,680), pero con un rendimiento probabilístico inferior, llegando a un BSS negativo en el subgrupo no séptico de 
+la ventana media (-0,023). La ventana media presentó la mayor discriminación global.
 
 #### Validación externa en eICU-CRD
+
+La @tbl-completitud-eicu muestra el efecto del filtrado sobre el tamaño muestral y la prevalencia del evento en cada ventana temporal tras aplicarse las mismas restricciones que sobre MIMIC-IV.
+
+| Ventana | Estancias brutas | Prevalencia bruta | Estancias tras filtro | Prevalencia tras filtro |
+|------------------|-----------------|-------------------|-----------------------|------------------------|
+| Corta (3--12 h)  | 125.124         | 3,65\%            | 789                   | 14,45\%                |
+| Media (6--24 h)  | 122.922         | 3,46\%            | 1.396                 | 11,89\%                |
+| Larga (12--48 h) | 68.778          | 3,91\%            | 2.030                 | 9,80\%                 |
+
+: efecto del filtro de completitud sobre el tamaño y la prevalencia de cada cohorte de validación externa en eICU-CRD. {#tbl-completitud-eicu}
 
 Para cada ventana temporal se aplicó el modelo correspondiente entrenado en MIMIC-IV y se comparó su discriminación frente a la puntuación SOFA utilizada como predictor aislado. 
  
