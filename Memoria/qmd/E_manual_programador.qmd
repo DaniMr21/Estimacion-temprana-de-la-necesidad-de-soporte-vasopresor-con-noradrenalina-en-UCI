@@ -270,15 +270,15 @@ Añadir una nueva ventana temporal implica replicar la lógica de etiquetado y a
 Los cambios mínimos serían:
 
 \begin{itemize}
-  \item definir la nueva ventana de observación y el nuevo horizonte de predicción;
-  \item generar la cohorte correspondiente;
-  \item entrenar y validar el modelo específico de esa ventana;
-  \item guardar el modelo serializado en formato \ruta{.pkl};
-  \item guardar la referencia de percentiles en formato \ruta{.npy};
-  \item añadir un nuevo botón o selector de ventana en el \textit{dashboard};
-  \item registrar las variables esperadas por el nuevo modelo;
-  \item implementar la lógica de agregación asociada a la nueva ventana;
-  \item actualizar el manual de usuario y las capturas de interfaz.
+  \item Definir la nueva ventana de observación y el nuevo horizonte de predicción;
+  \item Generar la cohorte correspondiente;
+  \item Entrenar y validar el modelo específico de esa ventana;
+  \item Guardar el modelo serializado en formato \ruta{.pkl};
+  \item Guardar la referencia de percentiles en formato \ruta{.npy};
+  \item Añadir un nuevo botón o selector de ventana en el \textit{dashboard};
+  \item Registrar las variables esperadas por el nuevo modelo;
+  \item Implementar la lógica de agregación asociada a la nueva ventana;
+  \item Actualizar el manual de usuario y las capturas de interfaz.
 \end{itemize}
 
 \subsection*{Modificar las variables de entrada}
@@ -290,14 +290,14 @@ modelo.
 En particular, habría que revisar:
 
 \begin{itemize}
-  \item nombres de columnas;
-  \item unidades de medida;
-  \item rangos fisiológicos esperados;
-  \item tratamiento de valores ausentes;
-  \item estadísticos agregados calculados por ventana;
-  \item etiquetas clínicas mostradas en la interfaz;
-  \item referencias de percentiles;
-  \item explicación SHAP asociada a las nuevas variables.
+  \item Nombres de columnas;
+  \item Unidades de medida;
+  \item Rangos fisiológicos esperados;
+  \item Tratamiento de valores ausentes;
+  \item Estadísticos agregados calculados por ventana;
+  \item Etiquetas clínicas mostradas en la interfaz;
+  \item Referencias de percentiles;
+  \item Explicación SHAP asociada a las nuevas variables.
 \end{itemize}
 
 \subsection*{Mejoras recomendadas del \textit{dashboard}}
@@ -305,12 +305,12 @@ En particular, habría que revisar:
 Como mejoras de mantenibilidad y robustez del prototipo se recomienda:
 
 \begin{itemize}
-  \item añadir una función explícita de validación del CSV de entrada, comprobando columnas obligatorias, tipos numéricos, escala de FiO2 y rangos fisiológicamente plausibles;
-  \item separar la lógica de carga de modelos, procesamiento del CSV, cálculo de percentiles y visualización SHAP en módulos independientes;
-  \item sustituir rutas absolutas por rutas relativas basadas en la ubicación del script;
-  \item fijar versiones exactas de dependencias en un fichero de entorno reproducible;
-  \item añadir pruebas funcionales simples para comprobar que el modo demostración, la carga de CSV y la generación de SHAP no fallan tras modificar el código;
-  \item documentar en un fichero específico el formato esperado del CSV de entrada.
+  \item Añadir una función explícita de validación del CSV de entrada, comprobando columnas obligatorias, tipos numéricos, escala de FiO2 y rangos fisiológicamente plausibles;
+  \item Separar la lógica de carga de modelos, procesamiento del CSV, cálculo de percentiles y visualización SHAP en módulos independientes;
+  \item Sustituir rutas absolutas por rutas relativas basadas en la ubicación del script;
+  \item Fijar versiones exactas de dependencias en un fichero de entorno reproducible;
+  \item Añadir pruebas funcionales simples para comprobar que el modo demostración, la carga de CSV y la generación de SHAP no fallan tras modificar el código;
+  \item Documentar en un fichero específico el formato esperado del CSV de entrada.
 \end{itemize}
 
 \subsection*{Evolución metodológica futura}

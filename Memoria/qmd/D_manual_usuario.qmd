@@ -7,7 +7,7 @@
 \section{Requisitos previos}
 
 Este manual está dirigido al uso del prototipo de \textit{dashboard} por parte de personal clínico o técnico del hospital. La aplicación permite introducir datos clínicos de un paciente o caso 
-de ejemplo y visualizar una estimación relativa del riesgo de inicio de noradrenalina, junto con una explicación individual mediante valores SHAP \cite{lundberg2017}.
+de ejemplo y visualizar una estimación relativa del riesgo de inicio de noradrenalina, junto con una explicación individual mediante valores SHAP.
 
 El usuario final previsto es un facultativo o profesional sanitario que consulta la interfaz ya en ejecución. La instalación inicial, en cambio, debería ser realizada por personal 
 técnico o por una persona con conocimientos básicos de Python, ya que requiere preparar un entorno local y ejecutar una aplicación Streamlit.
@@ -196,7 +196,7 @@ Tras procesar el CSV, la pantalla principal muestra dos bloques, como se observa
 
 \begin{itemize}
   \item a la izquierda, el percentil de riesgo y un resumen del caso evaluado;
-  \item a la derecha, los factores individuales asociados a la predicción mediante valores SHAP \cite{lundberg2017}.
+  \item a la derecha, los factores individuales asociados a la predicción mediante valores SHAP.
 \end{itemize}
 
 El resultado no debe interpretarse como una orden clínica ni como una recomendación terapéutica. La aplicación no indica si debe iniciarse noradrenalina, no propone dosis y no sustituye la valoración del facultativo responsable.
@@ -209,7 +209,7 @@ Por ejemplo, un percentil de 90 significa que el 90\,\% de los pacientes de la c
 
 \subsection*{Interpretación de los valores SHAP}
 
-El gráfico SHAP muestra cómo contribuye cada variable a la predicción individual de ese caso concreto \cite{lundberg2017}.
+El gráfico SHAP muestra cómo contribuye cada variable a la predicción individual de ese caso concreto.
 
 \begin{itemize}
   \item Las barras rojas empujan la estimación hacia mayor riesgo.

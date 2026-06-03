@@ -31,7 +31,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
   \item \textbf{RF-3:} calcular los estadísticos agregados requeridos por el modelo a partir de las mediciones temporales del CSV.
   \item \textbf{RF-4:} cargar el modelo correspondiente a la ventana seleccionada y calcular la estimación de riesgo.
   \item \textbf{RF-5:} mostrar el riesgo estimado como percentil respecto a la distribución de referencia de MIMIC-IV.
-  \item \textbf{RF-6:} mostrar la explicación individual de la predicción mediante valores SHAP \cite{lundberg2017}.
+  \item \textbf{RF-6:} mostrar la explicación individual de la predicción mediante valores SHAP.
   \item \textbf{RF-7:} disponer de un modo demostración con casos ficticios.
   \item \textbf{RF-8:} ofrecer un manual de uso y un aviso visible sobre el alcance del prototipo.
 \end{itemize}
@@ -115,7 +115,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
 		\textbf{Requisitos asociados} & RF-4, RF-5, RF-6, RNF-1, RNF-2 \\
-		\textbf{Descripción} & El facultativo consulta el riesgo estimado de inicio de noradrenalina, expresado como percentil respecto a la población de referencia, junto con la explicación individual de las variables que contribuyen a la predicción \cite{lundberg2017}. \\
+		\textbf{Descripción} & El facultativo consulta el riesgo estimado de inicio de noradrenalina, expresado como percentil respecto a la población de referencia, junto con la explicación individual de las variables que contribuyen a la predicción. \\
 		\textbf{Precondición} & Datos del caso cargados y procesados (CU-2). \\
 		\textbf{Acciones} &
 		\begin{enumerate}
@@ -125,7 +125,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 			\item Calcula la probabilidad estimada de inicio de noradrenalina.
 			\item Traduce la probabilidad a un percentil respecto a la distribución de referencia de MIMIC-IV.
 			\item Muestra el percentil de riesgo.
-			\item Calcula los valores SHAP individuales y muestra las variables que empujan o reducen el riesgo \cite{lundberg2017}.
+			\item Calcula los valores SHAP individuales y muestra las variables que empujan o reducen el riesgo.
 		\end{enumerate}\\
 		\textbf{Postcondición} & Se muestran el percentil de riesgo y la explicación individualizada de la predicción. \\
 		\textbf{Excepciones} & Si el modelo o el fichero de referencia de percentiles no está disponible, el sistema muestra un error y no calcula el resultado. \\
@@ -154,7 +154,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 			\item El facultativo pulsa el botón de modo demostración.
 			\item Selecciona uno de los casos ficticios disponibles.
 			\item Selecciona la ventana temporal de demostración.
-			\item El sistema muestra los datos del caso, el percentil de riesgo y la explicación SHAP correspondientes \cite{lundberg2017}.
+			\item El sistema muestra los datos del caso, el percentil de riesgo y la explicación SHAP correspondientes.
 		\end{enumerate}\\
 		\textbf{Postcondición} & Se muestra el resultado del caso de demostración seleccionado. \\
 		\textbf{Excepciones} & Si no se puede cargar el modelo o la referencia de percentiles, el sistema muestra un error. \\
@@ -218,7 +218,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard_manual.png}
-  \caption{Manual de uso integrado, accesible desde la propia interfaz. Documenta las ventanas temporales disponibles, el modo de uso, el formato esperado del CSV de entrada y la interpretación del percentil de riesgo y de los valores SHAP \cite{lundberg2017}.}
+  \caption{Manual de uso integrado, accesible desde la propia interfaz. Documenta las ventanas temporales disponibles, el modo de uso, el formato esperado del CSV de entrada y la interpretación del percentil de riesgo y de los valores SHAP.}
   \label{fig:dash-manual}
 \end{figure}
 ```
