@@ -271,7 +271,7 @@ la ventana media (-0,023). La ventana media presentó la mayor discriminación g
 
 La @tbl-completitud-eicu muestra el efecto del filtrado sobre el tamaño muestral y la prevalencia del evento en cada ventana temporal tras aplicarse las mismas restricciones que sobre MIMIC-IV.
 
-| Ventana | Estancias brutas | Prevalencia bruta | Estancias tras filtro | Prevalencia tras filtro |
+| Ventana          | Estancias brutas | Prevalencia bruta | Estancias tras filtro | Prevalencia tras filtro |
 |------------------|-----------------|-------------------|-----------------------|------------------------|
 | Corta (3--12 h)  | 125.124         | 3,65\%            | 789                   | 14,45\%                |
 | Media (6--24 h)  | 122.922         | 3,46\%            | 1.396                 | 11,89\%                |
