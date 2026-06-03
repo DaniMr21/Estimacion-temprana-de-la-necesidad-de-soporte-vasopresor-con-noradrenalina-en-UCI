@@ -139,7 +139,7 @@ Si alguno de estos ficheros falta, cambia de nombre o se desplaza a otra ubicaci
 
 \subsection*{Reproducción del flujo experimental}
 
-La reproducción completa del flujo experimental requiere disponer de acceso autorizado a las bases de datos originales MIMIC-IV y eICU-CRD
+La reproducción completa del flujo experimental requiere disponer de acceso autorizado a las bases de datos originales MIMIC-IV y eICU-CRD.
 
 A nivel general, la reproducción sigue esta secuencia:
 

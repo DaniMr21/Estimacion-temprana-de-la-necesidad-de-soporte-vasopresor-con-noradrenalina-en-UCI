@@ -12,6 +12,8 @@ El alcance del trabajo comprende tres componentes principales: la construcción 
 
 El proyecto no incluye validación prospectiva ni despliegue clínico en entorno asistencial real, por lo que se enmarca como investigación aplicada y prueba de concepto. Las consideraciones metodológicas, temporales, económicas y legales relevantes se desarrollan en los apartados siguientes.
 
+El repositorio público del proyecto se encuentra disponible en: \url{https://github.com/DaniMr21/Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI}.
+
 \section{Metodología de ingeniería del software}
 
 La metodología seguida durante el desarrollo se describe en detalle en la sección de Metodología de la memoria. En síntesis, se empleó un enfoque experimental e iterativo con un ciclo incremental por versiones, código organizado en módulos funcionales y control de versiones con Git y GitHub. Este enfoque se corresponde con un modelo de desarrollo iterativo e incremental: cada versión del flujo de trabajo se construyó sobre la anterior y se refinó en función de los resultados obtenidos, sin un diseño cerrado definido a priori.

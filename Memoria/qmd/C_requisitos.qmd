@@ -7,11 +7,12 @@
 
 \section{Diagrama de casos de uso}
 
-El único subsistema interactivo del trabajo es el \textit{dashboard}; el \textit{pipeline} de modelado se ejecuta de forma desatendida y no requiere interacción directa por parte del usuario
- final. Por este motivo, los casos de uso modelan exclusivamente la aplicación de visualización. El único subsistema interactivo del trabajo es el \textit{dashboard}; 
- el \textit{pipeline} de modelado se ejecuta de forma desatendida y no requiere interacción directa por parte del usuario final. Por este motivo, los casos de uso modelan exclusivamente 
- la aplicación de visualización. El actor único considerado es el facultativo de Medicina Intensiva como usuario evaluador del prototipo. La Figura~\ref{fig:casos-uso} resume las 
- funcionalidades principales.
+El único subsistema interactivo del trabajo es el dashboard; el pipeline
+de modelado se ejecuta de forma desatendida y no requiere interacción
+directa por parte del usuario final. Por este motivo, los casos de uso modelan
+exclusivamente la aplicación de visualización. El actor único considerado es
+el facultativo de Medicina Intensiva como usuario evaluador del prototipo.
+La Figura C.1 resume las funcionalidades principales.
 
 \begin{figure}[H]
   \centering
