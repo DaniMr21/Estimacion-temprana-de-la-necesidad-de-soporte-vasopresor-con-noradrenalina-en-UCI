@@ -11,17 +11,17 @@ pruebas históricas. La estructura general entregada es la siguiente:
 
 \begin{verbatim}
 .
-├── Archivo/
-│   └── Pruebas preliminares/
-├── Dashboard/
-├── Memoria/
-│   ├── img/
-│   └── qmd/
-├── Pipeline/
-│   ├── Experimentos/
-│   └── FINAL/
-└── Validacion_externa/
-    └── eICU/
++-- Archivo/
+|   +-- Pruebas preliminares/
++-- Dashboard/
++-- Memoria/
+|   +-- img/
+|   +-- qmd/
++-- Pipeline/
+|   +-- Experimentos/
+|   +-- FINAL/
++-- Validacion_externa/
+    +-- eICU/
 \end{verbatim}
 
 La carpeta \ruta{Archivo/} contiene pruebas preliminares y versiones antiguas del desarrollo. Se conserva por trazabilidad histórica, pero no constituye la referencia 
