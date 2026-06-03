@@ -23,7 +23,7 @@ El análisis de correlación sobre las 76 variables candidatas mostró una redun
 
 ![Dendrograma](img/dendrograma_v4.png){#fig-dendrograma}
 
-Análisis de correlación y estructura de agrupamiento de las 76 variables predictoras iniciales en MIMIC-IV. Izquierda: matriz de correlación de Spearman. Derecha: dendrograma jerárquico basado en la distancia $1 - |\rho|$.
+análisis de correlación y estructura de agrupamiento de las 76 variables predictoras iniciales en MIMIC-IV. Izquierda: matriz de correlación de Spearman. Derecha: dendrograma jerárquico basado en la distancia $1 - |\rho|$.
 :::
 
 Tras aplicar el proceso de reducción descrito en la metodología, el conjunto final quedó formado por 25 variables predictoras. La correlación máxima residual fue de $|\rho| = 0{,}514$ en la ventana corta, $|\rho| = 0{,}473$ en la ventana media y $|\rho| = 0{,}516$ en la ventana larga, por debajo del umbral de referencia de 0,7 (@fig-dendrogramas-reducidos).
@@ -35,7 +35,7 @@ Tras aplicar el proceso de reducción descrito en la metodología, el conjunto f
 
 ![Largo (12--48 h)](img/dendrograma_v4l_reducido.png){#fig-dendro-largo}
 
-Dendrogramas de agrupamiento jerárquico sobre el conjunto final de variables predictoras en cada ventana temporal. Distancia $= 1 - |\rho|$; línea roja: $|\rho| = 0{,}7$; línea naranja: $|\rho| = 0{,}5$.
+dendrogramas de agrupamiento jerárquico sobre el conjunto final de variables predictoras en cada ventana temporal. Distancia $= 1 - |\rho|$; línea roja: $|\rho| = 0{,}7$; línea naranja: $|\rho| = 0{,}5$.
 :::
 
 La auditoría mediante importancia por permutación permitió identificar qué predictores producían una pérdida relevante de AUC-ROC al ser permutados en cada modelo. La @fig-significancia resume estos resultados para las tres ventanas temporales.
@@ -47,7 +47,7 @@ La auditoría mediante importancia por permutación permitió identificar qué p
 
 ![Largo (12--48 h)](img/significancia_global_v4l.png){#fig-sig-largo}
 
-Importancia por permutación de las variables predictoras en los seis algoritmos evaluados para cada ventana temporal. Cada panel muestra la caída media de AUC-ROC asociada a la permutación de cada variable; la significación se determinó mediante intervalos de confianza al 95\% calculados sobre los folds externos.
+importancia por permutación de las variables predictoras en los seis algoritmos evaluados para cada ventana temporal. Cada panel muestra la caída media de AUC-ROC asociada a la permutación de cada variable; la significación se determinó mediante intervalos de confianza al 95\% calculados sobre los folds externos.
 :::
 
 En la ventana corta, la regresión logística no presentó ninguna variable con contribución significativa según este criterio, por lo que quedó excluida de la evaluación en esa ventana.
@@ -179,7 +179,7 @@ superior, aunque con desviación inicial en la calibración que motivó el ajust
 
 ![XGBoost, ventana media (6--24 h): modelo con buen rendimiento discriminativo pero calibración desviada antes del ajuste.](img/Grafica_OOF_Medio_6_24_XGB.png){#fig-contraste-bueno width=82%}
 
-Contraste de calidad entre dos modelos en MIMIC-IV. Random Forest en la ventana corta muestra discriminación próxima al azar y calibración deficiente, mientras que XGBoost en la ventana media presenta una discriminación superior. Ambas curvas se obtienen mediante predicciones \textit{out-of-fold}.
+contraste de calidad entre dos modelos en MIMIC-IV. Random Forest en la ventana corta muestra discriminación próxima al azar y calibración deficiente, mientras que XGBoost en la ventana media presenta una discriminación superior. Ambas curvas se obtienen mediante predicciones \textit{out-of-fold}.
 :::
 
 Las curvas ROC, precisión-recall y calibración iniciales de los modelos preseleccionados se presentan en la @fig-oof-candidatos.
@@ -195,13 +195,13 @@ Las curvas ROC, precisión-recall y calibración iniciales de los modelos presel
 
 ![Larga 12--48 h: CatBoost](img/Grafica_OOF_Largo_12_48_CAT.png){#fig-oof-largo-cat}
 
-Curvas ROC, precisión-recall y calibración mediante predicciones \textit{out-of-fold} de los modelos preseleccionados en la validación interna.
+curvas ROC, precisión-recall y calibración mediante predicciones \textit{out-of-fold} de los modelos preseleccionados en la validación interna.
 :::
 
 Debido al desajuste observado entre las probabilidades estimadas y las frecuencias observadas en la ventana media, se aplicó recalibración mediante Platt regularizado sobre XGBoost. 
 La @fig-calibracion-xgb-medio muestra la curva de calibración y la distribución de probabilidades antes y después del ajuste.
 
-![Curvas de calibración y distribución de probabilidades de XGBoost en la ventana media, antes y después de la recalibración mediante Platt regularizado.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio width=90%}
+![curvas de calibración y distribución de probabilidades de XGBoost en la ventana media, antes y después de la recalibración mediante Platt regularizado.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio width=90%}
 
 Tras esta fase, los modelos seleccionados fueron CatBoost en la ventana corta; XGBoost recalibrado y CatBoost en la ventana media; y XGBoost y CatBoost en la ventana larga. 
 Este conjunto se utilizó en los análisis posteriores de interpretabilidad, subgrupos y validación externa.
@@ -217,7 +217,7 @@ Los diagramas de SHAP tipo *beeswarm* resultantes se presentan en la @fig-shap-c
 
 ![Media 6--24 h: CatBoost](img/SHAP_Medio_6_24_CAT.png){#fig-shap-res-medio-cat}
 
-Diagramas SHAP tipo *beeswarm* de los modelos seleccionados en las ventanas corta y media.
+diagramas SHAP tipo *beeswarm* de los modelos seleccionados en las ventanas corta y media.
 :::
 
 ::: {#fig-shap-candidatos-2 layout-ncol=2}
@@ -225,7 +225,7 @@ Diagramas SHAP tipo *beeswarm* de los modelos seleccionados en las ventanas cort
 
 ![Larga 12--48 h: CatBoost](img/SHAP_Largo_12_48_CAT.png){#fig-shap-res-largo-cat}
 
-Diagramas SHAP tipo *beeswarm* de los modelos seleccionados en la ventana larga.
+diagramas SHAP tipo *beeswarm* de los modelos seleccionados en la ventana larga.
 :::
 
 En conjunto, los diagramas SHAP mostraron que los modelos seleccionados basaban sus predicciones en patrones clínicamente coherentes, asignando mayor riesgo a perfiles de mayor gravedad 
@@ -380,7 +380,7 @@ Las curvas ROC y de calibración de los modelos principales evaluados en eICU-CR
 
 ![Validación externa en la ventana larga: XGBoost.](img/validacion_externa_Largo_12_48.png){#fig-ext-largo-xgb width=86%}
 
-Curvas ROC y de calibración de los modelos principales evaluados externamente en eICU-CRD.
+curvas ROC y de calibración de los modelos principales evaluados externamente en eICU-CRD.
 :::
 
 Además de las métricas agregadas, se revisó la interpretabilidad post-hoc en la cohorte externa mediante valores SHAP. Este análisis permitió comprobar si los modelos mantenían patrones de atribución clínicamente razonables al aplicarse sobre una base de datos distinta de MIMIC-IV. Los diagramas SHAP de los modelos principales se presentan en la @fig-shap-eicu-principal, mientras que los correspondientes a CatBoost en las ventanas media y larga se muestran como análisis complementario en la @fig-shap-eicu-catboost-complementario.
@@ -393,7 +393,7 @@ Además de las métricas agregadas, se revisó la interpretabilidad post-hoc en 
 
 ![Ventana larga: XGBoost en eICU-CRD.](img/shap_eicu_largo_xgb.png){#fig-shap-eicu-largo-xgb width=84%}
 
-Diagramas SHAP de los modelos principales evaluados en validación externa.
+diagramas SHAP de los modelos principales evaluados en validación externa.
 :::
 
 ::: {#fig-shap-eicu-catboost-complementario layout-ncol=1}
@@ -402,7 +402,7 @@ Diagramas SHAP de los modelos principales evaluados en validación externa.
 
 ![Ventana larga: CatBoost en eICU-CRD.](img/shap_eicu_largo_cat.png){#fig-shap-eicu-largo-cat width=84%}
 
-Diagramas SHAP complementarios de CatBoost en las ventanas media y larga durante la validación externa.
+diagramas SHAP complementarios de CatBoost en las ventanas media y larga durante la validación externa.
 :::
 
 En conjunto, la validación externa mostró que el rendimiento fue más limitado en las ventanas corta y media, donde los modelos no superaron de forma significativa a SOFA. 
