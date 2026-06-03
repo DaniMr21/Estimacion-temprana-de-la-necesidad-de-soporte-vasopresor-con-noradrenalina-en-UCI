@@ -40,7 +40,7 @@ NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Ant
 \addlinespace
 8 & Abril (1.\textsuperscript{a} q.) & Ayúdame a estructurar una comparación entre el dataset completo y el dataset limpio: pacientes, positivos, prevalencia y variables eliminadas. & Auditoría de datos \\
 \addlinespace
-9 & Abril (2.\textsuperscript{a} q.) & Propón cómo organizar la configuración de ventanas Corto\_3\_12, Medio\_6\_24 y Largo\_12\_48 para no duplicar rutas y variables en varios scripts. & Organización del código \\
+9 & Abril (2.\textsuperscript{a} q.) & Revisa una propuesta de organización de la configuración de ventanas Corto\_3\_12, Medio\_6\_24 y Largo\_12\_48 para no duplicar rutas y variables en varios scripts. & Organización del código \\
 \addlinespace
 10 & Abril (2.\textsuperscript{a} q.) & Comprueba cómo verificar que ningún subject\_id aparezca simultáneamente en train y test dentro de cada fold externo. & Prevención de fuga de pacientes \\
 \addlinespace
@@ -48,7 +48,7 @@ NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Ant
 \addlinespace
 12 & Abril (2.\textsuperscript{a} q.) & Comprueba que el umbral óptimo se elige en train y se evalúa en test sin recalcularlo con datos de test. & Umbral sin fuga de información \\
 \addlinespace
-13 & Abril (2.\textsuperscript{a} q.) & Cómo plantear un sistema de checkpoint que lea el CSV de resultados y omita combinaciones ventana-modelo ya evaluadas. & Reanudación de experimentos \\
+13 & Abril (2.\textsuperscript{a} q.) & Revisa el planteamiento de un sistema de checkpoint para leer el CSV de resultados y omitir combinaciones ventana-modelo ya evaluadas. & Reanudación de experimentos \\
 \addlinespace
 14 & Abril (2.\textsuperscript{a} q.) & Revisa la comparación entre Platt sin regularización, Platt regularizado e isotónico para detectar posibles errores metodológicos o de fuga. & Revisión de calibración \\
 \addlinespace
@@ -70,7 +70,7 @@ NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Ant
 \addlinespace
 23 & Abril (2.\textsuperscript{a} q.) & Revisa un script que recorre ventanas y modelos para cargar cada modelo guardado y guardar los gráficos SHAP globales correspondientes. & Automatización de análisis \\
 \addlinespace
-24 & Abril (2.\textsuperscript{a} q.) & Ayúdame a transformar importancias SHAP ya calculadas en una tabla o heatmap comparativo por variable, algoritmo y ventana. & Comparativa de explicabilidad \\
+24 & Abril (2.\textsuperscript{a} q.) & Revisa una forma de resumir importancias SHAP ya calculadas en una tabla o visualización comparativa por variable, algoritmo y ventana. & Comparativa de explicabilidad \\
 \addlinespace
 25 & Mayo (1.\textsuperscript{a} q.) & Cómo estructurar un wrapper de modelo calibrado compatible con predict\_proba sin romper la integración con sklearn. & Revisión de diseño software \\
 \addlinespace
@@ -88,7 +88,7 @@ NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Ant
 \addlinespace
 32 & Mayo (1.\textsuperscript{a} q.) & Revisa una función que detecta si el modelo cargado es un Pipeline y extrae por separado el escalador y el estimador final antes de calcular SHAP. & Depuración de pipeline \\
 \addlinespace
-33 & Mayo (1.\textsuperscript{a} q.) & Añade comprobaciones de forma para verificar que los datos, los valores SHAP y los nombres de variables tienen dimensiones compatibles antes de graficar. & Depuración SHAP \\
+33 & Mayo (1.\textsuperscript{a} q.) & Revisa qué comprobaciones de forma conviene incluir para verificar que los datos, los valores SHAP y los nombres de variables tienen dimensiones compatibles antes de graficar. & Depuración SHAP \\
 \addlinespace
 34 & Mayo (1.\textsuperscript{a} q.) & Antes de validar en eICU, comprueba que las variables disponibles coinciden exactamente con las variables del modelo entrenado en MIMIC-IV. & Preparación de validación externa \\
 \addlinespace
@@ -104,17 +104,17 @@ NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Ant
 \addlinespace
 40 & Mayo (2.\textsuperscript{a} q.) & Revisa textos explicativos para aclarar que el percentil es riesgo relativo frente a la cohorte de referencia y no una probabilidad clínica directa. & Explicabilidad \\
 \addlinespace
-41 & Mayo (2.\textsuperscript{a} q.) & Revisa una función validar\_csv\_paciente que comprueba columnas obligatorias, tipos numéricos, escala de FiO2 y valores plausibles antes de aplicar el modelo. & Robustez del dashboard \\
+41 & Mayo (2.\textsuperscript{a} q.) & Revisa cómo podría plantearse una validación previa del CSV del paciente, incluyendo columnas obligatorias, tipos numéricos, escala de FiO2 y valores plausibles antes de aplicar el modelo. & Mejora futura del dashboard \\
 \addlinespace
 42 & Mayo (2.\textsuperscript{a} q.) & Revisa la coherencia de tres CSV ficticios de demostración para comprobar que representan perfiles esperados de bajo, medio y alto riesgo relativo. & Pruebas del dashboard \\
 \addlinespace
 43 & Mayo (2.\textsuperscript{a} q.) & Revisa cómo cambiar rutas absolutas de Windows a rutas relativas basadas en BASE\_DIR para mejorar la portabilidad del repositorio. & Portabilidad \\
 \addlinespace
-44 & Mayo (2.\textsuperscript{a} q.) & Ayúdame a convertir resultados ya calculados en una tabla de hiperparámetros finales para XGBoost, LightGBM, Random Forest, CatBoost, regresión logística y Naive Bayes. & Documentación de entrenamiento \\
+44 & Mayo (2.\textsuperscript{a} q.) & Revisa la transformación de resultados ya calculados en una tabla de hiperparámetros finales para XGBoost, LightGBM, Random Forest, CatBoost, regresión logística y Naive Bayes. & Documentación de entrenamiento \\
 \addlinespace
-45 & Mayo (2.\textsuperscript{a} q.) & Ayúdame a transformar resultados estadísticos ya obtenidos en una tabla resumen de variables significativas por regresor. & Resultados \\
+45 & Mayo (2.\textsuperscript{a} q.) & Revisa la transformación de resultados estadísticos ya obtenidos en una tabla resumen de variables significativas por regresor. & Resultados \\
 \addlinespace
-46 & Mayo (2.\textsuperscript{a} q.) & Documenta en el código que los valores SHAP pertenecen al modelo base y que la calibración solo transforma la probabilidad final. & Claridad metodológica \\
+46 & Mayo (2.\textsuperscript{a} q.) & Revisa una nota de documentación en el código para aclarar que los valores SHAP pertenecen al modelo base y que la calibración solo transforma la probabilidad final. & Claridad metodológica \\
 \addlinespace
 47 & Mayo (2.\textsuperscript{a} q.) & Revisa un texto bajo el gráfico SHAP que aclare que las barras indican contribución al modelo, no causalidad clínica. & Advertencia metodológica \\
 \end{longtable}
