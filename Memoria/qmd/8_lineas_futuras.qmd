@@ -3,7 +3,7 @@
 \capitulo{8}{Líneas de trabajo futuras}
 ```
 
-**Validación externa de los modelos sobre una cohorte de pacientes de una UCI europea de referencia:** La línea de trabajo más prioritaria e inmediata consiste en retomar y consolidar la 
+**Validación externa local en UCI europea de referencia (HUBU):** La línea de trabajo más prioritaria e inmediata consiste en retomar y consolidar la 
 validación externa planificada sobre los datos reales del Hospital Universitario de Burgos (HUBU). 
 Aunque la heterogeneidad en las estructuras de registro y las barreras técnicas de extracción obligaron a sustituir esta cohorte por la base de datos multicéntrica eICU-CRD, la transferencia 
 del modelo a una población de referencia europea sigue siendo un hito indispensable para garantizar la capacidad de generalización del algoritmo sobre esta población. Una vez garantizada la viabilidad de 
