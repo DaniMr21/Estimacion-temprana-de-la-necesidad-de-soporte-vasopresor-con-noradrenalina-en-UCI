@@ -6,9 +6,9 @@
 
 \section{Introducción}
 
-El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos \cite{evans2021,firzli2023}.
+El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos \citep{evans2021,firzli2023}..
 
-El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la base de datos MIMIC-IV \cite{johnson2023}, con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \cite{pollard2018}, que permite evaluar la generalización de los modelos a entornos clínicos distintos del de desarrollo; y el desarrollo de un prototipo de \textit{dashboard} clínico interpretable implementado en Streamlit, orientado a demostrar la viabilidad de integrar los modelos en una interfaz funcional de apoyo a la interpretación del riesgo.
+El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la base de datos MIMIC-IV \citep{johnson2023}, con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \citep{pollard2018}, que permite evaluar la generalización de los modelos a entornos clínicos distintos del de desarrollo; y el desarrollo de un prototipo de \textit{dashboard} clínico interpretable implementado en Streamlit, orientado a demostrar la viabilidad de integrar los modelos en una interfaz funcional de apoyo a la interpretación del riesgo.
 
 El proyecto no incluye validación prospectiva ni despliegue clínico en entorno asistencial real, por lo que se enmarca como investigación aplicada y prueba de concepto. Las consideraciones metodológicas, temporales, económicas y legales relevantes se desarrollan en los apartados siguientes.
 
@@ -24,7 +24,7 @@ Las fases principales llevadas a cabo fueron:
 
 \begin{enumerate}
   \item Revisión bibliográfica y definición del problema.
-  \item Acceso a datos: formación CITI y registro en PhysioNet \cite{citiprogram,physionet}.
+  \item Acceso a datos: formación CITI y registro en PhysioNet \citep{citiprogram,physionet}.
   \item Construcción de cohortes mediante consultas SQL sobre MIMIC-IV y eICU-CRD.
   \item Preprocesamiento y selección de variables.
   \item Entrenamiento, optimización y evaluación interna mediante validación cruzada anidada.
@@ -36,7 +36,7 @@ Las fases principales llevadas a cabo fueron:
 
 Desde el punto de vista de producto, el ciclo de vida queda limitado a una prueba de concepto. Quedan fuera del alcance de este TFG la validación con datos locales del Hospital Universitario de Burgos, la validación prospectiva y la integración del \textit{dashboard} en sistemas de información sanitarios.
 
-Si se desease continuar con el presente trabajo para dejar lista y validada una herramienta clínica, podría plantearse una metodología Scrum \cite{sutherland2014}, ya que permitiría incorporar el \textit{feedback} continuo de los clínicos en iteraciones cortas y facilitaría la coordinación entre perfiles técnicos y sanitarios durante el desarrollo.
+Si se desease continuar con el presente trabajo para dejar lista y validada una herramienta clínica, podría plantearse una metodología Scrum \citep{sutherland2014}, ya que permitiría incorporar el \textit{feedback} continuo de los clínicos en iteraciones cortas y facilitaría la coordinación entre perfiles técnicos y sanitarios durante el desarrollo.
 
 \section{Planificación temporal}
 
@@ -188,7 +188,7 @@ Este importe no representa un precio de venta o de facturación, sino una estima
 
 \subsection{Viabilidad legal}
 
-Dado que este trabajo constituye un análisis retrospectivo sobre bases de datos públicas y desidentificadas por sus custodios originales \cite{johnson2023,pollard2018,physionet}, el análisis desarrollado en este TFG no requirió una aprobación adicional por parte de un Comité de Ética de Investigación local. El acceso a MIMIC-IV y eICU-CRD a través de PhysioNet exige acreditar formación en ética de la investigación con datos de sujetos humanos y suscribir el correspondiente acuerdo de uso de datos. Por ello, se aporta la certificación del CITI Program completada por el autor como documento acreditativo de dicha formación.
+Dado que este trabajo constituye un análisis retrospectivo sobre bases de datos públicas y desidentificadas por sus custodios originales \citep{johnson2023,pollard2018,physionet}, el análisis desarrollado en este TFG no requirió una aprobación adicional por parte de un Comité de Ética de Investigación local. El acceso a MIMIC-IV y eICU-CRD a través de PhysioNet exige acreditar formación en ética de la investigación con datos de sujetos humanos y suscribir el correspondiente acuerdo de uso de datos. Por ello, se aporta la certificación del CITI Program completada por el autor como documento acreditativo de dicha formación.
 
 La formación corresponde al curso \emph{Human Research — Data or Specimens Only Research (Stage 1, Basic Course)}, completado el 14 de marzo de 2026 con una puntuación de 95 sobre un mínimo exigido de 90 (Record ID 75910225), e incluyó módulos sobre el Informe Belmont, regulación y revisión por IRB, investigación basada en registros (\emph{Records-Based Research}), protecciones de privacidad HIPAA y conflictos de interés, entre otros. El certificado se muestra en la Figura~\ref{fig:citi-cert} y el informe detallado de módulos en la Figura~\ref{fig:citi-report}.
 
