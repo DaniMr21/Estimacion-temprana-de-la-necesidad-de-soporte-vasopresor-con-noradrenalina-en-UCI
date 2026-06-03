@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: anexos.aux
+Reallocating 'name_of_file' (item size: 1) to 8 items.
+The style file: apalike.bst
+Reallocating 'name_of_file' (item size: 1) to 23 items.
+Database file #1: bibliografiaAnexos.bib
+You've used 15 entries,
+            1935 wiz_defined-function locations,
+            564 strings with 7022 characters,
+and the built_in function-call counts, 6627 in all, are:
+= -- 618
+> -- 382
+< -- 10
++ -- 144
+- -- 136
+* -- 602
+:= -- 1190
+add.period$ -- 46
+call.type$ -- 15
+change.case$ -- 140
+chr.to.int$ -- 15
+cite$ -- 15
+duplicate$ -- 216
+empty$ -- 393
+format.name$ -- 159
+if$ -- 1251
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 13
+newline$ -- 78
+num.names$ -- 45
+pop$ -- 118
+preamble$ -- 1
+purify$ -- 140
+quote$ -- 0
+skip$ -- 165
+stack$ -- 0
+substring$ -- 377
+swap$ -- 24
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 88
+warning$ -- 0
+while$ -- 45
+width$ -- 0
+write$ -- 197

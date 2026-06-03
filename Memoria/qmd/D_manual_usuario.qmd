@@ -62,16 +62,16 @@ Los pasos recomendados son los siguientes:
   \item Descargar o clonar el repositorio del proyecto desde GitHub.
 
 \begin{verbatim}
-git clone https://github.com/DaniMr21/Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI.git
+git clone [URL del repositorio]
 \end{verbatim}
 
   \item Entrar en la carpeta del repositorio.
 
 \begin{verbatim}
-cd Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI
+cd Estimacion-temprana-*
 \end{verbatim}
 
-  \item Crear un entorno virtual de Python.
+  \item Crear un entorno virtual de Python (opcional).
 
 \begin{verbatim}
 python -m venv .venv
@@ -92,7 +92,9 @@ source .venv/bin/activate
   \item Instalar las dependencias principales de la aplicación.
 
 \begin{verbatim}
-pip install streamlit pandas numpy scikit-learn xgboost shap matplotlib joblib
+pip install streamlit pandas numpy
+pip install scikit-learn xgboost shap
+pip install matplotlib joblib
 \end{verbatim}
 
   \item Entrar en la carpeta del \textit{dashboard}.

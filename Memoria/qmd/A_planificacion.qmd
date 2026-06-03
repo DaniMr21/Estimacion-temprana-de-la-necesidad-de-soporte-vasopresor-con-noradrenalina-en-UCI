@@ -6,7 +6,7 @@
 
 \section{Introducción}
 
-El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos \citep{evans2021,firzli2023}..
+El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos \citep{evans2021,firzli2023}.
 
 El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la base de datos MIMIC-IV \citep{johnson2023}, con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \citep{pollard2018}, que permite evaluar la generalización de los modelos a entornos clínicos distintos del de desarrollo; y el desarrollo de un prototipo de \textit{dashboard} clínico interpretable implementado en Streamlit, orientado a demostrar la viabilidad de integrar los modelos en una interfaz funcional de apoyo a la interpretación del riesgo.
 
@@ -204,7 +204,7 @@ No obstante, para continuar con una validación externa con datos del Hospital U
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.85\textwidth]{citi_informe.png}
-  \caption{Informe de finalización del CITI Program con el detalle de módulos y puntuaciones.}
+  \caption{Informe de finalización del CITI Program con el detalle de módulos y puntuaciones, se censura información de carácter personal.}
   \label{fig:citi-report}
 \end{figure}
 ```

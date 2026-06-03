@@ -1,0 +1,40 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {chapter}{Índice general}{1}{chapter*.1}%
+\contentsline {chapter}{Índice de figuras}{3}{chapter*.2}%
+\contentsline {chapter}{Índice de tablas}{6}{chapter*.3}%
+\contentsline {appendix}{\chapternumberline {A}Plan de Proyecto}{9}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Introducción}{9}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Metodología de ingeniería del software}{10}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}Planificación temporal}{11}{section.Alph1.3}%
+\contentsline {subsection}{Planificación económica}{12}{section*.6}%
+\contentsline {subsection}{Viabilidad legal}{15}{section*.13}%
+\contentsline {appendix}{\chapternumberline {B}Manual de especificación de diseño}{19}{appendix.Alph2}%
+\contentsline {section}{\numberline {B.1}Diseño arquitectónico}{19}{section.Alph2.1}%
+\contentsline {appendix}{\chapternumberline {C}Especificación de Requisitos}{23}{appendix.Alph3}%
+\contentsline {section}{\numberline {C.1}Diagrama de casos de uso}{23}{section.Alph3.1}%
+\contentsline {section}{\numberline {C.2}Explicación de los casos de uso}{24}{section.Alph3.2}%
+\contentsline {section}{\numberline {C.3}Prototipo de interfaz}{26}{section.Alph3.3}%
+\contentsline {appendix}{\chapternumberline {D}Documentación de usuario}{33}{appendix.Alph4}%
+\contentsline {section}{\numberline {D.1}Requisitos previos}{33}{section.Alph4.1}%
+\contentsline {section}{\numberline {D.2}Instalación y puesta en marcha}{34}{section.Alph4.2}%
+\contentsline {section}{\numberline {D.3}Manual de uso}{36}{section.Alph4.3}%
+\contentsline {section}{\numberline {D.4}Modo demostración}{39}{section.Alph4.4}%
+\contentsline {section}{\numberline {D.5}Manual integrado}{39}{section.Alph4.5}%
+\contentsline {section}{\numberline {D.6}Advertencias de uso}{40}{section.Alph4.6}%
+\contentsline {appendix}{\chapternumberline {E}Manual del programador}{41}{appendix.Alph5}%
+\contentsline {section}{\numberline {E.1}Estructura de directorios}{41}{section.Alph5.1}%
+\contentsline {section}{\numberline {E.2}Compilación y ejecución}{43}{section.Alph5.2}%
+\contentsline {section}{\numberline {E.3}Pruebas del sistema}{44}{section.Alph5.3}%
+\contentsline {section}{\numberline {E.4}Instrucciones para la modificación o mejora del proyecto}{46}{section.Alph5.4}%
+\contentsline {appendix}{\chapternumberline {F}Descripción de adquisición y tratamiento de datos}{51}{appendix.Alph6}%
+\contentsline {section}{\numberline {F.1}Descripción formal de los datos (El Contenedor)}{51}{section.Alph6.1}%
+\contentsline {section}{\numberline {F.2}Descripción clínica de los datos}{53}{section.Alph6.2}%
+\contentsline {appendix}{\chapternumberline {G}Estudio experimental}{63}{appendix.Alph7}%
+\contentsline {section}{\numberline {G.1}Cuaderno de trabajo}{63}{section.Alph7.1}%
+\contentsline {section}{\numberline {G.2}Configuración y parametrización de las técnicas}{66}{section.Alph7.2}%
+\contentsline {section}{\numberline {G.3}Detalle de resultados}{68}{section.Alph7.3}%
+\contentsline {appendix}{\chapternumberline {H}Anexo de sostenibilización curricular}{83}{appendix.Alph8}%
+\contentsline {section}{\numberline {H.1}Reflexión personal sobre sostenibilidad}{83}{section.Alph8.1}%
+\contentsline {appendix}{\chapternumberline {I}Registro de interacciones con sistemas de IA}{87}{appendix.Alph9}%
+\contentsline {section}{\numberline {I.1}Registro de interacciones}{87}{section.Alph9.1}%
+\contentsline {chapter}{Bibliograf\'{\i }a}{93}{chapter*.101}%

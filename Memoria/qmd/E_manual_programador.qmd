@@ -21,7 +21,7 @@ pruebas históricas. La estructura general entregada es la siguiente:
 |   +-- Experimentos/
 |   +-- FINAL/
 +-- Validacion_externa/
-    +-- eICU/
+|   +-- eICU/
 \end{verbatim}
 
 La carpeta \ruta{Archivo/} contiene pruebas preliminares y versiones antiguas del desarrollo. Se conserva por trazabilidad histórica, pero no constituye la referencia 
@@ -59,83 +59,7 @@ En términos funcionales, la relación entre carpetas puede resumirse como:
 \section{Compilación y ejecución}
 
 Este proyecto no se compila en el sentido clásico de una aplicación cerrada. El código se ejecuta mediante scripts de Python y la interfaz de usuario se lanza como una 
-aplicación Streamlit. Deben distinguirse dos niveles de ejecución: el uso del \textit{dashboard} y la reproducción del flujo experimental.
-
-\subsection*{Ejecución del \textit{dashboard}}
-
-Para ejecutar únicamente el prototipo de visualización no es necesario descargar MIMIC-IV ni eICU-CRD. Basta con disponer de la carpeta \ruta{Dashboard/}, que contiene
-el script de Streamlit, los modelos serializados y las referencias de percentiles.
-
-Los pasos recomendados son:
-
-\begin{enumerate}
-  \item Clonar el repositorio:
-
-\begin{verbatim}
-git clone https://github.com/DaniMr21/Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI.git
-\end{verbatim}
-
-  \item Entrar en la carpeta del repositorio:
-
-\begin{verbatim}
-cd Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI
-\end{verbatim}
-
-  \item Crear un entorno virtual (recomendado):
-
-\begin{verbatim}
-python -m venv .venv
-\end{verbatim}
-
-  \item Activar el entorno virtual. En Windows (recomendado):
-
-\begin{verbatim}
-.venv\Scripts\activate
-\end{verbatim}
-
-  En Linux o macOS (recomendado):
-
-\begin{verbatim}
-source .venv/bin/activate
-\end{verbatim}
-
-  \item Instalar las dependencias principales:
-
-\begin{verbatim}
-pip install streamlit pandas numpy scikit-learn xgboost shap matplotlib joblib
-\end{verbatim}
-
-  \item Entrar en la carpeta del \textit{dashboard}:
-
-\begin{verbatim}
-cd Dashboard
-\end{verbatim}
-
-  \item Ejecutar la aplicación:
-
-\begin{verbatim}
-streamlit run pruebas_dashboard.py
-\end{verbatim}
-
-  \item Abrir la dirección indicada por Streamlit en el navegador. Habitualmente será:
-
-\begin{verbatim}
-http://localhost:8501
-\end{verbatim}
-
-\end{enumerate}
-
-Para que la aplicación funcione correctamente, deben permanecer en la carpeta \ruta{Dashboard/} los siguientes archivos:
-
-\begin{itemize}
-  \item \ruta{pruebas\_dashboard.py};
-  \item \ruta{modelo\_Medio\_6\_24\_XGB\_calibrado.pkl};
-  \item \ruta{modelo\_Largo\_12\_48\_XGB.pkl};
-  \item \ruta{referencia\_percentiles\_medio.npy};
-  \item \ruta{referencia\_percentiles\_largo.npy}.
-\end{itemize}
-
-Si alguno de estos ficheros falta, cambia de nombre o se desplaza a otra ubicación, el \textit{dashboard} puede fallar al cargar el modelo o al calcular el percentil de riesgo.
+aplicación Streamlit. Deben distinguirse dos niveles de ejecución: el uso del \textit{dashboard}, descrito anteriormente, y la reproducción del flujo experimental.
 
 \subsection*{Reproducción del flujo experimental}
 
@@ -316,7 +240,7 @@ Como mejoras de mantenibilidad y robustez del prototipo se recomienda:
 \subsection*{Evolución metodológica futura}
 
 Como líneas de evolución del proyecto podrían explorarse modelos temporales, como LSTM o Transformers, o enfoques de análisis de supervivencia. Estas alternativas 
-requerirían rediseñar parcialmente la representación de los datos, ya que el flujo actual se basa en estadísticos agregados por ventana temporal.
+requerirían rediseñar la representación de los datos y seleccionar los registros que lo permitan, ya que el flujo actual se basa en estadísticos agregados por ventana temporal.
 
 También podría plantearse la integración del \textit{dashboard} en sistemas de información hospitalaria. Esta evolución requeriría validación clínica prospectiva, 
 autorización ética, revisión de seguridad, control de accesos, auditoría de datos y adaptación a la infraestructura tecnológica del centro sanitario.
