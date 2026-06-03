@@ -6,39 +6,318 @@
 
 \section{Estructura de directorios}
 
+El repositorio se organiza separando la documentación académica, el prototipo de \textit{dashboard}, el flujo experimental de modelado, la validación externa y las 
+pruebas históricas. La estructura general entregada es la siguiente:
 
-\section{Pruebas del sistema} 
+\begin{verbatim}
+.
+├── Archivo/
+│   └── Pruebas preliminares/
+├── Dashboard/
+├── Memoria/
+│   ├── img/
+│   └── qmd/
+├── Pipeline/
+│   ├── Experimentos/
+│   └── FINAL/
+└── Validacion_externa/
+    └── eICU/
+\end{verbatim}
 
-REVISARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+La carpeta \ruta{Archivo/} contiene pruebas preliminares y versiones antiguas del desarrollo. Se conserva por trazabilidad histórica, pero no constituye la referencia 
+principal para reproducir los resultados finales.
 
-Al tratarse de un trabajo de investigación de carácter experimental, no se desarrollaron pruebas en el sentido del software de producción. La validación del sistema se abordó desde una 
-perspectiva metodológica, con las siguientes estrategias:
+La carpeta \ruta{Dashboard/} contiene el prototipo de aplicación desarrollado en Streamlit. Incluye el script principal \ruta{pruebas\_dashboard.py}, los modelos finales 
+serializados en formato \ruta{.pkl} y los ficheros \ruta{.npy} utilizados como referencia para calcular los percentiles de riesgo. Esta carpeta es la unidad mínima 
+necesaria para ejecutar el prototipo de inferencia una vez instaladas las dependencias.
+
+La carpeta \ruta{Memoria/} contiene la documentación académica del TFG. En \ruta{Memoria/qmd/} se almacenan los ficheros fuente en Quarto/Markdown, mientras que 
+\ruta{Memoria/img/} contiene las imágenes, diagramas y capturas empleadas en la memoria y los anexos.
+
+La carpeta \ruta{Pipeline/Experimentos/} recoge versiones intermedias del desarrollo experimental. Estas carpetas documentan la evolución metodológica del proyecto, 
+incluyendo construcción de cohortes, selección de variables, reducción de predictores, análisis de significancia, comprobación de dirección del efecto y refinamiento 
+progresivo de los modelos.
+
+La carpeta \ruta{Pipeline/FINAL/} contiene la versión final del flujo experimental utilizada para generar los resultados incluidos en la memoria. En ella se almacenan los 
+scripts principales, modelos entrenados, tablas de métricas, figuras de validación interna, figuras de calibración, análisis SHAP y comparaciones finales entre modelos 
+o calibradores. Debe considerarse la carpeta de referencia para consultar los resultados consolidados del modelado.
+
+La carpeta \ruta{Validacion\_externa/eICU/} contiene el material asociado a la validación externa sobre eICU-CRD: consultas SQL, scripts de adaptación, tablas, figuras y 
+resultados derivados de aplicar los modelos entrenados en MIMIC-IV sobre una cohorte externa independiente.
+
+En términos funcionales, la relación entre carpetas puede resumirse como:
+
+\begin{itemize}
+  \item \ruta{Pipeline/Experimentos/}: trazabilidad metodológica y versiones intermedias.
+  \item \ruta{Pipeline/FINAL/}: entrenamiento final, calibración, modelos, métricas y SHAP.
+  \item \ruta{Validacion\_externa/eICU/}: validación externa sobre eICU-CRD.
+  \item \ruta{Dashboard/}: inferencia y visualización mediante Streamlit.
+  \item \ruta{Memoria/}: documentación académica.
+  \item \ruta{Archivo/}: pruebas históricas no necesarias para el flujo final.
+\end{itemize}
+
+\section{Compilación y ejecución}
+
+Este proyecto no se compila en el sentido clásico de una aplicación cerrada. El código se ejecuta mediante scripts de Python y la interfaz de usuario se lanza como una 
+aplicación Streamlit. Deben distinguirse dos niveles de ejecución: el uso del \textit{dashboard} y la reproducción del flujo experimental.
+
+\subsection*{Ejecución del \textit{dashboard}}
+
+Para ejecutar únicamente el prototipo de visualización no es necesario descargar MIMIC-IV ni eICU-CRD. Basta con disponer de la carpeta \ruta{Dashboard/}, que contiene
+el script de Streamlit, los modelos serializados y las referencias de percentiles.
+
+Los pasos recomendados son:
+
+\begin{enumerate}
+  \item Clonar el repositorio:
+
+\begin{verbatim}
+git clone https://github.com/DaniMr21/Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI.git
+\end{verbatim}
+
+  \item Entrar en la carpeta del repositorio:
+
+\begin{verbatim}
+cd Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI
+\end{verbatim}
+
+  \item Crear un entorno virtual (recomendado):
+
+\begin{verbatim}
+python -m venv .venv
+\end{verbatim}
+
+  \item Activar el entorno virtual. En Windows (recomendado):
+
+\begin{verbatim}
+.venv\Scripts\activate
+\end{verbatim}
+
+  En Linux o macOS (recomendado):
+
+\begin{verbatim}
+source .venv/bin/activate
+\end{verbatim}
+
+  \item Instalar las dependencias principales:
+
+\begin{verbatim}
+pip install streamlit pandas numpy scikit-learn xgboost shap matplotlib joblib
+\end{verbatim}
+
+  \item Entrar en la carpeta del \textit{dashboard}:
+
+\begin{verbatim}
+cd Dashboard
+\end{verbatim}
+
+  \item Ejecutar la aplicación:
+
+\begin{verbatim}
+streamlit run pruebas_dashboard.py
+\end{verbatim}
+
+  \item Abrir la dirección indicada por Streamlit en el navegador. Habitualmente será:
+
+\begin{verbatim}
+http://localhost:8501
+\end{verbatim}
+
+\end{enumerate}
+
+Para que la aplicación funcione correctamente, deben permanecer en la carpeta \ruta{Dashboard/} los siguientes archivos:
+
+\begin{itemize}
+  \item \ruta{pruebas\_dashboard.py};
+  \item \ruta{modelo\_Medio\_6\_24\_XGB\_calibrado.pkl};
+  \item \ruta{modelo\_Largo\_12\_48\_XGB.pkl};
+  \item \ruta{referencia\_percentiles\_medio.npy};
+  \item \ruta{referencia\_percentiles\_largo.npy}.
+\end{itemize}
+
+Si alguno de estos ficheros falta, cambia de nombre o se desplaza a otra ubicación, el \textit{dashboard} puede fallar al cargar el modelo o al calcular el percentil de riesgo.
+
+\subsection*{Reproducción del flujo experimental}
+
+La reproducción completa del flujo experimental requiere disponer de acceso autorizado a las bases de datos originales MIMIC-IV y eICU-CRD
+
+A nivel general, la reproducción sigue esta secuencia:
+
+\begin{enumerate}
+  \item Ejecutar las consultas SQL de extracción de cohortes sobre MIMIC-IV y eICU-CRD.
+  \item Generar los CSV definitivos por ventana temporal.
+  \item Aplicar el preprocesamiento y la selección de variables.
+  \item Ejecutar los scripts finales de entrenamiento y validación interna en \ruta{Pipeline/FINAL/}.
+  \item Evaluar calibración y generar figuras de validación.
+  \item Calcular explicaciones SHAP.
+  \item Aplicar los modelos entrenados sobre eICU-CRD en \ruta{Validacion\_externa/eICU/}.
+  \item Serializar los modelos finales y referencias de percentiles para su uso en \ruta{Dashboard/}.
+\end{enumerate}
+
+La carpeta \ruta{Pipeline/FINAL/} contiene los scripts y salidas finales del modelado. Las carpetas de \ruta{Pipeline/Experimentos/} permiten reconstruir las decisiones metodológicas previas, pero no sustituyen a \ruta{Pipeline/FINAL/} como salida consolidada.
+
+\subsection*{Compilación de la documentación}
+
+La memoria y los anexos se encuentran en la carpeta \ruta{Memoria/}. La compilación se realiza mediante Quarto, utilizando los ficheros \ruta{.qmd} y las imágenes almacenadas en \ruta{Memoria/img/}. Desde la carpeta correspondiente puede ejecutarse:
+
+\begin{verbatim}
+quarto render anexos.qmd
+\end{verbatim}
+
+o, para la memoria principal:
+
+\begin{verbatim}
+quarto render memoria.qmd
+\end{verbatim}
+
+La compilación requiere tener instalado Quarto, una distribución LaTeX compatible y las dependencias de R/Python utilizadas por los bloques ejecutables, en caso de que el documento los incluya.
+
+\section{Pruebas del sistema}
+
+Al tratarse de un trabajo de investigación de carácter experimental, no se desarrolló una batería completa de pruebas unitarias, pruebas de integración o integración 
+continua propia de un software de producción. La validación del sistema se abordó desde dos perspectivas: validación metodológica de los modelos y comprobación funcional 
+básica del prototipo de \textit{dashboard}.
+
+Desde el punto de vista metodológico, se aplicaron las siguientes estrategias:
 
 \begin{itemize}
   \item \textbf{Validación interna} mediante validación cruzada anidada (5$\times$3) con agrupamiento por paciente, para evitar fugas de información entre particiones.
   \item \textbf{Validación externa} sobre la cohorte independiente y multicéntrica eICU-CRD.
-  \item \textbf{Análisis por subgrupos} según presencia de sepsis, para evaluar la estabilidad del rendimiento.
-  \item \textbf{Evaluación de la calibración} (ECE, BSS) y \textbf{auditoría de coherencia} de las explicaciones SHAP.
-  \item \textbf{Evaluación de usabilidad} del \textit{dashboard} mediante una encuesta de satisfacción a ocho facultativos del servicio de Medicina Intensiva del HUBU.
+  \item \textbf{Análisis por subgrupos} según presencia de sepsis, para evaluar la estabilidad del rendimiento en MIMIC-IV.
+  \item \textbf{Comparación frente a SOFA} como referencia clínica de gravedad.
+  \item \textbf{Evaluación de calibración} mediante ECE, Brier Score y Brier Skill Score.
+  \item \textbf{Auditoría de interpretabilidad} mediante valores SHAP, comprobando la coherencia clínica de las variables con mayor contribución.
+  \item \textbf{Evaluación exploratoria de usabilidad} del \textit{dashboard} mediante una encuesta a ocho facultativos del servicio de Medicina Intensiva del HUBU.
 \end{itemize}
 
-Los resultados de todas estas validaciones se recogen en los capítulos de Resultados y Discusión de la memoria.
+Además, para el prototipo de \textit{dashboard} se realizaron comprobaciones funcionales básicas:
+
+\begin{itemize}
+  \item apertura correcta de la aplicación en Streamlit;
+  \item carga de los modelos serializados en formato \ruta{.pkl};
+  \item carga de los ficheros de referencia de percentiles en formato \ruta{.npy};
+  \item selección de las ventanas media y larga;
+  \item ejecución del modo demostración;
+  \item carga de CSV con el formato esperado;
+  \item cálculo de las variables agregadas requeridas por cada modelo;
+  \item visualización del percentil de riesgo;
+  \item generación de la explicación individual mediante SHAP;
+  \item visualización del manual integrado;
+  \item aparición de avisos cuando faltan columnas o se produce un error durante el procesamiento.
+\end{itemize}
+
+Estas comprobaciones no sustituyen a una validación clínica prospectiva ni a una certificación del software como producto sanitario. Su objetivo fue verificar la coherencia
+técnica del prototipo dentro del alcance académico del TFG.
+
+Los resultados cuantitativos de la validación interna, la validación externa, la calibración, la comparación frente a SOFA y la encuesta de usabilidad se recogen en los 
+capítulos de Resultados y Discusión de la memoria.
 
 \section{Instrucciones para la modificación o mejora del proyecto}
 
-REVISARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-
 Para facilitar futuras ampliaciones, se ofrecen las siguientes recomendaciones:
 
+\subsection*{Validación externa pendiente con datos del HUBU}
+
+Una ampliación prioritaria del proyecto sería realizar una validación externa local con datos del Hospital Universitario de Burgos. A diferencia del reentrenamiento, esta
+ validación debería aplicar los modelos ya entrenados sobre MIMIC-IV a una cohorte independiente del HUBU, sin reajustar los parámetros del modelo, con el objetivo de
+  evaluar su transportabilidad al entorno clínico local.
+
+Para llevar a cabo esta validación sería necesario:
+
 \begin{itemize}
-  \item \textbf{Reentrenar los modelos} con una cohorte nueva (por ejemplo, la del HUBU) requiere reproducir el flujo de extracción y preprocesamiento
-        adaptando las consultas SQL al esquema de la nueva fuente, y volver a ejecutar los ficheros de entrenamiento y calibración. Los modelos
-        resultantes se serializan con \texttt{joblib} y se sustituyen en la carpeta \ruta{Dashboard/} junto con sus ficheros de percentiles.
-  \item \textbf{Añadir una nueva ventana temporal} implica replicar la lógica de etiquetado y agregación para el nuevo horizonte y registrar el modelo correspondiente en el \textit{dashboard}.
-  \item \textbf{Evolución hacia modelos temporales} (LSTM, Transformers) o análisis de supervivencia, así como la integración del \textit{dashboard} en los sistemas de información hospitalaria, se
-        describen como líneas de trabajo futuro en la memoria.
-  \item \textbf{Mejoras de mantenibilidad} recomendadas: añadir un fichero \ruta{requirements.txt} con las versiones de las dependencias,
-        consolidar el flujo definitivo en una carpeta única y separar los cuadernos de experimentación históricos en un directorio dedicado.
+  \item obtener la autorización ética y administrativa correspondiente para el uso secundario de los datos clínicos locales;
+  \item definir una cohorte de pacientes de UCI equivalente a la empleada en MIMIC-IV;
+  \item adaptar las consultas de extracción al sistema de información hospitalario disponible;
+  \item reconstruir las mismas ventanas temporales de observación y predicción;
+  \item calcular la variable objetivo de inicio de noradrenalina con la misma definición temporal;
+  \item armonizar las unidades, nombres de variables y criterios de completitud con los empleados en el entrenamiento;
+  \item aplicar los modelos entrenados sin reentrenamiento sobre la cohorte HUBU;
+  \item comparar el rendimiento frente a SOFA y frente a los resultados obtenidos en MIMIC-IV y eICU-CRD;
+  \item evaluar discriminación, calibración, rendimiento probabilístico e interpretabilidad mediante SHAP;
+  \item analizar posibles desplazamientos de distribución entre MIMIC-IV, eICU-CRD y HUBU.
 \end{itemize}
 
+Esta validación local permitiría comprobar si el comportamiento observado en bases de datos internacionales se mantiene en el contexto asistencial del hospital. En caso de 
+observarse una pérdida relevante de rendimiento o problemas de calibración, podría plantearse posteriormente una recalibración local o un reentrenamiento parcial, siempre 
+manteniendo una separación clara entre validación externa y ajuste del modelo.
+
+\subsection*{Reentrenamiento con una nueva cohorte}
+
+Reentrenar los modelos con una cohorte nueva requiere reproducir el flujo completo de extracción, preprocesamiento, selección de variables, entrenamiento, calibración e 
+interpretación. Esta opción sería posterior a una validación externa local y solo estaría justificada si el rendimiento de los modelos originales no resultase adecuado en 
+la nueva cohorte.
+
+\begin{itemize}
+  \item adaptar las consultas SQL al esquema de la nueva fuente de datos;
+  \item reconstruir las ventanas temporales de observación y predicción;
+  \item recalcular la variable objetivo de inicio de noradrenalina;
+  \item aplicar los mismos criterios de exclusión y control de fugas temporales;
+  \item repetir la selección de variables;
+  \item reentrenar los modelos;
+  \item recalibrar las probabilidades si fuera necesario;
+  \item generar nuevos ficheros de referencia de percentiles;
+  \item serializar los modelos finales con \texttt{joblib};
+  \item actualizar el \textit{dashboard} para que cargue los nuevos modelos.
+\end{itemize}
+
+Los nuevos modelos podrían sustituir a los actuales en la carpeta \ruta{Dashboard/}, siempre que se mantuviera la compatibilidad entre las variables esperadas por el 
+modelo y las variables calculadas por la aplicación.
+
+\subsection*{Añadir una nueva ventana temporal}
+
+Añadir una nueva ventana temporal implica replicar la lógica de etiquetado y agregación para el nuevo horizonte. No basta con entrenar un nuevo modelo: también habría que actualizar el \textit{dashboard} para que reconozca la nueva ventana y cargue los ficheros correspondientes.
+
+Los cambios mínimos serían:
+
+\begin{itemize}
+  \item definir la nueva ventana de observación y el nuevo horizonte de predicción;
+  \item generar la cohorte correspondiente;
+  \item entrenar y validar el modelo específico de esa ventana;
+  \item guardar el modelo serializado en formato \ruta{.pkl};
+  \item guardar la referencia de percentiles en formato \ruta{.npy};
+  \item añadir un nuevo botón o selector de ventana en el \textit{dashboard};
+  \item registrar las variables esperadas por el nuevo modelo;
+  \item implementar la lógica de agregación asociada a la nueva ventana;
+  \item actualizar el manual de usuario y las capturas de interfaz.
+\end{itemize}
+
+\subsection*{Modificar las variables de entrada}
+
+Si se incorporan nuevas variables clínicas, deben actualizarse de forma coordinada las consultas de extracción, el preprocesamiento, el entrenamiento y el 
+\textit{dashboard}. La modificación aislada de una sola parte del flujo puede provocar incompatibilidades entre los datos cargados y las variables esperadas por el 
+modelo.
+
+En particular, habría que revisar:
+
+\begin{itemize}
+  \item nombres de columnas;
+  \item unidades de medida;
+  \item rangos fisiológicos esperados;
+  \item tratamiento de valores ausentes;
+  \item estadísticos agregados calculados por ventana;
+  \item etiquetas clínicas mostradas en la interfaz;
+  \item referencias de percentiles;
+  \item explicación SHAP asociada a las nuevas variables.
+\end{itemize}
+
+\subsection*{Mejoras recomendadas del \textit{dashboard}}
+
+Como mejoras de mantenibilidad y robustez del prototipo se recomienda:
+
+\begin{itemize}
+  \item añadir una función explícita de validación del CSV de entrada, comprobando columnas obligatorias, tipos numéricos, escala de FiO2 y rangos fisiológicamente plausibles;
+  \item separar la lógica de carga de modelos, procesamiento del CSV, cálculo de percentiles y visualización SHAP en módulos independientes;
+  \item sustituir rutas absolutas por rutas relativas basadas en la ubicación del script;
+  \item fijar versiones exactas de dependencias en un fichero de entorno reproducible;
+  \item añadir pruebas funcionales simples para comprobar que el modo demostración, la carga de CSV y la generación de SHAP no fallan tras modificar el código;
+  \item documentar en un fichero específico el formato esperado del CSV de entrada.
+\end{itemize}
+
+\subsection*{Evolución metodológica futura}
+
+Como líneas de evolución del proyecto podrían explorarse modelos temporales, como LSTM o Transformers, o enfoques de análisis de supervivencia. Estas alternativas 
+requerirían rediseñar parcialmente la representación de los datos, ya que el flujo actual se basa en estadísticos agregados por ventana temporal.
+
+También podría plantearse la integración del \textit{dashboard} en sistemas de información hospitalaria. Esta evolución requeriría validación clínica prospectiva, 
+autorización ética, revisión de seguridad, control de accesos, auditoría de datos y adaptación a la infraestructura tecnológica del centro sanitario.
 ```
