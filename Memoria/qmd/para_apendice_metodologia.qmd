@@ -1,0 +1,35 @@
+
+
+#### Ponderación de clases
+
+En regresión logística y LightGBM se utilizó `class_weight='balanced'`; en Random Forest se empleó `class_weight='balanced_subsample'`; y en XGBoost se ajustó el parámetro `scale_pos_weight` a partir de la relación entre clases en el conjunto de entrenamiento. En Naive Bayes y CatBoost no se aplicó un parámetro específico de balanceo en el flujo principal.
+
+#### Espacios de búsqueda de hiperparámetros
+
+Los espacios de búsqueda incluyeron hiperparámetros propios de cada familia de modelos: intensidad de regularización en regresión logística; número de árboles, profundidad, tamaño mínimo de hoja y selección de variables en Random Forest; número de estimadores, profundidad, tasa de aprendizaje, regularización y muestreo en los modelos de \textit{gradient boosting}; y `var_smoothing` en Naive Bayes.
+
+#### Definiciones de las métricas de evaluación
+
+El Brier score cuantifica el error cuadrático medio entre las probabilidades predichas y la etiqueta observada. El Brier Skill Score (BSS) compara dicho error frente a un modelo nulo que asigna una probabilidad constante igual a la prevalencia del evento:
+
+$$
+\text{BSS} = 1 - \frac{\text{Brier}_\text{modelo}}{\text{Brier}_\text{nulo}}
+$$
+
+Un BSS positivo indica que el modelo mejora la predicción probabilística respecto a esta referencia trivial. La \textit{LogLoss} penaliza especialmente los errores cometidos con alta confianza. La calibración se evaluó mediante el Expected Calibration Error (ECE), agrupando las predicciones en diez intervalos de probabilidad y comparando, en cada intervalo, la probabilidad media predicha con la frecuencia observada del evento.
+
+#### Métodos de recalibración
+
+Se compararon tres métodos: escalado de Platt sin regularización, escalado de Platt regularizado y regresión isotónica, ajustando el calibrador únicamente con predicciones del conjunto de entrenamiento de cada partición y aplicándolo después al de prueba. La selección del calibrador final se realizó priorizando la reducción del ECE, siempre que el modelo mantuviera un BSS positivo y no se observara una compresión excesiva de las probabilidades hacia la prevalencia basal. Cuando ningún método de calibración mejoraba de forma consistente este equilibrio, se conservó el modelo sin recalibrar.
+
+#### Cálculo de valores SHAP por familia de modelo
+
+El método de cálculo de SHAP se adaptó a la familia de cada modelo. En los modelos basados en árboles se empleó `TreeExplainer`; en la regresión logística, `LinearExplainer`; y en Naive Bayes, `KernelExplainer`.
+
+#### Identificación de noradrenalina en eICU-CRD
+
+En eICU-CRD, el evento se identificó a partir de la tabla `infusionDrug`, buscando registros cuyo nombre de fármaco contuviera `norepinephrine` o `levophed` (nombre comercial). Se excluyeron los registros que contenían `volume`, para evitar falsos positivos asociados a soluciones de reposición o anotaciones no correspondientes a perfusión vasopresora activa.
+
+#### Organización modular del código
+
+El código se organizó en módulos funcionales: extracción SQL, preprocesamiento, análisis exploratorio, ventanas temporales, selección de variables, entrenamiento, calibración, interpretabilidad, validación externa y dashboard.

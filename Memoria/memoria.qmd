@@ -111,15 +111,14 @@ dirección del/los que suscribe/n.
 
 \renewcommand*\abstractname{Resumen}
 \begin{abstract}
-Este Trabajo de Fin de Grado desarrolló y validó modelos de aprendizaje automático para la estimación temprana de la necesidad de soporte vasopresor
-con noradrenalina en pacientes adultos ingresados en UCI, empleando variables clínicas y analíticas de las primeras horas de estancia. Los modelos se
-entrenaron sobre MIMIC-IV en tres ventanas temporales y se validaron externamente sobre eICU-CRD. Se compararon seis algoritmos con validación
-cruzada anidada, evaluando discriminación, calibración e interpretabilidad mediante valores SHAP. La discriminación interna osciló entre AUC-ROC 0,62
-y 0,70 según la ventana, y la externa entre 0,63 y 0,67. El rendimiento frente al SOFA fue variable según el horizonte temporal, con una mejora
-estadísticamente significativa en la ventana larga ($\Delta$AUC-ROC $+0{,}068$; $p<0{,}001$). Los modelos se integraron en un prototipo de
-\textit{dashboard} interpretable en Streamlit, evaluado mediante una encuesta exploratoria cumplimentada por ocho facultativos del Hospital Universitario de Burgos.
- Los resultados muestran un rendimiento moderado en esta tarea clínicamente difícil, pero respaldan la viabilidad metodológica del enfoque y su posible utilidad futura 
- como herramienta de apoyo a la decisión clínica.
+En este Trabajo de Fin de Grado se desarrollaron y validaron modelos de aprendizaje automático para la estimación temprana de la necesidad de soporte vasopresor con noradrenalina en pacientes 
+adultos ingresados en UCI, empleando variables clínicas y analíticas de las primeras horas de estancia. Los modelos se entrenaron sobre MIMIC-IV (\textit{Medical Information Mart for Intensive Care}, versión IV)
+en tres ventanas temporales y se validaron externamente sobre eICU-CRD (\textit{eICU Collaborative Research Database}). Se compararon seis algoritmos con validación cruzada anidada, evaluando 
+discriminación, calibración e interpretabilidad mediante valores SHAP. La discriminación interna osciló entre AUC-ROC 0,62 y 0,70 según la ventana, y la externa entre 0,63 y 0,67. 
+El rendimiento frente al SOFA (\textit{Sequential Organ Failure Assessment}) fue variable según el horizonte temporal, con una mejora estadísticamente significativa en la ventana larga 
+($\Delta$AUC-ROC $+0{,}068$; $p<0{,}001$). Los modelos se integraron en un prototipo de \textit{dashboard} interpretable en Streamlit, evaluado mediante una encuesta exploratoria 
+cumplimentada por ocho facultativos del Hospital Universitario de Burgos. Los resultados muestran un rendimiento moderado en esta tarea clínicamente difícil, pero respaldan la viabilidad 
+metodológica del enfoque y su posible utilidad futura como herramienta de apoyo a la decisión clínica.
 \end{abstract}
 
 \renewcommand*\abstractname{Descriptores}
@@ -131,22 +130,13 @@ Aprendizaje automático, Predicción, Dashboard, Sepsis, UCI, Noradrenalina, Vas
 
 \renewcommand*\abstractname{Abstract}
 \begin{abstract}
-This Bachelor's Thesis developed and validated machine learning models for the
-early estimation of the need for vasopressor support with noradrenaline in
-adult patients admitted to the ICU, using clinical and laboratory variables
-recorded during the first hours of admission. The models were trained on
-MIMIC-IV across three time windows and externally validated on eICU-CRD. Six
-algorithms were compared using nested cross-validation, evaluating
-discrimination, calibration and interpretability through SHAP values. Internal
-discrimination ranged from AUC-ROC 0.62 to 0.70 depending on the time window,
-and external discrimination from 0.63 to 0.67. Performance relative to SOFA
-varied by time horizon, with a statistically significant improvement in the
-long window ($\Delta$AUC-ROC $+0.068$; $p<0.001$). The models were integrated
-into an interpretable \textit{dashboard} prototype developed in Streamlit,
-evaluated through an exploratory survey completed by eight physicians at Burgos University Hospital.
-The results show moderate performance on a clinically complex task, but support
-the methodological feasibility of the approach and its potential future utility
-as a clinical decision support tool.
+In this Bachelor's Thesis, machine learning models were developed and validated for the early estimation of the need for vasopressor support with norepinephrine in adult patients admitted to the
+ICU, using clinical and laboratory variables from the first hours of stay. The models were trained on MIMIC-IV (Medical Information Mart for Intensive Care, version IV) across three time windows
+and externally validated on eICU-CRD (eICU Collaborative Research Database). Six algorithms were compared using nested cross-validation, assessing discrimination, calibration, and interpretability
+through SHAP values. Internal discrimination ranged from an AUC-ROC of 0.62 to 0.70 depending on the window, and external discrimination from 0.63 to 0.67. Performance relative to SOFA 
+(Sequential Organ Failure Assessment) varied with the time horizon, with a statistically significant improvement in the long window ($\Delta$AUC-ROC $+0.068$; $p<0.001$). The models were 
+integrated into an interpretable dashboard prototype in Streamlit, evaluated through an exploratory survey completed by eight physicians at Hospital Universitario de Burgos. The results show 
+moderate performance on this clinically challenging task but support the methodological feasibility of the approach and its potential future usefulness as a clinical decision-support tool.
 \end{abstract}
 
 \renewcommand*\abstractname{Keywords}

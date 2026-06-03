@@ -3,15 +3,15 @@
 \capitulo{6}{Discusión}
 ```
 
-Los valores de AUC-ROC y AUC-PR obtenidos deben interpretarse en el contexto de una tarea clínicamente compleja y ruidosa. El trabajo más próximo a este TFG, el de Duval et al., que predice 
-el inicio de vasopresores en pacientes sépticos sobre MIMIC-IV, alcanzó un AUC-ROC de 0,75 con un Random Forest, si bien en validación interna y sobre una cohorte restringida a sepsis [@duval2025].
+Los valores de AUC-ROC y AUC-PR obtenidos deben interpretarse en el contexto de una tarea clínicamente compleja y ruidosa. El trabajo más próximo a este TFG, el de @duval2025, que predice 
+el inicio de vasopresores en pacientes sépticos sobre MIMIC-IV, alcanzó un AUC-ROC de 0,75 con un Random Forest, si bien en validación interna y sobre una cohorte restringida a sepsis.
  Los modelos desarrollados y seleccionados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de AUC-ROC de 0,62 a 0,70 según la ventana temporal 
  evaluada (Tabla 5.3), operando sobre una cohorte general de UCI sin restricción diagnóstica.
 
 Sin embargo, a diferencia de aquel estudio, los modelos desarrollados en este trabajo fueron sometidos a una validación externa estricta en una cohorte multicéntrica independiente
  (eICU-CRD), donde el rendimiento discriminativo demostró robustez al mantenerse en un rango de 0,63 a 0,67 (Tabla 5.5). Otros estudios han abordado problemas afines con datos temporales 
- de alta resolución o arquitecturas más complejas, como el modelo Transformer-LSTM de Jiang et al. para la estimación continua de dosis [@jiang2025] o el enfoque de Scheibner et al. para 
- predecir la respuesta a la vasopresina [@scheibner2022]. Estas comparaciones, no obstante, deben hacerse con cautela: las cohortes, las etiquetas, los horizontes de predicción y los objetivos 
+ de alta resolución o arquitecturas más complejas, como el modelo Transformer-LSTM de @jiang2025 para la estimación continua de dosis o el enfoque de @scheibner2022 para 
+ predecir la respuesta a la vasopresina. Estas comparaciones, no obstante, deben hacerse con cautela: las cohortes, las etiquetas, los horizontes de predicción y los objetivos 
  clínicos difieren sustancialmente entre estudios, de modo que un AUC más alto no implica un mejor abordaje clínico del mismo problema.
 
 En el análisis del subgrupo de sepsis (detallado en la Tabla 5.4), se observó que el rendimiento discriminativo fue sistemáticamente superior en el subgrupo de pacientes sépticos que en los no 
@@ -74,16 +74,15 @@ destaca el sesgo introducido por el criterio de completitud de los datos. Al ent
  la tarea de discriminación puede verse favorecida; los casos positivos tienden a agrupar a pacientes con un deterioro fisiológico evidente y altamente monitorizados, mientras que los 
  negativos representan a individuos con menor disfunción orgánica pero con un nivel de monitorización equivalente. Como consecuencia de este diseño, cabe esperar que en un escenario de 
  aplicación real sobre la población general de la UCI el rendimiento discriminativo sufra una degradación respecto al obtenido en este estudio retrospectivo, dada la mayor presencia de casos 
- límite en la práctica asistencial [@rockenschaub2025]. La caída de rendimiento observada entre la validación interna y la externa es coherente con esta premisa: la revisión de Rockenschaub 
- et al. documentó que los algoritmos predictivos aplicados en UCI pierden de media entre un 7 % y un 23 % de AUC-ROC al validarse en centros externos [@rockenschaub2025], de modo que la 
+ límite en la práctica asistencial [@rockenschaub2025]. La caída de rendimiento observada entre la validación interna y la externa es coherente con esta premisa: la revisión de @rockenschaub2025 documentó que los algoritmos predictivos aplicados en UCI pierden de media entre un 7 % y un 23 % de AUC-ROC al validarse en centros externos, de modo que la 
  moderada degradación registrada aquí entra dentro de los márgenes normales y no sugiere un sobreajuste anómalo.
 
 En segundo lugar, conviene considerar la naturaleza de los datos y de la etiqueta objetivo. Los modelos se entrenaron con variables tabulares agregadas y no con series continuas de alta 
 frecuencia. La prevalencia del evento fue baja (10–14 %), lo que contrae matemáticamente el AUC-PR alcanzable y limitaría la utilidad del modelo como sistema de cribado estricto, un compromiso 
 operativo habitual donde el equilibrio entre sensibilidad y oportunidad de la alerta condiciona su viabilidad [@balczewski2023]. Además, la etiqueta depende de una decisión médica registrada,
 el inicio de noradrenalina, que constituye un *proxy* imperfecto del momento fisiológico real de necesidad debido a la heterogeneidad de los protocolos sanitarios. Esta limitación conecta con 
-lo descrito por Kamran et al., quienes demostraron que el rendimiento aparente disminuye marcadamente al excluir las predicciones realizadas tras los indicios de tratamiento clínico, 
-debido a la fuga de información de decisiones ya iniciadas [@kamran2024]. El diseño de ventanas estrictas adoptado aquí busca mitigar ese riesgo, aun a costa de un rendimiento aparente más
+lo descrito por @kamran2024, quienes demostraron que el rendimiento aparente disminuye marcadamente al excluir las predicciones realizadas tras los indicios de tratamiento clínico, 
+debido a la fuga de información de decisiones ya iniciadas. El diseño de ventanas estrictas adoptado aquí busca mitigar ese riesgo, aun a costa de un rendimiento aparente más
  bajo.
 
 En tercer lugar, el análisis por subgrupos y la transferencia interhospitalaria presentan limitaciones de bases de datos. El análisis diferencial por sepsis se limitó exclusivamente a MIMIC-IV, 

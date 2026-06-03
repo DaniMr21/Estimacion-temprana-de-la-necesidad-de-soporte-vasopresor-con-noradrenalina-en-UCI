@@ -12,7 +12,7 @@ La aplicación de los criterios de selección y del filtro de completitud estric
 | Media (6--24 h)  | 65.825          | 4,31\%            | 3.282                 | 10,30\%                |
 | Larga (12--48 h) | 38.051          | 5,63\%            | 4.088                 | 11,15\%                |
 
-: Efecto del filtro de completitud sobre el tamaño y la prevalencia de cada cohorte de desarrollo en MIMIC-IV. {#tbl-completitud-mimic}
+: efecto del filtro de completitud sobre el tamaño y la prevalencia de cada cohorte de desarrollo en MIMIC-IV. {#tbl-completitud-mimic}
 
 #### Reducción del espacio de variables predictoras
 
@@ -63,7 +63,7 @@ Como comprobación adicional, se revisó la dirección del efecto mediante regre
 | Larga (12--48 h) | `lactato_max` | 2,30 | 1,90 | 0,967 [0,860--1,087] | 
 | Larga (12--48 h) | `gpt_max` | 32,0 | 32,0 | 0,889 [0,791--0,999] | 
 
-: Principales variables descartadas tras la verificación de dirección del efecto mediante regresión logística multivariante ajustada. El descarte se basó en la incoherencia entre la dirección del efecto ajustado y la observada en los datos brutos o la esperada clínicamente; `gpt_max` se descartó en las tres ventanas por presentar este comportamiento de forma reiterada. {#tbl-direccion-efecto}
+: principales variables descartadas tras la verificación de dirección del efecto mediante regresión logística multivariante ajustada. El descarte se basó en la incoherencia entre la dirección del efecto ajustado y la observada en los datos brutos o la esperada clínicamente; `gpt_max` se descartó en las tres ventanas por presentar este comportamiento de forma reiterada. {#tbl-direccion-efecto}
 
 #### Rendimiento interno de los modelos en MIMIC-IV
 
@@ -147,7 +147,7 @@ cat("\\begin{table}[htbp]\n")
 cat("\\centering\n")
 cat("\\tiny\n")
 cat("\\setlength{\\tabcolsep}{1.4pt}\n")
-cat("\\caption{Rendimiento interno de los seis algoritmos base evaluados en MIMIC-IV mediante validación cruzada anidada. Las métricas se muestran como media $\\pm$ desviación estándar entre folds externos.}\n")
+cat("\\caption{rendimiento interno de los seis algoritmos base evaluados en MIMIC-IV mediante validación cruzada anidada. Las métricas se muestran como media $\\pm$ desviación estándar entre folds externos.}\n")
 cat("\\label{tab:validacion-interna-completa}\n")
 cat("\\resizebox{0.99\\textwidth}{!}{%\n")
 
@@ -250,7 +250,7 @@ La @tbl-subgrupos-sepsis resume el rendimiento discriminativo, probabilístico y
 | Larga (12--48 h) | No sépticos | 2745 | 0,630 | 0,150 | 0,017 | 0,011 |
 | Larga (12--48 h) | SOFA global | 4088 | 0,588 | 0,149 | --- | --- |
 
-: Rendimiento de los modelos principales en MIMIC-IV según presencia o ausencia de sepsis. Ventana corta: CatBoost; ventana media: XGBoost recalibrado; ventana larga: XGBoost. Las métricas 
+: rendimiento de los modelos principales en MIMIC-IV según presencia o ausencia de sepsis. Ventana corta: CatBoost; ventana media: XGBoost recalibrado; ventana larga: XGBoost. Las métricas 
 se calcularon mediante predicciones *out-of-fold*. {#tbl-subgrupos-sepsis}
 
 El rendimiento fue ligeramente superior en pacientes sépticos en las tres ventanas, con el valor más alto en la ventana media (AUC-ROC 0,694; AUC-PR 0,287). En pacientes no sépticos, la 
@@ -314,7 +314,7 @@ cat("\\begin{table}[htbp]\n")
 cat("\\centering\n")
 cat("\\small\n")
 cat("\\setlength{\\tabcolsep}{4pt}\n")
-cat("\\caption{Validación externa sobre eICU-CRD: discriminación de cada modelo frente a SOFA como predictor aislado.}\n")
+cat("\\caption{validación externa sobre eICU-CRD: discriminación de cada modelo frente a SOFA como predictor aislado.}\n")
 cat("\\label{tab:validacion-externa-discr}\n")
 cat("\\resizebox{\\textwidth}{!}{%\n")
 
@@ -348,7 +348,7 @@ cat("\\begin{table}[htbp]\n")
 cat("\\centering\n")
 cat("\\small\n")
 cat("\\setlength{\\tabcolsep}{5pt}\n")
-cat("\\caption{Validación externa sobre eICU-CRD: métricas probabilísticas y de calibración de cada modelo.}\n")
+cat("\\caption{validación externa sobre eICU-CRD: métricas probabilísticas y de calibración de cada modelo.}\n")
 cat("\\label{tab:validacion-externa-prob}\n")
 cat("\\resizebox{0.90\\textwidth}{!}{%\n")
 
@@ -423,7 +423,7 @@ Intensiva del HUBU. Las puntuaciones se registraron en una escala de 1 a 10, don
 | 6 | 7 | 8 | 7 |
 | 7 | 8 | 7 | 6 |
 | 8 | 8 | 10 | 10 |
-: Resultados individuales de la encuesta de satisfacción sobre el prototipo de dashboard. {#tbl-encuesta-usabilidad}
+: resultados individuales de la encuesta de satisfacción sobre el prototipo de dashboard. {#tbl-encuesta-usabilidad}
 
 Las valoraciones medias fueron de 8,88 en entendimiento, 8,50 en explicabilidad y 8,00 en utilidad clínica.
 

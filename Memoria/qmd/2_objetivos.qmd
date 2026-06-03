@@ -12,15 +12,15 @@ visualizar la probabilidad estimada y los factores clínicos con mayor contribuc
 
 \begin{enumerate}
   \item Desarrollar modelos predictivos de aprendizaje automático entrenados sobre la base de datos MIMIC-IV que estimen la probabilidad de requerir
-  soporte vasopresor con noradrenalina en UCI en distintas ventanas temporales tras el ingreso.
+  soporte vasopresor con noradrenalina en distintas ventanas temporales tras el ingreso en UCI.
 
-  \item Evaluar y comparar el rendimiento de distintos algoritmos, incluyendo regresión logística, XGBoost, entre otros, mediante métricas de discriminación y 
+  \item Evaluar y comparar el rendimiento de distintos algoritmos de aprendizaje automático, como la regresión logística o XGBoost, mediante métricas de discriminación y 
   calibración.
 
-  \item Desarrollar un prototipo de \textit{dashboard} clínico interpretable que muestre, para cada paciente, la probabilidad estimada de requerir noradrenalina, 
-  los factores con mayor peso en la predicción y una contextualización del riesgo estimado mediante percentiles respecto a la cohorte de referencia.
+  \item Desarrollar un prototipo de \textit{dashboard} clínico interpretable orientado a la consulta individual. Para cada paciente mostrará la probabilidad estimada de requerir noradrenalina, 
+  los factores que más pesan en esa predicción y una contextualización del riesgo mediante percentiles respecto a la cohorte de referencia.
 
-  \item Realizar una validación externa de los modelos predictivos con datos de eICU-CRD, una cohorte externa e independiente de la empleada para el entrenamiento.
+  \item Realizar una validación externa de los modelos sobre la base de datos eICU-CRD, una cohorte independiente de la empleada para el entrenamiento.
 
   \item Medir la usabilidad del \textit{dashboard} mediante una encuesta de satisfacción dirigida al personal clínico de la UCI del Hospital Universitario de Burgos.
 \end{enumerate}
@@ -28,7 +28,7 @@ visualizar la probabilidad estimada y los factores clínicos con mayor contribuc
 \textbf{Objetivos técnicos}
 
 \begin{enumerate}
-  \item Definir a partir de MIMIC-IV la cohorte general de pacientes adultos de UCI, registrando la presencia de sepsis como variable para el análisis de rendimiento diferencial por subgrupos.
+  \item Construir a partir de MIMIC-IV la cohorte general de pacientes adultos de UCI, registrando la presencia de sepsis como variable de estratificación para el análisis de rendimiento diferencial por subgrupos.
 
   \item Extraer y preprocesar las variables predictoras relevantes disponibles en las primeras horas del ingreso en UCI, incluyendo constantes vitales, parámetros analíticos y otros 
   indicadores de disfunción orgánica y perfusión tisular.
@@ -37,7 +37,7 @@ visualizar la probabilidad estimada y los factores clínicos con mayor contribuc
 
   \item Implementar técnicas de manejo del desequilibrio de clases y evaluación de calibración, adaptadas a las características habituales de los datos clínicos reales de UCI.
 
-  \item Aplicar técnicas de interpretabilidad basadas en valores SHAP (\textit{SHapley Additive exPlanations}) para cuantificar la contribución individual de cada variable a la predicción \cite{lundberg2017}.
+  \item Aplicar técnicas de interpretabilidad basadas en valores SHAP (\textit{SHapley Additive exPlanations}) para cuantificar la contribución individual de cada variable a la predicción \citep{lundberg2017}.
 
   \item Desarrollar la interfaz del prototipo del \textit{dashboard} utilizando Python (Streamlit), incorporando visualización del riesgo estimado, explicación por variables y contextualización mediante percentiles respecto a la cohorte de referencia.
 
