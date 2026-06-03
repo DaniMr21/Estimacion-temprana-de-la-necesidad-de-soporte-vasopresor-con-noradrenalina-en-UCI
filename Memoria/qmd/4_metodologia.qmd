@@ -35,9 +35,8 @@ El SOFA se utilizó de dos formas: como variable predictora dentro de los modelo
 ampliamente empleada en UCI.
 
 Para el tratamiento de valores extremos se siguió una estrategia coherente con el preprocesamiento propuesto por Gupta et al. [@gupta2022] para MIMIC-IV. Se aplicó una winsorización que sustituyó
- los valores situados por debajo del percentil 2 y por encima del percentil 98 por los límites correspondientes. Se descartó la eliminación directa de filas debido a que, en el entorno de cuidados
-  intensivos, un valor extremo puede reflejar la gravedad real del paciente; prescindir de esas estancias habría introducido un sesgo de selección adicional sobre una cohorte ya filtrada por 
-  completitud. La winsorización se aplicó sobre los estadísticos agregados por estancia y ventana temporal —media, mínimo y máximo— antes del análisis de correlación y de la selección final de variables.
+ los valores situados por debajo del percentil 2 y por encima del percentil 98 por los límites correspondientes. La winsorización se aplicó sobre los estadísticos agregados por estancia y ventana
+ temporal —media, mínimo y máximo— antes del análisis de correlación y de la selección final de variables.
 
 Para detectar redundancias entre predictores se realizó un análisis exploratorio de la estructura de correlación de las variables iniciales. Este análisis se aplicó sobre las variables 
 agregadas por estancia y ventana temporal, utilizando únicamente la primera estancia de cada paciente para evitar que pacientes con múltiples ingresos inflaran artificialmente las asociaciones.

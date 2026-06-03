@@ -50,7 +50,7 @@ La auditoría mediante importancia por permutación permitió identificar qué p
 importancia por permutación de las variables predictoras en los seis algoritmos evaluados para cada ventana temporal. Cada panel muestra la caída media de AUC-ROC asociada a la permutación de cada variable; la significación se determinó mediante intervalos de confianza al 95\% calculados sobre los folds externos.
 :::
 
-En la ventana corta, la regresión logística no presentó ninguna variable con contribución significativa según este criterio, por lo que quedó excluida de la evaluación en esa ventana.
+En la ventana corta, la regresión logística se omitió porque no presentó ninguna variable con contribución significativa según el análisis.
 
 Como comprobación adicional, se revisó la dirección del efecto mediante regresión logística multivariante ajustada. La @tbl-direccion-efecto resume las principales variables descartadas por presentar una dirección ajustada no coherente con la interpretación clínica esperada. Los odds ratio corresponden a variables estandarizadas.
 
@@ -67,7 +67,9 @@ Como comprobación adicional, se revisó la dirección del efecto mediante regre
 
 #### Rendimiento interno de los modelos en MIMIC-IV
 
-Una vez consolidadas las cohortes y el espacio definitivo de variables, se evaluaron los seis algoritmos, en su versión base sin recalibrar, mediante el esquema de validación cruzada anidada. La Tabla~\ref{tab:validacion-interna-completa} resume los resultados analíticos de la evaluación interna en las tres ventanas temporales.
+Una vez consolidadas las cohortes y el espacio definitivo de variables, se evaluaron los seis algoritmos por ventana en su versión base sin recalibrar, exceptuando regresión logística de la ventana corta, mediante el esquema de validación cruzada anidada.
+La Tabla~\ref{tab:validacion-interna-completa} resume los resultados analíticos de la evaluación interna en las tres ventanas temporales.
+
 ```{r tabla-interna-completa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 metricas <- read.csv(
   "../Pipeline/FINAL/TABLAS/resultados_metricas_multiventana.csv",
@@ -171,7 +173,9 @@ Bayes mostraron un comportamiento menos competitivo, mientras que la regresión 
 
 Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-contraste-calidad ilustra dos comportamientos opuestos: Random Forest en la ventana corta obtuvo un rendimiento 
 cercano al azar (AUC-ROC = 0,579), con peor estabilidad en la curva precisión-recall y una calibración alejada de la diagonal; en contraste, XGBoost en la ventana media mostró una discriminación
-superior, aunque con desviación inicial en la calibración que motivó el ajuste posterior. Conviene precisar que los valores de AUC-ROC mostrados en las curvas \textit{out-of-fold} de esta y las siguientes figuras corresponden al área calculada sobre las predicciones \textit{out-of-fold} agrupadas de todas las particiones, por lo que pueden diferir ligeramente del AUC-ROC medio entre folds externos recogido en la Tabla~\ref{tab:validacion-interna-completa}.
+superior, aunque con desviación inicial en la calibración que motivó el ajuste posterior. Conviene precisar que los valores de AUC-ROC mostrados en las curvas \textit{out-of-fold} de esta y las 
+siguientes figuras corresponden al área calculada sobre las predicciones \textit{out-of-fold} agrupadas de todas las particiones, por lo que pueden diferir ligeramente del AUC-ROC medio entre 
+folds externos recogido en la Tabla~\ref{tab:validacion-interna-completa}.
 
 ::: {#fig-contraste-calidad layout-ncol=1}
 
@@ -233,7 +237,8 @@ fisiológica, peor situación respiratoria, mayor compromiso hemodinámico o may
 
 #### Análisis por subgrupos según sepsis
 
-La @tbl-subgrupos-sepsis resume el rendimiento discriminativo, probabilístico y de calibración en la cohorte global, en pacientes sépticos y en pacientes no sépticos. Además, se incluye la puntuación SOFA global como referencia basal de comparación.
+La @tbl-subgrupos-sepsis resume el rendimiento discriminativo, probabilístico y de calibración en la cohorte global, en pacientes sépticos y en pacientes no sépticos. Además, se incluye la 
+puntuación SOFA global como referencia basal de comparación.
 
 | Ventana | Subgrupo/modelo | N | AUC-ROC | AUC-PR | BSS | ECE |
 |---------|-----------------|---:|--------:|-------:|----:|----:|
