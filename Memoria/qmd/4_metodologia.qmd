@@ -34,6 +34,11 @@ MIT-LCP [@mimiccode]. Estas tablas implementan los criterios Sepsis-3 a partir d
 El SOFA se utilizó de dos formas: como variable predictora dentro de los modelos y como referencia clínica aislada para comparar el rendimiento de los modelos frente a una escala de gravedad 
 ampliamente empleada en UCI.
 
+Para el tratamiento de valores extremos se siguió una estrategia coherente con el preprocesamiento propuesto por Gupta et al. [@gupta2022] para MIMIC-IV. Se aplicó una winsorización que sustituyó
+ los valores situados por debajo del percentil 2 y por encima del percentil 98 por los límites correspondientes. Se descartó la eliminación directa de filas debido a que, en el entorno de cuidados
+  intensivos, un valor extremo puede reflejar la gravedad real del paciente; prescindir de esas estancias habría introducido un sesgo de selección adicional sobre una cohorte ya filtrada por 
+  completitud. La winsorización se aplicó sobre los estadísticos agregados por estancia y ventana temporal —media, mínimo y máximo— antes del análisis de correlación y de la selección final de variables.
+
 Para detectar redundancias entre predictores se realizó un análisis exploratorio de la estructura de correlación de las variables iniciales. Este análisis se aplicó sobre las variables 
 agregadas por estancia y ventana temporal, utilizando únicamente la primera estancia de cada paciente para evitar que pacientes con múltiples ingresos inflaran artificialmente las asociaciones.
 La redundancia se evaluó mediante una matriz de correlaciones de Spearman y un agrupamiento jerárquico basado en la distancia $1 - |\rho|$. El dendrograma permitió visualizar grupos de variables
@@ -64,7 +69,8 @@ La decisión final de conservar o descartar variables no se basó en un único c
  Esta selección permitió comparar modelos simples e interpretables con métodos no lineales de mayor capacidad predictiva. Se priorizaron implementaciones maduras, ampliamente utilizadas en
   problemas tabulares y compatibles con herramientas de interpretación como SHAP [@lundberg2017].
 
-Dado el desbalance entre las clases, se aplicaron estrategias de ponderación específicas de cada algoritmo cuando este lo permitía; la configuración concreta de balanceo por modelo se detalla en el Apéndice de detalle metodológico.
+Dado el desbalance entre las clases, se aplicaron estrategias de ponderación específicas de cada algoritmo cuando este lo permitía; la configuración concreta de balanceo por modelo se detalla 
+en el Apéndice de detalle metodológico.
 
 El escalado de variables se aplicó únicamente a los modelos sensibles a la escala de los predictores, concretamente regresión logística y Naive Bayes, mediante `RobustScaler`. Este escalado se 
 integró dentro del `pipeline` de entrenamiento, de forma que los parámetros de transformación se ajustaron exclusivamente sobre el conjunto de entrenamiento de cada partición. Los modelos basados
@@ -76,7 +82,9 @@ particiones, se utilizó para la búsqueda de hiperparámetros mediante `GridSea
 
 Los espacios de búsqueda incluyeron los hiperparámetros propios de cada familia de modelos, detallados en el Apéndice de detalle metodológico.
 
-La evaluación de los modelos combinó métricas de discriminación (AUC-ROC y AUC-PR), rendimiento probabilístico (Brier score, Brier Skill Score [BSS] y \textit{LogLoss}) y calibración mediante el Expected Calibration Error (ECE). Esta última fue especialmente relevante porque el prototipo de \textit{dashboard} muestra probabilidades de riesgo interpretables, no únicamente una ordenación relativa de pacientes. Las definiciones de cada métrica, incluida la formulación del BSS, se recogen en el Apéndice de detalle metodológico.
+La evaluación de los modelos combinó métricas de discriminación (AUC-ROC y AUC-PR), rendimiento probabilístico (Brier score, Brier Skill Score [BSS] y \textit{LogLoss}) y calibración mediante 
+el Expected Calibration Error (ECE). Esta última fue especialmente relevante porque el prototipo de \textit{dashboard} muestra probabilidades de riesgo interpretables, no únicamente una 
+ordenación relativa de pacientes. Las definiciones de cada métrica, incluida la formulación del BSS, se recogen en el Apéndice de detalle metodológico.
 
 Todas las métricas de validación interna se calcularon sobre las particiones externas de la validación cruzada anidada, agregando los resultados de los cinco folds externos de cada ventana temporal.
 
@@ -89,23 +97,31 @@ Para obtener una evaluación gráfica homogénea del comportamiento de los model
   se construyeron, para cada combinación de ventana temporal y algoritmo, curvas ROC, curvas precisión-recall (con la prevalencia del evento como referencia basal) y curvas de calibración 
   agrupadas en diez intervalos mediante estrategia \textit{quantile}.
 
-Dado que una buena discriminación no garantiza una adecuada calibración probabilística, las curvas OOF se revisaron junto con el ECE y el BSS. Cuando un modelo mostraba desajuste entre las probabilidades predichas y las frecuencias observadas, se evaluaron estrategias de recalibración, seleccionando el método que minimizaba el ECE siempre que se mantuviera un BSS positivo y no se comprimieran en exceso las probabilidades hacia la prevalencia basal; cuando ningún método mejoraba este equilibrio, se conservó el modelo sin recalibrar. Los métodos de recalibración comparados se detallan en el Apéndice de detalle metodológico, mientras que los modelos concretos evaluados y el resultado final de este proceso se presentan en el capítulo de resultados.
+Dado que una buena discriminación no garantiza una adecuada calibración probabilística, las curvas OOF se revisaron junto con el ECE y el BSS. Cuando un modelo mostraba desajuste entre las 
+probabilidades predichas y las frecuencias observadas, se evaluaron estrategias de recalibración, seleccionando el método que minimizaba el ECE siempre que se mantuviera un BSS positivo y no 
+se comprimieran en exceso las probabilidades hacia la prevalencia basal; cuando ningún método mejoraba este equilibrio, se conservó el modelo sin recalibrar. Los métodos de recalibración 
+comparados se detallan en el Apéndice de detalle metodológico, mientras que los modelos concretos evaluados y el resultado final de este proceso se presentan en el capítulo de resultados.
 
-La interpretabilidad post-hoc se abordó mediante valores SHAP, tanto para analizar predicciones individuales como para resumir la importancia global de los predictores y la dirección de su asociación con el riesgo estimado. El método de cálculo se adaptó a la familia de cada modelo, según se detalla en el Apéndice de detalle metodológico. Las explicaciones globales se representaron mediante diagramas \textit{beeswarm}, que muestran simultáneamente la magnitud de la contribución de cada variable y el sentido de su efecto sobre la predicción. SHAP no se empleó como criterio de selección de variables, sino como auditoría posterior de los modelos finales, para facilitar la revisión clínica de los patrones aprendidos y detectar dependencias espurias o artefactos de registro.
+La interpretabilidad post-hoc se abordó mediante valores SHAP, tanto para analizar predicciones individuales como para resumir la importancia global de los predictores y la dirección de su 
+asociación con el riesgo estimado. El método de cálculo se adaptó a la familia de cada modelo, según se detalla en el Apéndice de detalle metodológico. Las explicaciones globales se representaron
+ mediante diagramas \textit{beeswarm}, que muestran simultáneamente la magnitud de la contribución de cada variable y el sentido de su efecto sobre la predicción. SHAP no se empleó como 
+ criterio de selección de variables, sino como auditoría posterior de los modelos, para facilitar la revisión clínica de los patrones aprendidos y detectar dependencias espurias o 
+ artefactos de registro.
 
-Como referencia clínica, los modelos se compararon frente al SOFA utilizado como predictor aislado. Dado que SOFA es una escala ordinal de gravedad y no una probabilidad calibrada, la 
-comparación se limitó a métricas de discriminación basadas en ranking (AUC-ROC y AUC-PR), sobre las mismas estancias y etiquetas empleadas en la evaluación interna, para contextualizar la 
-ganancia predictiva del aprendizaje automático frente a una escala ampliamente utilizada en UCI.
+La preselección de modelos se realizó de forma independiente para cada ventana temporal, mediante una revisión jerarquizada en lugar de una única métrica. En primer lugar se descartaron los modelos
+con discriminación insuficiente en los folds externos, atendiendo a AUC-ROC y AUC-PR. A continuación se valoró el rendimiento probabilístico, priorizando un BSS positivo y un menor error. 
+La calibración fue un criterio decisivo: los modelos con buena discriminación pero mal calibrados solo se conservaron cuando la recalibración mejoraba el ajuste sin degradar el rendimiento 
+global. Por último, las curvas \textit{out-of-fold} y los diagramas SHAP permitieron descartar comportamientos inestables y favorecer modelos con variables y direcciones de efecto 
+fisiopatológicamente coherentes. Cuando dos modelos ofrecían un equilibrio comparable entre rendimiento, calibración e interpretabilidad, se conservaron ambos para la validación externa en lugar de forzar una elección artificial.
 
-La selección de modelos se realizó de forma independiente para cada ventana temporal, mediante una revisión jerarquizada en lugar de una única métrica. En primer lugar se descartaron los modelos
- con discriminación insuficiente en los folds externos, atendiendo a AUC-ROC y AUC-PR. A continuación se valoró el rendimiento probabilístico, priorizando un BSS positivo y un menor error. 
- La calibración fue un criterio decisivo: los modelos con buena discriminación pero mal calibrados solo se conservaron cuando la recalibración mejoraba el ajuste sin degradar el rendimiento 
- global. Por último, las curvas \textit{out-of-fold}  y los diagramas SHAP permitieron descartar comportamientos inestables y favorecer modelos con variables y direcciones de efecto 
- fisiopatológicamente coherentes. Cuando dos modelos ofrecían un equilibrio comparable entre rendimiento, calibración e interpretabilidad, se conservaron ambos en lugar de forzar una elección artificial.
+Tras definir los modelos preseleccionados en cada ventana temporal, se realizaron dos análisis complementarios en la cohorte de desarrollo. Como referencia clínica, los modelos se compararon 
+frente al SOFA utilizado como predictor aislado. Dado que SOFA es una escala ordinal de gravedad y no una probabilidad calibrada, sus valores se normalizaron al intervalo [0, 1] antes del cálculo
+de las métricas, manteniendo inalterada la ordenación de riesgo. Por este motivo, la comparación se limitó a métricas de discriminación basadas en ranking (AUC-ROC y AUC-PR), sobre las mismas 
+estancias y etiquetas empleadas en la evaluación interna.
 
-Tras definir los modelos seleccionados en cada ventana temporal, se evaluó su rendimiento por subgrupos según la presencia de sepsis en la cohorte de desarrollo. Para ello se emplearon las 
-probabilidades \textit{out-of-fold}, calibradas cuando correspondía, y se estratificaron las estancias en tres grupos: cohorte global, pacientes con sepsis según Sepsis-3 y pacientes sin sepsis.
- En cada subgrupo se calcularon las mismas métricas utilizadas en la evaluación principal: AUC-ROC, AUC-PR, BSS y ECE.
+Adicionalmente, se evaluó el rendimiento por subgrupos según la presencia de sepsis. Para ello se emplearon las probabilidades \textit{out-of-fold}, calibradas cuando correspondía, y se 
+estratificaron las estancias en tres grupos: cohorte global, pacientes con sepsis según Sepsis-3 y pacientes sin sepsis. En cada subgrupo se calcularon las mismas métricas utilizadas en la 
+evaluación principal: AUC-ROC, AUC-PR, BSS y ECE.
 
 #### Validación externa multicéntrica
 
@@ -130,16 +146,15 @@ Tras la extracción y armonización, se aplicó el mismo criterio de completitud
 el conjunto de variables requerido por cada modelo. Los modelos entrenados sobre MIMIC-IV se aplicaron directamente sobre eICU-CRD, sin reajuste de hiperparámetros ni reentrenamiento, y su 
 rendimiento se evaluó con las mismas métricas de discriminación, calibración y rendimiento probabilístico ya descritas: AUC-ROC, AUC-PR, Brier score, BSS y ECE.
 
-Para cada modelo, estas métricas se compararon frente al SOFA empleado como predictor aislado. Dado que el SOFA es una escala ordinal, sus valores se normalizaron al intervalo [0, 1] antes de
-calcular la discriminación, de modo que la comparación se basara únicamente en la capacidad de ordenación del riesgo. Los intervalos de confianza al 95\% de todas las métricas se estimaron 
-mediante \textit{bootstrap} con 1000 remuestreos y semilla fija para garantizar la reproducibilidad. La significación de la diferencia de AUC-ROC entre cada modelo y el SOFA se evaluó mediante
-una prueba de DeLong aproximada por \textit{bootstrap}, sobre el mismo conjunto de remuestreos. Por último, se replicó el análisis de interpretabilidad mediante valores SHAP sobre la cohorte
-externa, con el fin de comprobar si los patrones de atribución se mantenían coherentes.
+Para cada modelo preseleccionado, se realizó la comparación frente al SOFA en términos de discriminación, siguiendo el mismo criterio que en la validación interna. Los intervalos de confianza al
+95\% de todas las métricas se estimaron mediante \textit{bootstrap} con 1000 remuestreos y semilla fija para garantizar la reproducibilidad. La significación de la diferencia de AUC-ROC entre 
+cada modelo y el SOFA se evaluó mediante una prueba pareada sobre el mismo conjunto de remuestreos. Por último, se replicó el análisis de interpretabilidad mediante valores SHAP sobre la 
+cohorte externa, con el fin de comprobar si los patrones de atribución se mantenían coherentes.
 
 #### Dashboard interpretable y encuesta de usabilidad
 
 Como fase final del trabajo se desarrolló un prototipo de \textit{dashboard} clínico en Python mediante Streamlit. El objetivo del prototipo fue demostrar la viabilidad de integrar los modelos 
-seleccionados en una interfaz sencilla, interpretable y orientada a la consulta individual, sin sustituir la valoración médica ni emitir recomendaciones terapéuticas.
+seleccionados tras la validación externa en una interfaz sencilla, interpretable y orientada a la consulta individual, sin sustituir la valoración médica ni emitir recomendaciones terapéuticas.
 
 La aplicación permite seleccionar la ventana temporal de predicción, cargar un archivo CSV con las mediciones clínicas del paciente y obtener una estimación individualizada de la probabilidad 
 de inicio de soporte vasopresor con noradrenalina en el horizonte correspondiente. El CSV se diseñó con una fila por medición, de forma que el usuario introduce datos clínicos ordinarios y no 
