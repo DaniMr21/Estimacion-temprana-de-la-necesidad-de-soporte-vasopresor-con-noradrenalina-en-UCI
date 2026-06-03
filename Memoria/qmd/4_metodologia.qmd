@@ -34,7 +34,7 @@ MIT-LCP [@mimiccode]. Estas tablas implementan los criterios Sepsis-3 a partir d
 El SOFA se utilizó de dos formas: como variable predictora dentro de los modelos y como referencia clínica aislada para comparar el rendimiento de los modelos frente a una escala de gravedad 
 ampliamente empleada en UCI.
 
-Para el tratamiento de valores extremos se siguió una estrategia coherente con el preprocesamiento propuesto por Gupta et al. [@gupta2022] para MIMIC-IV. Se aplicó una winsorización que sustituyó
+Para el tratamiento de valores extremos se siguió una estrategia coherente con el preprocesamiento propuesto por Gupta et al. [@gupta2022mimic] para MIMIC-IV. Se aplicó una winsorización que sustituyó
  los valores situados por debajo del percentil 2 y por encima del percentil 98 por los límites correspondientes. La winsorización se aplicó sobre los estadísticos agregados por estancia y ventana
  temporal —media, mínimo y máximo— antes del análisis de correlación y de la selección final de variables.
 
@@ -68,9 +68,6 @@ La decisión final de conservar o descartar variables no se basó en un único c
  Esta selección permitió comparar modelos simples e interpretables con métodos no lineales de mayor capacidad predictiva. Se priorizaron implementaciones maduras, ampliamente utilizadas en
   problemas tabulares y compatibles con herramientas de interpretación como SHAP [@lundberg2017].
 
-Dado el desbalance entre las clases, se aplicaron estrategias de ponderación específicas de cada algoritmo cuando este lo permitía; la configuración concreta de balanceo por modelo se detalla 
-en el Apéndice de detalle metodológico.
-
 El escalado de variables se aplicó únicamente a los modelos sensibles a la escala de los predictores, concretamente regresión logística y Naive Bayes, mediante `RobustScaler`. Este escalado se 
 integró dentro del `pipeline` de entrenamiento, de forma que los parámetros de transformación se ajustaron exclusivamente sobre el conjunto de entrenamiento de cada partición. Los modelos basados
 en árboles no requirieron escalado, al ser invariantes a transformaciones monótonas de las variables.
@@ -79,11 +76,9 @@ El rendimiento de los modelos se estimó mediante validación cruzada anidada 5�
 la proporción de clases y agrupando todas las estancias de un mismo paciente en el mismo fold para evitar fuga de información entre entrenamiento y prueba. El bucle interno, compuesto por tres 
 particiones, se utilizó para la búsqueda de hiperparámetros mediante `GridSearchCV`, optimizando AUC-ROC.
 
-Los espacios de búsqueda incluyeron los hiperparámetros propios de cada familia de modelos, detallados en el Apéndice de detalle metodológico.
-
 La evaluación de los modelos combinó métricas de discriminación (AUC-ROC y AUC-PR), rendimiento probabilístico (Brier score, Brier Skill Score [BSS] y \textit{LogLoss}) y calibración mediante 
 el Expected Calibration Error (ECE). Esta última fue especialmente relevante porque el prototipo de \textit{dashboard} muestra probabilidades de riesgo interpretables, no únicamente una 
-ordenación relativa de pacientes. Las definiciones de cada métrica, incluida la formulación del BSS, se recogen en el Apéndice de detalle metodológico.
+ordenación relativa de pacientes.
 
 Todas las métricas de validación interna se calcularon sobre las particiones externas de la validación cruzada anidada, agregando los resultados de los cinco folds externos de cada ventana temporal.
 
@@ -99,10 +94,10 @@ Para obtener una evaluación gráfica homogénea del comportamiento de los model
 Dado que una buena discriminación no garantiza una adecuada calibración probabilística, las curvas OOF se revisaron junto con el ECE y el BSS. Cuando un modelo mostraba desajuste entre las 
 probabilidades predichas y las frecuencias observadas, se evaluaron estrategias de recalibración, seleccionando el método que minimizaba el ECE siempre que se mantuviera un BSS positivo y no 
 se comprimieran en exceso las probabilidades hacia la prevalencia basal; cuando ningún método mejoraba este equilibrio, se conservó el modelo sin recalibrar. Los métodos de recalibración 
-comparados se detallan en el Apéndice de detalle metodológico, mientras que los modelos concretos evaluados y el resultado final de este proceso se presentan en el capítulo de resultados.
+comparados se detallan en el *Apéndice G*, mientras que los modelos concretos evaluados y el resultado final de este proceso se presentan en el capítulo de resultados.
 
 La interpretabilidad post-hoc se abordó mediante valores SHAP, tanto para analizar predicciones individuales como para resumir la importancia global de los predictores y la dirección de su 
-asociación con el riesgo estimado. El método de cálculo se adaptó a la familia de cada modelo, según se detalla en el Apéndice de detalle metodológico. Las explicaciones globales se representaron
+asociación con el riesgo estimado. El método de cálculo se adaptó a la familia de cada modelo. Las explicaciones globales se representaron
  mediante diagramas \textit{beeswarm}, que muestran simultáneamente la magnitud de la contribución de cada variable y el sentido de su efecto sobre la predicción. SHAP no se empleó como 
  criterio de selección de variables, sino como auditoría posterior de los modelos, para facilitar la revisión clínica de los patrones aprendidos y detectar dependencias espurias o 
  artefactos de registro.
@@ -133,7 +128,8 @@ tablas de eICU-CRD.
 La cohorte de validación externa se construyó mediante consultas SQL sobre eICU-CRD, utilizando la estancia en UCI como unidad de análisis. Se aplicaron las mismas ventanas temporales que en
 la cohorte de desarrollo: corta, media y larga. También se mantuvieron los mismos requisitos de duración mínima de estancia.
 
-El evento objetivo se definió de forma análoga a MIMIC-IV como el primer inicio de perfusión de noradrenalina durante la estancia en UCI, identificado en eICU-CRD sobre la tabla `infusionDrug` mediante criterios de búsqueda y exclusión por nombre de fármaco que se detallan en el Apéndice de detalle metodológico. Para cada estancia se calculó el tiempo desde el ingreso en UCI hasta el primer registro compatible con noradrenalina.
+El evento objetivo se definió de forma análoga a MIMIC-IV como el primer inicio de perfusión de noradrenalina durante la estancia en UCI, identificado en eICU-CRD sobre la tabla `infusionDrug` 
+mediante criterios de búsqueda y exclusión por nombre de fármaco. Para cada estancia se calculó el tiempo desde el ingreso en UCI hasta el primer registro compatible con noradrenalina.
 
 La asignación de etiquetas y la exclusión de estancias con noradrenalina previa al fin de la observación siguieron exactamente el mismo criterio definido para la cohorte de desarrollo.
 
@@ -171,11 +167,11 @@ estimado. Por ello, incorpora un aviso explícito indicando que no dispone de va
 Para valorar la usabilidad inicial del prototipo se diseñó una encuesta exploratoria, anónima y de tratamiento confidencial, dirigida a facultativos del servicio de Medicina Intensiva del HUBU 
 que hubieran utilizado previamente el prototipo junto con el manual proporcionado. Fue completada por ocho intensivistas y constó de tres ítems puntuados de 1 («Completamente en desacuerdo») a 
 10 («Completamente de acuerdo»): comprensión del funcionamiento y la interfaz, comprensión conceptual de los valores SHAP y utilidad clínica potencial percibida. Los resultados se presentan en 
-la @tbl-encuesta-usabilidad y el cuestionario completo puede consultarse en el Apéndice G.
+la @tbl-encuesta-usabilidad.
 
 #### Desarrollo software y reproducibilidad
 
 El desarrollo siguió una metodología experimental e iterativa, refinándose progresivamente en función de los resultados de cada fase. 
 No se aplicó un marco formal como Scrum al ser un proyecto de un único autor guiado por objetivos metodológicos; en su lugar se siguió un ciclo incremental por versiones, con el código 
-organizado en módulos funcionales (detallados en el Apéndice de detalle metodológico), manteniendo la trazabilidad entre resultados y scripts. El control de versiones se realizó con Git y GitHub; el repositorio incluye el código para reproducir 
+organizado en módulos funcionales, manteniendo la trazabilidad entre resultados y scripts. El control de versiones se realizó con Git y GitHub; el repositorio incluye el código para reproducir 
 el flujo respetando las restricciones de uso de MIMIC-IV y eICU-CRD.
