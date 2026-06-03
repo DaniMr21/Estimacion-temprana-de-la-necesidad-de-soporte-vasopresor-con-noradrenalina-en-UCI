@@ -204,14 +204,14 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard.png}
-  \caption{Vista principal tras cargar los datos de un caso en la ventana larga (12--48\,h). A la izquierda se muestra el percentil de riesgo acompañado de su explicación textual y de los datos del caso; a la derecha, los factores individuales según los valores SHAP, donde las barras rojas empujan el riesgo al alza y las verdes lo reducen \cite{lundberg2017}.}
+  \caption{Vista principal tras cargar los datos de un caso ficticio en la ventana larga (12--48\,h). A la izquierda se muestra el percentil de riesgo acompañado de su explicación textual y de los datos del caso; a la derecha, los factores individuales según los valores SHAP, donde las barras rojas empujan el riesgo al alza y las verdes lo reducen.}
   \label{fig:dash-principal}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard_demo.png}
-  \caption{Modo demostración. Permite explorar el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV propio. Se muestra un caso de paciente con deterioro hemodinámico, junto con la tabla de datos del caso y el percentil resultante.}
+  \caption{Modo demostración. Permite explorar el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV propio. Se muestra un caso de paciente con deterioro hemodinámico.}
   \label{fig:dash-demo}
 \end{figure}
 

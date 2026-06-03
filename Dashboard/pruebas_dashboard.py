@@ -276,7 +276,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown(
-    '<div class="titulo-principal">DASHBOARD DE ESTIMACIÓN TEMPRANA'
+    '<div class="titulo-principal">DASHBOARD DE ESTIMACIÓN TEMPRANA '
     'DE LA NECESIDAD DE INICIO DE NORADRENALINA EN UCI</div>',
     unsafe_allow_html=True
 )
