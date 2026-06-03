@@ -1,47 +1,45 @@
 ```{=latex}
 %% ══════════════════════════════════════════════════════
-%%  APÉNDICE H – Sostenibilidad curricular
+%%  APÉNDICE H – Sostenibilización curricular
 %% ══════════════════════════════════════════════════════
 \apendice{Anexo de sostenibilización curricular}
 
-\section{Definición de Sostenibilidad en el Contexto del TFG}
+\section{Reflexión personal sobre sostenibilidad}
 
-Siguiendo las directrices de la CRUE, la sostenibilidad no es solo cuidar el medio ambiente; es un compromiso ético que busca la calidad ambiental, la justicia social y una economía equitativa y viable a largo plazo. Hablar de sostenibilidad implica promover la salud de la población, garantizar el acceso igualitario a las tecnologías de la información y gestionar de forma justa los recursos disponibles. 
+La sostenibilidad curricular no puede entenderse únicamente como una cuestión ambiental o de reducción de consumo energético. Siguiendo las directrices de sostenibilidad de la CRUE, 
+también implica reflexionar sobre el impacto social, económico, ético y profesional de las decisiones técnicas tomadas durante el desarrollo de un proyecto. En el caso de este TFG, 
+esta reflexión resulta especialmente relevante porque el trabajo se sitúa en la intersección entre ingeniería, datos clínicos y cuidados intensivos, un contexto en el que cualquier herramienta 
+tecnológica debe diseñarse con prudencia y responsabilidad.
 
-Este Trabajo de Fin de Grado aplica estos conceptos directamente al entorno de los cuidados intensivos. No se trata de un desarrollo de software aislado, sino de una herramienta de ingeniería de la salud diseñada para ayudar a gestionar recursos sanitarios críticos y mejorar la atención de las personas en un momento de máxima vulnerabilidad.
+Durante el desarrollo del proyecto he comprendido que un modelo predictivo en salud no puede valorarse solo por sus métricas de rendimiento. Aunque el objetivo técnico era estimar de forma 
+temprana el riesgo de inicio de noradrenalina en pacientes de UCI, el objetivo de fondo era explorar si una herramienta de aprendizaje automático podía aportar información útil, interpretable y
+ clínicamente revisable. Esta distinción es importante: el sistema no pretende sustituir al médico ni automatizar una decisión terapéutica, sino mostrar una estimación de riesgo acompañada de 
+ explicaciones mediante SHAP para facilitar una lectura crítica del resultado. Desde el punto de vista de la sostenibilidad social, esta decisión contribuye a evitar una visión de la inteligencia
+  artificial como una caja negra y refuerza el papel del profesional sanitario como responsable final de la interpretación clínica.
 
-\section{Principios Genéricos de Sostenibilidad Aplicados}
+El proyecto también me ha permitido desarrollar una competencia clara de contextualización crítica. Trabajar con MIMIC-IV y eICU-CRD ha mostrado que los datos clínicos no son neutros: 
+proceden de hospitales concretos, con formas de registro, poblaciones y protocolos propios. Por ello, se incluyó una validación externa sobre eICU-CRD y se evitó presentar el modelo como una 
+herramienta universal. Esta limitación no es un defecto menor, sino una parte esencial del aprendizaje: cualquier aplicación futura en un hospital concreto, como el Hospital Universitario de
+ Burgos, requeriría validación local, autorización ética y evaluación prospectiva antes de plantear un uso asistencial real.
 
-El proyecto se alinea de forma directa con los principios básicos de la CRUE mediante las siguientes acciones:
+Desde el punto de vista económico, el trabajo se relaciona con la gestión eficiente de recursos sanitarios críticos. La noradrenalina se utiliza en pacientes con inestabilidad hemodinámica, y
+ anticipar el deterioro podría ayudar, en un futuro validado, a planificar mejor la vigilancia, la disponibilidad de personal, las camas de UCI y los recursos terapéuticos. Sin embargo, he 
+ intentado no plantear esta posible utilidad como un ahorro demostrado, sino como una línea potencial que todavía necesitaría validación. Esta cautela forma parte de la sostenibilidad
+  profesional: no sobreprometer resultados es tan importante como desarrollar modelos técnicamente correctos.
 
-\begin{itemize}
-    \item \textbf{Principio Ético y Holístico:} Sitúa la protección de la vida como objetivo principal al intentar anticipar el deterioro de pacientes en la UCI. Además, mediante el uso de valores SHAP, se rechaza el modelo de ``caja negra'', garantizando que el médico entienda la predicción y se respete la seguridad del paciente de forma justa e integral.
-    \item \textbf{Principio de Complejidad y Glocalización:} El shock hemodinámico es un problema médico complejo que requiere combinar la ingeniería de datos con la medicina de precisión. Para resolverlo, se han usado bases de datos globales (MIMIC-IV y eICU-CRD) pero adaptando el resultado a la realidad local y las necesidades del Hospital Universitario de Burgos (HUBU).
-    \item \textbf{Principio de Transversalidad y Responsabilidad Social:} La sostenibilidad se ha integrado en el diseño del software (buscando la eficiencia del código informático) y devuelve un valor real a la sociedad mediante la colaboración directa entre la Universidad de Burgos y el servicio de salud público.
-\end{itemize}
+En cuanto al impacto ambiental, el proyecto no se basó en redes neuronales profundas ni en entrenamientos masivos, sino en modelos tabulares relativamente eficientes, como XGBoost, CatBoost,
+ Random Forest, regresión logística, Naive Bayes y LightGBM. Aun así, la validación cruzada anidada, la búsqueda de hiperparámetros y el análisis SHAP implicaron un coste computacional no
+  despreciable. Esta experiencia me ha hecho más consciente de que la reproducibilidad y el rigor metodológico deben equilibrarse con un uso razonable de recursos. En este sentido, organizar los
+ experimentos, conservar los resultados intermedios y evitar ejecuciones innecesarias también forma parte de una práctica sostenible de la ingeniería.
 
-\section{Desarrollo de Competencias Transversales (SOS)}
+Otra competencia transversal desarrollada ha sido la participación en procesos comunitarios. Aunque el sistema no se validó clínicamente, sí se presentó como prototipo a facultativos de 
+Medicina Intensiva del HUBU mediante una encuesta exploratoria. Sus respuestas permitieron valorar la comprensión de la interfaz, la utilidad potencial percibida y la claridad de las 
+explicaciones. Esta interacción me ayudó a entender que el diseño de herramientas sanitarias no puede hacerse únicamente desde el código o desde las métricas: necesita incorporar la perspectiva 
+de quienes conocen el entorno real de uso.
 
-Para cumplir con la formación universitaria en desarrollo humano sostenible, este trabajo desarrolla de forma práctica las cuatro competencias transversales exigidas por la normativa:
-
-\subsection{SOS1.- Contextualización crítica del conocimiento}
-Esta competencia se cumple al interrelacionar los datos clínicos con la problemática social y económica de los hospitales. El coste humano y económico de un fallo multiorgánico en la UCI es enorme y afecta a la sostenibilidad del sistema sanitario. El modelo desarrollado no se limita a calcular probabilidades matemáticas; analiza de forma crítica variables heterogéneas para entender el riesgo de forma global y local, ayudando a tomar mejores decisiones asistenciales basadas en la evidencia.
-
-\subsection{SOS2.- Utilización sostenible de recursos y prevención de impactos}
-El proyecto aborda este punto en dos niveles diferenciados:
-\begin{enumerate}
-    \item \textbf{Recursos sanitarios:} Anticipar la necesidad de noradrenalina permite una mejor planificación de camas, personal y material en la UCI. Esto ayuda a reducir estancias hospitalarias innecesarias y disminuye el desperdicio de recursos fungibles de alto coste.
-    \item \textbf{Recursos computacionales:} En lugar de entrenar redes neuronales masivas con un alto consumo energético, se han seleccionado algoritmos de árboles eficientes (XGBoost y CatBoost) y se ha optimizado la búsqueda de hiperparámetros mediante validación cruzada anidada para minimizar el tiempo de cómputo y la huella de carbono digital del proyecto.
-\end{enumerate}
-
-\subsection{SOS3.- Participación en procesos comunitarios}
-La competencia se materializa en la colaboración con la comunidad local, concretamente con el personal médico del HUBU. El dashboard desarrollado se sometió a una encuesta de satisfacción con ocho facultativos del servicio de Medicina Intensiva. Sus opiniones permitieron validar la utilidad real del sistema a pie de cama y abrieron debates sobre cómo reenfocar la herramienta hacia áreas de urgencias o planta médica para mejorar la monitorización comunitaria.
-
-\subsection{SOS4.- Aplicación de principios éticos en el comportamiento profesional}
-Como futuro ingeniero de la salud, el desarrollo de este TFG se ha guiado por la responsabilidad profesional y el respeto a los derechos humanos:
-\begin{itemize}
-    \item Se ha garantizado el cumplimiento de las restricciones de Physionet acerca del uso de las BBDD eICU y MIMIC-IV, sin redistribuirse ni publicarse en ningún momento ni las tablas originales ni las postprocesadas.
-    \item El código se ha publicado de forma abierta y transparente en GitHub para fomentar la reproducibilidad científica y el acceso libre al conocimiento.
-    \item El diseño del dashboard deja claro que la inteligencia artificial es solo una herramienta de apoyo; la decisión final siempre es del médico, respetando el principio humanista de la práctica médica.
-\end{itemize}
+Finalmente, este TFG ha reforzado mi responsabilidad ética como futuro ingeniero de la salud. Se han respetado las restricciones de uso de MIMIC-IV y eICU-CRD, sin redistribuir datos clínicos 
+originales, y se ha mantenido el código en un repositorio público para favorecer la trazabilidad y la revisión. También se ha insistido de forma explícita en que el dashboard es un prototipo 
+académico, no una herramienta clínica validada. Para mí, esta es una de las principales lecciones de sostenibilidad del proyecto: desarrollar tecnología sanitaria útil no consiste solo en 
+conseguir buenos resultados, sino en reconocer sus límites, documentarlos con honestidad y diseñar siempre pensando en la seguridad del paciente, la transparencia y el uso responsable de los
+ recursos.
 ```

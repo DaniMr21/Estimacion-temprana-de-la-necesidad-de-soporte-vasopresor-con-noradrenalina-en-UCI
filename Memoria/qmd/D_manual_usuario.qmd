@@ -4,83 +4,250 @@
 %% ══════════════════════════════════════════════════════
 \apendice{Documentación de usuario}
 
-\section{Requisitos software y hardware para ejecutar el proyecto}
+\section{Requisitos previos}
 
-Conviene distinguir entre el entorno de \textit{entrenamiento} y el de \textit{uso del dashboard}. Esta documentación se refiere a este último: la
-ejecución de la aplicación de visualización, que únicamente carga los modelos ya entrenados y procesa un fichero reducido de datos de un paciente. Por
-tanto, no requiere descargar las bases de datos MIMIC-IV ni eICU-CRD.
+Este manual está dirigido al uso del prototipo de \textit{dashboard} por parte de personal clínico o técnico del hospital. La aplicación permite introducir datos clínicos de un paciente o caso 
+de ejemplo y visualizar una estimación relativa del riesgo de inicio de noradrenalina, junto con una explicación individual mediante valores SHAP \cite{lundberg2017}.
 
-\textbf{Requisitos de hardware (mínimos):}
+El usuario final previsto es un facultativo o profesional sanitario que consulta la interfaz ya en ejecución. La instalación inicial, en cambio, debería ser realizada por personal 
+técnico o por una persona con conocimientos básicos de Python, ya que requiere preparar un entorno local y ejecutar una aplicación Streamlit.
+
+La ejecución del \textit{dashboard} no requiere descargar ni acceder directamente a las bases de datos MIMIC-IV o eICU-CRD. Los modelos ya han sido entrenados previamente y se distribuyen como 
+ficheros serializados en formato \texttt{.pkl}. Por tanto, el uso descrito en este manual corresponde exclusivamente a la fase de inferencia y visualización, no al reentrenamiento completo 
+del sistema.
+
+\subsection*{Requisitos de hardware}
+
+Para ejecutar el prototipo se recomienda disponer de:
+
 \begin{itemize}
-  \item Cualquier ordenador personal moderno con 4\,GB de RAM o más.
-  \item Aproximadamente 500\,MB de espacio libre para el entorno de Python y
-        las dependencias (los modelos ocupan menos de 1\,MB).
-  \item No se requiere tarjeta gráfica dedicada: la inferencia se ejecuta en CPU.
+  \item un ordenador personal o equipo hospitalario con sistema operativo Windows, Linux o macOS;
+  \item al menos 4\,GB de memoria RAM;
+  \item aproximadamente 1\,GB de espacio libre para el entorno de Python, dependencias y archivos del \textit{dashboard};
+  \item no se requiere tarjeta gráfica dedicada, ya que la inferencia se ejecuta en CPU.
 \end{itemize}
 
-\textbf{Requisitos de software:}
+\subsection*{Requisitos de software}
+
+El equipo debe disponer de:
+
 \begin{itemize}
-  \item Python 3.12 o superior.
-  \item Las siguientes bibliotecas: \texttt{streamlit}, \texttt{pandas},
-        \texttt{numpy}, \texttt{scikit-learn}, \texttt{xgboost},
-        \texttt{shap}, \texttt{matplotlib} y \texttt{joblib}.
-  \item Un navegador web actualizado (la interfaz de Streamlit se abre en el navegador).
+  \item Python 3.12 o una versión compatible;
+  \item un navegador web actualizado;
+  \item acceso local a la carpeta \texttt{Dashboard} del repositorio;
+  \item las bibliotecas necesarias para ejecutar la aplicación: \texttt{streamlit}, \texttt{pandas}, \texttt{numpy}, \texttt{scikit-learn}, \texttt{xgboost}, \texttt{shap}, \texttt{matplotlib} y \texttt{joblib}.
 \end{itemize}
 
-\section{Instalación / Puesta en marcha}
+La carpeta \texttt{Dashboard} debe contener los siguientes archivos:
 
-La puesta en marcha descrita a continuación correspondería a personal técnico; el usuario final (el facultativo) interactúa únicamente con la interfaz ya en ejecución, 
-descrita en la sección siguiente.
+\begin{itemize}
+  \item \texttt{pruebas\_dashboard.py};
+  \item \texttt{modelo\_Medio\_6\_24\_XGB\_calibrado.pkl};
+  \item \texttt{modelo\_Largo\_12\_48\_XGB.pkl};
+  \item \texttt{referencia\_percentiles\_medio.npy};
+  \item \texttt{referencia\_percentiles\_largo.npy}.
+\end{itemize}
 
-La aplicación se distribuye en la carpeta \ruta{Dashboard} del repositorio, que contiene el script \ruta{pruebas\_dashboard.py}, los dos modelos serializados (\ruta{modelo\_Medio\_6\_24\_XGB\_calibrado.pkl} y
-\ruta{modelo\_Largo\_12\_48\_XGB.pkl}) y los dos ficheros de referencia de percentiles (\ruta{referencia\_percentiles\_medio.npy} y \ruta{referencia\_percentiles\_largo.npy}). Los pasos para ponerla en marcha
-son los siguientes:
+Si alguno de estos archivos falta o se mueve a otra ubicación, la aplicación puede no cargar correctamente los modelos o las referencias utilizadas para calcular los percentiles de riesgo.
+
+\section{Instalación y puesta en marcha}
+
+La instalación debe realizarse una única vez en el equipo donde vaya a ejecutarse la aplicación. En un contexto hospitalario real, este paso correspondería al personal técnico. El facultativo no tendría que ejecutar comandos, sino acceder a la interfaz ya abierta en el navegador.
+
+\subsection*{Instalación en un equipo local}
+
+Los pasos recomendados son los siguientes:
 
 \begin{enumerate}
-  \item Clonar el repositorio del proyecto desde GitHub (o descargar la
-        carpeta \ruta{Dashboard} completa).
-  \item Instalar las dependencias:
-        \begin{verbatim}
-pip install streamlit pandas numpy scikit-learn
-xgboost shap matplotlib joblib
-        \end{verbatim}
-  \item Situarse en la carpeta \ruta{Dashboard} y lanzar la aplicación:
-        \begin{verbatim}
+  \item Descargar o clonar el repositorio del proyecto desde GitHub.
+
+\begin{verbatim}
+git clone https://github.com/DaniMr21/Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI.git
+\end{verbatim}
+
+  \item Entrar en la carpeta del repositorio.
+
+\begin{verbatim}
+cd Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI
+\end{verbatim}
+
+  \item Crear un entorno virtual de Python.
+
+\begin{verbatim}
+python -m venv .venv
+\end{verbatim}
+
+  \item Activar el entorno virtual. En Windows:
+
+\begin{verbatim}
+.venv\Scripts\activate
+\end{verbatim}
+
+  En Linux o macOS:
+
+\begin{verbatim}
+source .venv/bin/activate
+\end{verbatim}
+
+  \item Instalar las dependencias principales de la aplicación.
+
+\begin{verbatim}
+pip install streamlit pandas numpy scikit-learn xgboost shap matplotlib joblib
+\end{verbatim}
+
+  \item Entrar en la carpeta del \textit{dashboard}.
+
+\begin{verbatim}
+cd Dashboard
+\end{verbatim}
+
+  \item Ejecutar la aplicación.
+
+\begin{verbatim}
 streamlit run pruebas_dashboard.py
-        \end{verbatim}
-  \item La aplicación se abrirá automáticamente en el navegador (por defecto,
-        en \ruta{http://localhost:8501}). Es imprescindible que los ficheros
-        \ruta{.pkl} y \ruta{.npy} se encuentren en la misma carpeta que el
-        script.
+\end{verbatim}
+
+  \item Abrir en el navegador la dirección indicada por Streamlit. Habitualmente será:
+
+\begin{verbatim}
+http://localhost:8501
+\end{verbatim}
 \end{enumerate}
 
-\section{Manuales y demostraciones prácticas}
+Una vez abierta la aplicación, el usuario clínico puede utilizarla desde el navegador sin interactuar con la terminal.
 
-La interfaz incorpora un manual de uso accesible desde el propio \textit{dashboard} (botón \emph{Manual / Info}). Las capturas de las distintas
-pantallas se recogen en el Apéndice~C (Figuras~\ref{fig:dash-portada} a~\ref{fig:dash-manual}). El flujo de uso es el siguiente:
+\subsection*{Comprobación inicial}
 
-\begin{enumerate}
-  \item \textbf{Seleccionar la ventana temporal.} Mediante los botones
-        superiores se elige la ventana \emph{Media} (riesgo de inicio entre 6
-        y 24\,h) o \emph{Larga} (entre 12 y 48\,h).
-  \item \textbf{Cargar los datos del paciente.} Se carga un fichero CSV con
-        una fila por medición. Las columnas obligatorias son: \texttt{NOMBRE,
-        APELLIDO 1, APELLIDO 2, ID, SOFA, MAP, TP, FiO2, PaO2,
-        Diuresis\_mL\_kg, Frec Cardiaca, Vent. Invasiva, SpO2, Bicarbonato,
-        Temperatura, Glucemia}.
-  \item \textbf{Consultar el resultado.} La aplicación muestra el percentil de
-        riesgo (de 1 a 100) y, a su derecha, los factores de riesgo
-        individuales según los valores SHAP \cite{lundberg2017}.
-\end{enumerate}
+Antes de entregar la aplicación al usuario final, se recomienda que el personal técnico compruebe que:
 
-\textbf{Interpretación del percentil.} El valor indica la posición del paciente dentro de la distribución de probabilidades obtenida sobre la cohorte de referencia MIMIC-IV. Un percentil de 90 significa que el 90\,\% de los
-pacientes de esa cohorte obtuvieron una probabilidad estimada inferior a la de este paciente. No es una probabilidad directa de que ocurra el evento, sino una medida relativa de riesgo.
+\begin{itemize}
+  \item la pantalla principal se abre correctamente;
+  \item aparecen los botones de selección de ventana temporal;
+  \item el botón \emph{Modo Demo} funciona;
+  \item el botón \emph{Manual / Info} muestra las instrucciones integradas;
+  \item los modelos de ventana media y larga cargan sin error;
+  \item los ficheros \texttt{.pkl} y \texttt{.npy} permanecen en la carpeta \texttt{Dashboard}.
+\end{itemize}
 
-\textbf{Interpretación de los valores SHAP.} El gráfico de barras muestra la contribución de cada variable a la predicción de \emph{ese paciente concreto}:
-las barras que empujan el riesgo al alza y las que lo reducen. Es una explicación local de la predicción, no una medida de importancia global del modelo.
+\section{Manual de uso}
 
-\textbf{Modo demostración.} Accesible desde el botón \emph{Modo Demo}, permite explorar el funcionamiento de la aplicación con casos ficticios, sin necesidad
-de cargar un CSV real. Resulta útil para familiarizarse con la interfaz antes de introducir datos propios.
+Al iniciar el \textit{dashboard}, el usuario visualiza una pantalla de portada con el título del proyecto, los botones principales y un aviso de alcance del prototipo. Esta pantalla se muestra 
+en la Figura~\ref{fig:dash-portada} del Apéndice~C.
 
-\textbf{Aviso.} La aplicación es un prototipo académico sin validación clínica prospectiva ni autorización regulatoria, no apto para uso asistencial real. Este aviso se muestra de forma permanente en la parte superior de la interfaz.
+La aplicación ofrece tres acciones principales:
+
+\begin{itemize}
+  \item seleccionar una ventana temporal de predicción;
+  \item cargar un CSV con mediciones clínicas;
+  \item utilizar el modo demostración con casos ficticios.
+\end{itemize}
+
+\subsection*{Paso 1: seleccionar la ventana temporal}
+
+El usuario debe elegir una de las dos ventanas disponibles:
+
+\begin{itemize}
+  \item \textbf{Ventana media (6--24\,h):} estima el riesgo relativo de inicio de noradrenalina en el intervalo comprendido entre las 6 y las 24 horas.
+  \item \textbf{Ventana larga (12--48\,h):} estima el riesgo relativo de inicio de noradrenalina en el intervalo comprendido entre las 12 y las 48 horas.
+\end{itemize}
+
+La selección de la ventana determina qué modelo se carga internamente. El prototipo final del \textit{dashboard} no incluye la ventana corta.
+
+\subsection*{Paso 2: preparar el CSV}
+
+El fichero de entrada debe estar en formato CSV y contener una fila por medición temporal. El objetivo es que el usuario introduzca datos clínicos ordinarios, no las variables agregadas finales utilizadas por el modelo. La aplicación calcula después los mínimos, máximos, medias o sumas necesarios según la ventana seleccionada.
+
+Las columnas esperadas son:
+
+\begin{verbatim}
+NOMBRE, APELLIDO 1, APELLIDO 2, ID, SOFA, MAP, TP, FiO2, PaO2,
+Diuresis_mL_kg, Frec Cardiaca, Vent. Invasiva, SpO2, Bicarbonato,
+Temperatura, Glucemia
+\end{verbatim}
+
+El significado práctico de las columnas principales es:
+
+\begin{itemize}
+  \item \texttt{SOFA}: puntuación SOFA registrada en la medición.
+  \item \texttt{MAP}: presión arterial media.
+  \item \texttt{TP}: tiempo de protrombina.
+  \item \texttt{FiO2}: fracción inspirada de oxígeno, introducida en escala decimal.
+  \item \texttt{PaO2}: presión arterial de oxígeno.
+  \item \texttt{Diuresis\_mL\_kg}: diuresis normalizada por peso.
+  \item \texttt{Frec Cardiaca}: frecuencia cardiaca.
+  \item \texttt{Vent. Invasiva}: indicador binario de ventilación mecánica invasiva.
+  \item \texttt{SpO2}: saturación periférica de oxígeno.
+  \item \texttt{Bicarbonato}: bicarbonato sérico.
+  \item \texttt{Temperatura}: temperatura corporal.
+  \item \texttt{Glucemia}: glucemia.
+\end{itemize}
+
+Las columnas \texttt{NOMBRE}, \texttt{APELLIDO 1}, \texttt{APELLIDO 2} e \texttt{ID} se muestran únicamente como identificación visual del caso dentro de la interfaz. En un contexto real, deberían emplearse datos debidamente autorizados o identificadores seudonimizados, de acuerdo con las normas del centro.
+
+\subsection*{Paso 3: cargar el CSV}
+
+Una vez seleccionada la ventana temporal, el usuario debe pulsar el botón de carga de archivo y seleccionar el CSV correspondiente al caso evaluado.
+
+Si el archivo se carga correctamente, la aplicación calcula automáticamente las variables agregadas necesarias para el modelo. Si faltan columnas esperadas o se produce un error durante el procesamiento, la interfaz muestra un aviso. Estos controles son básicos y no constituyen una validación clínica exhaustiva de la calidad del dato.
+
+\subsection*{Paso 4: consultar el resultado}
+
+Tras procesar el CSV, la pantalla principal muestra dos bloques, como se observa en la Figura~\ref{fig:dash-principal} del Apéndice~C:
+
+\begin{itemize}
+  \item a la izquierda, el percentil de riesgo y un resumen del caso evaluado;
+  \item a la derecha, los factores individuales asociados a la predicción mediante valores SHAP \cite{lundberg2017}.
+\end{itemize}
+
+El resultado no debe interpretarse como una orden clínica ni como una recomendación terapéutica. La aplicación no indica si debe iniciarse noradrenalina, no propone dosis y no sustituye la valoración del facultativo responsable.
+
+\subsection*{Interpretación del percentil de riesgo}
+
+El percentil indica la posición del caso evaluado dentro de la distribución de probabilidades estimadas en la cohorte de referencia MIMIC-IV.
+
+Por ejemplo, un percentil de 90 significa que el 90\,\% de los pacientes de la cohorte de referencia obtuvieron una probabilidad estimada inferior a la del caso evaluado. No significa que el paciente tenga un 90\,\% de probabilidad directa de iniciar noradrenalina. Es una medida relativa de riesgo respecto a una población de referencia.
+
+\subsection*{Interpretación de los valores SHAP}
+
+El gráfico SHAP muestra cómo contribuye cada variable a la predicción individual de ese caso concreto \cite{lundberg2017}.
+
+\begin{itemize}
+  \item Las barras rojas empujan la estimación hacia mayor riesgo.
+  \item Las barras verdes reducen la estimación de riesgo.
+  \item La longitud de cada barra representa la magnitud de la contribución.
+\end{itemize}
+
+Esta explicación es local: describe el resultado del caso cargado, no la importancia global de las variables en todo el modelo.
+
+\section{Modo demostración}
+
+El botón \emph{Modo Demo} permite explorar el funcionamiento de la aplicación con casos ficticios, sin cargar un CSV propio. Esta opción está pensada para formación, demostración y comprobación inicial del sistema.
+
+El modo demostración permite seleccionar entre casos simulados y elegir la ventana temporal. A continuación, el \textit{dashboard} muestra la tabla de datos del caso, el percentil de riesgo y la explicación SHAP correspondiente. Un ejemplo de esta pantalla se recoge en la Figura~\ref{fig:dash-demo} del Apéndice~C.
+
+Este modo no utiliza datos reales y no debe interpretarse como una evaluación clínica.
+
+\section{Manual integrado}
+
+La aplicación incluye un botón \emph{Manual / Info}, accesible desde la pantalla principal. Este apartado integrado resume:
+
+\begin{itemize}
+  \item el objetivo del \textit{dashboard};
+  \item las ventanas temporales disponibles;
+  \item el formato esperado del CSV;
+  \item la interpretación del percentil de riesgo;
+  \item la interpretación de los valores SHAP;
+  \item el modo demostración;
+  \item las advertencias de uso.
+\end{itemize}
+
+La pantalla del manual integrado se muestra en la Figura~\ref{fig:dash-manual} del Apéndice~C.
+
+\section{Advertencias de uso}
+
+El \textit{dashboard} desarrollado es un prototipo académico y experimental. No está validado prospectivamente, no dispone de autorización regulatoria y no debe emplearse para tomar decisiones clínicas reales.
+
+La aplicación no recomienda iniciar noradrenalina, no propone dosis, no genera alarmas clínicas y no sustituye la valoración médica. Su finalidad es demostrar la viabilidad técnica de integrar un modelo predictivo interpretable en una interfaz de visualización.
+
+Cualquier uso futuro con datos reales de pacientes requeriría validación clínica, autorización ética y revisión por parte del centro sanitario correspondiente.
 ```

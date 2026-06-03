@@ -3,7 +3,7 @@
 #  anexos.qmd  –  Documentación Técnica (Anexos) TFG GIS UBU
 #  Universidad de Burgos · Escuela Politécnica Superior
 # ============================================================
-title: "Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable"
+title: "Estimación temprana de la necesidad de soporte vasopresor con noradrenalina en UCI mediante aprendizaje automático interpretable"
  
 format:
   pdf:
@@ -35,10 +35,10 @@ knitr:
 
 ```{=latex}
 %% ── Portada anexos ──────────────────────────────────────────
-\title{Estimación temprana del riesgo de inicio de noradrenalina en UCI mediante aprendizaje automático y dashboard interpretable}
+\title{Estimación temprana de la necesidad de soporte vasopresor con noradrenalina en UCI mediante aprendizaje automático interpretable}
 \date{\today}
 
-\maketitle
+%\maketitle
 ```
 
 ```{=latex}

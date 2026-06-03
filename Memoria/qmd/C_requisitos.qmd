@@ -7,10 +7,11 @@
 
 \section{Diagrama de casos de uso}
 
-El único subsistema interactivo del trabajo es el \textit{dashboard}; el pipeline de modelado se ejecuta de forma desatendida y no tiene usuario que
-interactúe con él, por lo que los casos de uso modelan exclusivamente la aplicación de visualización. Cabe señalar que el \textit{dashboard} es un
-\textbf{prototipo académico} (versión 0.1, en fase de prueba de concepto), sin validación clínica prospectiva ni autorización regulatoria, no apto para
-uso asistencial real. El actor único es el facultativo de Medicina Intensiva. La Figura~\ref{fig:casos-uso} resume las funcionalidades.
+El único subsistema interactivo del trabajo es el \textit{dashboard}; el \textit{pipeline} de modelado se ejecuta de forma desatendida y no requiere interacción directa por parte del usuario
+ final. Por este motivo, los casos de uso modelan exclusivamente la aplicación de visualización. El único subsistema interactivo del trabajo es el \textit{dashboard}; 
+ el \textit{pipeline} de modelado se ejecuta de forma desatendida y no requiere interacción directa por parte del usuario final. Por este motivo, los casos de uso modelan exclusivamente 
+ la aplicación de visualización. El actor único considerado es el facultativo de Medicina Intensiva como usuario evaluador del prototipo. La Figura~\ref{fig:casos-uso} resume las 
+ funcionalidades principales.
 
 \begin{figure}[H]
   \centering
@@ -25,25 +26,26 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 
 \textbf{Requisitos funcionales:}
 \begin{itemize}
-  \item \textbf{RF-1:} permitir seleccionar la ventana temporal de predicción (6--24\,h o 12--48\,h).
-  \item \textbf{RF-2:} permitir cargar un fichero CSV con las mediciones del paciente.
-  \item \textbf{RF-3:} calcular los estadísticos agregados a partir de las mediciones.
-  \item \textbf{RF-4:} mostrar el riesgo estimado como percentil respecto a la distribución de MIMIC-IV.
-  \item \textbf{RF-5:} mostrar la explicación individual de la predicción mediante valores SHAP \cite{lundberg2017}.
-  \item \textbf{RF-6:} disponer de un modo demostración con datos de ejemplo.
-  \item \textbf{RF-7:} ofrecer un manual de uso y un aviso de prototipo sin validación clínica.
+  \item \textbf{RF-1:} permitir seleccionar la ventana temporal de predicción disponible en el prototipo: media (6--24\,h) o larga (12--48\,h).
+  \item \textbf{RF-2:} permitir cargar un fichero CSV con las mediciones clínicas del caso evaluado.
+  \item \textbf{RF-3:} calcular los estadísticos agregados requeridos por el modelo a partir de las mediciones temporales del CSV.
+  \item \textbf{RF-4:} cargar el modelo correspondiente a la ventana seleccionada y calcular la estimación de riesgo.
+  \item \textbf{RF-5:} mostrar el riesgo estimado como percentil respecto a la distribución de referencia de MIMIC-IV.
+  \item \textbf{RF-6:} mostrar la explicación individual de la predicción mediante valores SHAP \cite{lundberg2017}.
+  \item \textbf{RF-7:} disponer de un modo demostración con casos ficticios.
+  \item \textbf{RF-8:} ofrecer un manual de uso y un aviso visible sobre el alcance del prototipo.
 \end{itemize}
 
 \textbf{Requisitos no funcionales:}
 \begin{itemize}
-  \item \textbf{RNF-1 (interpretabilidad):} las salidas deben ser comprensibles para personal clínico.
-  \item \textbf{RNF-2 (no prescriptivo):} la interfaz no emite recomendaciones clínicas automáticas; es una herramienta de apoyo.
-  \item \textbf{RNF-3 (usabilidad):} interfaz sencilla, manejable a pie de cama.
-  \item \textbf{RNF-4 (privacidad):} no se almacenan ni transmiten datos identificables del paciente.
-  \item \textbf{RNF-5 (portabilidad):} la aplicación debe poder ejecutarse en cualquier equipo con un entorno Python estándar y las dependencias del proyecto instaladas, sin requerir hardware especializado.
-  \item \textbf{RNF-6 (estado del producto):} la aplicación es un prototipo académico (versión 0.1) de prueba de concepto, sin validación clínica prospectiva ni autorización regulatoria; no está destinada a uso asistencial real.
+  \item \textbf{RNF-1 (interpretabilidad):} las salidas deben presentarse de forma comprensible para personal clínico, combinando percentil de riesgo y explicación local mediante SHAP.
+  \item \textbf{RNF-2 (no prescriptivo):} la interfaz no debe emitir recomendaciones terapéuticas automáticas, proponer dosis ni sustituir la valoración médica.
+  \item \textbf{RNF-3 (usabilidad):} la interfaz debe ser sencilla y permitir una navegación básica mediante botones de ventana temporal, modo demostración y manual.
+  \item \textbf{RNF-4 (privacidad y uso local):} el prototipo no persiste los datos cargados ni los envía explícitamente a servicios externos dentro del flujo implementado. En cualquier uso con datos reales, la ejecución debería realizarse en un entorno controlado y con datos adecuadamente autorizados o desidentificados.
+  \item \textbf{RNF-5 (portabilidad):} la aplicación debe poder ejecutarse en un equipo con un entorno Python compatible y las dependencias del proyecto instaladas, sin requerir hardware especializado.
+  \item \textbf{RNF-6 (estado del producto):} la aplicación es un prototipo académico de prueba de concepto, sin validación clínica prospectiva ni autorización regulatoria; no está destinada a uso asistencial real.
+  \item \textbf{RNF-7 (tolerancia básica a errores):} la aplicación debe mostrar avisos cuando falten columnas esperadas en el CSV o se produzcan errores durante el procesamiento, sin interpretar estos controles como una validación clínica exhaustiva de la calidad del dato.
 \end{itemize}
-
 
 % ── CU-1 ──────────────────────────────────────────────
 \begin{table}[p]
@@ -54,17 +56,18 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-1 \\
-		\textbf{Descripción} & El facultativo selecciona la ventana temporal de predicción (media, 6--24\,h, o larga, 12--48\,h), que determina el modelo que se aplicará. \\
+		\textbf{Requisitos asociados} & RF-1, RF-4 \\
+		\textbf{Descripción} & El facultativo selecciona la ventana temporal de predicción disponible en el prototipo: media (6--24\,h) o larga (12--48\,h). La selección determina el modelo que se aplicará. \\
 		\textbf{Precondición} & La aplicación está en ejecución. \\
 		\textbf{Acciones} &
 		\begin{enumerate}
 			\def\labelenumi{\arabic{enumi}.}
 			\tightlist
-			\item El facultativo pulsa el botón de la ventana deseada (media o larga).
-			\item El sistema carga el modelo correspondiente a esa ventana.
+			\item El facultativo pulsa el botón de la ventana deseada.
+			\item El sistema registra la ventana seleccionada.
+			\item El sistema deja preparado el modelo correspondiente para su uso posterior.
 		\end{enumerate}\\
-		\textbf{Postcondición} & Queda seleccionado el modelo de la ventana elegida, listo para recibir datos. \\
+		\textbf{Postcondición} & Queda seleccionada la ventana temporal y el modelo asociado. \\
 		\textbf{Excepciones} & --- \\
 		\textbf{Importancia} & Alta \\
 		\bottomrule
@@ -77,28 +80,29 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 	\centering
 	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
 		\toprule
-		\textbf{CU-2} & \textbf{Cargar CSV con datos del paciente}\\
+		\textbf{CU-2} & \textbf{Cargar CSV con datos del caso evaluado}\\
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-2, RF-3 \\
-		\textbf{Descripción} & El facultativo carga un fichero CSV con las mediciones del paciente para obtener una estimación de riesgo. \\
+		\textbf{Requisitos asociados} & RF-2, RF-3, RNF-7 \\
+		\textbf{Descripción} & El facultativo carga un fichero CSV con mediciones clínicas temporales. El sistema intenta procesar el fichero y calcular los estadísticos agregados requeridos por el modelo. \\
 		\textbf{Precondición} & Haber seleccionado una ventana temporal (CU-1) y disponer de un CSV con el formato esperado. \\
 		\textbf{Acciones} &
 		\begin{enumerate}
 			\def\labelenumi{\arabic{enumi}.}
 			\tightlist
 			\item El facultativo selecciona la opción de carga de datos.
-			\item Elige el fichero CSV del paciente.
-			\item El sistema valida el formato y calcula los estadísticos agregados.
+			\item Elige el fichero CSV del caso evaluado.
+			\item El sistema lee el fichero.
+			\item El sistema calcula los estadísticos agregados necesarios para la ventana seleccionada.
 			\item El sistema habilita la consulta del riesgo y la explicación.
 		\end{enumerate}\\
-		\textbf{Postcondición} & Los datos del paciente quedan cargados y procesados en la sesión. \\
-		\textbf{Excepciones} & Si el CSV tiene un formato inválido o faltan columnas, el sistema muestra un aviso de error y no procesa los datos. \\
+		\textbf{Postcondición} & Los datos quedan cargados y transformados en las variables requeridas por el modelo. \\
+		\textbf{Excepciones} & Si faltan columnas esperadas o se produce un error durante el procesamiento, el sistema muestra un aviso y no presenta resultados. Estos controles son básicos y no equivalen a una validación clínica exhaustiva del CSV. \\
 		\textbf{Importancia} & Alta \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-2 Cargar CSV con datos del paciente.}
+	\caption{CU-2 Cargar CSV con datos del caso evaluado.}
 \end{table}
 
 % ── CU-3 ──────────────────────────────────────────────
@@ -110,20 +114,21 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-4, RF-5, RNF-1 \\
+		\textbf{Requisitos asociados} & RF-4, RF-5, RF-6, RNF-1, RNF-2 \\
 		\textbf{Descripción} & El facultativo consulta el riesgo estimado de inicio de noradrenalina, expresado como percentil respecto a la población de referencia, junto con la explicación individual de las variables que contribuyen a la predicción \cite{lundberg2017}. \\
-		\textbf{Precondición} & Datos del paciente cargados y procesados (CU-2). \\
+		\textbf{Precondición} & Datos del caso cargados y procesados (CU-2). \\
 		\textbf{Acciones} &
 		\begin{enumerate}
 			\def\labelenumi{\arabic{enumi}.}
 			\tightlist
 			\item El sistema aplica el modelo de la ventana seleccionada.
-			\item Calcula la probabilidad y la traduce a un percentil respecto a MIMIC-IV.
-			\item Muestra el percentil de riesgo del paciente.
-			\item Calcula los valores SHAP individuales y muestra, ordenadas, las variables que empujan o reducen el riesgo \cite{lundberg2017}.
+			\item Calcula la probabilidad estimada de inicio de noradrenalina.
+			\item Traduce la probabilidad a un percentil respecto a la distribución de referencia de MIMIC-IV.
+			\item Muestra el percentil de riesgo.
+			\item Calcula los valores SHAP individuales y muestra las variables que empujan o reducen el riesgo \cite{lundberg2017}.
 		\end{enumerate}\\
 		\textbf{Postcondición} & Se muestran el percentil de riesgo y la explicación individualizada de la predicción. \\
-		\textbf{Excepciones} & --- \\
+		\textbf{Excepciones} & Si el modelo o el fichero de referencia de percentiles no está disponible, el sistema muestra un error y no calcula el resultado. \\
 		\textbf{Importancia} & Alta \\
 		\bottomrule
 	\end{tabularx}
@@ -139,19 +144,20 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-6 \\
-		\textbf{Descripción} & El facultativo explora el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV real. \\
+		\textbf{Requisitos asociados} & RF-7 \\
+		\textbf{Descripción} & El facultativo explora el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV propio. \\
 		\textbf{Precondición} & La aplicación está en ejecución. \\
 		\textbf{Acciones} &
 		\begin{enumerate}
 			\def\labelenumi{\arabic{enumi}.}
 			\tightlist
 			\item El facultativo pulsa el botón de modo demostración.
-			\item Selecciona uno de los casos de ejemplo disponibles.
+			\item Selecciona uno de los casos ficticios disponibles.
+			\item Selecciona la ventana temporal de demostración.
 			\item El sistema muestra los datos del caso, el percentil de riesgo y la explicación SHAP correspondientes \cite{lundberg2017}.
 		\end{enumerate}\\
 		\textbf{Postcondición} & Se muestra el resultado del caso de demostración seleccionado. \\
-		\textbf{Excepciones} & --- \\
+		\textbf{Excepciones} & Si no se puede cargar el modelo o la referencia de percentiles, el sistema muestra un error. \\
 		\textbf{Importancia} & Baja \\
 		\bottomrule
 	\end{tabularx}
@@ -167,15 +173,16 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-7 \\
-		\textbf{Descripción} & El facultativo consulta el manual de uso integrado, que documenta las ventanas disponibles, el formato del CSV y la interpretación de los resultados, junto con el aviso de prototipo. \\
+		\textbf{Requisitos asociados} & RF-8, RNF-2, RNF-6 \\
+		\textbf{Descripción} & El facultativo consulta el manual de uso integrado, que documenta las ventanas disponibles, el formato esperado del CSV, la interpretación de los resultados y el aviso de prototipo. \\
 		\textbf{Precondición} & La aplicación está en ejecución. \\
 		\textbf{Acciones} &
 		\begin{enumerate}
 			\def\labelenumi{\arabic{enumi}.}
 			\tightlist
 			\item El facultativo pulsa el botón de manual / información.
-			\item El sistema muestra las instrucciones de uso y el aviso de prototipo sin validación clínica.
+			\item El sistema muestra las instrucciones de uso.
+			\item El sistema muestra el aviso de alcance del prototipo.
 		\end{enumerate}\\
 		\textbf{Postcondición} & Se muestra la documentación de uso en pantalla. \\
 		\textbf{Excepciones} & --- \\
@@ -190,41 +197,28 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard_portada.png}
-  \caption{Pantalla de inicio del \textit{dashboard}. Bajo el título se
-  muestra el aviso permanente de prototipo de investigación y los controles
-  de selección de ventana temporal, modo demostración y manual. La aplicación
-  no realiza ninguna acción hasta que el usuario selecciona una opción.}
+  \caption{Pantalla de inicio del \textit{dashboard}. Bajo el título se muestra el aviso permanente de prototipo de investigación y los controles de selección de ventana temporal, modo demostración y manual. La aplicación no realiza ninguna estimación hasta que el usuario selecciona una opción.}
   \label{fig:dash-portada}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard.png}
-  \caption{Vista principal tras cargar la analítica de un paciente (ventana
-  larga, 12--48\,h). A la izquierda, el percentil de riesgo acompañado de su
-  explicación textual y de los datos del paciente; a la derecha, los factores
-  de riesgo individuales según los valores SHAP, donde las barras rojas
-  empujan el riesgo al alza y las verdes lo reducen \cite{lundberg2017}.}
+  \caption{Vista principal tras cargar los datos de un caso en la ventana larga (12--48\,h). A la izquierda se muestra el percentil de riesgo acompañado de su explicación textual y de los datos del caso; a la derecha, los factores individuales según los valores SHAP, donde las barras rojas empujan el riesgo al alza y las verdes lo reducen \cite{lundberg2017}.}
   \label{fig:dash-principal}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard_demo.png}
-  \caption{Modo demostración. Permite explorar el funcionamiento del
-  \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV real.
-  Se muestra un caso de paciente con deterioro hemodinámico (riesgo alto
-  esperado), con la tabla de datos del caso y el percentil resultante.}
+  \caption{Modo demostración. Permite explorar el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV propio. Se muestra un caso de paciente con deterioro hemodinámico, junto con la tabla de datos del caso y el percentil resultante.}
   \label{fig:dash-demo}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard_manual.png}
-  \caption{Manual de uso integrado, accesible desde la propia interfaz.
-  Documenta las ventanas temporales disponibles, el modo de uso, el formato
-  del CSV de entrada y la interpretación del percentil de riesgo y de los
-  valores SHAP \cite{lundberg2017}.}
+  \caption{Manual de uso integrado, accesible desde la propia interfaz. Documenta las ventanas temporales disponibles, el modo de uso, el formato esperado del CSV de entrada y la interpretación del percentil de riesgo y de los valores SHAP \cite{lundberg2017}.}
   \label{fig:dash-manual}
 \end{figure}
 ```

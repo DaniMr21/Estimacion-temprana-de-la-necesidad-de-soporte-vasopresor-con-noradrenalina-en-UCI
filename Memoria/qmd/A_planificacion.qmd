@@ -6,57 +6,39 @@
 
 \section{Introducción}
 
-El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de
-Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte
-vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos \cite{evans2021,firzli2023}.
+El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos \cite{evans2021,firzli2023}.
 
-El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la
-base de datos MIMIC-IV \cite{johnson2023}, con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \cite{pollard2018}, que permite evaluar la
-generalización de los modelos a entornos clínicos distintos del de desarrollo; y el desarrollo de un prototipo de \textit{dashboard} clínico interpretable implementado en Streamlit, orientado a demostrar la
-viabilidad de integrar los modelos en una interfaz funcional a pie de cama.
+El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la base de datos MIMIC-IV \cite{johnson2023}, con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \cite{pollard2018}, que permite evaluar la generalización de los modelos a entornos clínicos distintos del de desarrollo; y el desarrollo de un prototipo de \textit{dashboard} clínico interpretable implementado en Streamlit, orientado a demostrar la viabilidad de integrar los modelos en una interfaz funcional de apoyo a la interpretación del riesgo.
 
-El proyecto no incluye validación prospectiva ni despliegue clínico en entorno asistencial real, por lo que se enmarca como investigación aplicada y prueba de concepto. Las consideraciones metodológicas, económicas y
-legales relevantes se desarrollan en los apartados siguientes.
+El proyecto no incluye validación prospectiva ni despliegue clínico en entorno asistencial real, por lo que se enmarca como investigación aplicada y prueba de concepto. Las consideraciones metodológicas, temporales, económicas y legales relevantes se desarrollan en los apartados siguientes.
 
 \section{Metodología de ingeniería del software}
 
-La metodología seguida durante el desarrollo se describe en detalle en la sección de Metodología de la memoria. En síntesis, se empleó un enfoque
-experimental e iterativo con un ciclo incremental por versiones, código organizado en módulos funcionales y control de versiones con Git y
-GitHub. Este enfoque se corresponde con un modelo de desarrollo iterativo e incremental: cada
-versión del flujo de trabajo se construyó sobre la anterior y se refinó en función de los resultados obtenidos, sin un diseño cerrado definido a priori.
+La metodología seguida durante el desarrollo se describe en detalle en la sección de Metodología de la memoria. En síntesis, se empleó un enfoque experimental e iterativo con un ciclo incremental por versiones, código organizado en módulos funcionales y control de versiones con Git y GitHub. Este enfoque se corresponde con un modelo de desarrollo iterativo e incremental: cada versión del flujo de trabajo se construyó sobre la anterior y se refinó en función de los resultados obtenidos, sin un diseño cerrado definido a priori.
 
-Esta naturaleza iterativa queda reflejada en la propia estructura del repositorio, cuyas sucesivas carpetas de pruebas documentan la evolución del
-trabajo: desde los primeros ensayos por ventana sobre MIMIC-IV, pasando por los refinamientos de la cohorte general (versiones I a III, incluyendo la
-eliminación de registros incompletos y la restricción de la ventana temporal) y el análisis del subgrupo de sepsis, hasta las versiones finales
-del modelo (v4.2 a v4.4) y la validación externa sobre eICU-CRD.
+Esta naturaleza iterativa queda reflejada en la propia estructura del repositorio, cuyas sucesivas carpetas de pruebas documentan la evolución del trabajo: desde los primeros ensayos por ventana sobre MIMIC-IV, pasando por los refinamientos de la cohorte general, la eliminación de registros incompletos, la restricción de ventanas temporales y el análisis del subgrupo de sepsis, hasta las versiones finales del modelo y la validación externa sobre eICU-CRD.
 
 Las fases principales llevadas a cabo fueron:
 
 \begin{enumerate}
   \item Revisión bibliográfica y definición del problema.
   \item Acceso a datos: formación CITI y registro en PhysioNet \cite{citiprogram,physionet}.
-  \item Construcción de cohortes (SQL) sobre MIMIC-IV y eICU-CRD.
+  \item Construcción de cohortes mediante consultas SQL sobre MIMIC-IV y eICU-CRD.
   \item Preprocesamiento y selección de variables.
-  \item Entrenamiento, optimización y evaluación interna
-        (validación cruzada anidada).
-  \item Calibración de probabilidades e interpretabilidad (SHAP).
+  \item Entrenamiento, optimización y evaluación interna mediante validación cruzada anidada.
+  \item Calibración de probabilidades e interpretabilidad mediante valores SHAP.
   \item Validación externa sobre eICU-CRD.
-  \item Desarrollo del prototipo de \textit{dashboard} y encuesta.
-  \item Redacción de la memoria y documentación del repositorio.
+  \item Desarrollo del prototipo de \textit{dashboard} y encuesta exploratoria de usabilidad.
+  \item Redacción de la memoria, anexos y documentación del repositorio.
 \end{enumerate}
 
-El ciclo de vida no está completo: quedan fuera del alcance de este TFG la validación externa con datos del Hospital Universitario de Burgos y la
-validación prospectiva en entorno clínico real, así como la integración del \textit{dashboard} en los sistemas de información sanitarios.
+Desde el punto de vista de producto, el ciclo de vida queda limitado a una prueba de concepto. Quedan fuera del alcance de este TFG la validación con datos locales del Hospital Universitario de Burgos, la validación prospectiva y la integración del \textit{dashboard} en sistemas de información sanitarios.
 
-Si se desease continuar con el presente trabajo para dejar lista y validada una herramienta clínica, se recomienda una metodología Scrum
-\cite{sutherland2014}, primero porque permite incorporar el \textit{feedback} continuo de los clínicos en sprints cortos y porque es de las metodologías
-más extendidas en el desarrollo de herramientas software, por ende, una de las metodologías con la que más desarrolladores están familiarizados.
+Si se desease continuar con el presente trabajo para dejar lista y validada una herramienta clínica, podría plantearse una metodología Scrum \cite{sutherland2014}, ya que permitiría incorporar el \textit{feedback} continuo de los clínicos en iteraciones cortas y facilitaría la coordinación entre perfiles técnicos y sanitarios durante el desarrollo.
 
 \section{Planificación temporal}
 
-La planificación inicial propuesta se representa en la
-Figura~\ref{fig:gantt} y la finalmente seguida en la
-Figura~\ref{fig:gantt-real}.
+La planificación inicial propuesta se representa en la Figura~\ref{fig:gantt} y la finalmente seguida en la Figura~\ref{fig:gantt-real}.
 
 \begin{figure}[H]
   \centering
@@ -74,130 +56,114 @@ Figura~\ref{fig:gantt-real}.
 
 \textbf{Leyenda de colores:}
 \begin{itemize}
-  \item \textbf{Amarillo:} tarea no realizada, sustituida por la
-        obtención y uso de eICU-CRD como cohorte de validación externa.
-  \item \textbf{Rojo:} retraso en el inicio de la tarea respecto a la
-        planificación inicial.
-  \item \textbf{Barras rojas:} tiempo adicional necesario para
-        completar la tarea.
+  \item \textbf{Amarillo:} tarea no realizada, sustituida por la obtención y uso de eICU-CRD como cohorte de validación externa.
+  \item \textbf{Rojo:} retraso en el inicio de la tarea respecto a la planificación inicial.
+  \item \textbf{Barras rojas:} tiempo adicional necesario para completar la tarea.
   \item \textbf{Verde:} tarea finalizada antes de lo previsto.
-  \item \textbf{Barras verdes:} tarea iniciada con anterioridad
-        a lo planificado.
+  \item \textbf{Barras verdes:} tarea iniciada con anterioridad a lo planificado.
 \end{itemize}
 
-Las desviaciones respecto a la planificación inicial se debieron principalmente a dos causas. Los retrasos se produjeron al encontrar
-dificultades no anticipadas o al haber subestimado la complejidad de determinadas tareas. Los adelantos respondieron al motivo contrario: tareas
-cuya dificultad o duración resultó inferior a la estimada inicialmente.
+Las desviaciones respecto a la planificación inicial se debieron principalmente a dos causas. Los retrasos se produjeron al encontrar dificultades no anticipadas o al haber subestimado la complejidad de determinadas tareas. Los adelantos respondieron al motivo contrario: tareas cuya dificultad o duración resultó inferior a la estimada inicialmente.
 
-El seguimiento del proyecto se organizó en GitHub mediante \textit{milestones} e \textit{issues}, agrupando las tareas en siete fases:
-(1)~obtención de datos y formación CITI/PhysioNet, (2)~trámites universitarios y comités de ética, (3)~investigación inicial y estado del
-arte, (4)~definición de la cohorte y extracción de MIMIC-IV, (5)~validación externa sobre eICU-CRD, (6)~desarrollo del \textit{dashboard} y (7)~redacción
-de la memoria y los anexos. Las cinco primeras fases se completaron en su totalidad; el desarrollo del \textit{dashboard} y la redacción de la memoria
-constituyeron la etapa final del trabajo, concentrada en las últimas semanas de mayo y primera de junio. La experimentación interna —entrenamiento, calibración e iteración
-sucesiva de los modelos— se gestionó por versiones en el repositorio en lugar de como un \textit{milestone} independiente, tal como refleja la sucesión de
-carpetas de pruebas descrita en el apartado anterior.
+El seguimiento del proyecto se organizó en GitHub mediante \textit{milestones} e \textit{issues}, agrupando las tareas en siete fases: (1)~obtención de datos y formación CITI/PhysioNet, (2)~trámites universitarios y revisión de viabilidad legal, (3)~investigación inicial y estado del arte, (4)~definición de la cohorte y extracción de MIMIC-IV, (5)~validación externa sobre eICU-CRD, (6)~desarrollo del \textit{dashboard} y (7)~redacción de la memoria y los anexos.
+
+Las fases vinculadas a la obtención de datos, construcción de cohortes, experimentación principal y validación externa se completaron dentro del alcance finalmente definido. El desarrollo del \textit{dashboard} y la redacción de la memoria constituyeron la etapa final del trabajo, concentrada en las últimas semanas de mayo y primera de junio. La experimentación interna —entrenamiento, calibración e iteración sucesiva de los modelos— se gestionó por versiones en el repositorio en lugar de como un \textit{milestone} independiente, tal como refleja la sucesión de carpetas de pruebas descrita en el apartado anterior.
 
 \subsection{Planificación económica}
 
-La Tabla~\ref{tab:costes_materiales} recoge la estimación de costes materiales asociados al desarrollo del proyecto. El software empleado es de código abierto
-o de libre acceso, y las bases de datos utilizadas no tienen coste económico directo para fines de investigación.
+A continuación se estima el coste que supondría ejecutar este proyecto en un contexto profesional. Se valora, por un lado, el coste material imputable, incluyendo hardware, software y datos, y por otro, el coste de personal, calculando la dedicación al precio de mercado fijado por convenio. El software empleado es de código abierto o de libre acceso y las bases de datos utilizadas no tienen coste económico directo para fines de investigación, por lo que el coste material se reduce a la amortización del equipo.
+
+\subsubsection*{Costes materiales}
+
+Para el desarrollo se utilizó un equipo HP Pavilion Plus con procesador Intel Core Ultra 7, 32\,GB de RAM, SSD de 1\,TB y tarjeta gráfica Nvidia RTX 4050 con 6\,GB de VRAM, adquirido en febrero de 2026 por 1.500\,€.
+
+Suponiendo una vida útil de cinco años y una jornada anual máxima de 1.792 horas, la vida útil total estimada del equipo es:
+
+\[
+1.792 \times 5 = 8.960\ \text{h}
+\]
+
+El coste horario de amortización es, por tanto:
+
+\[
+\frac{1.500}{8.960} \approx 0{,}167\ \text{€/h}
+\]
+
+Dado que el proyecto requirió 360 horas de trabajo, el coste de hardware imputable asciende a:
+
+\[
+\frac{1.500}{8.960} \times 360 = 60{,}27\ \text{€}
+\]
 
 \begin{table}[H]
 \centering
 \caption{Estimación de costes materiales del proyecto.}
 \label{tab:costes_materiales}
-\begin{tabular}{lll}
+\begin{tabular}{llr}
 \toprule
 \textbf{Categoría} & \textbf{Concepto} & \textbf{Coste} \\
 \midrule
 Hardware  & Amortización proporcional del portátil & 60,27\,€ \\
-Software  & Python, SQL y R en VS Code y PostgreSQL & 0\,€ \\
-Datos     & MIMIC-IV y eICU-CRD (PhysioNet) & 0\,€ \\
+Software  & Python, SQL y R en VS Code y PostgreSQL & 0,00\,€ \\
+Datos     & MIMIC-IV y eICU-CRD (PhysioNet) & 0,00\,€ \\
 \midrule
 \multicolumn{2}{r}{\textbf{Total costes materiales}} & \textbf{60,27\,€} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Para el desarrollo del proyecto se utilizó un equipo HP Pavilion Plus con
-procesador Intel Core Ultra 7, 32\,GB de RAM, SSD de 1\,TB y tarjeta gráfica
-Nvidia RTX 4050 con 6\,GB de VRAM, adquirido en febrero de 2026 por 1.500\,€.
+\subsubsection*{Costes de personal}
 
-Para estimar el coste imputable al proyecto se ha supuesto una vida útil laboral del equipo de cinco años. Considerando la jornada anual máxima de 1.792 horas
-establecida en el convenio de referencia, la vida útil total estimada del equipo es:
+Para estimar el coste de personal se toma como referencia el XX Convenio colectivo nacional de empresas de ingeniería, oficinas de estudios técnicos, inspección, supervisión y control técnico y de calidad. Según la clasificación profesional recogida en dicho convenio, un graduado universitario se encuadra en el Nivel Salarial 2. La actualización de las tablas salariales para 2024 fija para este nivel una retribución total anual de 22.224,26\,€ brutos, incluyendo la tabla salarial anual y el plus de convenio.
 
-\[
-1.792 \times 5 = 8.960\,h
-\]
-
-Por tanto, el coste horario de amortización del equipo es:
+Considerando la jornada anual máxima de 1.792 horas establecida en el convenio, el coste salarial horario equivalente es:
 
 \[
-\frac{1.500}{8.960} = 0,167 EUR
+\frac{22.224{,}26}{1.792} \approx 12{,}40\ \text{€/h}
 \]
 
-Dado que el proyecto ha requerido 360 horas de trabajo, el coste de hardware imputable al proyecto asciende a:
+Para las 360 horas de dedicación, el salario bruto proporcional asciende a:
 
 \[
-0,167 \times 360 = 60,27 EUR
+\frac{22.224{,}26}{1.792} \times 360 = 4.464{,}70\ \text{€}
 \]
 
-Además de los costes materiales, se ha estimado el coste laboral que tendría el desarrollo del proyecto para una empresa. Para ello se toma como referencia el
-XX Convenio colectivo nacional de empresas de ingeniería, oficinas de estudios técnicos, inspección, supervisión y control técnico y de calidad, publicado en
-el BOE. Según las tablas salariales vigentes desde 2024, un graduado universitario se encuadra en el Nivel Salarial 2, con una retribución anual de 22.224,26\,€
-brutos.
-
-Considerando una jornada anual máxima de 1.792 horas, el coste salarial horario
-equivalente es:
+A este importe se añaden las cotizaciones empresariales a la Seguridad Social. A efectos de estimación, se aplica un porcentaje conjunto del 32,30\,\% sobre el salario bruto, formado por las aportaciones empresariales por contingencias comunes, desempleo, FOGASA, formación profesional, Mecanismo de Equidad Intergeneracional y una estimación de contingencias profesionales. Estas últimas dependen de la tarifa de primas aplicable, por lo que el porcentaje empleado debe interpretarse como una aproximación razonable para la estimación económica del proyecto.
 
 \[
-\frac{22.224,26}{1.792} = 12,40 EUR/h
+4.464{,}70 \times 0{,}3230 = 1.442{,}10\ \text{€}
 \]
 
-Dado que la duración estimada del proyecto es de 360 horas, el salario bruto
-proporcional asociado al desarrollo del proyecto asciende a:
+Por tanto, el coste de personal estimado es:
 
 \[
-12,40 \times 360 = 4.464,70 EUR
+4.464{,}70 + 1.442{,}10 = 5.906{,}80\ \text{€}
 \]
-
-A este importe se añaden las cotizaciones empresariales a la Seguridad Social. Para una estimación general se consideran contingencias comunes, desempleo,
-FOGASA, formación profesional, Mecanismo de Equidad Intergeneracional y contingencias profesionales. En conjunto, se estima un recargo empresarial del
-32,30\,\% sobre el salario bruto:
-
-\[
-4.464,70 \times 0,3230 = 1.442,10 EUR
-\]
-
-Por tanto, el coste laboral total estimado para una empresa sería:
-
-\[
-4.464,70 + 1.442,10 = 5.906,80 EUR
-\]
-
-La Tabla~\ref{tab:coste_laboral} resume el coste laboral estimado del proyecto.
 
 \begin{table}[H]
 \centering
-\caption{Estimación del coste laboral del proyecto para una empresa.}
+\caption{Estimación del coste de personal del proyecto.}
 \label{tab:coste_laboral}
 \begin{tabular}{lrr}
 \toprule
 \textbf{Concepto} & \textbf{Cálculo} & \textbf{Importe} \\
 \midrule
 Salario bruto proporcional & 12,40\,€/h $\times$ 360\,h & 4.464,70\,€ \\
-Cotizaciones empresariales a la Seguridad Social & 32,30\,\% & 1.442,10\,€ \\
+Cotizaciones empresariales estimadas & 32,30\,\% $\times$ 4.464,70\,€ & 1.442,10\,€ \\
 \midrule
-\textbf{Coste laboral total} &  & \textbf{5.906,80\,€} \\
+\textbf{Coste de personal} &  & \textbf{5.906,80\,€} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Finalmente, sumando los costes materiales imputables y el coste laboral total,
-el coste económico estimado del proyecto para una empresa sería:
+\subsubsection*{Costes indirectos y coste total}
+
+No se imputan costes indirectos (electricidad, conexión a internet o espacio de trabajo) de forma separada, al haberse desarrollado el proyecto con recursos personales y sin instalaciones dedicadas; su efecto se considera marginal frente a los costes de personal y se omite de forma deliberada.
+
+Sumando los costes materiales y de personal, el coste total estimado de ejecución del proyecto es:
 
 \[
-5.906,80 + 60,27 = 5.967,07\,€
+60{,}27 + 5.906{,}80 = 5.967{,}07\ \text{€}
 \]
 
 \begin{table}[H]
@@ -209,25 +175,34 @@ el coste económico estimado del proyecto para una empresa sería:
 \textbf{Concepto} & \textbf{Importe} \\
 \midrule
 Costes materiales & 60,27\,€ \\
-Coste laboral total para empresa & 5.906,80\,€ \\
+Coste de personal & 5.906,80\,€ \\
 \midrule
 \textbf{Coste total estimado} & \textbf{5.967,07\,€} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Por tanto, bajo las hipótesis consideradas, el coste total que supondría para una empresa desarrollar este proyecto se estima en 5.967,07\,€. Este importe no
-representa un precio de venta o facturación al cliente, sino una estimación del coste interno de ejecución, considerando costes materiales amortizados, salario
-bruto proporcional y cotizaciones empresariales a la Seguridad Social.
+Este importe no representa un precio de venta o de facturación, sino una estimación del coste interno de ejecución, considerando la amortización del equipo, el salario bruto proporcional y las cotizaciones empresariales estimadas a la Seguridad Social. Todas las operaciones se han calculado sobre los valores exactos, no sobre los redondeos intermedios mostrados en las fórmulas.
 
 \subsection{Viabilidad legal}
 
-El acceso a las bases de datos empleadas, MIMIC-IV \cite{johnson2023} y eICU-CRD \cite{pollard2018}, requirió completar el curso de formación en ética en investigación con datos humanos del 
-CITI Program (CITI Program, 2026) \cite{citiprogram} y firmar el acuerdo de uso de datos de PhysioNet (PhysioNet, 2026) \cite{physionet}. Dicho acuerdo establece las siguientes obligaciones: no reidentificar a los
-pacientes, no redistribuir los datos originales, y publicar el código desarrollado en un repositorio público. El repositorio del presente proyecto, disponible en GitHub, cumple con este último 
-requisito.
+Dado que este trabajo constituye un análisis retrospectivo sobre bases de datos públicas y desidentificadas por sus custodios originales \cite{johnson2023,pollard2018,physionet}, el análisis desarrollado en este TFG no requirió una aprobación adicional por parte de un Comité de Ética de Investigación local. El acceso a MIMIC-IV y eICU-CRD a través de PhysioNet exige acreditar formación en ética de la investigación con datos de sujetos humanos y suscribir el correspondiente acuerdo de uso de datos. Por ello, se aporta la certificación del CITI Program completada por el autor como documento acreditativo de dicha formación.
 
-Al tratarse de un análisis retrospectivo sobre bases de datos públicas completamente desidentificadas por sus custodios originales \cite{johnson2023,pollard2018,physionet}, no se requirió la aprobación de ningún Comité de Ética de 
-Investigación para el desarrollo de este trabajo. No obstante, para continuar con una validación externa con datos del Hospital Universitario de Burgos
-o validar el \textit{dashboard} como herramienta clínica, se precisaría la aprobación del Comité de Ética en Investigación de dicho centro.
+La formación corresponde al curso \emph{Human Research — Data or Specimens Only Research (Stage 1, Basic Course)}, completado el 14 de marzo de 2026 con una puntuación de 95 sobre un mínimo exigido de 90 (Record ID 75910225), e incluyó módulos sobre el Informe Belmont, regulación y revisión por IRB, investigación basada en registros (\emph{Records-Based Research}), protecciones de privacidad HIPAA y conflictos de interés, entre otros. El certificado se muestra en la Figura~\ref{fig:citi-cert} y el informe detallado de módulos en la Figura~\ref{fig:citi-report}.
+
+No obstante, para continuar con una validación externa con datos del Hospital Universitario de Burgos o para validar el \textit{dashboard} como herramienta clínica, sí se precisaría la aprobación del Comité de Ética de Investigación correspondiente. Por este motivo, en este anexo se incluye la acreditación disponible para el alcance finalmente desarrollado, y se explicita que cualquier extensión del trabajo a datos locales o a validación prospectiva requeriría autorización ética específica.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{citi_certificado.png}
+  \caption{Certificado de finalización del curso CITI Program.}
+  \label{fig:citi-cert}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{citi_informe.png}
+  \caption{Informe de finalización del CITI Program con el detalle de módulos y puntuaciones.}
+  \label{fig:citi-report}
+\end{figure}
 ```
