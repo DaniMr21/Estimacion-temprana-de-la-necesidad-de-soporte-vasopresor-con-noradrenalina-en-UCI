@@ -948,4 +948,862 @@ LaTeX Info: Redefining \% on input line 373.
 Package hyperref Info: Link coloring ON on input line 373.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
-Pac
+Package caption Info: End \AtBeginDocument code.
+<./img/CabeceraEPS.png, id=3, 1706.375pt x 376.40625pt>
+File: ./img/CabeceraEPS.png Graphic file (type png)
+<use ./img/CabeceraEPS.png>
+Package pdftex.def Info: ./img/CabeceraEPS.png  used on input line 375.
+(pdftex.def)             Requested size: 383.0pt x 84.48097pt.
+<./img/Logo_GIS.png, id=5, 756.8275pt x 478.78876pt>
+File: ./img/Logo_GIS.png Graphic file (type png)
+<use ./img/Logo_GIS.png>
+Package pdftex.def Info: ./img/Logo_GIS.png  used on input line 375.
+(pdftex.def)             Requested size: 76.59883pt x 48.45152pt.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 3
+75.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
+File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 3
+75.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
+375.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
+File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
+375.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
+File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 375.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 375.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 375.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 375
+.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 375
+.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+) [1
+
+
+{C:/Users/danie/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/dani
+e/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc} <./img/CabeceraEP
+S.png> <./img/Logo_GIS.png>]
+Package microtype Info: Character `029' is missing
+(microtype)             in font `T1/lmr/m/sc/12'.
+(microtype)             Ignoring protrusion settings for this character.
+[2]
+LaTeX Font Info:    Trying to load font information for T1+lmss on input line 3
+97.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmss.fd
+File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) (anexos.toc
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
+[1
+
+
+
+
+
+]) [2] (anexos.lof
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[3
+
+]
+Overfull \hbox (0.4722pt too wide) detected at line 31
+\T1/lmr/m/n/12 G.10. 
+ []
+
+
+Overfull \hbox (0.4722pt too wide) detected at line 32
+\T1/lmr/m/n/12 G.11. 
+ []
+
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 3
+2.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[4]
+Overfull \hbox (0.4722pt too wide) detected at line 33
+\T1/lmr/m/n/12 G.12. 
+ []
+
+
+Overfull \hbox (0.4722pt too wide) detected at line 34
+\T1/lmr/m/n/12 G.13. 
+ []
+
+) [5{C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.
+enc}{C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}
+] (anexos.lot
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
+[6
+
+]) [7] [8
+
+
+]
+Ap\'{e}ndice A.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <17.28> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 407.
+
+Underfull \vbox (badness 5331) has occurred while \output is active []
+
+[9]
+LaTeX Info: Redefining \. on input line 437.
+LaTeX Info: Redefining \% on input line 437.
+Package babel Info: 'spanish' activates 'spanish' shorthands.
+(babel)             Reported on input line 437.
+[10]
+<./img/Gantt_inicial.png, id=323, 1034.86626pt x 155.58125pt>
+File: ./img/Gantt_inicial.png Graphic file (type png)
+<use ./img/Gantt_inicial.png>
+Package pdftex.def Info: ./img/Gantt_inicial.png  used on input line 449.
+(pdftex.def)             Requested size: 383.0pt x 57.58076pt.
+<./img/Gantt_real.jpeg, id=324, 1606.0pt x 240.9pt>
+File: ./img/Gantt_real.jpeg Graphic file (type jpg)
+<use ./img/Gantt_real.jpeg>
+Package pdftex.def Info: ./img/Gantt_real.jpeg  used on input line 456.
+(pdftex.def)             Requested size: 383.0pt x 57.44958pt.
+LaTeX Info: Redefining \. on input line 467.
+LaTeX Info: Redefining \% on input line 467.
+[11 <./img/Gantt_inicial.png> <./img/Gantt_real.jpeg>]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 4
+82.
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+Underfull \vbox (badness 1838) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 484.
+LaTeX Info: Redefining \% on input line 484.
+[12]
+LaTeX Info: Redefining \. on input line 527.
+LaTeX Info: Redefining \% on input line 527.
+[13{C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}
+{C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}
+]
+Overfull \hbox (11.41495pt too wide) in paragraph at lines 551--561
+ [][] 
+ []
+
+LaTeX Info: Redefining \. on input line 569.
+LaTeX Info: Redefining \% on input line 569.
+[14]
+LaTeX Info: Redefining \. on input line 598.
+LaTeX Info: Redefining \% on input line 598.
+[15]
+<./img/citi_certificado.png, id=368, 876.27374pt x 676.02562pt>
+File: ./img/citi_certificado.png Graphic file (type png)
+<use ./img/citi_certificado.png>
+Package pdftex.def Info: ./img/citi_certificado.png  used on input line 601.
+(pdftex.def)             Requested size: 325.55234pt x 251.15709pt.
+<./img/citi_informe.png, id=369, 758.835pt x 673.01437pt>
+File: ./img/citi_informe.png Graphic file (type png)
+<use ./img/citi_informe.png>
+Package pdftex.def Info: ./img/citi_informe.png  used on input line 608.
+(pdftex.def)             Requested size: 325.55234pt x 288.73329pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 612.
+LaTeX Info: Redefining \% on input line 612.
+[16 <./img/citi_certificado.png>]
+LaTeX Info: Redefining \. on input line 616.
+LaTeX Info: Redefining \% on input line 616.
+[17 <./img/citi_informe.png>] [18
+
+]
+Ap\'{e}ndice B.
+[19]
+<./img/arquitectura.jpeg, id=390, 1292.83pt x 943.525pt>
+File: ./img/arquitectura.jpeg Graphic file (type jpg)
+<use ./img/arquitectura.jpeg>
+Package pdftex.def Info: ./img/arquitectura.jpeg  used on input line 644.
+(pdftex.def)             Requested size: 383.0pt x 279.51802pt.
+LaTeX Info: Redefining \. on input line 652.
+LaTeX Info: Redefining \% on input line 652.
+[20 <./img/arquitectura.jpeg>]
+LaTeX Info: Redefining \. on input line 657.
+LaTeX Info: Redefining \% on input line 657.
+[21] [22
+
+]
+Ap\'{e}ndice C.
+<./img/casos.jpeg, id=403, 965.6075pt x 761.84625pt>
+File: ./img/casos.jpeg Graphic file (type jpg)
+<use ./img/casos.jpeg>
+Package pdftex.def Info: ./img/casos.jpeg  used on input line 670.
+(pdftex.def)             Requested size: 383.0pt x 302.17564pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[23]
+LaTeX Info: Redefining \. on input line 686.
+LaTeX Info: Redefining \% on input line 686.
+[24 <./img/casos.jpeg>]
+Underfull \hbox (badness 10000) in paragraph at lines 726--726
+[]|\T1/lmr/bx/n/12 (+20) Versión del
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 726--726
+[]|\T1/lmr/bx/n/12 (+20) Requisitos
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 726--726
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 756--756
+[]|\T1/lmr/bx/n/12 (+20) Versión del
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 756--756
+[]|\T1/lmr/bx/n/12 (+20) Requisitos
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 756--756
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 786--786
+[]|\T1/lmr/bx/n/12 (+20) Versión del
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 786--786
+[]|\T1/lmr/bx/n/12 (+20) Requisitos
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 786--786
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 815--815
+[]|\T1/lmr/bx/n/12 (+20) Versión del
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 815--815
+[]|\T1/lmr/bx/n/12 (+20) Requisitos
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 815--815
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 843--843
+[]|\T1/lmr/bx/n/12 (+20) Versión del
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 843--843
+[]|\T1/lmr/bx/n/12 (+20) Requisitos
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 843--843
+[][] 
+ []
+
+<./img/dashboard_portada.png, id=413, 1220.05812pt x 412.54124pt>
+File: ./img/dashboard_portada.png Graphic file (type png)
+<use ./img/dashboard_portada.png>
+Package pdftex.def Info: ./img/dashboard_portada.png  used on input line 851.
+(pdftex.def)             Requested size: 383.0pt x 129.50424pt.
+LaTeX Info: Redefining \. on input line 855.
+LaTeX Info: Redefining \% on input line 855.
+[25]
+<./img/dashboard.png, id=418, 1281.78876pt x 655.44875pt>
+File: ./img/dashboard.png Graphic file (type png)
+<use ./img/dashboard.png>
+Package pdftex.def Info: ./img/dashboard.png  used on input line 858.
+(pdftex.def)             Requested size: 383.0pt x 195.84602pt.
+<./img/dashboard_demo.png, id=419, 1280.28313pt x 638.88687pt>
+File: ./img/dashboard_demo.png Graphic file (type png)
+<use ./img/dashboard_demo.png>
+Package pdftex.def Info: ./img/dashboard_demo.png  used on input line 865.
+(pdftex.def)             Requested size: 383.0pt x 191.12161pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 869.
+LaTeX Info: Redefining \% on input line 869.
+[26 <./img/dashboard_portada.png> <./img/dashboard.png>]
+<./img/dashboard_manual.png, id=426, 1220.05812pt x 468.75125pt>
+File: ./img/dashboard_manual.png Graphic file (type png)
+<use ./img/dashboard_manual.png>
+Package pdftex.def Info: ./img/dashboard_manual.png  used on input line 872.
+(pdftex.def)             Requested size: 383.0pt x 147.14958pt.
+LaTeX Info: Redefining \. on input line 880.
+LaTeX Info: Redefining \% on input line 880.
+[27 <./img/dashboard_demo.png> <./img/dashboard_manual.png>]
+LaTeX Info: Redefining \. on input line 880.
+LaTeX Info: Redefining \% on input line 880.
+[28]
+LaTeX Info: Redefining \. on input line 880.
+LaTeX Info: Redefining \% on input line 880.
+[29]
+LaTeX Info: Redefining \. on input line 880.
+LaTeX Info: Redefining \% on input line 880.
+[30]
+LaTeX Info: Redefining \. on input line 880.
+LaTeX Info: Redefining \% on input line 880.
+[31]
+LaTeX Info: Redefining \. on input line 880.
+LaTeX Info: Redefining \% on input line 880.
+[32]
+Ap\'{e}ndice D.
+[33
+
+]
+Underfull \hbox (badness 2837) in paragraph at lines 913--914
+\T1/lmtt/m/n/12 pandas\T1/lmr/m/n/12 (+20) , \T1/lmtt/m/n/12 numpy\T1/lmr/m/n/1
+2 (+20) , \T1/lmtt/m/n/12 scikit-learn\T1/lmr/m/n/12 (+20) , \T1/lmtt/m/n/12 xg
+boost\T1/lmr/m/n/12 (+20) , \T1/lmtt/m/n/12 shap\T1/lmr/m/n/12 (+20) , \T1/lmtt
+/m/n/12 matplotlib \T1/lmr/m/n/12 (+20) y
+ []
+
+LaTeX Info: Redefining \. on input line 937.
+LaTeX Info: Redefining \% on input line 937.
+[34]
+LaTeX Info: Redefining \. on input line 996.
+LaTeX Info: Redefining \% on input line 996.
+[35]
+LaTeX Info: Redefining \. on input line 1028.
+LaTeX Info: Redefining \% on input line 1028.
+[36]
+Overfull \hbox (18.3752pt too wide) in paragraph at lines 1041--1041
+[]\T1/lmtt/m/n/12 Diuresis_mL_kg, Frec Cardiaca, Vent. Invasiva, SpO2, Bicarbon
+ato,[] 
+ []
+
+LaTeX Info: Redefining \. on input line 1058.
+LaTeX Info: Redefining \% on input line 1058.
+[37]
+LaTeX Info: Redefining \. on input line 1085.
+LaTeX Info: Redefining \% on input line 1085.
+[38]
+LaTeX Info: Redefining \. on input line 1113.
+LaTeX Info: Redefining \% on input line 1113.
+[39]
+LaTeX Info: Redefining \. on input line 1134.
+LaTeX Info: Redefining \% on input line 1134.
+[40]
+Ap\'{e}ndice E.
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `lmss' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+[41
+
+]
+LaTeX Info: Redefining \. on input line 1192.
+LaTeX Info: Redefining \% on input line 1192.
+[42]
+Underfull \hbox (badness 3646) in paragraph at lines 1206--1207
+[]\T1/lmr/m/n/12 (+20) Aplicar los mo-de-los en-tre-na-dos so-bre eICU-CRD en \
+T1/lmss/m/n/12 (+20) Va-li-da-
+ []
+
+LaTeX Info: Redefining \. on input line 1216.
+LaTeX Info: Redefining \% on input line 1216.
+[43]
+LaTeX Info: Redefining \. on input line 1243.
+LaTeX Info: Redefining \% on input line 1243.
+[44]
+LaTeX Info: Redefining \. on input line 1272.
+LaTeX Info: Redefining \% on input line 1272.
+[45]
+LaTeX Info: Redefining \. on input line 1291.
+LaTeX Info: Redefining \% on input line 1291.
+[46]
+LaTeX Info: Redefining \. on input line 1322.
+LaTeX Info: Redefining \% on input line 1322.
+[47]
+LaTeX Info: Redefining \. on input line 1352.
+LaTeX Info: Redefining \% on input line 1352.
+[48]
+LaTeX Info: Redefining \. on input line 1380.
+LaTeX Info: Redefining \% on input line 1380.
+[49] [50
+
+]
+Ap\'{e}ndice F.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[51]
+Underfull \hbox (badness 10000) in paragraph at lines 1441--1441
+[]|\T1/lmtt/m/n/12 anchor_age\T1/lmr/m/n/12 (+20) , \T1/lmtt/m/n/12 gender\T1/l
+mr/m/n/12 (+20) , \T1/lmtt/m/n/12 peso_kg\T1/lmr/m/n/12 (+20) ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1441--1441
+[]|\T1/lmtt/m/n/12 tiene_sepsis\T1/lmr/m/n/12 (+20) , \T1/lmtt/m/n/12 ventilaci
+on_invasiva_*h\T1/lmr/m/n/12 (+20) ,
+ []
+
+LaTeX Info: Redefining \. on input line 1451.
+LaTeX Info: Redefining \% on input line 1451.
+[52]
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1451.
+
+Overfull \hbox (3.17497pt too wide) in paragraph at lines 1455--1456
+[]\T1/lmr/bx/n/12 (-20) Índice de Kirby o re-la-ción PaO$[]$/FiO$[]$ mí-ni-ma (
+\T1/lmtt/b/n/12 pao2_fio2_min\T1/lmr/bx/n/12 (-20) ):
+ []
+
+LaTeX Info: Redefining \. on input line 1456.
+LaTeX Info: Redefining \% on input line 1456.
+[53]
+LaTeX Info: Redefining \. on input line 1491.
+LaTeX Info: Redefining \% on input line 1491.
+[54]
+LaTeX Info: Redefining \. on input line 1508.
+LaTeX Info: Redefining \% on input line 1508.
+[55]
+Underfull \vbox (badness 1199) detected at line 1559
+ []
+
+LaTeX Info: Redefining \. on input line 1559.
+LaTeX Info: Redefining \% on input line 1559.
+[56]
+Overfull \hbox (5.70438pt too wide) in paragraph at lines 1602--1616
+ [][] 
+ []
+
+LaTeX Info: Redefining \. on input line 1660.
+LaTeX Info: Redefining \% on input line 1660.
+[57]
+Underfull \vbox (badness 10000) detected at line 1660
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1660
+ []
+
+LaTeX Info: Redefining \. on input line 1660.
+LaTeX Info: Redefining \% on input line 1660.
+[58]
+<anexos_files/figure-pdf/fig-densidades-comparadas-1.pdf, id=679, 505.89pt x 32
+5.215pt>
+File: anexos_files/figure-pdf/fig-densidades-comparadas-1.pdf Graphic file (typ
+e pdf)
+<use anexos_files/figure-pdf/fig-densidades-comparadas-1.pdf>
+Package pdftex.def Info: anexos_files/figure-pdf/fig-densidades-comparadas-1.pd
+f  used on input line 1666.
+(pdftex.def)             Requested size: 344.7031pt x 221.59485pt.
+LaTeX Info: Redefining \. on input line 1726.
+LaTeX Info: Redefining \% on input line 1726.
+[59 <./anexos_files/figure-pdf/fig-densidades-comparadas-1.pdf>]
+<anexos_files/figure-pdf/fig-predictores-desenlace-1.pdf, id=694, 505.89pt x 28
+9.08pt>
+File: anexos_files/figure-pdf/fig-predictores-desenlace-1.pdf Graphic file (typ
+e pdf)
+<use anexos_files/figure-pdf/fig-predictores-desenlace-1.pdf>
+Package pdftex.def Info: anexos_files/figure-pdf/fig-predictores-desenlace-1.pd
+f  used on input line 1732.
+(pdftex.def)             Requested size: 344.7031pt x 196.97319pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+LaTeX Info: Redefining \. on input line 1750.
+LaTeX Info: Redefining \% on input line 1750.
+[60]
+Underfull \vbox (badness 10000) detected at line 1785
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1785
+ []
+
+LaTeX Info: Redefining \. on input line 1785.
+LaTeX Info: Redefining \% on input line 1785.
+[61 <./anexos_files/figure-pdf/fig-predictores-desenlace-1.pdf>]
+<anexos_files/figure-pdf/fig-tiempo-norad-1.pdf, id=713, 505.89pt x 252.945pt>
+File: anexos_files/figure-pdf/fig-tiempo-norad-1.pdf Graphic file (type pdf)
+<use anexos_files/figure-pdf/fig-tiempo-norad-1.pdf>
+Package pdftex.def Info: anexos_files/figure-pdf/fig-tiempo-norad-1.pdf  used o
+n input line 1791.
+(pdftex.def)             Requested size: 344.7031pt x 172.35155pt.
+LaTeX Info: Redefining \. on input line 1805.
+LaTeX Info: Redefining \% on input line 1805.
+[62 <./anexos_files/figure-pdf/fig-tiempo-norad-1.pdf>]
+Ap\'{e}ndice G.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 1882.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 1882.
+
+Underfull \hbox (badness 1005) in paragraph at lines 1882--1882
+\T1/lmr/m/n/9 (+20) los; par-ti-ción sim-ple 80/20 y
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1882--1882
+[]|\T1/lmr/m/n/9 (+20) III. Co-hor-te
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1882--1882
+\T1/lmr/m/n/9 (+20) ge-ne-ral am-
+ []
+
+
+Underfull \hbox (badness 1735) in paragraph at lines 1882--1882
+[]|\T1/lmss/m/n/9 (+20) Pruebas co-hor-te sep-sis
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1882--1882
+[]|\T1/lmr/m/n/9 (+20) IV.2. Se-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1882--1882
+\T1/lmr/m/n/9 (+20) lec-ción de
+ []
+
+
+Underfull \hbox (badness 2564) in paragraph at lines 1882--1882
+[]|\T1/lmss/m/n/9 (+20) Pruebas_v4_2\T1/lmr/m/n/9 (+20) , \T1/lmss/m/n/9 (+20) 
+_cor-ta\T1/lmr/m/n/9 (+20) ,
+ []
+
+
+Underfull \hbox (badness 2521) in paragraph at lines 1882--1882
+[]|\T1/lmr/m/n/9 (+20) IV.3. Sig-ni-fi-
+ []
+
+
+Underfull \hbox (badness 2564) in paragraph at lines 1882--1882
+[]|\T1/lmss/m/n/9 (+20) Pruebas_v4_3\T1/lmr/m/n/9 (+20) , \T1/lmss/m/n/9 (+20) 
+_cor-ta\T1/lmr/m/n/9 (+20) ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1882--1882
+\T1/lmr/m/n/9 (+20) Whitney/$\OML/lmm/m/it/9 ^^_[]$ \T1/lmr/m/n/9 (+20) con co-
+rrec-ción
+ []
+
+[63
+
+]
+LaTeX Info: Redefining \. on input line 1892.
+LaTeX Info: Redefining \% on input line 1892.
+[64]
+LaTeX Info: Redefining \. on input line 1921.
+LaTeX Info: Redefining \% on input line 1921.
+[65]
+Underfull \hbox (badness 1762) in paragraph at lines 1948--1953
+\T1/lmtt/m/n/12 class_weight='balanced' \T1/lmr/m/n/12 (+20) en re-gre-sión lo-
+gís-ti-ca, Ran-dom Fo-rest y
+ []
+
+LaTeX Info: Redefining \. on input line 1953.
+LaTeX Info: Redefining \% on input line 1953.
+[66]
+Underfull \hbox (badness 10000) in paragraph at lines 2010--2010
+[]|\T1/lmtt/m/n/9 C $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 10[]\OML/lmm/m/it/
+9 ; \OT1/lmr/m/n/9 (+20) 5[]10[]\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 10[]\OML
+/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 5[]10[]\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20
+) 10[]\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 5[]10[]\OML/lmm/m/it/9 ; \OT1/lmr/
+m/n/9 (+20) 0[]1\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 0[]5\OML/lmm/m/it/9 ; \O
+T1/lmr/m/n/9 (+20) 1\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 5\OML/lmm/m/it/9 ; \
+OT1/lmr/m/n/9 (+20) 10\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 50\OMS/lmsy/m/n/9 
+g$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2010--2010
+[]|\T1/lmtt/m/n/9 n_estimators $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 300\OML
+/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 400\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 50
+0\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 600\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+2
+0) 700\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 850\OML/lmm/m/it/9 ; \OT1/lmr/m/n/
+9 (+20) 1000\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/9 (+20) ; \T1/lmtt/m/n/9 max_depth $\
+OMS/lmsy/m/n/9 2$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2010--2010
+$\OMS/lmsy/m/n/9 f$\T1/lmr/m/n/9 (+20) None$\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+
+20) 5\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 10\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 
+(+20) 20\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 30\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/
+9 (+20) ; \T1/lmtt/m/n/9 min_samples_leaf $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+
+20) 1\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 2\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (
++20) 5\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/9 (+20) ; \T1/lmtt/m/n/9 max_features
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2010--2010
+[]|\T1/lmtt/m/n/9 n_estimators $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 300\OML
+/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 400\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 50
+0\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 600\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+2
+0) 750\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 900\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/9
+ (+20) ; \T1/lmtt/m/n/9 max_depth $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 3\OM
+L/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 5\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 7\O
+MS/lmsy/m/n/9 g$\T1/lmr/m/n/9 (+20) ;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2010--2010
+\T1/lmtt/m/n/9 learning_rate $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 0[]005\OM
+L/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 0[]01\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20)
+ 0[]03\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 0[]1\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/
+9 (+20) ; \T1/lmtt/m/n/9 subsample $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 0[]
+6\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 0[]8\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+
+20) 1[]0\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/9 (+20) ;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2010--2010
+[]|\T1/lmtt/m/n/9 iterations $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 500\OML/l
+mm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 1000\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/9 (+20) ; \T
+1/lmtt/m/n/9 depth $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 4\OML/lmm/m/it/9 ; 
+\OT1/lmr/m/n/9 (+20) 5\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 6\OML/lmm/m/it/9 ;
+ \OT1/lmr/m/n/9 (+20) 7\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/9 (+20) ; \T1/lmtt/m/n/9 l
+earning_rate
+ []
+
+
+Underfull \hbox (badness 3989) in paragraph at lines 2010--2010
+$\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 0[]01\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 
+(+20) 0[]03\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 0[]05\OML/lmm/m/it/9 ; \OT1/l
+mr/m/n/9 (+20) 0[]1\OMS/lmsy/m/n/9 g$\T1/lmr/m/n/9 (+20) ; \T1/lmtt/m/n/9 l2_le
+af_reg $\OMS/lmsy/m/n/9 2 f\OT1/lmr/m/n/9 (+20) 1\OML/lmm/m/it/9 ; \OT1/lmr/m/n
+/9 (+20) 5\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 (+20) 15\OMS/lmsy/m/n/9 g$\T1/lmr/m/
+n/9 (+20) ; \T1/lmtt/m/n/9 bagging_temperature
+ []
+
+LaTeX Info: Redefining \. on input line 2023.
+LaTeX Info: Redefining \% on input line 2023.
+[67]
+Overfull \hbox (41.27243pt too wide) in paragraph at lines 2024--2025
+[]\T1/lmr/bx/n/12 (-20) Regresión iso-tó-ni-ca\T1/lmr/m/n/12 (-20) : ajus-te mo
+-nó-tono no pa-ra-mé-tri-co (\T1/lmtt/m/n/12 IsotonicRegression
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2086--2086
+[]|\T1/lmtt/m/n/9 pf_min\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 diuresis_ml_kg_6h\
+T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 rr_max\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 
+sofa_max\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 hr_media\T1/lmr/m/n/9 (+20) ,
+ []
+
+
+Underfull \hbox (badness 2285) in paragraph at lines 2086--2086
+[]|\T1/lmtt/m/n/9 pf_min\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 map_min\T1/lmr/m/n
+/9 (+20) , \T1/lmtt/m/n/9 diuresis_ml_kg_6h\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9
+ rr_max\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 spo2_min\T1/lmr/m/n/9 (+20) , \T1/l
+mtt/m/n/9 hr_media\T1/lmr/m/n/9 (+20) ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2086--2086
+[]|\T1/lmtt/m/n/9 pf_min\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 map_min\T1/lmr/m/n
+/9 (+20) , \T1/lmtt/m/n/9 diuresis_ml_kg_6h\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9
+ hr_media\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 sofa_max\T1/lmr/m/n/9 (+20) ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2086--2086
+[]|\T1/lmtt/m/n/9 map_min\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 pf_min\T1/lmr/m/n
+/9 (+20) , \T1/lmtt/m/n/9 diuresis_ml_kg_6h\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9
+ spo2_min\T1/lmr/m/n/9 (+20) ,
+ []
+
+
+Underfull \hbox (badness 5091) in paragraph at lines 2086--2086
+[]|\T1/lmtt/m/n/9 pf_min\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 temp_min\T1/lmr/m/
+n/9 (+20) , \T1/lmtt/m/n/9 diuresis_ml_kg_12h\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n
+/9 bicarbonato_min\T1/lmr/m/n/9 (+20) , \T1/lmtt/m/n/9 rr_max\T1/lmr/m/n/9 (+20
+) ,
+ []
+
+LaTeX Info: Redefining \. on input line 2094.
+LaTeX Info: Redefining \% on input line 2094.
+[68]
+Underfull \hbox (badness 10000) in paragraph at lines 2162--2162
+[]|\T1/lmtt/m/n/9 iterations\T1/lmr/m/n/9 (+20) =500, \T1/lmtt/m/n/9 depth\T1/l
+mr/m/n/9 (+20) =4, \T1/lmtt/m/n/9 learning_rate\T1/lmr/m/n/9 (+20) =0,01,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2162--2162
+[]|\T1/lmtt/m/n/9 n_estimators\T1/lmr/m/n/9 (+20) =300, \T1/lmtt/m/n/9 max_dept
+h\T1/lmr/m/n/9 (+20) =3, \T1/lmtt/m/n/9 learning_rate\T1/lmr/m/n/9 (+20) =0,01,
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2162--2162
+\T1/lmtt/m/n/9 subsample\T1/lmr/m/n/9 (+20) =0,6, \T1/lmtt/m/n/9 colsample_bytr
+ee\T1/lmr/m/n/9 (+20) =1,0, \T1/lmtt/m/n/9 reg_lambda\T1/lmr/m/n/9 (+20) =10,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2162--2162
+[]|\T1/lmtt/m/n/9 n_estimators\T1/lmr/m/n/9 (+20) =300, \T1/lmtt/m/n/9 max_dept
+h\T1/lmr/m/n/9 (+20) =3, \T1/lmtt/m/n/9 learning_rate\T1/lmr/m/n/9 (+20) =0,005
+,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2162--2162
+\T1/lmtt/m/n/9 subsample\T1/lmr/m/n/9 (+20) =0,6, \T1/lmtt/m/n/9 colsample_bytr
+ee\T1/lmr/m/n/9 (+20) =0,8, \T1/lmtt/m/n/9 reg_lambda\T1/lmr/m/n/9 (+20) =10,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2162--2162
+[]|\T1/lmtt/m/n/9 iterations\T1/lmr/m/n/9 (+20) =500, \T1/lmtt/m/n/9 depth\T1/l
+mr/m/n/9 (+20) =4, \T1/lmtt/m/n/9 learning_rate\T1/lmr/m/n/9 (+20) =0,01,
+ []
+
+LaTeX Info: Redefining \. on input line 2168.
+LaTeX Info: Redefining \% on input line 2168.
+[69]
+LaTeX Info: Redefining \. on input line 2208.
+LaTeX Info: Redefining \% on input line 2208.
+[70]
+LaTeX Info: Redefining \. on input line 2257.
+LaTeX Info: Redefining \% on input line 2257.
+[71]
+<img/significancia_global_v4p.png, id=827, 800.7516pt x 858.0858pt>
+File: img/significancia_global_v4p.png Graphic file (type png)
+<use img/significancia_global_v4p.png>
+Package pdftex.def Info: img/significancia_global_v4p.png  used on input line 2
+272.
+(pdftex.def)             Requested size: 122.5628pt x 131.33907pt.
+<img/significancia_global_v4.png, id=828, 800.7516pt x 858.0858pt>
+File: img/significancia_global_v4.png Graphic file (type png)
+<use img/significancia_global_v4.png>
+Package pdftex.def Info: img/significancia_global_v4.png  used on input line 22
+76.
+(pdftex.def)             Requested size: 122.5628pt x 131.33907pt.
+<img/significancia_global_v4l.png, id=829, 810.8694pt x 858.0858pt>
+File: img/significancia_global_v4l.png Graphic file (type png)
+<use img/significancia_global_v4l.png>
+Package pdftex.def Info: img/significancia_global_v4l.png  used on input line 2
+280.
+(pdftex.def)             Requested size: 122.5628pt x 129.6893pt.
+<img/Grafica_OOF_Corto_3_12_CAT.png, id=832, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Corto_3_12_CAT.png Graphic file (type png)
+<use img/Grafica_OOF_Corto_3_12_CAT.png>
+Package pdftex.def Info: img/Grafica_OOF_Corto_3_12_CAT.png  used on input line
+ 2297.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Corto_3_12_XGB.png, id=833, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Corto_3_12_XGB.png Graphic file (type png)
+<use img/Grafica_OOF_Corto_3_12_XGB.png>
+Package pdftex.def Info: img/Grafica_OOF_Corto_3_12_XGB.png  used on input line
+ 2298.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Corto_3_12_RF.png, id=834, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Corto_3_12_RF.png Graphic file (type png)
+<use img/Grafica_OOF_Corto_3_12_RF.png>
+Package pdftex.def Info: img/Grafica_OOF_Corto_3_12_RF.png  used on input line 
+2299.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Corto_3_12_LGBM.png, id=835, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Corto_3_12_LGBM.png Graphic file (type png)
+<use img/Grafica_OOF_Corto_3_12_LGBM.png>
+Package pdftex.def Info: img/Grafica_OOF_Corto_3_12_LGBM.png  used on input lin
+e 2300.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Corto_3_12_NB.png, id=836, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Corto_3_12_NB.png Graphic file (type png)
+<use img/Grafica_OOF_Corto_3_12_NB.png>
+Package pdftex.def Info: img/Grafica_OOF_Corto_3_12_NB.png  used on input line 
+2301.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Medio_6_24_XGB.png, id=837, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Medio_6_24_XGB.png Graphic file (type png)
+<use img/Grafica_OOF_Medio_6_24_XGB.png>
+Package pdftex.def Info: img/Grafica_OOF_Medio_6_24_XGB.png  used on input line
+ 2308.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Medio_6_24_CAT.png, id=838, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Medio_6_24_CAT.png Graphic file (type png)
+<use img/Grafica_OOF_Medio_6_24_CAT.png>
+Package pdftex.def Info: img/Grafica_OOF_Medio_6_24_CAT.png  used on input line
+ 2309.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Medio_6_24_RF.png, id=839, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Medio_6_24_RF.png Graphic file (type png)
+<use img/Grafica_OOF_Medio_6_24_RF.png>
+Package pdftex.def Info: img/Grafica_OOF_Medio_6_24_RF.png  used on input line 
+2310.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Medio_6_24_LGBM.png, id=840, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Medio_6_24_LGBM.png Graphic file (type png)
+<use img/Grafica_OOF_Medio_6_24_LGBM.png>
+Package pdftex.def Info: img/Grafica_OOF_Medio_6_24_LGBM.png  used on input lin
+e 2311.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Medio_6_24_LR.png, id=841, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Medio_6_24_LR.png Graphic file (type png)
+<use img/Grafica_OOF_Medio_6_24_LR.png>
+Package pdftex.def Info: img/Grafica_OOF_Medio_6_24_LR.png  used on input line 
+2312.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Medio_6_24_NB.png, id=842, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Medio_6_24_NB.png Graphic file (type png)
+<use img/Grafica_OOF_Medio_6_24_NB.png>
+Package pdftex.def Info: img/Grafica_OOF_Medio_6_24_NB.png  used on input line 
+2313.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Largo_12_48_XGB.png, id=843, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Largo_12_48_XGB.png Graphic file (type png)
+<use img/Grafica_OOF_Largo_12_48_XGB.png>
+Package pdftex.def Info: img/Grafica_OOF_Largo_12_48_XGB.png  used on input lin
+e 2320.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Largo_12_48_CAT.png, id=844, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Largo_12_48_CAT.png Graphic file (type png)
+<use img/Grafica_OOF_Largo_12_48_CAT.png>
+Package pdftex.def Info: img/Grafica_OOF_Largo_12_48_CAT.png  used on input lin
+e 2321.
+(pdftex.def)             Requested size: 183.83836pt x 59.57826pt.
+<img/Grafica_OOF_Largo_12_48_RF.png, id=845, 1293.3921pt x 419.166pt>
+File: img/Grafica_OOF_Largo_12_48_RF.png Graphic file (type png)
+<use img/Grafica_OOF_Largo_12_48_RF.png>
+Package pdftex.def Info: img/Grafica_OOF_Largo_12_48_RF.
