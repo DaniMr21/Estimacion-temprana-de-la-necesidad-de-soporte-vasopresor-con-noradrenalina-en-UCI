@@ -152,7 +152,7 @@ metricas$Modelo <- factor(
 metricas <- metricas[order(metricas$Ventana, metricas$Modelo), ]
 
 tabla_interna <- data.frame(
-  Vent. = as.character(metricas$Ventana),
+  Ventana = as.character(metricas$Ventana),
   Modelo = as.character(metricas$Modelo),
   Vars = metricas$n_vars,
   `AUC-ROC` = fmt_pm(metricas$AUC_ROC, metricas$AUC_ROC_std),
@@ -164,23 +164,53 @@ tabla_interna <- data.frame(
   check.names = FALSE
 )
 
+titulos_ventana <- c(
+  "Corta" = "Ventana corta (3--12 h)",
+  "Media" = "Ventana media (6--24 h)",
+  "Larga" = "Ventana larga (12--48 h)"
+)
+
 cat("\\begin{table}[htbp]\n")
 cat("\\centering\n")
 cat("\\tiny\n")
-cat("\\setlength{\\tabcolsep}{1.4pt}\n")
-cat("\\caption{rendimiento interno de los seis algoritmos base evaluados en MIMIC-IV mediante validación cruzada anidada. Las métricas se muestran como media $\\pm$ desviación estándar entre folds externos.}\n")
+cat("\\setlength{\\tabcolsep}{2.2pt}\n")
+cat("\\renewcommand{\\arraystretch}{1.12}\n")
+cat("\\caption{Rendimiento interno de los seis algoritmos base evaluados en MIMIC-IV mediante validación cruzada anidada. Las métricas se muestran como media $\\pm$ desviación estándar entre folds externos.}\n")
 cat("\\label{tab:validacion-interna-completa}\n")
 cat("\\resizebox{0.99\\textwidth}{!}{%\n")
+cat("\\begin{tabular}{l c c c c c c c}\n")
+cat("\\toprule\n")
+cat("\\textbf{Modelo} & \\textbf{Vars} & \\textbf{AUC-ROC} & \\textbf{AUC-PR} & \\textbf{Brier} & \\textbf{BSS} & \\textbf{ECE} & \\textbf{LogLoss} \\\\\n")
+cat("\\midrule\n")
 
-print(knitr::kable(
-  tabla_interna,
-  format = "latex",
-  booktabs = TRUE,
-  escape = FALSE,
-  row.names = FALSE,
-  align = c("l", "l", "c", "c", "c", "c", "c", "c", "c")
-))
+for (ventana_actual in c("Corta", "Media", "Larga")) {
+  bloque <- tabla_interna[tabla_interna$Ventana == ventana_actual, ]
 
+  if (nrow(bloque) == 0) next
+
+  cat("\\multicolumn{8}{l}{\\textbf{", titulos_ventana[ventana_actual], "}} \\\\\n", sep = "")
+
+  for (i in seq_len(nrow(bloque))) {
+    cat(
+      bloque$Modelo[i], " & ",
+      bloque$Vars[i], " & ",
+      bloque$`AUC-ROC`[i], " & ",
+      bloque$`AUC-PR`[i], " & ",
+      bloque$Brier[i], " & ",
+      bloque$BSS[i], " & ",
+      bloque$ECE[i], " & ",
+      bloque$LogLoss[i], " \\\\\n",
+      sep = ""
+    )
+  }
+
+  if (ventana_actual != "Larga") {
+    cat("\\midrule\n")
+  }
+}
+
+cat("\\bottomrule\n")
+cat("\\end{tabular}%\n")
 cat("}\n")
 cat("\\end{table}\n")
 ```
@@ -226,12 +256,15 @@ La @fig-calibracion-xgb-medio muestra la curva de calibración y la distribució
 
 ![curvas de calibración y distribución de probabilidades de XGBoost en la ventana media, antes y después de la recalibración mediante Platt regularizado.](img/verificacion_calibracion_medio_xgb.png){#fig-calibracion-xgb-medio width=90%}
 
-Tras esta fase, los modelos preseleccionados en MIMIC-IV fueron CatBoost en la ventana corta; XGBoost recalibrado y CatBoost en la ventana media; y XGBoost y CatBoost en la ventana larga. 
-Estos modelos no constituyeron todavía la selección final del dashboard, sino el conjunto candidato que se sometió a los análisis posteriores de interpretabilidad, subgrupos y validación externa.
+La preselección en cada ventana no se basó en una única métrica, sino en la combinación de la discriminación y la calibración (Tabla \ref{tab:validacion-interna-completa}) con la coherencia de 
+las curvas \textit{out-of-fold} y de los diagramas SHAP, examinados para los seis algoritmos. Tras descartar los modelos con discriminación insuficiente, calibración inadecuada o atribuciones 
+SHAP poco coherentes con la fisiopatología, los modelos preseleccionados en MIMIC-IV fueron CatBoost en la ventana corta; XGBoost recalibrado y CatBoost en la ventana media; y XGBoost y CatBoost
+en la ventana larga. Estos modelos no constituyeron todavía la selección final del dashboard, sino el conjunto candidato sobre el que se realizaron los análisis de subgrupos y validación externa.
 
 #### Interpretabilidad de los modelos preseleccionados
 
-Los diagramas de SHAP tipo *beeswarm* resultantes se presentan en la @fig-shap-candidatos-1 para los horizontes corto y medio, y en la @fig-shap-candidatos-2 para el horizonte largo.
+Los diagramas de SHAP tipo *beeswarm* de los modelos preseleccionados se presentan en la @fig-shap-candidatos-1 para los horizontes corto y medio, y en la @fig-shap-candidatos-2 para el
+horizonte largo.
 
 ::: {#fig-shap-candidatos-1 layout-ncol=2}
 ![Corta 3--12 h: CatBoost](img/SHAP_Corto_3_12_CAT.png){#fig-shap-res-corto-cat}
@@ -251,7 +284,7 @@ diagramas SHAP tipo *beeswarm* de los modelos preseleccionados en las ventanas c
 diagramas SHAP tipo *beeswarm* de los modelos preseleccionados en la ventana larga.
 :::
 
-En conjunto, los diagramas SHAP mostraron que los modelos basaban sus predicciones en patrones clínicamente coherentes, asignando mayor riesgo a perfiles de mayor gravedad 
+En conjunto, los diagramas SHAP mostraron que estos modelos basaban sus predicciones en patrones clínicamente coherentes, asignando mayor riesgo a perfiles de mayor gravedad 
 fisiológica, peor situación respiratoria, mayor compromiso hemodinámico o mayor soporte clínico.
 
 #### Análisis por subgrupos según sepsis
