@@ -33,7 +33,7 @@ En la ventana corta, CatBoost no superó a SOFA en la muestra multicéntrica, lo
  fotografía muy inicial del paciente, condicionada por el motivo de ingreso, las primeras intervenciones y registros aún incompletos, lo que dificulta identificar de forma robusta a quién 
  acabará requiriendo soporte vasopresor.
 
-En la ventana media, XGBoost calibrado y CatBoost igualaron prácticamente el rendimiento de SOFA. Aunque no lo superan, aproximan su capacidad discriminativa combinando variables fisiológicas, 
+En la ventana media, XGBoost recalibrado y CatBoost igualaron prácticamente el rendimiento de SOFA. Aunque no lo superan, aproximan su capacidad discriminativa combinando variables fisiológicas, 
 analíticas y de soporte, capturando parte de la evolución temprana del paciente. Esta ventana conserva interés para el *dashboard* porque permite ofrecer una estimación probabilística calibrada 
 y explicaciones individualizadas mediante SHAP, elementos que SOFA por sí solo no proporciona.
 
