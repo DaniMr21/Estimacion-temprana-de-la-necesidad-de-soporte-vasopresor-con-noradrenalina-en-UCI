@@ -60,17 +60,17 @@ knitr:
 
 \noindent\includegraphics[width=\textwidth]{CabeceraEPS.png}\vspace{1cm}
 
-\noindent D. \nombreTutor, profesor/a del departamento de Ingeniería Informática del área de Lenguajes Informáticos.
+\noindent D. \nombreTutor, profesor del departamento de Ingeniería Informática del área de Lenguajes Informáticos.
 \noindent D. \nombreTutorb, médico intensivista del Hospital Universitario de Burgos.
 \noindent D. \nombreTutorc, médico intensivista del Hospital Universitario de Burgos.
 
-\noindent Expone/n:
+\noindent Exponen:
 
-\noindent Que el/la alumno/a D. \nombre, con DNI \dni, ha realizado el Trabajo
+\noindent Que el alumno D. \nombre, con DNI \dni, ha realizado el Trabajo
 final de Grado en Ingeniería de la Salud titulado \textit{Estimación temprana de la necesidad de soporte vasopresor con noradrenalina en UCI mediante aprendizaje automático interpretable}.
 
-\noindent Y que dicho trabajo ha sido realizado por el/la alumno/a bajo la
-dirección del/los que suscribe/n.
+\noindent Y que dicho trabajo ha sido realizado por el alumno bajo la
+dirección de los que suscriben.
 
 \begin{center}
   En Burgos, a {\large \today}

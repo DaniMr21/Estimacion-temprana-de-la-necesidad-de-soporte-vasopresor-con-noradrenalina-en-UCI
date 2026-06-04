@@ -17,11 +17,12 @@ Sin embargo, a diferencia de aquel estudio, los modelos desarrollados en este tr
 En el análisis del subgrupo de sepsis (Tabla \ref{tab:subgrupos-sepsis}), se observó que el rendimiento discriminativo fue sistemáticamente superior en el subgrupo de pacientes sépticos que en los no 
 sépticos en las tres ventanas temporales analizadas. Esta diferencia fue especialmente evidente en el horizonte medio (6–24 h), donde XGBoost recalibrado alcanzó un AUC-ROC de 0,694 y un AUC-PR
  de 0,287 en pacientes sépticos, en contraste con el 0,667 y 0,173 registrado en pacientes no sépticos. Este patrón es plenamente coherente con la estrecha relación fisiopatológica 
-existente entre el síndrome séptico, el desarrollo de disfunción orgánica distributiva y la necesidad de soporte vasopresor. No obstante, los clasificadores mantuvieron una capacidad 
-discriminativa aceptable en pacientes sin sospecha de sepsis activa, reportando un AUC-ROC de 0,605 en la ventana corta, 0,667 en la media y 0,630 en la larga (Tabla \ref{tab:subgrupos-sepsis}). Este hallazgo 
-respalda la hipótesis de que el algoritmo no se limita a memorizar un patrón unívoco de shock séptico, sino que es capaz de identificar señales generales y multiorgánicas de deterioro 
-hemodinámico en el paciente crítico. No obstante, esta interpretación debe matizarse, ya que las diferencias de prevalencia del evento entre subgrupos pueden influir en las métricas observadas, 
-especialmente en AUC-PR, y facilitar parcialmente la identificación de patrones en los grupos con mayor proporción de pacientes tratados con noradrenalina.
+existente entre el síndrome séptico, el desarrollo de disfunción orgánica distributiva y la necesidad de soporte vasopresor. No obstante, los clasificadores mantuvieron una capacidad discriminativa 
+modesta en pacientes sin sospecha de sepsis activa, con valores de AUC-ROC por encima del azar en las tres ventanas: 0,605 en la ventana corta, 0,667 en la media y 0,630 en la larga
+(Tabla \ref{tab:subgrupos-sepsis}). Este hallazgo respalda la hipótesis de que el algoritmo no se limita a memorizar un patrón unívoco de shock séptico, sino que es capaz 
+de identificar señales generales y multiorgánicas de deterioro hemodinámico en el paciente crítico. No obstante, esta interpretación debe matizarse, ya que las diferencias 
+de prevalencia del evento entre subgrupos pueden influir en las métricas observadas, especialmente en AUC-PR, y facilitar parcialmente la identificación de patrones en los 
+grupos con mayor proporción de pacientes tratados con noradrenalina.
 
 Aunque SOFA no es una escala diseñada para predecir la necesidad de noradrenalina, constituye una referencia clínica razonable porque resume la disfunción orgánica y se emplea habitualmente para
  caracterizar la gravedad del paciente crítico. Por tanto, la comparación directa con el índice SOFA permite contextualizar si el algoritmo aporta información adicional respecto a una medida 

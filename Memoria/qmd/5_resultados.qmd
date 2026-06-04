@@ -457,7 +457,9 @@ En la ventana corta, CatBoost obtuvo un AUC-ROC de 0,630 frente a 0,642 de SOFA,
 0,658 y 0,653 frente a 0,590, respectivamente. Estas diferencias fueron estadísticamente significativas, con $\Delta$AUC = +0,068 ($p < 0{,}001$) para XGBoost y $\Delta$AUC = +0,064 
 ($p = 0{,}003$) para CatBoost.
 
-Las curvas ROC y de calibración de los modelos evaluados en eICU-CRD se presentan en la @fig-validacion-externa-principal.
+Las curvas ROC y de calibración de una selección representativa de los modelos evaluados externamente, mostrando un modelo por ventana temporal, 
+se presentan en la @fig-validacion-externa-principal. Las métricas completas de los cinco modelos evaluados en eICU-CRD se recogen en las 
+Tablas \ref{tab:validacion-externa-discr} y \ref{tab:validacion-externa-prob}.
 
 ::: {#fig-validacion-externa-principal layout-ncol=1}
 
@@ -467,7 +469,8 @@ Las curvas ROC y de calibración de los modelos evaluados en eICU-CRD se present
 
 ![Validación externa en la ventana larga: XGBoost.](img/validacion_externa_Largo_12_48.png){#fig-ext-largo-xgb width=86%}
 
-curvas ROC y de calibración de modelos evaluados externamente en eICU-CRD.
+curvas ROC y de calibración en eICU-CRD de una selección representativa de modelos evaluados externamente, mostrando un modelo por ventana temporal: CatBoost en la ventana 
+corta, XGBoost recalibrado en la ventana media y XGBoost en la ventana larga.
 :::
 
 Además de las métricas agregadas, se revisó la interpretabilidad post-hoc en la cohorte externa mediante valores SHAP. Este análisis permitió comprobar si los modelos mantenían patrones de atribución clínicamente razonables al aplicarse sobre una base de datos distinta de MIMIC-IV. Los diagramas SHAP de los modelos se presentan en la @fig-shap-eicu-principal, mientras que los correspondientes a CatBoost en las ventanas media y larga se muestran como análisis complementario en la @fig-shap-eicu-catboost-complementario.
