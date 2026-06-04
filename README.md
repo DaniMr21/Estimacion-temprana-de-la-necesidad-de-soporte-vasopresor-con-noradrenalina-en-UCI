@@ -43,7 +43,7 @@ El trabajo incluye:
   * Figuras SHAP y comparaciones entre modelos/calibradores.
 * **`Pipeline/Experimentos/`**: Versiones intermedias del pipeline conservadas por trazabilidad histórica y por contener los pasos para la construcción de las cohortes y selección de variables.
 * **`Validacion_externa/eICU/`**: Material relacionado con la validación externa sobre eICU-CRD (scripts, consultas, tablas o figuras utilizados para evaluar los modelos de MIMIC-IV).
-* **`Dashboard/`**: Prototipo de la aplicación web desarrollado en **Streamlit**.
+* **`Dashboard/`**: Prototipo de la aplicación web desarrollado en Streamlit.
 * **`Archivo/`**: Pruebas preliminares y versiones antiguas del desarrollo de cohortes conservadas por trazabilidad histórica.
 
 ---
@@ -93,11 +93,11 @@ El dashboard interactivo tiene como objetivo mostrar de forma gráfica e interpr
 
 ## Datos clínicos y Reproducibilidad
 
-Debido a estrictas restricciones de uso y privacidad, **los datos originales de MIMIC-IV y eICU-CRD no se incluyen en este repositorio**.
+Debido a estrictas restricciones de uso y privacidad, los datos originales de MIMIC-IV y eICU-CRD no se incluyen en este repositorio.
 
 Para reproducir completamente este análisis es necesario:
-1. Realizar el curso de Ética en Investigación con Datos Humanos de CITI Program, disponer de acceso autorizado a **PhysioNet** y cumplir los acuerdos de uso correspondientes.
-2. Contar con un entorno de **Python** compatible (versión 3.12 en adelante)
+1. Realizar el curso de Ética en Investigación con Datos Humanos de CITI Program, disponer de acceso autorizado a PhysioNet y cumplir los acuerdos de uso correspondientes.
+2. Contar con un entorno de Python compatible (versión 3.12 en adelante)
 3. Descargar las bases de datos originales y adaptar las rutas locales en los scripts de la carpeta `Pipeline`.
 
 La reproducción del trabajo puede entenderse en dos niveles:
