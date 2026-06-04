@@ -129,7 +129,8 @@ observación siguieron exactamente el mismo criterio definido para la cohorte de
 
 Las variables predictoras se armonizaron con las utilizadas en MIMIC-IV, adaptando las consultas a la estructura específica de eICU-CRD. Se extrajeron las variables clínicas disponibles en la 
 cohorte externa y se agregaron dentro de cada ventana de observación mediante los mismos estadísticos definidos para la cohorte de desarrollo. El objetivo fue mantener la misma lógica temporal 
-y el mismo espacio de entrada requerido por los modelos.
+y el mismo espacio de entrada requerido por los modelos. La puntuación SOFA en eICU-CRD se reconstruyó de forma análoga a MIMIC-IV, aunque no idéntica, debido a diferencias en la disponibilidad 
+y estructura de las variables entre ambas bases de datos.
 
 Tras la extracción y armonización, se aplicó el mismo criterio de completitud estricta empleado en la cohorte de desarrollo, conservando únicamente las estancias con registros completos para 
 el conjunto de variables requerido por cada modelo. Los modelos entrenados sobre MIMIC-IV se aplicaron directamente sobre eICU-CRD, sin reajuste de hiperparámetros ni reentrenamiento, y su 
