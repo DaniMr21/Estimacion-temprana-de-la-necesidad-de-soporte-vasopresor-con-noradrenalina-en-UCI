@@ -123,7 +123,7 @@ metodológica del enfoque y su posible utilidad futura como herramienta de apoyo
 
 \renewcommand*\abstractname{Descriptores}
 \begin{abstract}
-Aprendizaje automático, Predicción, Dashboard, Sepsis, UCI, Noradrenalina, Vasopresor.
+Aprendizaje automático, Sepsis, Predicción, Dashboard, UCI, Noradrenalina, Vasopresor.
 \end{abstract}
 
 \clearpage

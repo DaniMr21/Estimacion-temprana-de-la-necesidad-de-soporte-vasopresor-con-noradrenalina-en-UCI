@@ -5,20 +5,20 @@
 
 Los valores de AUC-ROC y AUC-PR obtenidos deben interpretarse en el contexto de una tarea clínicamente compleja y ruidosa. El trabajo más próximo a este TFG, el de @duval2025, que predice 
 el inicio de vasopresores en pacientes sépticos sobre MIMIC-IV, alcanzó un AUC-ROC de 0,75 con un Random Forest, si bien en validación interna y sobre una cohorte restringida a sepsis.
- Los modelos desarrollados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de AUC-ROC de 0,62 a 0,70 según la ventana temporal evaluada (Tabla~\ref{tab:validacion-interna-completa}), 
+ Los modelos desarrollados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de AUC-ROC de 0,62 a 0,70 según la ventana temporal evaluada (Tabla \ref{tab:validacion-interna-completa}), 
  operando sobre una cohorte general de UCI sin restricción diagnóstica.
 
 Sin embargo, a diferencia de aquel estudio, los modelos desarrollados en este trabajo fueron sometidos a una validación externa estricta en una cohorte multicéntrica independiente
- (eICU-CRD), donde el rendimiento discriminativo se mantuvo en un rango de 0,63 a 0,67 (Tabla~\ref{tab:validacion-externa-discr}). Otros estudios han abordado problemas afines con datos temporales 
+ (eICU-CRD), donde el rendimiento discriminativo se mantuvo en un rango de 0,63 a 0,67 (Tabla \ref{tab:validacion-externa-discr}). Otros estudios han abordado problemas afines con datos temporales 
  de alta resolución o arquitecturas más complejas, como el modelo Transformer-LSTM de @jiang2025 para la estimación continua de dosis o el enfoque de @scheibner2022 para 
  predecir la respuesta a la vasopresina. Estas comparaciones, no obstante, deben hacerse con cautela: las cohortes, las etiquetas, los horizontes de predicción y los objetivos 
  clínicos difieren sustancialmente entre estudios, de modo que un AUC más alto no implica un mejor abordaje clínico del mismo problema.
 
-En el análisis del subgrupo de sepsis (Tabla~\ref{tab:subgrupos-sepsis}), se observó que el rendimiento discriminativo fue sistemáticamente superior en el subgrupo de pacientes sépticos que en los no 
+En el análisis del subgrupo de sepsis (Tabla \ref{tab:subgrupos-sepsis}), se observó que el rendimiento discriminativo fue sistemáticamente superior en el subgrupo de pacientes sépticos que en los no 
 sépticos en las tres ventanas temporales analizadas. Esta diferencia fue especialmente evidente en el horizonte medio (6–24 h), donde XGBoost recalibrado alcanzó un AUC-ROC de 0,694 y un AUC-PR
  de 0,287 en pacientes sépticos, en contraste con el 0,667 y 0,173 registrado en pacientes no sépticos. Este patrón es plenamente coherente con la estrecha relación fisiopatológica 
 existente entre el síndrome séptico, el desarrollo de disfunción orgánica distributiva y la necesidad de soporte vasopresor. No obstante, los clasificadores mantuvieron una capacidad 
-discriminativa aceptable en pacientes sin sospecha de sepsis activa, reportando un AUC-ROC de 0,605 en la ventana corta, 0,667 en la media y 0,630 en la larga (Tabla~\ref{tab:subgrupos-sepsis}). Este hallazgo 
+discriminativa aceptable en pacientes sin sospecha de sepsis activa, reportando un AUC-ROC de 0,605 en la ventana corta, 0,667 en la media y 0,630 en la larga (Tabla \ref{tab:subgrupos-sepsis}). Este hallazgo 
 respalda la hipótesis de que el algoritmo no se limita a memorizar un patrón unívoco de shock séptico, sino que es capaz de identificar señales generales y multiorgánicas de deterioro 
 hemodinámico en el paciente crítico. No obstante, esta interpretación debe matizarse, ya que las diferencias de prevalencia del evento entre subgrupos pueden influir en las métricas observadas, 
 especialmente en AUC-PR, y facilitar parcialmente la identificación de patrones en los grupos con mayor proporción de pacientes tratados con noradrenalina.
@@ -26,8 +26,8 @@ especialmente en AUC-PR, y facilitar parcialmente la identificación de patrones
 Aunque SOFA no es una escala diseñada para predecir la necesidad de noradrenalina, constituye una referencia clínica razonable porque resume la disfunción orgánica y se emplea habitualmente para
  caracterizar la gravedad del paciente crítico. Por tanto, la comparación directa con el índice SOFA permite contextualizar si el algoritmo aporta información adicional respecto a una medida 
  ampliamente utilizada en la práctica asistencial. Los modelos preseleccionados mostraron un incremento del AUC-ROC en todas las ventanas evaluadas dentro de la validación interna en MIMIC-IV 
- (Tabla~\ref{tab:subgrupos-sepsis}). Sin embargo, al evaluar este comportamiento en la muestra multicéntrica externa (eICU-CRD), el rendimiento resultó desigual según el horizonte temporal 
- analizado (Tabla~\ref{tab:validacion-externa-discr}).
+ (Tabla \ref{tab:subgrupos-sepsis}). Sin embargo, al evaluar este comportamiento en la muestra multicéntrica externa (eICU-CRD), el rendimiento resultó desigual según el horizonte temporal 
+ analizado (Tabla \ref{tab:validacion-externa-discr}).
 
 En la ventana corta, CatBoost no superó a SOFA en la muestra multicéntrica, lo que limita su utilidad práctica en este horizonte temporal. Una ventana de tres horas desde el ingreso ofrece una
  fotografía muy inicial del paciente, condicionada por el motivo de ingreso, las primeras intervenciones y registros aún incompletos, lo que dificulta identificar de forma robusta a quién 
@@ -38,7 +38,7 @@ analíticas y de soporte, capturando parte de la evolución temprana del pacient
 y explicaciones individualizadas mediante SHAP, elementos que SOFA por sí solo no proporciona.
 
 En la ventana larga, XGBoost y CatBoost superaron a SOFA de forma estadísticamente significativa en la validación externa, con una mejora de AUC-ROC de +0,068 para XGBoost ($p < 0{,}001$) y de 
-+0,063 para CatBoost ($p = 0{,}003$). Este constituye uno de los principales resultados positivos del trabajo; la mejora significativa frente a SOFA en una cohorte externa indica que los modelos 
++0,064 para CatBoost ($p = 0{,}003$). Este constituye uno de los principales resultados positivos del trabajo; la mejora significativa frente a SOFA en una cohorte externa indica que los modelos 
 capturaron información adicional y patrones dinámicos no resumidos de forma estática por la escala clínica. Este rendimiento desigual entre ventanas es coherente con la cantidad y estabilidad 
 de la información disponible en cada una, pero la ventana larga tiene una contrapartida: predice más tarde. Un modelo de 12–48 h puede ser más robusto y estar mejor calibrado, pero ofrece menos
  margen de anticipación que uno de 3–12 h. La elección de ventana no es, por tanto, solo una cuestión de rendimiento, sino del equilibrio entre anticipación y fiabilidad.
@@ -61,7 +61,7 @@ Por estos motivos, la selección final del dashboard quedó limitada a XGBoost r
  probabilidad mal calibrada puede inducir a una lectura errónea aunque la discriminación sea aceptable.
 
 La valoración preliminar del *dashboard* por parte de ocho facultativos de Medicina Intensiva del HUBU fue globalmente positiva, registrándose puntuaciones promedio elevadas en las tres 
-dimensiones evaluadas (@tbl-encuesta-usabilidad): 8,88 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica potencial. Estos resultados sugieren que el prototipo fue percibido
+dimensiones evaluadas (Tabla \ref{tab:encuesta-usabilidad}): 8,88 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica potencial. Estos resultados sugieren que el prototipo fue percibido
  como comprensible y potencialmente útil, aunque deben interpretarse con cautela por el tamaño reducido de la muestra y por tratarse de una evaluación exploratoria.
 
 Esta valoración no debe interpretarse como una validación clínica del sistema, sino como una evaluación preliminar de comprensión, explicabilidad percibida y utilidad potencial. 

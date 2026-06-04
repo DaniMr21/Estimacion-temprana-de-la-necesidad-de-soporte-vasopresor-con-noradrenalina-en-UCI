@@ -56,7 +56,7 @@ importancia por permutación de las variables predictoras en los seis algoritmos
 
 En la ventana corta, la regresión logística se omitió porque no presentó ninguna variable con contribución significativa según el análisis.
 
-La Tabla~\ref{tab:direccion-efecto} resume las principales variables descartadas por presentar una dirección ajustada no coherente con la interpretación clínica esperada. Los odds ratio corresponden a variables estandarizadas.
+La Tabla \ref{tab:direccion-efecto} resume las principales variables descartadas por presentar una dirección ajustada no coherente con la interpretación clínica esperada. Los odds ratio corresponden a variables estandarizadas.
 
 ```{=latex}
 \begin{table}[htbp]
@@ -86,7 +86,7 @@ Larga (12--48 h) & \texttt{gpt\_max} & 32,0 & 32,0 & 0,889 [0,791--0,999] \\
 #### Rendimiento interno de los modelos en MIMIC-IV
 
 Una vez consolidadas las cohortes y el espacio definitivo de variables, se evaluaron los seis algoritmos por ventana en su versión base sin recalibrar, exceptuando regresión logística de la 
-ventana corta, mediante el esquema de validación cruzada anidada. La Tabla~\ref{tab:validacion-interna-completa} resume los resultados analíticos de la evaluación interna en las tres ventanas 
+ventana corta, mediante el esquema de validación cruzada anidada. La Tabla \ref{tab:validacion-interna-completa} resume los resultados analíticos de la evaluación interna en las tres ventanas 
 temporales.
 
 ```{r tabla-interna-completa, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
@@ -194,7 +194,7 @@ Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-
 cercano al azar (AUC-ROC = 0,579), con peor estabilidad en la curva precisión-recall y una calibración alejada de la diagonal; en contraste, XGBoost en la ventana media mostró una discriminación
 superior, aunque con desviación inicial en la calibración que motivó su ajuste posterior. Conviene precisar que los valores de AUC-ROC mostrados en las curvas \textit{out-of-fold} de esta y las 
 siguientes figuras corresponden al área calculada sobre las predicciones \textit{out-of-fold} agrupadas de todas las particiones, por lo que pueden diferir ligeramente del AUC-ROC medio entre 
-folds externos recogido en la Tabla~\ref{tab:validacion-interna-completa}.
+folds externos recogido en la Tabla \ref{tab:validacion-interna-completa}.
 
 ::: {#fig-contraste-calidad layout-ncol=1}
 
@@ -256,10 +256,10 @@ fisiológica, peor situación respiratoria, mayor compromiso hemodinámico o may
 
 #### Análisis por subgrupos según sepsis
 
-La Tabla~\ref{tab:subgrupos-sepsis} resume el rendimiento discriminativo, probabilístico y de calibración de los modelos preseleccionados en cada ventana, evaluados sobre la cohorte global, los pacientes sépticos y los no sépticos. Se incluye además la puntuación SOFA global como referencia basal de comparación.
+La Tabla \ref{tab:subgrupos-sepsis} resume el rendimiento discriminativo, probabilístico y de calibración de los modelos preseleccionados en cada ventana, evaluados sobre la cohorte global, los pacientes sépticos y los no sépticos. Se incluye además la puntuación SOFA global como referencia basal de comparación.
 
 ```{=latex}
-\begin{table}[p]
+\begin{table}[htbp]
 \centering
 \scriptsize
 \caption{rendimiento de los modelos preseleccionados en MIMIC-IV según presencia o ausencia de sepsis, frente al SOFA como referencia basal. Ventana corta: CatBoost; ventana media: XGBoost recalibrado y CatBoost; ventana larga: XGBoost y CatBoost. Las métricas se calcularon mediante predicciones \textit{out-of-fold}.}
@@ -421,7 +421,7 @@ cat("\\end{table}\n")
 
 En la ventana corta, CatBoost obtuvo un AUC-ROC de 0,630 frente a 0,642 de SOFA, sin diferencia significativa ($p = 0{,}698$). En la ventana media, XGBoost recalibrado alcanzó un AUC-ROC de 
 0,662 y CatBoost de 0,669, valores próximos al obtenido por SOFA (0,663), también sin diferencias significativas. En la ventana larga, XGBoost y CatBoost superaron a SOFA, con AUC-ROC de 
-0,658 y 0,653 frente a 0,590, respectivamente. Estas diferencias fueron estadísticamente significativas, con $\Delta$AUC = +0,068 ($p < 0{,}001$) para XGBoost y $\Delta$AUC = +0,063 
+0,658 y 0,653 frente a 0,590, respectivamente. Estas diferencias fueron estadísticamente significativas, con $\Delta$AUC = +0,068 ($p < 0{,}001$) para XGBoost y $\Delta$AUC = +0,064 
 ($p = 0{,}003$) para CatBoost.
 
 Las curvas ROC y de calibración de los modelos evaluados en eICU-CRD se presentan en la @fig-validacion-externa-principal.
@@ -466,20 +466,28 @@ Tras la validación externa y la revisión de interpretabilidad, la selección f
 
 #### Prototipo de dashboard y encuesta de usabilidad
 
-Para valorar la comprensión, explicabilidad percibida y utilidad clínica del prototipo, se recogió una encuesta de usabilidad cumplimentada por ocho facultativos del servicio de Medicina 
-Intensiva del HUBU. Las puntuaciones se registraron en una escala de 1 a 10, donde valores más altos indican una valoración más favorable. 
-
-| Encuestado | Entendimiento | Explicabilidad | Utilidad clínica |
-|-----------:|--------------:|---------------:|-----------------:|
-| 1 | 10 | 10 | 10 |
-| 2 | 10 | 8 | 9 |
-| 3 | 10 | 10 | 8 |
-| 4 | 8 | 8 | 4 |
-| 5 | 10 | 7 | 10 |
-| 6 | 7 | 8 | 7 |
-| 7 | 8 | 7 | 6 |
-| 8 | 8 | 10 | 10 |
-: resultados individuales de la encuesta de satisfacción sobre el prototipo de dashboard. {#tbl-encuesta-usabilidad}
+```{=latex}
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\caption{resultados individuales de la encuesta de satisfacción sobre el prototipo de dashboard.}
+\label{tab:encuesta-usabilidad}
+\begin{tabular}{cccc}
+\hline
+\textbf{Encuestado} & \textbf{Entendimiento} & \textbf{Explicabilidad} & \textbf{Utilidad clínica} \\
+\hline
+1 & 10 & 10 & 10 \\
+2 & 10 & 8  & 9  \\
+3 & 10 & 10 & 8  \\
+4 & 8  & 8  & 4  \\
+5 & 10 & 7  & 10 \\
+6 & 7  & 8  & 7  \\
+7 & 8  & 7  & 6  \\
+8 & 8  & 10 & 10 \\
+\hline
+\end{tabular}
+\end{table}
+```
 
 Las valoraciones medias fueron de 8,88 en entendimiento, 8,50 en explicabilidad y 8,00 en utilidad clínica.
 

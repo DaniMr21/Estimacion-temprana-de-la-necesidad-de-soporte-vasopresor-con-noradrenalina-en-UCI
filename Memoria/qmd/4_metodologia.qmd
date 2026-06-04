@@ -32,7 +32,7 @@ definidas, como la procalcitonina y la proteína C reactiva.
 La puntuación SOFA y la presencia de sepsis se obtuvieron de las tablas derivadas `mimiciv_derived.sofa` y `mimiciv_derived.sepsis3`, generadas mediante los scripts oficiales del repositorio 
 MIT-LCP [@mimiccode]. Estas tablas implementan los criterios Sepsis-3 a partir de la combinación de sospecha de infección y disfunción orgánica medida mediante SOFA [@johnson2023; @mimiccode]. 
 
-Para el tratamiento de valores extremos se siguió una estrategia coherente con el preprocesamiento propuesto por Gupta et al. [@gupta2022mimic] para MIMIC-IV. Se aplicó una winsorización que sustituyó
+Para el tratamiento de valores extremos se siguió una estrategia coherente con el preprocesamiento propuesto por Gupta et al. [-@gupta2022mimic] para MIMIC-IV. Se aplicó una winsorización que sustituyó
  los valores situados por debajo del percentil 2 y por encima del percentil 98 por los límites correspondientes. La winsorización se aplicó sobre los estadísticos agregados por estancia y ventana
  temporal —media, mínimo y máximo— antes del análisis de correlación y de la selección final de variables.
 
