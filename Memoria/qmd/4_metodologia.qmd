@@ -155,6 +155,7 @@ qué variables han contribuido a aumentar o reducir la predicción en el caso ev
 Una decisión central del diseño fue evitar que el \textit{dashboard} funcionara como sistema de recomendación clínica. La interfaz no indica si debe iniciarse noradrenalina, no propone dosis, 
 no genera alarmas y no clasifica al paciente en categorías terapéuticas. El prototipo se planteó exclusivamente como una herramienta académica de visualización e interpretación del riesgo 
 estimado. Por ello, incorpora un aviso explícito indicando que no dispone de validación clínica prospectiva ni autorización regulatoria, y que no es apto para uso asistencial real.
+Las capturas del prototipo pueden consultarse en el *Apéndice D*.
 
 Para valorar la usabilidad inicial del prototipo se diseñó una encuesta exploratoria, anónima y de tratamiento confidencial, dirigida a facultativos del servicio de Medicina Intensiva del HUBU 
 que hubieran utilizado previamente el prototipo junto con el manual proporcionado. Fue completada por ocho intensivistas y constó de tres ítems puntuados de 1 («Completamente en desacuerdo») a 

@@ -434,7 +434,7 @@ Las curvas ROC y de calibración de los modelos evaluados en eICU-CRD se present
 
 ![Validación externa en la ventana larga: XGBoost.](img/validacion_externa_Largo_12_48.png){#fig-ext-largo-xgb width=86%}
 
-curvas ROC y de calibración de los modelos evaluados externamente en eICU-CRD.
+curvas ROC y de calibración de modelos evaluados externamente en eICU-CRD.
 :::
 
 Además de las métricas agregadas, se revisó la interpretabilidad post-hoc en la cohorte externa mediante valores SHAP. Este análisis permitió comprobar si los modelos mantenían patrones de atribución clínicamente razonables al aplicarse sobre una base de datos distinta de MIMIC-IV. Los diagramas SHAP de los modelos se presentan en la @fig-shap-eicu-principal, mientras que los correspondientes a CatBoost en las ventanas media y larga se muestran como análisis complementario en la @fig-shap-eicu-catboost-complementario.
@@ -447,7 +447,7 @@ Además de las métricas agregadas, se revisó la interpretabilidad post-hoc en 
 
 ![Ventana larga: XGBoost en eICU-CRD.](img/shap_eicu_largo_xgb.png){#fig-shap-eicu-largo-xgb width=84%}
 
-diagramas SHAP de los modelos evaluados en validación externa.
+diagramas SHAP de modelos evaluados en validación externa.
 :::
 
 ::: {#fig-shap-eicu-catboost-complementario layout-ncol=1}
