@@ -17,8 +17,8 @@ visualizar la probabilidad estimada y los factores clínicos con mayor contribuc
   \item Evaluar y comparar el rendimiento de distintos algoritmos de aprendizaje automático, como la regresión logística o XGBoost, mediante métricas de discriminación y 
   calibración.
 
-  \item Desarrollar un prototipo de \textit{dashboard} clínico interpretable orientado a la consulta individual. Para cada paciente mostrará la probabilidad estimada de requerir noradrenalina, 
-  los factores que más pesan en esa predicción y una contextualización del riesgo mediante percentiles respecto a la cohorte de referencia.
+  \item Desarrollar un prototipo de \textit{dashboard} clínico interpretable orientado a la consulta individual. Para cada paciente mostrará la probabilidad estimada de requerir 
+  soporte vasopresor con noradrenalina, los factores que más pesan en esa predicción y una contextualización del riesgo mediante percentiles respecto a la cohorte de referencia.
 
   \item Realizar una validación externa de los modelos sobre la base de datos eICU-CRD, una cohorte independiente de la empleada para el entrenamiento.
 

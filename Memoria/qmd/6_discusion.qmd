@@ -5,27 +5,28 @@
 
 Los valores de AUC-ROC y AUC-PR obtenidos deben interpretarse en el contexto de una tarea clínicamente compleja y ruidosa. El trabajo más próximo a este TFG, el de @duval2025, que predice 
 el inicio de vasopresores en pacientes sépticos sobre MIMIC-IV, alcanzó un AUC-ROC de 0,75 con un Random Forest, si bien en validación interna y sobre una cohorte restringida a sepsis.
- Los modelos desarrollados y seleccionados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de AUC-ROC de 0,62 a 0,70 según la ventana temporal 
- evaluada (Tabla 5.3), operando sobre una cohorte general de UCI sin restricción diagnóstica.
+ Los modelos desarrollados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de AUC-ROC de 0,62 a 0,70 según la ventana temporal evaluada (Tabla 5.3), 
+ operando sobre una cohorte general de UCI sin restricción diagnóstica.
 
 Sin embargo, a diferencia de aquel estudio, los modelos desarrollados en este trabajo fueron sometidos a una validación externa estricta en una cohorte multicéntrica independiente
- (eICU-CRD), donde el rendimiento discriminativo demostró robustez al mantenerse en un rango de 0,63 a 0,67 (Tabla 5.5). Otros estudios han abordado problemas afines con datos temporales 
+ (eICU-CRD), donde el rendimiento discriminativo se mantuvo en un rango de 0,63 a 0,67 (@tab:validacion-externa-discr). Otros estudios han abordado problemas afines con datos temporales 
  de alta resolución o arquitecturas más complejas, como el modelo Transformer-LSTM de @jiang2025 para la estimación continua de dosis o el enfoque de @scheibner2022 para 
  predecir la respuesta a la vasopresina. Estas comparaciones, no obstante, deben hacerse con cautela: las cohortes, las etiquetas, los horizontes de predicción y los objetivos 
  clínicos difieren sustancialmente entre estudios, de modo que un AUC más alto no implica un mejor abordaje clínico del mismo problema.
 
-En el análisis del subgrupo de sepsis (detallado en la Tabla 5.4), se observó que el rendimiento discriminativo fue sistemáticamente superior en el subgrupo de pacientes sépticos que en los no 
-sépticos en las tres ventanas temporales analizadas. Esta diferencia fue especialmente evidente en el horizonte medio (6–24 h), donde el modelo de clasificación alcanzó un AUC-ROC de 0,694 y un 
-AUC-PR de 0,287 en pacientes sépticos, en contraste con el 0,667 y 0,173 registrado en pacientes no sépticos. Este patrón es plenamente coherente con la estrecha relación fisiopatológica 
+En el análisis del subgrupo de sepsis (@tbl-subgrupos-sepsis), se observó que el rendimiento discriminativo fue sistemáticamente superior en el subgrupo de pacientes sépticos que en los no 
+sépticos en las tres ventanas temporales analizadas. Esta diferencia fue especialmente evidente en el horizonte medio (6–24 h), donde XGBoost recalibrado alcanzó un AUC-ROC de 0,694 y un AUC-PR
+ de 0,287 en pacientes sépticos, en contraste con el 0,667 y 0,173 registrado en pacientes no sépticos. Este patrón es plenamente coherente con la estrecha relación fisiopatológica 
 existente entre el síndrome séptico, el desarrollo de disfunción orgánica distributiva y la necesidad de soporte vasopresor. No obstante, los clasificadores mantuvieron una capacidad 
-discriminativa aceptable en pacientes sin sospecha de sepsis activa, reportando un AUC-ROC de 0,605 en la ventana corta, 0,667 en la media y 0,630 en la larga (Tabla 5.4). Este hallazgo 
+discriminativa aceptable en pacientes sin sospecha de sepsis activa, reportando un AUC-ROC de 0,605 en la ventana corta, 0,667 en la media y 0,630 en la larga (@tbl-subgrupos-sepsis). Este hallazgo 
 respalda la hipótesis de que el algoritmo no se limita a memorizar un patrón unívoco de shock séptico, sino que es capaz de identificar señales generales y multiorgánicas de deterioro 
 hemodinámico en el paciente crítico.
 
 Aunque SOFA no es una escala diseñada para predecir la necesidad de noradrenalina, constituye una referencia clínica razonable porque resume la disfunción orgánica y se emplea habitualmente para
  caracterizar la gravedad del paciente crítico. Por tanto, la comparación directa con el índice SOFA permite contextualizar si el algoritmo aporta información adicional respecto a una medida 
- ampliamente utilizada en la práctica asistencial. Los modelos principales mostraron un incremento del AUC-ROC en todas las ventanas evaluadas dentro de la validación interna en MIMIC-IV 
- (Tabla 5.4). Sin embargo, al evaluar este comportamiento en la muestra multicéntrica externa (eICU-CRD), el rendimiento resultó desigual según el horizonte temporal analizado (Tabla 5.5).
+ ampliamente utilizada en la práctica asistencial. Los modelos preseleccionados mostraron un incremento del AUC-ROC en todas las ventanas evaluadas dentro de la validación interna en MIMIC-IV 
+ (@tbl-subgrupos-sepsis). Sin embargo, al evaluar este comportamiento en la muestra multicéntrica externa (eICU-CRD), el rendimiento resultó desigual según el horizonte temporal 
+ analizado (@tab:validacion-externa-discr).
 
 En la ventana corta, CatBoost no superó a SOFA en la muestra multicéntrica, lo que limita su utilidad práctica en este horizonte temporal. Una ventana de tres horas desde el ingreso ofrece una
  fotografía muy inicial del paciente, condicionada por el motivo de ingreso, las primeras intervenciones y registros aún incompletos, lo que dificulta identificar de forma robusta a quién 
@@ -35,29 +36,31 @@ En la ventana media, XGBoost calibrado y CatBoost igualaron prácticamente el re
 analíticas y de soporte, capturando parte de la evolución temprana del paciente. Esta ventana conserva interés para el *dashboard* porque permite ofrecer una estimación probabilística calibrada 
 y explicaciones individualizadas mediante SHAP, elementos que SOFA por sí solo no proporciona.
 
-En la ventana larga, XGBoost y CatBoost superaron a SOFA de forma estadísticamente significativa en la validación externa, con una mejora de AUC-ROC de +0,068 para XGBoost ($p < 0,001$) y de 
-+0,063 para CatBoost ($p = 0,003$). Este constituye uno de los principales resultados positivos del trabajo; la mejora significativa frente a SOFA en una cohorte externa indica que los modelos 
+En la ventana larga, XGBoost y CatBoost superaron a SOFA de forma estadísticamente significativa en la validación externa, con una mejora de AUC-ROC de +0,068 para XGBoost ($p < 0{,}001$) y de 
++0,063 para CatBoost ($p = 0{,}003$). Este constituye uno de los principales resultados positivos del trabajo; la mejora significativa frente a SOFA en una cohorte externa indica que los modelos 
 capturaron información adicional y patrones dinámicos no resumidos de forma estática por la escala clínica. Este rendimiento desigual entre ventanas es coherente con la cantidad y estabilidad 
 de la información disponible en cada una, pero la ventana larga tiene una contrapartida: predice más tarde. Un modelo de 12–48 h puede ser más robusto y estar mejor calibrado, pero ofrece menos
  margen de anticipación que uno de 3–12 h. La elección de ventana no es, por tanto, solo una cuestión de rendimiento, sino del equilibrio entre anticipación y fiabilidad.
 
-La selección de los modelos finales no se basó únicamente en el AUC. Como señaló Box [-@box1976science], todos los modelos son simplificaciones imperfectas de la realidad: una diferencia 
-pequeña en una métrica no basta para justificar el uso de un modelo en un contexto clínico, donde la interpretabilidad es tan importante como la discriminación.
+La selección final de los modelos del dashboard no se basó únicamente en el AUC. Como señaló Box [-@box1976science], todos los modelos son simplificaciones imperfectas de la realidad: una 
+diferencia pequeña en una métrica no basta para justificar el uso de un modelo en un contexto clínico, donde la interpretabilidad y la calibración también condicionan la utilidad de la predicción.
 
-Este criterio fue decisivo en la comparación entre XGBoost y CatBoost. Aunque CatBoost mostró métricas competitivas en las ventanas media y larga, sus explicaciones SHAP resultaron menos 
-claras, con nubes de puntos más mezcladas y sin una separación nítida entre valores altos y bajos de algunas variables relevantes, lo que dificultaba interpretar la dirección del efecto 
-(como puede auditarse comparando los gráficos de la Figura 5.7 y la Figura 5.8). XGBoost, en cambio, mostró patrones de atribución más ordenados y clínicamente defendibles, en los que los
- valores compatibles con mayor gravedad —peor oxigenación, mayor disfunción orgánica, alteraciones hemodinámicas— tendían a desplazar la predicción hacia mayor riesgo de forma monótona.
+Este criterio fue decisivo en la comparación entre XGBoost y CatBoost. Aunque CatBoost mostró métricas competitivas en las ventanas media y larga, sus explicaciones SHAP resultaron menos claras,
+con nubes de puntos más mezcladas y sin una separación nítida entre valores altos y bajos de algunas variables relevantes, lo que dificultaba interpretar la dirección del efecto. 
+XGBoost, en cambio, mostró patrones de atribución más ordenados y clínicamente defendibles, en los que los valores compatibles con mayor gravedad —peor oxigenación, mayor disfunción orgánica o 
+alteraciones hemodinámicas— tendían a desplazar la predicción hacia mayor riesgo.
 
-Conviene matizar que la mezcla de colores en algunas variables, como la $\text{SpO}_2$ (ilustrada en los diagramas *beeswarm* de la Figura 5.8a y la Figura 5.10c), no implica necesariamente
- que el modelo haya aprendido una relación errónea. En pacientes críticos, una saturación elevada puede coexistir con mayor gravedad si el paciente recibe oxigenoterapia intensiva o ventilación
-  mecánica: la oxigenación observada depende entonces de la $\text{FiO}_2$, de la presión positiva aplicada y de la situación hemodinámica global, no solo del estado pulmonar subyacente. Por 
-  estos motivos se seleccionaron XGBoost calibrado en la ventana media y XGBoost en la ventana larga como modelos principales del *dashboard*. La calibración fue un criterio relevante: en un 
-  contexto clínico no basta con ordenar correctamente a los pacientes, sino que la probabilidad mostrada debe ser numéricamente interpretable, ya que una probabilidad mal calibrada puede 
-  inducir a una lectura errónea aunque la discriminación sea aceptable.
+Conviene matizar que la mezcla de colores en algunas variables, como la $\text{SpO}_2$ (ilustrada en los diagramas *beeswarm* de la Figura 5.8a y la Figura 5.10c), no implica necesariamente que
+ el modelo haya aprendido una relación errónea. En pacientes críticos, una saturación elevada puede coexistir con mayor gravedad si el paciente recibe oxigenoterapia intensiva o ventilación 
+ mecánica: la oxigenación observada depende entonces de la $\text{FiO}_2$, de la presión positiva aplicada y de la situación hemodinámica global, no solo del estado pulmonar subyacente.
+
+Por estos motivos, la selección final del dashboard quedó limitada a XGBoost recalibrado en la ventana media y XGBoost en la ventana larga. La ventana corta no se integró como modelo final porque
+ no mostró ventaja frente a SOFA en la validación externa. CatBoost se mantuvo como modelo comparativo dentro del análisis experimental, pero no como modelo final del prototipo. La calibración 
+ fue un criterio relevante: en un contexto clínico no basta con ordenar correctamente a los pacientes, sino que la probabilidad mostrada debe ser numéricamente interpretable, ya que una 
+ probabilidad mal calibrada puede inducir a una lectura errónea aunque la discriminación sea aceptable.
 
 La valoración preliminar del *dashboard* por parte de ocho facultativos de Medicina Intensiva del HUBU fue globalmente positiva, registrándose puntuaciones promedio elevadas en las tres 
-dimensiones evaluadas (Tabla 5.7): 8,88 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica potencial. Estos resultados sugieren que el prototipo fue percibido
+dimensiones evaluadas (@tbl-encuesta-usabilidad): 8,88 en entendimiento de la interfaz, 8,50 en explicabilidad y 8,00 en utilidad clínica potencial. Estos resultados sugieren que el prototipo fue percibido
  como comprensible y potencialmente útil, aunque deben interpretarse con cautela por el tamaño reducido de la muestra y por tratarse de una evaluación exploratoria.
 
 Esta valoración no debe interpretarse como una validación clínica del sistema, sino como una evaluación preliminar de comprensión, explicabilidad percibida y utilidad potencial. 
@@ -69,13 +72,19 @@ este tipo podría tener incluso mayor potencial en contextos previos al ingreso 
 pacientes con riesgo de deterioro y apoyar la identificación temprana de aquellos que podrían requerir valoración por UCI. Esta observación es relevante porque desplaza parcialmente el interés
  del *dashboard* desde el paciente ya ingresado en UCI hacia escenarios de cribado y vigilancia clínica más tempranos, donde el margen de actuación podría ser mayor.
 
-A pesar de la solidez del flujo experimental, es necesario reconocer diversas limitaciones estructurales. En primer lugar, respecto a las limitaciones en la estimación del rendimiento, 
-destaca el sesgo introducido por el criterio de completitud de los datos. Al entrenar y evaluar los modelos exclusivamente sobre una cohorte con registros completos (*complete-case analysis*),
- la tarea de discriminación puede verse favorecida; los casos positivos tienden a agrupar a pacientes con un deterioro fisiológico evidente y altamente monitorizados, mientras que los 
- negativos representan a individuos con menor disfunción orgánica pero con un nivel de monitorización equivalente. Como consecuencia de este diseño, cabe esperar que en un escenario de 
- aplicación real sobre la población general de la UCI el rendimiento discriminativo sufra una degradación respecto al obtenido en este estudio retrospectivo, dada la mayor presencia de casos 
- límite en la práctica asistencial [@rockenschaub2025]. La caída de rendimiento observada entre la validación interna y la externa es coherente con esta premisa: la revisión de @rockenschaub2025 documentó que los algoritmos predictivos aplicados en UCI pierden de media entre un 7 % y un 23 % de AUC-ROC al validarse en centros externos, de modo que la 
- moderada degradación registrada aquí entra dentro de los márgenes normales y no sugiere un sobreajuste anómalo.
+A pesar de la solidez del flujo experimental, es necesario reconocer diversas limitaciones estructurales. En primer lugar, respecto a la estimación del rendimiento, destaca el sesgo introducido
+ por el criterio de completitud de los datos. Al entrenar y evaluar los modelos exclusivamente sobre cohortes con registros completos (*complete-case analysis*), la tarea de discriminación puede
+  verse favorecida: los casos positivos tienden a agrupar a pacientes con un deterioro fisiológico evidente y altamente monitorizados, mientras que los negativos representan a individuos con
+   menor disfunción orgánica pero con un nivel de monitorización equivalente.
+
+Este efecto fue especialmente marcado en eICU-CRD, donde el filtro de completitud redujo las cohortes externas desde 125.124 a 789 estancias en la ventana corta, desde 122.922 a 1.396 en la 
+ventana media y desde 68.778 a 2.030 en la ventana larga (@tbl-completitud-eicu). Por tanto, la validación externa evalúa la transferencia del modelo sobre una subcohorte altamente monitorizada,
+ no sobre la totalidad de pacientes disponibles en eICU-CRD.
+
+Como consecuencia de este diseño, cabe esperar que en un escenario de aplicación real sobre la población general de la UCI el rendimiento discriminativo sufra una degradación respecto al obtenido
+ en este estudio retrospectivo, dada la mayor presencia de casos límite en la práctica asistencial [@rockenschaub2025]. La caída de rendimiento observada entre la validación interna y la externa
+  es coherente con esta premisa: la revisión de @rockenschaub2025 documentó que los algoritmos predictivos aplicados en UCI pierden de media entre un 7 % y un 23 % de AUC-ROC al validarse en 
+  centros externos, de modo que la moderada degradación registrada aquí entra dentro de los márgenes normales y no sugiere un sobreajuste anómalo.
 
 En segundo lugar, conviene considerar la naturaleza de los datos y de la etiqueta objetivo. Los modelos se entrenaron con variables tabulares agregadas y no con series continuas de alta 
 frecuencia. La prevalencia del evento fue baja (10–14 %), lo que contrae matemáticamente el AUC-PR alcanzable y limitaría la utilidad del modelo como sistema de cribado estricto, un compromiso 
@@ -94,5 +103,5 @@ relevante.
 Finalmente, la validación inicialmente prevista sobre datos reales del Hospital Universitario de Burgos no pudo incorporarse dentro del alcance de este trabajo debido a barreras técnicas de 
 extracción y armonización local, lo que deja pendiente la comprobación más relevante desde el punto de vista de transferencia al entorno clínico real del HUBU.
 
-En conjunto, estos modelos no están listos para un uso clínico extendido, pero el trabajo demuestra que es posible construir, con una metodología controlada, modelos que igualan o superan a 
-SOFA en determinados horizontes, validados externamente y con una lógica interna auditable. En ese sentido, constituye un primer paso razonable sobre el que apoyar desarrollos futuros.
+En conjunto, los modelos desarrollados no están listos para un uso clínico extendido, pero el trabajo demuestra que es posible construir, con una metodología controlada, modelos que igualan o 
+superan a SOFA en determinados horizontes, validados externamente y con una lógica interna auditable. En ese sentido, constituye un primer paso razonable sobre el que apoyar desarrollos futuros.

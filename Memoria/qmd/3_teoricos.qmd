@@ -14,7 +14,7 @@ y el intercambio gaseoso (relación PaO$_2$/FiO$_2$) \citep{hubu2025}. Esta apro
 
 El SOFA (\textit{Sequential Organ Failure Assessment}) cuantifica el grado de disfunción orgánica evaluando seis sistemas: respiratorio, coagulación, hepático, cardiovascular, neurológico y 
 renal. Cada componente se puntúa de 0 (normal) a 4 (disfunción grave) según umbrales clínicamente establecidos, y la puntuación total resulta de sumar el peor valor registrado en cada componente
-dentro de una ventana de 24 horas \citep{vincent1996}.
+ \citep{vincent1996}.
 
 Sin embargo, la traducción de estas variables analíticas y constantes vitales en una decisión terapéutica concreta, como el inicio de soporte vasopresor con noradrenalina, revela las limitaciones
 inherentes de los sistemas de puntuación tradicionales. El deterioro hemodinámico en el paciente crítico es un proceso dinámico, en el que pueden coexistir hipovolemia, vasoplejía, disfunción 
@@ -89,7 +89,7 @@ temporales estrictas, utilizar únicamente información disponible antes del eve
 De forma complementaria, \citet{balczewski2023} subrayan que la utilidad de los sistemas predictivos no depende únicamente de su rendimiento discriminativo, sino también del momento en que se genera
 la alerta respecto al inicio de la sepsis y de su viabilidad en el flujo asistencial real. Una alerta generada con demasiada antelación puede no coincidir con las
 intervenciones disponibles, mientras que una alerta excesivamente sensible incrementa la carga asistencial y favorece la fatiga de alarmas \citep{balczewski2023}. 
-Esta perspectiva es especialmente relevante en este trabajo, donde las tres ventanas temporales plantean un compromiso distinto entre anticipación clínica y disponibilidad de información.
+Esta perspectiva es especialmente relevante en este trabajo, donde las ventanas temporales definidas plantean un compromiso distinto entre anticipación clínica y disponibilidad de información.
 
 A partir de esta revisión, el nicho del presente TFG queda claramente definido. El interés del trabajo no reside únicamente en desarrollar un modelo predictivo adicional, 
 sino en abordar un problema clínico concreto y accionable: la estimación temprana de la necesidad de soporte vasopresor con noradrenalina en pacientes críticos a partir de variables disponibles 
