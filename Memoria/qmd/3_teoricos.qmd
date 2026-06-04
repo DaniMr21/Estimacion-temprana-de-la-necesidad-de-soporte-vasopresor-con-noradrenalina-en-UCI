@@ -19,14 +19,13 @@ renal. Cada componente se puntúa de 0 (normal) a 4 (disfunción grave) según u
 Sin embargo, la traducción de estas variables analíticas y constantes vitales en una decisión terapéutica concreta, como el inicio de soporte vasopresor con noradrenalina, revela las limitaciones
 inherentes de los sistemas de puntuación tradicionales. El deterioro hemodinámico en el paciente crítico es un proceso dinámico, en el que pueden coexistir hipovolemia, vasoplejía, disfunción 
 miocárdica y alteraciones de la perfusión periférica, con contribuciones variables a lo largo de la evolución clínica \citep{sanchez2026subphenotyping}. Además, la respuesta a intervenciones 
-previas, como la fluidoterapia, modifica de forma continua la probabilidad de requerir vasopresores y obliga a una reevaluación clínica frecuente \citep{prescott2026surviving}. Por consiguiente,
- la identificación temprana de la necesidad de soporte vasopresor con noradrenalina no puede reducirse a una única regla fija ni a un umbral aislado, sino que requiere integrar múltiples señales fisiológicas, 
- analíticas y de soporte. Esta complejidad justifica la exploración de metodologías capaces de combinar variables heterogéneas y modelar relaciones no lineales entre ellas.
+previas, como la fluidoterapia, modifica continuamente la probabilidad de requerir vasopresores y obliga a una reevaluación clínica frecuente \citep{prescott2026surviving}. Por consiguiente,
+la identificación temprana de la necesidad de soporte vasopresor con noradrenalina no puede reducirse a una única regla fija ni a un umbral aislado, sino que requiere integrar múltiples señales fisiológicas, 
+analíticas y de soporte. Esta complejidad justifica la exploración de metodologías capaces de combinar variables heterogéneas y modelar relaciones no lineales entre ellas.
 
-Tanto las guías de la \textit{Surviving Sepsis Campaign} como el protocolo local del HUBU establecen la noradrenalina como vasopresor de primera elección en el shock séptico \citep{evans2021, 
-prescott2026surviving, hubu2025}. Cuando no se obtienen los valores de PAM adecuados tras un ajuste de dosis de noradrenalina, puede asociarse vasopresina como segundo vasopresor; 
-asimismo, en presencia de disfunción miocárdica o hipoperfusión persistente a pesar de una presión arterial adecuada, puede considerarse dobutamina como soporte inotrópico \citep{evans2021, 
-prescott2026surviving, hubu2025}. Este esquema terapéutico refleja que el tratamiento hemodinámico del paciente crítico no es estático, sino progresivo y dependiente de la evolución clínica.
+Desde el punto de vista terapéutico, el manejo hemodinámico también sigue una lógica progresiva. Cuando no se alcanzan los objetivos de PAM tras un ajuste de dosis de noradrenalina, puede asociarse vasopresina como segundo vasopresor; 
+asimismo, en presencia de disfunción miocárdica o hipoperfusión persistente a pesar de una presión arterial adecuada, puede considerarse dobutamina como soporte inotrópico \citep{evans2021,prescott2026surviving,hubu2025}. Este esquema 
+refleja que el tratamiento hemodinámico del paciente crítico no es estático, sino progresivo y dependiente de la evolución clínica.
 
 El desarrollo de modelos predictivos en cuidados intensivos ha estado estrechamente ligado a la disponibilidad de bases de datos clínicas de gran escala. Entre ellas, MIMIC-IV 
 (\textit{Medical Information Mart for Intensive Care}, versión IV) ocupa un lugar destacado por tratarse de una base de datos pública, desidentificada y diseñada específicamente para

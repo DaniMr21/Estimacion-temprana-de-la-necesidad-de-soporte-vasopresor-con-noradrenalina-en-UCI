@@ -14,13 +14,13 @@ visualizar la probabilidad estimada y los factores clínicos con mayor contribuc
   \item Desarrollar modelos predictivos de aprendizaje automático entrenados sobre la base de datos MIMIC-IV que estimen la probabilidad de requerir
   soporte vasopresor con noradrenalina en distintas ventanas temporales tras el ingreso en UCI.
 
-  \item Evaluar y comparar el rendimiento de distintos algoritmos de aprendizaje automático, como la regresión logística o XGBoost, mediante métricas de discriminación y 
+  \item Evaluar y comparar el rendimiento de distintos algoritmos de aprendizaje automático mediante métricas de discriminación y 
   calibración.
 
-  \item Desarrollar un prototipo de \textit{dashboard} clínico interpretable orientado a la consulta individual. Para cada paciente mostrará la probabilidad estimada de requerir 
-  soporte vasopresor con noradrenalina, los factores que más pesan en esa predicción y una contextualización del riesgo mediante percentiles respecto a la cohorte de referencia.
+  \item Desarrollar un prototipo de \textit{dashboard} clínico interpretable orientado a la consulta individual, mostrando para cada paciente una estimación de la probabilidad
+   de requerir soporte vasopresor con noradrenalina contextualizada mediante percentiles respecto a la cohorte de entrenamiento, junto con los factores que más contribuyen a la predicción.
 
-  \item Realizar una validación externa de los modelos sobre la base de datos eICU-CRD, una cohorte independiente de la empleada para el entrenamiento.
+  \item Realizar una validación externa de los modelos sobre la base de datos eICU-CRD, empleando una cohorte independiente de la utilizada para el entrenamiento.
 
   \item Medir la usabilidad del \textit{dashboard} mediante una encuesta de satisfacción dirigida al personal clínico de la UCI del Hospital Universitario de Burgos.
 \end{enumerate}
@@ -39,9 +39,7 @@ visualizar la probabilidad estimada y los factores clínicos con mayor contribuc
 
   \item Aplicar técnicas de interpretabilidad basadas en valores SHAP (\textit{SHapley Additive exPlanations}) para cuantificar la contribución individual de cada variable a la predicción \citep{lundberg2017}.
 
-  \item Desarrollar la interfaz del prototipo del \textit{dashboard} utilizando Python (Streamlit), incorporando visualización del riesgo estimado, explicación por variables y contextualización mediante percentiles respecto a la cohorte de referencia.
-
-  \item Documentar todo el proceso de desarrollo en el repositorio GitHub del proyecto, con el objetivo de favorecer la reproducibilidad del código y del entorno de trabajo.
+  \item Desarrollar la interfaz del prototipo del \textit{dashboard} utilizando Python (Streamlit).
 \end{enumerate}
 
 \textbf{Objetivos personales}

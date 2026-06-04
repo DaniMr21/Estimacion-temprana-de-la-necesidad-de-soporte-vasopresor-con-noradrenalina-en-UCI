@@ -4,8 +4,8 @@
 ```
 #### Cohortes obtenidas y efecto del filtrado de completitud
 
-La aplicación de los criterios de selección y del filtro de completitud estricta sobre MIMIC-IV permitió definir tres cohortes de desarrollo, una por cada ventana temporal. 
-La @tbl-completitud-mimic detalla la reducción del tamaño muestral y el aumento de la prevalencia de la clase positiva tras el filtrado.
+El filtrado de completitud estricta redujo de forma importante el número de estancias disponibles en MIMIC-IV y aumentó la prevalencia observada del evento. La @tbl-completitud-mimic 
+resume este efecto para cada ventana temporal.
 
 | Ventana | Estancias brutas | Prevalencia bruta | Estancias tras filtro | Prevalencia tras filtro |
 |------------------|-----------------|-------------------|-----------------------|------------------------|
@@ -219,7 +219,9 @@ cat("\\end{table}\n")
 
 Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-contraste-calidad ilustra dos comportamientos opuestos: Random Forest en la ventana corta obtuvo un rendimiento 
 cercano al azar (AUC-ROC = 0,579), con peor estabilidad en la curva precisión-recall y una calibración alejada de la diagonal; en contraste, XGBoost en la ventana media mostró una discriminación
-superior, aunque con desviación inicial en la calibración que motivó su ajuste posterior. Conviene precisar que los valores de AUC-ROC mostrados en las curvas \textit{out-of-fold} de esta y las 
+superior, aunque con desviación inicial en la calibración que motivó su ajuste posterior. 
+
+Conviene precisar que los valores de AUC-ROC mostrados en las curvas \textit{out-of-fold} de esta y las 
 siguientes figuras corresponden al área calculada sobre las predicciones \textit{out-of-fold} agrupadas de todas las particiones, por lo que pueden diferir ligeramente del AUC-ROC medio entre 
 folds externos recogido en la Tabla \ref{tab:validacion-interna-completa}.
 
