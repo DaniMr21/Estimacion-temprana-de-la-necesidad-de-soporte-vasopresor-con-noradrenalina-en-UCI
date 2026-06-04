@@ -305,9 +305,9 @@ Corta (3--12 h) & CatBoost · Sépticos     & 461  & 0,622 & 0,173 & 0,004  & 0,
 Corta (3--12 h) & CatBoost · No sépticos  & 1206 & 0,605 & 0,152 & 0,013  & 0,012 \\
 Corta (3--12 h) & SOFA global             & 1667 & 0,581 & 0,132 & --     & --    \\
 \hline
-Media (6--24 h) & XGBoost recal. · Global      & 3282 & 0,680 & 0,208 & 0,028  & 0,033 \\
-Media (6--24 h) & XGBoost recal. · Sépticos    & 993  & 0,694 & 0,287 & 0,064  & 0,028 \\
-Media (6--24 h) & XGBoost recal. · No sépticos & 2289 & 0,667 & 0,173 & 0,003  & 0,036 \\
+Media (6--24 h) & XGBoost calib · Global      & 3282 & 0,680 & 0,208 & 0,028  & 0,033 \\
+Media (6--24 h) & XGBoost calib · Sépticos    & 993  & 0,694 & 0,287 & 0,064  & 0,028 \\
+Media (6--24 h) & XGBoost calib · No sépticos & 2289 & 0,667 & 0,173 & 0,003  & 0,036 \\
 Media (6--24 h) & CatBoost · Global            & 3282 & 0,694 & 0,216 & 0,010  & 0,030 \\
 Media (6--24 h) & CatBoost · Sépticos          & 993  & 0,691 & 0,283 & 0,060  & 0,038 \\
 Media (6--24 h) & CatBoost · No sépticos       & 2289 & 0,692 & 0,192 & -0,023 & 0,028 \\
@@ -385,7 +385,7 @@ tabla_discr <- data.frame(
   `AUC modelo` = externa[["AUC-ROC modelo"]],
   `AUC SOFA` = externa[["AUC-ROC SOFA"]],
   `Dif. AUC` = externa[[col_delta]],
-  `p DeLong` = externa[["p DeLong"]],
+  `p` = externa[["p DeLong"]],
   `AUC-PR` = externa[["AUC-PR"]],
   check.names = FALSE
 )

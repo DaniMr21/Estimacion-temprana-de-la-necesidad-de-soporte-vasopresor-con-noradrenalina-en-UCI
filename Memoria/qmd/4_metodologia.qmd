@@ -135,10 +135,10 @@ Tras la extracción y armonización, se aplicó el mismo criterio de completitud
 el conjunto de variables requerido por cada modelo. Los modelos entrenados sobre MIMIC-IV se aplicaron directamente sobre eICU-CRD, sin reajuste de hiperparámetros ni reentrenamiento, y su 
 rendimiento se evaluó con las mismas métricas de discriminación, calibración y rendimiento probabilístico ya descritas: AUC-ROC, AUC-PR, Brier score, BSS y ECE.
 
-Para cada modelo preseleccionado, se realizó la comparación frente al SOFA en términos de discriminación, siguiendo el mismo criterio que en la validación interna. Los intervalos de confianza al
-95\% de todas las métricas se estimaron mediante \textit{bootstrap} con 1000 remuestreos y semilla fija para garantizar la reproducibilidad. La significación de la diferencia de AUC-ROC entre 
-cada modelo y el SOFA se evaluó mediante una prueba pareada sobre el mismo conjunto de remuestreos. Por último, se replicó el análisis de interpretabilidad mediante valores SHAP sobre la 
-cohorte externa, con el fin de comprobar si los patrones de atribución se mantenían coherentes.
+Para cada modelo preseleccionado, se realizó la comparación frente a SOFA en términos de discriminación, siguiendo el mismo criterio que en la validación interna. Los intervalos de confianza al
+ 95\% de todas las métricas se estimaron mediante \textit{bootstrap} con 1000 remuestreos y semilla fija para garantizar la reproducibilidad. La significación de la diferencia de AUC-ROC entre 
+ cada modelo y SOFA se evaluó mediante un contraste pareado basado en los mismos remuestreos \textit{bootstrap}. Por último, se replicó el análisis de interpretabilidad mediante valores SHAP 
+ sobre la cohorte externa, con el fin de comprobar si los patrones de atribución se mantenían coherentes.
 
 Como fase final del trabajo se desarrolló un prototipo de \textit{dashboard} clínico en Python mediante Streamlit. El objetivo del prototipo fue demostrar la viabilidad de integrar los modelos 
 seleccionados tras la validación externa en una interfaz sencilla, interpretable y orientada a la consulta individual, sin sustituir la valoración médica ni emitir recomendaciones terapéuticas.
