@@ -62,11 +62,12 @@ La Tabla~\ref{tab:direccion-efecto} resume las principales variables descartadas
 \begin{table}[htbp]
 \centering
 \small
-\caption{Principales variables descartadas tras la verificación de dirección del efecto mediante regresión logística multivariante ajustada.}
+\caption{principales variables descartadas tras la verificación de dirección del efecto mediante regresión logística multivariante ajustada.}
 \label{tab:direccion-efecto}
 \renewcommand{\arraystretch}{1.15}
 \setlength{\tabcolsep}{5pt}
-\begin{tabular}{p{2.4cm} p{2.2cm} p{2.2cm} p{2.2cm} p{3.0cm}}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllll}
 \hline
 \textbf{Ventana} & \textbf{Variable} & \textbf{Mediana positivos} & \textbf{Mediana negativos} & \textbf{OR ajustado (IC95 \%)} \\
 \hline
@@ -77,7 +78,8 @@ Larga (12--48 h) & \texttt{ph\_min} & 7,32 & 7,34 & 1,108 [0,976--1,257] \\
 Larga (12--48 h) & \texttt{lactato\_max} & 2,30 & 1,90 & 0,967 [0,860--1,087] \\
 Larga (12--48 h) & \texttt{gpt\_max} & 32,0 & 32,0 & 0,889 [0,791--0,999] \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 ```
 
@@ -260,7 +262,7 @@ La Tabla~\ref{tab:subgrupos-sepsis} resume el rendimiento discriminativo, probab
 \begin{table}[p]
 \centering
 \scriptsize
-\caption{Rendimiento de los modelos preseleccionados en MIMIC-IV según presencia o ausencia de sepsis, frente al SOFA como referencia basal. Ventana corta: CatBoost; ventana media: XGBoost recalibrado y CatBoost; ventana larga: XGBoost y CatBoost. Las métricas se calcularon mediante predicciones \textit{out-of-fold}.}
+\caption{rendimiento de los modelos preseleccionados en MIMIC-IV según presencia o ausencia de sepsis, frente al SOFA como referencia basal. Ventana corta: CatBoost; ventana media: XGBoost recalibrado y CatBoost; ventana larga: XGBoost y CatBoost. Las métricas se calcularon mediante predicciones \textit{out-of-fold}.}
 \label{tab:subgrupos-sepsis}
 \renewcommand{\arraystretch}{1.05}
 \resizebox{\textwidth}{!}{%
