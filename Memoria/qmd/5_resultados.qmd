@@ -28,8 +28,7 @@ También se observaron agrupamientos entre variables relacionadas fisiológicame
 análisis de correlación y estructura de agrupamiento de las 76 variables predictoras iniciales en MIMIC-IV. Izquierda: matriz de correlación de Spearman. Derecha: dendrograma jerárquico basado en la distancia $1 - |\rho|$.
 :::
 
-Tras aplicar el proceso de reducción descrito en la metodología, el conjunto final quedó formado por 25 variables predictoras. La correlación máxima residual fue de $|\rho| = 0{,}514$ en la 
-ventana corta, $|\rho| = 0{,}473$ en la ventana media y $|\rho| = 0{,}516$ en la ventana larga, por debajo del umbral de referencia de 0,7 (@fig-dendrogramas-reducidos).
+Tras aplicar el proceso de reducción descrito en la metodología, el conjunto final quedó formado por 25 variables predictoras. La correlación máxima residual fue de $|\rho| = 0{,}514$ en la ventana corta, $|\rho| = 0{,}473$ en la ventana media y $|\rho| = 0{,}516$ en la ventana larga, por debajo del umbral de referencia de 0,7 (@fig-dendrogramas-reducidos).
 
 ::: {#fig-dendrogramas-reducidos layout-ncol=3}
 ![Corto (3--12 h)](img/dendrograma_v4p_reducido.png){#fig-dendro-corto}

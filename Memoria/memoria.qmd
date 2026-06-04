@@ -116,7 +116,7 @@ adultos ingresados en UCI, empleando variables clínicas y analíticas de las pr
 en tres ventanas temporales y se validaron externamente sobre eICU-CRD (\textit{eICU Collaborative Research Database}). Se compararon seis algoritmos con validación cruzada anidada, evaluando 
 discriminación, calibración e interpretabilidad mediante valores SHAP. La discriminación interna de los modelos preseleccionados osciló entre AUC-ROC 0,62 y 0,70 según la ventana, y la externa entre 0,63 y 0,67. 
 El rendimiento frente al SOFA (\textit{Sequential Organ Failure Assessment}) fue variable según el horizonte temporal, con una mejora estadísticamente significativa en la ventana larga 
-($\Delta$AUC-ROC $+0{,}068$; $p<0{,}001$). Los modelos se integraron en un prototipo de \textit{dashboard} interpretable en Streamlit, evaluado mediante una encuesta exploratoria 
+($\Delta$AUC-ROC $+0{,}068$; $p<0{,}001$). Los modelos finales se integraron en un prototipo de \textit{dashboard} interpretable en Streamlit, evaluado mediante una encuesta exploratoria 
 cumplimentada por ocho facultativos del Hospital Universitario de Burgos. Los resultados muestran un rendimiento moderado en esta tarea clínicamente difícil, pero respaldan la viabilidad 
 metodológica del enfoque y su posible utilidad futura como herramienta de apoyo a la decisión clínica.
 \end{abstract}
@@ -134,7 +134,7 @@ In this Bachelor's Thesis, machine learning models were developed and validated 
 ICU, using clinical and laboratory variables from the first hours of stay. The models were trained on MIMIC-IV (Medical Information Mart for Intensive Care, version IV) across three time windows
 and externally validated on eICU-CRD (eICU Collaborative Research Database). Six algorithms were compared using nested cross-validation, assessing discrimination, calibration, and interpretability
 through SHAP values. Internal discrimination on the preselected models ranged from an AUC-ROC of 0.62 to 0.70 depending on the window, and external discrimination from 0.63 to 0.67. Performance relative to SOFA 
-(Sequential Organ Failure Assessment) varied with the time horizon, with a statistically significant improvement in the long window ($\Delta$AUC-ROC $+0.068$; $p<0.001$). The models were 
+(Sequential Organ Failure Assessment) varied with the time horizon, with a statistically significant improvement in the long window ($\Delta$AUC-ROC $+0.068$; $p<0.001$). The final models were 
 integrated into an interpretable dashboard prototype in Streamlit, evaluated through an exploratory survey completed by eight physicians at Hospital Universitario de Burgos. The results show 
 moderate performance on this clinically challenging task but support the methodological feasibility of the approach and its potential future usefulness as a clinical decision-support tool.
 \end{abstract}
