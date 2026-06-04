@@ -215,9 +215,6 @@ cat("}\n")
 cat("\\end{table}\n")
 ```
 
-En conjunto, los modelos basados en \textit{gradient boosting}, especialmente XGBoost y CatBoost, concentraron los mejores valores de AUC-ROC y Brier Skill Score (BSS). Random Forest y Naive 
-Bayes mostraron un comportamiento menos competitivo.
-
 #### Selección de modelos y calibración
 
 Las métricas reflejaron diferencias notables entre modelos y ventanas. La @fig-contraste-calidad ilustra dos comportamientos opuestos: Random Forest en la ventana corta obtuvo un rendimiento 
