@@ -52,7 +52,7 @@ con nubes de puntos más mezcladas y sin una separación nítida entre valores a
 XGBoost, en cambio, mostró patrones de atribución más ordenados y clínicamente defendibles, en los que los valores compatibles con mayor gravedad —peor oxigenación, mayor disfunción orgánica o 
 alteraciones hemodinámicas— tendían a desplazar la predicción hacia mayor riesgo.
 
-Conviene matizar que la mezcla de colores en algunas variables, como la $\text{SpO}_2$ (ilustrada en los diagramas *beeswarm* de la Figura 5.8a y la Figura 5.10c), no implica necesariamente que
+Conviene matizar que la mezcla de colores en algunas variables, como la $\text{SpO}_2$ (ilustrada en los diagramas *beeswarm* de la @fig-shap-res-largo-xgb y la @fig-shap-eicu-largo-xgb), no implica necesariamente que
  el modelo haya aprendido una relación errónea. En pacientes críticos, una saturación elevada puede coexistir con mayor gravedad si el paciente recibe oxigenoterapia intensiva o ventilación 
  mecánica: la oxigenación observada depende entonces de la $\text{FiO}_2$, de la presión positiva aplicada y de la situación hemodinámica global, no solo del estado pulmonar subyacente.
 
