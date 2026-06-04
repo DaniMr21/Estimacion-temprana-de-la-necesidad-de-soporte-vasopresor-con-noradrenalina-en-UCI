@@ -490,5 +490,3 @@ Tras la validación externa y la revisión de interpretabilidad, la selección f
 ```
 
 Las valoraciones medias fueron de 8,88 en entendimiento, 8,50 en explicabilidad y 8,00 en utilidad clínica.
-
-Las capturas de la interfaz del prototipo pueden consultarse en el *Apéndice D*.
