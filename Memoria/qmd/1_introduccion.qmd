@@ -13,9 +13,8 @@ La sepsis y el shock séptico representan, no obstante, uno de los escenarios cl
 con una mortalidad hospitalaria del 26,7\% entre los pacientes ingresados \citep{fleischmann2020}. Además, el shock séptico se asocia a una elevada mortalidad y requiere una actuación precoz orientada a restaurar la perfusión tisular 
 y prevenir el deterioro orgánico. En este contexto, anticipar qué pacientes pueden evolucionar hacia la necesidad de soporte vasopresor constituye un problema clínico relevante.
 
-La decisión de iniciar noradrenalina no depende de una única variable aislada. En la práctica clínica, integra información procedente de constantes vitales, parámetros analíticos, respuesta a la
-fluidoterapia, grado de disfunción orgánica y evolución global del paciente. Esta naturaleza multifactorial dificulta la identificación temprana de los pacientes que requerirán soporte vasopresor
-y justifica la exploración de herramientas capaces de combinar múltiples señales clínicas de forma sistemática.  
+La decisión de iniciar noradrenalina no depende de una única variable aislada, sino que integra múltiples señales clínicas, lo que dificulta su anticipación 
+y justifica explorar herramientas capaces de combinarlas de forma sistemática. 
 
 En el presente Trabajo de Fin de Grado se lleva a cabo el desarrollo y la validación de modelos de aprendizaje automático entrenados sobre MIMIC-IV \citep{johnson2023} 
 para estimar de forma temprana la necesidad de soporte vasopresor con noradrenalina en pacientes adultos ingresados en UCI.

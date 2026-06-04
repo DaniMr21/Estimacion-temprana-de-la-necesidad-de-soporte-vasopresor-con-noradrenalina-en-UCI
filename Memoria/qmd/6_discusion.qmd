@@ -5,8 +5,8 @@
 
 Los valores de AUC-ROC y AUC-PR obtenidos deben interpretarse en el contexto de una tarea clínicamente compleja y ruidosa. El trabajo más próximo a este TFG, el de @duval2025, que predice 
 el inicio de vasopresores en pacientes sépticos sobre MIMIC-IV, alcanzó un AUC-ROC de 0,75 con un Random Forest, si bien en validación interna y sobre una cohorte restringida a sepsis.
- Los modelos desarrollados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de AUC-ROC de 0,62 a 0,70 según la ventana temporal evaluada (Tabla \ref{tab:validacion-interna-completa}), 
- operando sobre una cohorte general de UCI sin restricción diagnóstica.
+ Los modelos desarrollados en el presente trabajo obtuvieron un rendimiento interno ligeramente inferior, con un rango de AUC-ROC de 0,62 a 0,70 en los modelos preseleccionados según la ventana 
+ temporal (Tabla \ref{tab:validacion-interna-completa}), operando sobre una cohorte general de UCI sin restricción diagnóstica.
 
 Sin embargo, a diferencia de aquel estudio, los modelos desarrollados en este trabajo fueron sometidos a una validación externa estricta en una cohorte multicéntrica independiente
  (eICU-CRD), donde el rendimiento discriminativo se mantuvo en un rango de 0,63 a 0,67 (Tabla \ref{tab:validacion-externa-discr}). Otros estudios han abordado problemas afines con datos temporales 
@@ -39,9 +39,10 @@ y explicaciones individualizadas mediante SHAP, elementos que SOFA por sí solo 
 
 En la ventana larga, XGBoost y CatBoost superaron a SOFA de forma estadísticamente significativa en la validación externa, con una mejora de AUC-ROC de +0,068 para XGBoost ($p < 0{,}001$) y de 
 +0,064 para CatBoost ($p = 0{,}003$). Este constituye uno de los principales resultados positivos del trabajo; la mejora significativa frente a SOFA en una cohorte externa indica que los modelos 
-capturaron información fisiológica agregada no recogida completamente por SOFA. Este rendimiento desigual entre ventanas es coherente con la cantidad y estabilidad 
-de la información disponible en cada una, pero la ventana larga tiene una contrapartida: predice más tarde. Un modelo de 12–48 h puede ser más estable en términos discriminativos, pero ofrece menos
- margen de anticipación que uno de 3–12 h. La elección de ventana no es, por tanto, solo una cuestión de rendimiento, sino del equilibrio entre anticipación y fiabilidad.
+capturaron información fisiológica agregada no recogida completamente por SOFA. Este rendimiento desigual entre ventanas es coherente con la cantidad y estabilidad de la
+información disponible en cada una; de hecho, la transferencia entre centros fue estable e incluso ligeramente favorable en dos de las tres ventanas, con un AUC-ROC que pasó de 0,617 a
+0,630 en la corta y de 0,642 a 0,658 en la larga al validar externamente. No obstante, la ventana larga tiene una contrapartida: predice más tarde. Un modelo de 12–48 h puede ser más estable en 
+términos discriminativos, pero ofrece menos margen de anticipación que uno de 3–12 h. La elección de ventana no es, por tanto, solo una cuestión de rendimiento, sino del equilibrio entre anticipación y fiabilidad.
 
 La selección final de los modelos del dashboard no se basó únicamente en el AUC. Como señaló Box [-@box1976science], todos los modelos son simplificaciones imperfectas de la realidad: una 
 diferencia pequeña en una métrica no basta para justificar el uso de un modelo en un contexto clínico, donde la interpretabilidad y la calibración también condicionan la utilidad de la predicción.
@@ -78,17 +79,16 @@ A pesar de la solidez del flujo experimental, es necesario reconocer diversas li
   verse favorecida: los casos positivos tienden a agrupar a pacientes con un deterioro fisiológico evidente y altamente monitorizados, mientras que los negativos representan a individuos con
    menor disfunción orgánica pero con un nivel de monitorización equivalente.
 
-Este efecto fue especialmente marcado en eICU-CRD, donde el filtro de completitud redujo las cohortes externas desde 125.124 a 789 estancias en la ventana corta, desde 122.922 a 1.396 en la 
-ventana media y desde 68.778 a 2.030 en la ventana larga (@tbl-completitud-eicu). Por tanto, la validación externa evalúa la transferencia del modelo sobre una subcohorte altamente monitorizada,
- no sobre la totalidad de pacientes disponibles en eICU-CRD.
+Este efecto fue especialmente marcado en eICU-CRD, donde el filtro de completitud llegó a retener apenas 789 de las 125.124 estancias de la ventana
+corta —en torno al 0,6 %— y redujo de forma comparable las cohortes media y larga (@tbl-completitud-eicu). Por tanto, la validación externa evalúa la
+transferencia del modelo sobre una subcohorte altamente monitorizada, no sobre la totalidad de pacientes disponibles en eICU-CRD.
 
-Como consecuencia de este diseño, cabe esperar que en un escenario de aplicación real sobre la población general de la UCI el rendimiento discriminativo sufra una degradación respecto al obtenido
- en este estudio retrospectivo, dada la mayor presencia de casos límite en la práctica asistencial [@rockenschaub2025]. La caída de rendimiento observada entre la validación interna y la externa
-  es coherente con esta premisa: la revisión de @rockenschaub2025 documentó que los algoritmos predictivos aplicados en UCI pierden de media entre un 7 % y un 23 % de AUC-ROC al validarse en 
-  centros externos, de modo que la moderada degradación registrada aquí entra dentro de los márgenes normales y no sugiere un sobreajuste anómalo.
+Como consecuencia de este diseño, cabe esperar que en un escenario de despliegue prospectivo sobre la población general de la UCI el rendimiento discriminativo sea inferior
+al obtenido sobre estas cohortes filtradas por completitud. Conviene precisar, no obstante, que esta degradación esperable no puede cuantificarse a partir de la validación 
+externa de este trabajo, ya que la cohorte de eICU-CRD se sometió al mismo filtro de completitud y representa, por tanto, una subpoblación igualmente monitorizada.
 
 En segundo lugar, conviene considerar la naturaleza de los datos y de la etiqueta objetivo. Los modelos se entrenaron con variables tabulares agregadas y no con series continuas de alta 
-frecuencia. La prevalencia del evento fue baja (10–14 %), lo que contrae matemáticamente el AUC-PR alcanzable y limitaría la utilidad del modelo como sistema de cribado estricto, un compromiso 
+frecuencia. La prevalencia del evento fue baja (aprox. 10–14 %), lo que contrae matemáticamente el AUC-PR alcanzable y limitaría la utilidad del modelo como sistema de cribado estricto, un compromiso 
 operativo habitual donde el equilibrio entre sensibilidad y oportunidad de la alerta condiciona su viabilidad [@balczewski2023]. Además, la etiqueta depende de una decisión médica registrada,
 el inicio de noradrenalina, que constituye un *proxy* imperfecto del momento fisiológico real de necesidad debido a la heterogeneidad de los protocolos sanitarios. Esta limitación conecta con 
 lo descrito por @kamran2024, quienes demostraron que el rendimiento aparente disminuye marcadamente al excluir las predicciones realizadas tras los indicios de tratamiento clínico, 
@@ -105,4 +105,4 @@ Finalmente, la validación inicialmente prevista sobre datos reales del Hospital
 extracción y armonización local, lo que deja pendiente la comprobación más relevante desde el punto de vista de transferencia al entorno clínico real del HUBU.
 
 En conjunto, los modelos desarrollados no están listos para un uso clínico extendido, pero el trabajo demuestra que es posible construir, con una metodología controlada, modelos que igualan o 
-superan a SOFA en determinados horizontes, validados externamente y con una lógica interna auditable. En ese sentido, constituye un primer paso razonable sobre el que apoyar desarrollos futuros.
+superan a SOFA en determinados horizontes, validados externamente y con una lógica interna auditable.
