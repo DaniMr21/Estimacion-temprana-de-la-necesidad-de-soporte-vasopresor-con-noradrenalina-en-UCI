@@ -56,19 +56,30 @@ importancia por permutación de las variables predictoras en los seis algoritmos
 
 En la ventana corta, la regresión logística se omitió porque no presentó ninguna variable con contribución significativa según el análisis.
 
-La @tbl-direccion-efecto resume las principales variables descartadas por presentar una dirección ajustada no coherente con la interpretación clínica esperada. 
-Los odds ratio corresponden a variables estandarizadas.
+La Tabla~\ref{tab:direccion-efecto} resume las principales variables descartadas por presentar una dirección ajustada no coherente con la interpretación clínica esperada. Los odds ratio corresponden a variables estandarizadas.
 
-| Ventana | Variable | Mediana positivos | Mediana negativos | OR ajustado (IC95\%) |
-|-----------------|-----------------------|---------------|---------------|-----------------------|
-| Corta (3--12 h) | `gpt_max` | 34,5 | 34,0 | 0,716 [0,567--0,905] | 
-| Media (6--24 h) | `ph_min` | 7,30 | 7,34 | 1,002 [0,870--1,153] | 
-| Media (6--24 h) | `gpt_max` | 32,0 | 32,0 | 0,680 [0,559--0,827] | 
-| Larga (12--48 h) | `ph_min` | 7,32 | 7,34 | 1,108 [0,976--1,257] |
-| Larga (12--48 h) | `lactato_max` | 2,30 | 1,90 | 0,967 [0,860--1,087] | 
-| Larga (12--48 h) | `gpt_max` | 32,0 | 32,0 | 0,889 [0,791--0,999] | 
-
-: principales variables descartadas tras la verificación de dirección del efecto mediante regresión logística multivariante ajustada {#tbl-direccion-efecto}.
+```{=latex}
+\begin{table}[htbp]
+\centering
+\small
+\caption{Principales variables descartadas tras la verificación de dirección del efecto mediante regresión logística multivariante ajustada.}
+\label{tab:direccion-efecto}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{p{2.4cm} p{2.2cm} p{2.2cm} p{2.2cm} p{3.0cm}}
+\hline
+\textbf{Ventana} & \textbf{Variable} & \textbf{Mediana positivos} & \textbf{Mediana negativos} & \textbf{OR ajustado (IC95 \%)} \\
+\hline
+Corta (3--12 h) & \texttt{gpt\_max} & 34,5 & 34,0 & 0,716 [0,567--0,905] \\
+Media (6--24 h) & \texttt{ph\_min} & 7,30 & 7,34 & 1,002 [0,870--1,153] \\
+Media (6--24 h) & \texttt{gpt\_max} & 32,0 & 32,0 & 0,680 [0,559--0,827] \\
+Larga (12--48 h) & \texttt{ph\_min} & 7,32 & 7,34 & 1,108 [0,976--1,257] \\
+Larga (12--48 h) & \texttt{lactato\_max} & 2,30 & 1,90 & 0,967 [0,860--1,087] \\
+Larga (12--48 h) & \texttt{gpt\_max} & 32,0 & 32,0 & 0,889 [0,791--0,999] \\
+\hline
+\end{tabular}
+\end{table}
+```
 
 #### Rendimiento interno de los modelos en MIMIC-IV
 
@@ -243,30 +254,45 @@ fisiológica, peor situación respiratoria, mayor compromiso hemodinámico o may
 
 #### Análisis por subgrupos según sepsis
 
-La @tbl-subgrupos-sepsis resume el rendimiento discriminativo, probabilístico y de calibración de los modelos preseleccionados en cada ventana, evaluados sobre la cohorte global, los pacientes sépticos y los no sépticos. Se incluye además la puntuación SOFA global como referencia basal de comparación.
+La Tabla~\ref{tab:subgrupos-sepsis} resume el rendimiento discriminativo, probabilístico y de calibración de los modelos preseleccionados en cada ventana, evaluados sobre la cohorte global, los pacientes sépticos y los no sépticos. Se incluye además la puntuación SOFA global como referencia basal de comparación.
 
-| Ventana | Modelo / subgrupo | N | AUC-ROC | AUC-PR | BSS | ECE |
-|----------|------------------|---:|--------:|-------:|-------:|-------:|
-| Corta (3--12 h) | CatBoost · Global | 1667 | 0,617 | 0,151 | 0,012 | 0,009 |
-| Corta (3--12 h) | CatBoost · Sépticos | 461 | 0,622 | 0,173 | 0,004 | 0,021 |
-| Corta (3--12 h) | CatBoost · No sépticos | 1206 | 0,605 | 0,152 | 0,013 | 0,012 |
-| Corta (3--12 h) | SOFA global | 1667 | 0,581 | 0,132 | --- | --- |
-| Media (6--24 h) | XGBoost recal. · Global | 3282 | 0,680 | 0,208 | 0,028 | 0,033 |
-| Media (6--24 h) | XGBoost recal. · Sépticos | 993 | 0,694 | 0,287 | 0,064 | 0,028 |
-| Media (6--24 h) | XGBoost recal. · No sépticos | 2289 | 0,667 | 0,173 | 0,003 | 0,036 |
-| Media (6--24 h) | CatBoost · Global | 3282 | 0,694 | 0,216 | 0,010 | 0,030 |
-| Media (6--24 h) | CatBoost · Sépticos | 993 | 0,691 | 0,283 | 0,060 | 0,038 |
-| Media (6--24 h) | CatBoost · No sépticos | 2289 | 0,692 | 0,192 | -0,023 | 0,028 |
-| Media (6--24 h) | SOFA global | 3282 | 0,606 | 0,147 | --- | --- |
-| Larga (12--48 h) | XGBoost · Global | 4088 | 0,642 | 0,170 | 0,021 | 0,017 |
-| Larga (12--48 h) | XGBoost · Sépticos | 1343 | 0,650 | 0,209 | 0,018 | 0,030 |
-| Larga (12--48 h) | XGBoost · No sépticos | 2745 | 0,630 | 0,150 | 0,017 | 0,011 |
-| Larga (12--48 h) | CatBoost · Global | 4088 | 0,635 | 0,173 | 0,021 | 0,006 |
-| Larga (12--48 h) | CatBoost · Sépticos | 1343 | 0,644 | 0,199 | 0,016 | 0,029 |
-| Larga (12--48 h) | CatBoost · No sépticos | 2745 | 0,626 | 0,164 | 0,019 | 0,014 |
-| Larga (12--48 h) | SOFA global | 4088 | 0,588 | 0,149 | --- | --- |
-
-: rendimiento de los modelos preseleccionados en MIMIC-IV según presencia o ausencia de sepsis, frente al SOFA como referencia basal. Ventana corta: CatBoost; ventana media: XGBoost recalibrado y CatBoost; ventana larga: XGBoost y CatBoost. Las métricas se calcularon mediante predicciones *out-of-fold*. {#tbl-subgrupos-sepsis}
+```{=latex}
+\begin{table}[p]
+\centering
+\scriptsize
+\caption{Rendimiento de los modelos preseleccionados en MIMIC-IV según presencia o ausencia de sepsis, frente al SOFA como referencia basal. Ventana corta: CatBoost; ventana media: XGBoost recalibrado y CatBoost; ventana larga: XGBoost y CatBoost. Las métricas se calcularon mediante predicciones \textit{out-of-fold}.}
+\label{tab:subgrupos-sepsis}
+\renewcommand{\arraystretch}{1.05}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrrr}
+\hline
+\textbf{Ventana} & \textbf{Modelo/subgrupo} & \textbf{N} & \textbf{AUC-ROC} & \textbf{AUC-PR} & \textbf{BSS} & \textbf{ECE} \\
+\hline
+Corta (3--12 h) & CatBoost · Global       & 1667 & 0,617 & 0,151 & 0,012  & 0,009 \\
+Corta (3--12 h) & CatBoost · Sépticos     & 461  & 0,622 & 0,173 & 0,004  & 0,021 \\
+Corta (3--12 h) & CatBoost · No sépticos  & 1206 & 0,605 & 0,152 & 0,013  & 0,012 \\
+Corta (3--12 h) & SOFA global             & 1667 & 0,581 & 0,132 & --     & --    \\
+\hline
+Media (6--24 h) & XGBoost recal. · Global      & 3282 & 0,680 & 0,208 & 0,028  & 0,033 \\
+Media (6--24 h) & XGBoost recal. · Sépticos    & 993  & 0,694 & 0,287 & 0,064  & 0,028 \\
+Media (6--24 h) & XGBoost recal. · No sépticos & 2289 & 0,667 & 0,173 & 0,003  & 0,036 \\
+Media (6--24 h) & CatBoost · Global            & 3282 & 0,694 & 0,216 & 0,010  & 0,030 \\
+Media (6--24 h) & CatBoost · Sépticos          & 993  & 0,691 & 0,283 & 0,060  & 0,038 \\
+Media (6--24 h) & CatBoost · No sépticos       & 2289 & 0,692 & 0,192 & -0,023 & 0,028 \\
+Media (6--24 h) & SOFA global                  & 3282 & 0,606 & 0,147 & --     & --    \\
+\hline
+Larga (12--48 h) & XGBoost · Global       & 4088 & 0,642 & 0,170 & 0,021 & 0,017 \\
+Larga (12--48 h) & XGBoost · Sépticos     & 1343 & 0,650 & 0,209 & 0,018 & 0,030 \\
+Larga (12--48 h) & XGBoost · No sépticos  & 2745 & 0,630 & 0,150 & 0,017 & 0,011 \\
+Larga (12--48 h) & CatBoost · Global      & 4088 & 0,635 & 0,173 & 0,021 & 0,006 \\
+Larga (12--48 h) & CatBoost · Sépticos    & 1343 & 0,644 & 0,199 & 0,016 & 0,029 \\
+Larga (12--48 h) & CatBoost · No sépticos & 2745 & 0,626 & 0,164 & 0,019 & 0,014 \\
+Larga (12--48 h) & SOFA global            & 4088 & 0,588 & 0,149 & --    & --    \\
+\hline
+\end{tabular}%
+}
+\end{table}
+```
 
 El rendimiento fue ligeramente superior en pacientes sépticos en las tres ventanas, con el valor más alto en la ventana media (AUC-ROC 0,694; AUC-PR 0,287); en 
 pacientes no sépticos, la discriminación se mantuvo por debajo de la del subgrupo séptico pero por encima del SOFA global en términos de AUC-ROC. CatBoost ofreció una discriminación comparable, 
