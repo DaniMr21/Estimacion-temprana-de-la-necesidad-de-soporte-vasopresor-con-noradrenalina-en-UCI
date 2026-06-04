@@ -39,7 +39,7 @@ y explicaciones individualizadas mediante SHAP, elementos que SOFA por sí solo 
 
 En la ventana larga, XGBoost y CatBoost superaron a SOFA de forma estadísticamente significativa en la validación externa, con una mejora de AUC-ROC de +0,068 para XGBoost ($p < 0{,}001$) y de 
 +0,064 para CatBoost ($p = 0{,}003$). Este constituye uno de los principales resultados positivos del trabajo; la mejora significativa frente a SOFA en una cohorte externa indica que los modelos 
-capturaron información adicional y información fisiológica agregada no capturada completamente por SOFA. Este rendimiento desigual entre ventanas es coherente con la cantidad y estabilidad 
+capturaron información fisiológica agregada no recogida completamente por SOFA. Este rendimiento desigual entre ventanas es coherente con la cantidad y estabilidad 
 de la información disponible en cada una, pero la ventana larga tiene una contrapartida: predice más tarde. Un modelo de 12–48 h puede ser más estable en términos discriminativos, pero ofrece menos
  margen de anticipación que uno de 3–12 h. La elección de ventana no es, por tanto, solo una cuestión de rendimiento, sino del equilibrio entre anticipación y fiabilidad.
 

@@ -305,9 +305,9 @@ Corta (3--12 h) & CatBoost · Sépticos     & 461  & 0,622 & 0,173 & 0,004  & 0,
 Corta (3--12 h) & CatBoost · No sépticos  & 1206 & 0,605 & 0,152 & 0,013  & 0,012 \\
 Corta (3--12 h) & SOFA global             & 1667 & 0,581 & 0,132 & --     & --    \\
 \hline
-Media (6--24 h) & XGBoost calib · Global      & 3282 & 0,680 & 0,208 & 0,028  & 0,033 \\
-Media (6--24 h) & XGBoost calib · Sépticos    & 993  & 0,694 & 0,287 & 0,064  & 0,028 \\
-Media (6--24 h) & XGBoost calib · No sépticos & 2289 & 0,667 & 0,173 & 0,003  & 0,036 \\
+Media (6--24 h) & XGBoost recal · Global      & 3282 & 0,680 & 0,208 & 0,028  & 0,033 \\
+Media (6--24 h) & XGBoost recal · Sépticos    & 993  & 0,694 & 0,287 & 0,064  & 0,028 \\
+Media (6--24 h) & XGBoost recal · No sépticos & 2289 & 0,667 & 0,173 & 0,003  & 0,036 \\
 Media (6--24 h) & CatBoost · Global            & 3282 & 0,694 & 0,216 & 0,010  & 0,030 \\
 Media (6--24 h) & CatBoost · Sépticos          & 993  & 0,691 & 0,283 & 0,060  & 0,038 \\
 Media (6--24 h) & CatBoost · No sépticos       & 2289 & 0,692 & 0,192 & -0,023 & 0,028 \\
@@ -460,7 +460,7 @@ Las curvas ROC y de calibración de los modelos evaluados en eICU-CRD se present
 
 ![Validación externa en la ventana corta: CatBoost.](img/validacion_externa_Corto_3_12.png){#fig-ext-corto-cat width=86%}
 
-![Validación externa en la ventana media: XGBoost calibrado.](img/validacion_externa_Medio_6_24.png){#fig-ext-medio-xgb-cal width=86%}
+![Validación externa en la ventana media: XGBoost recalibrado.](img/validacion_externa_Medio_6_24.png){#fig-ext-medio-xgb-cal width=86%}
 
 ![Validación externa en la ventana larga: XGBoost.](img/validacion_externa_Largo_12_48.png){#fig-ext-largo-xgb width=86%}
 
@@ -473,7 +473,7 @@ Además de las métricas agregadas, se revisó la interpretabilidad post-hoc en 
 
 ![Ventana corta: CatBoost en eICU-CRD.](img/shap_eicu_corto_cat.png){#fig-shap-eicu-corto-cat width=84%}
 
-![Ventana media: XGBoost calibrado en eICU-CRD.](img/shap_eicu_medio_xgb_cal.png){#fig-shap-eicu-medio-xgb-cal width=84%}
+![Ventana media: XGBoost recalibrado en eICU-CRD.](img/shap_eicu_medio_xgb_cal.png){#fig-shap-eicu-medio-xgb-cal width=84%}
 
 ![Ventana larga: XGBoost en eICU-CRD.](img/shap_eicu_largo_xgb.png){#fig-shap-eicu-largo-xgb width=84%}
 
