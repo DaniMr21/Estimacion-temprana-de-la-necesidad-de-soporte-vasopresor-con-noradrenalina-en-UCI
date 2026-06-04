@@ -2,7 +2,9 @@
 
 Repositorio asociado al Trabajo de Fin de Grado (TFG) orientado al desarrollo, evaluación y validación de modelos de aprendizaje automático para estimar la probabilidad de inicio de soporte vasopresor con noradrenalina en pacientes adultos ingresados en UCI, utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia.
 
-<img src="portada.png" width="300px" alt="Portada del TFG">
+<p align="center">
+  <img src="portada.png" width="550px" alt="Portada del TFG">
+</p>
 
 El trabajo incluye:
 * Construcción de cohortes retrospectivas sobre MIMIC-IV.
