@@ -107,7 +107,7 @@ cd Dashboard
   \item Ejecutar la aplicación.
 
 \begin{verbatim}
-streamlit run pruebas_dashboard.py
+python -m streamlit run pruebas_dashboard.py
 \end{verbatim}
 
   \item Abrir en el navegador la dirección indicada por Streamlit. Habitualmente será:
