@@ -95,6 +95,8 @@ cada caso.
   \item \textbf{Puntuación SOFA (\texttt{sofa\_max}):} El \textit{Sequential Organ Failure Assessment} es una escala que cuantifica el grado de disfunción de seis sistemas orgánicos (respiratorio, coagulación, hepático, cardiovascular, neurológico y renal), asignando de 0 a 4 puntos a cada uno. El valor máximo dentro de la ventana resume la peor situación de disfunción orgánica del periodo de observación. Un SOFA elevado traduce fallo multiorgánico y se asocia estrechamente a inestabilidad hemodinámica y a la necesidad de soporte vasopresor; en este trabajo actúa además como referencia clínica frente a la que se comparan los modelos \citep{singer2016,vincent2013}.
 
   \item \textbf{Presencia de sepsis (\texttt{tiene\_sepsis}):} Indicador de sepsis definido según los criterios Sepsis-3 (disfunción orgánica potencialmente mortal causada por una respuesta desregulada del huésped a la infección). El síndrome séptico desencadena vasodilatación patológica y shock distributivo, mecanismo fisiopatológico directamente ligado a la necesidad de soporte vasopresor con noradrenalina como fármaco de primera línea \citep{singer2016,evans2021}.
+
+  \item \textbf{Ventilación mecánica invasiva (\texttt{ventilacion\_invasiva\_*h}):} Indicador binario que señala si el paciente recibió ventilación mecánica invasiva durante la ventana de observación. No representa una variable fisiológica directa, sino un proxy de gravedad y de intensidad del soporte clínico, ya que identifica pacientes con insuficiencia respiratoria relevante y mayor complejidad asistencial.
 \end{itemize}
 
 \subsection*{Constantes vitales}
