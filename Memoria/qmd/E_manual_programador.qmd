@@ -73,7 +73,7 @@ local de PostgreSQL con una estructura equivalente.
 A nivel general, la reproducción sigue esta secuencia:
 
 \begin{enumerate}
-  \item \item Importar MIMIC-IV y eICU-CRD en una instancia local de PostgreSQL autorizada y ejecutar sobre ella las consultas SQL de extracción de cohortes.
+  \item Importar MIMIC-IV y eICU-CRD en una instancia local de PostgreSQL autorizada y ejecutar sobre ella las consultas SQL de extracción de cohortes.
   \item Generar los CSV definitivos por ventana temporal.
   \item Aplicar el preprocesamiento y la selección de variables.
   \item Ejecutar los scripts finales de entrenamiento y validación interna en \ruta{Pipeline/FINAL/}.

@@ -6,8 +6,10 @@
 
 \section{Descripción formal de los datos}
 
-Los datos utilizados en este trabajo proceden de dos bases de datos clínicas de cuidados críticos: \textbf{MIMIC-IV}~\cite{johnson2023} (\textit{Medical Information Mart for Intensive Care}), 
-empleada para el entrenamiento y la evaluación interna de los modelos, y \textbf{eICU-CRD}~\cite{pollard2018} (\textit{eICU Collaborative Research Database}), empleada para la validación externa. Ambas están alojadas en PhysioNet~\cite{physionet} y su acceso requirió completar el curso de formación CITI Program~\cite{citiprogram}, registrar el proyecto y firmar el acuerdo de uso de datos correspondiente.
+Los datos utilizados en este trabajo proceden de dos bases de datos clínicas de cuidados críticos: MIMIC-IV (Medical Information Mart for Intensive Care) \citep{johnson2023}, empleada para el entrenamiento y 
+la evaluación interna de los modelos, y eICU-CRD (eICU Collaborative Research Database) \citep{pollard2018}, empleada para la validación externa. Ambas están alojadas en PhysioNet 
+\citep{physionet} y su acceso requirió completar el curso de formación CITI Program \citep{citiprogram}, registrar el proyecto y firmar el acuerdo de uso de datos correspondiente. 
+
  
 Sobre las variables clínicas continuas se aplicó una winsorización al percentil 2--98, siguiendo la estrategia de tratamiento de valores extremos del flujo de procesamiento de \citet{gupta2022mimic}. 
 Esta técnica acota los valores situados por debajo del percentil 2 y por encima del percentil 98 a dichos umbrales, en lugar de eliminarlos, lo que limita el efecto de los valores atípicos y 
@@ -24,7 +26,7 @@ de modo que cualquier persona con acceso acreditado a las bases originales pueda
  
 \begin{table}[htbp]
   \centering
-  \caption{Inventario de los ficheros CSV definitivos.}
+  \caption{inventario de los ficheros CSV definitivos.}
   \label{tab:inventario-ficheros}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{lllrrr}
@@ -57,7 +59,7 @@ diuresis en volumen bruto (\texttt{diuresis\_volumen\_6h}), excluida por ser red
  
 \begin{table}[htbp]
   \centering
-  \caption{Grupos de variables en los conjuntos MIMIC-IV (82 columnas totales).}
+  \caption{grupos de variables en los conjuntos MIMIC-IV (82 columnas totales).}
   \label{tab:grupos-variables}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{l r p{8.5cm}}
@@ -83,14 +85,14 @@ Las 23 variables clínicas cuantitativas continuas se representan con tres estad
 
 \section{Descripción clínica de los datos}
 
-Se describe a continuación el significado fisiopatológico e interpretación clínica de las variables clínicas incluidas en los conjuntos de datos. Para cada parámetro continuo se calcularon tres estadísticos sobre la ventana de observación (mínimo \texttt{\_min}, media \texttt{\_media} y máximo \texttt{\_max}); se indica entre paréntesis el estadístico de mayor relevancia clínica en cada caso.
+Se describe a continuación el significado fisiopatológico e interpretación clínica de las variables clínicas incluidas en los conjuntos de datos. Para cada parámetro continuo se calcularon tres 
+estadísticos sobre la ventana de observación (mínimo \texttt{\_min}, media \texttt{\_media} y máximo \texttt{\_max}); se indica entre paréntesis el estadístico de mayor relevancia clínica en 
+cada caso.
 
 \subsection*{Gravedad y proceso clínico}
 
 \begin{itemize}
-  \item \textbf{Puntuación SOFA (\texttt{sofa\_max}):} El \textit{Sequential Organ Failure Assessment} es una escala que cuantifica el grado de disfunción de seis sistemas orgánicos (respiratorio, coagulación, hepático, cardiovascular, neurológico y renal), asignando de 0 a 4 puntos a cada uno. El valor máximo dentro de la ventana resume la peor situación de disfunción orgánica del periodo de observación. Un SOFA elevado traduce fallo multiorgánico y se asocia estrechamente a inestabilidad hemodinámica y a la necesidad de soporte vasopresor; en este trabajo actúa además como referencia clínica frente a la que se comparan los modelos \cite{singer2016,vincent2013}.
-
-  \item \textbf{Ventilación mecánica invasiva (\texttt{ventilacion\_invasiva\_6h}):} Indicador binario que señala si el paciente recibió soporte respiratorio invasivo durante la ventana de observación. Su presencia identifica insuficiencia respiratoria grave y, además, introduce una interacción cardiopulmonar relevante: la presión positiva intratorácica reduce el retorno venoso y la precarga, lo que puede agravar la hipotensión y precipitar la necesidad de vasopresores para sostener la presión de perfusión \cite{vincent2013}.
+  \item \textbf{Puntuación SOFA (\texttt{sofa\_max}):} El \textit{Sequential Organ Failure Assessment} es una escala que cuantifica el grado de disfunción de seis sistemas orgánicos (respiratorio, coagulación, hepático, cardiovascular, neurológico y renal), asignando de 0 a 4 puntos a cada uno. El valor máximo dentro de la ventana resume la peor situación de disfunción orgánica del periodo de observación. Un SOFA elevado traduce fallo multiorgánico y se asocia estrechamente a inestabilidad hemodinámica y a la necesidad de soporte vasopresor; en este trabajo actúa además como referencia clínica frente a la que se comparan los modelos \citep{singer2016,vincent2013}.
 
   \item \textbf{Presencia de sepsis (\texttt{tiene\_sepsis}):} Indicador de sepsis definido según los criterios Sepsis-3 (disfunción orgánica potencialmente mortal causada por una respuesta desregulada del huésped a la infección). El síndrome séptico desencadena vasodilatación patológica y shock distributivo, mecanismo fisiopatológico directamente ligado a la necesidad de soporte vasopresor con noradrenalina como fármaco de primera línea \cite{singer2016,evans2021}.
 \end{itemize}
@@ -175,7 +177,7 @@ ventana, y 0 en caso contrario. La tabla~\ref{tab:distribucion-etiqueta} muestra
  
 \begin{table}[htbp]
   \centering
-  \caption{Distribución de la variable objetivo en los seis conjuntos definitivos.}
+  \caption{distribución de la variable objetivo en los seis conjuntos definitivos.}
   \label{tab:distribucion-etiqueta}
   \resizebox{0.9\textwidth}{!}{%
   \begin{tabular}{lrrrr}

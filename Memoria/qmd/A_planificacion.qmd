@@ -36,7 +36,7 @@ Las fases principales llevadas a cabo fueron:
 \begin{enumerate}
   \item Revisión bibliográfica y definición del problema.
   \item Acceso a datos: formación CITI y registro en PhysioNet \citep{citiprogram,physionet}.
-  \item Construcción de cohortes mediante consultas SQL sobre MIMIC-IV y eICU-CRD.
+  \item Construcción de cohortes mediante consultas SQL sobre MIMIC-IV y eICU-CRD, previamente importadas en una instancia local de PostgreSQL autorizada para el desarrollo del proyecto.
   \item Preprocesamiento y selección de variables.
   \item Entrenamiento, optimización y evaluación interna mediante validación cruzada anidada.
   \item Calibración de probabilidades e interpretabilidad mediante valores SHAP.
