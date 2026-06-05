@@ -62,7 +62,7 @@ Los pasos recomendados son los siguientes:
   \item Descargar o clonar el repositorio del proyecto desde GitHub.
 
 \begin{verbatim}
-git clone [URL del repositorio]
+git clone [URL]
 \end{verbatim}
 
   \item Entrar en la carpeta del repositorio.
