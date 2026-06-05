@@ -1,0 +1,12 @@
+```{=latex}
+%% ══════════════════════════════════════════════════════
+%%  APÉNDICE G – Estudio experimental
+%% ══════════════════════════════════════════════════════
+\apendice{Estudio experimental}
+
+\section{Registro de experimentos}
+
+\section{Parametrización}
+
+\section{Resultados}
+```

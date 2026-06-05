@@ -4,15 +4,21 @@
 %% ══════════════════════════════════════════════════════
 \apendice{Descripción de adquisición y tratamiento de datos}
 
-\section{Descripción formal de los datos (El Contenedor)}
+\section{Descripción formal de los datos}
 
-Los datos utilizados en este trabajo proceden de dos bases de datos clínicas de cuidados críticos: \textbf{MIMIC-IV}~\cite{johnson2023} (\textit{Medical Information Mart for Intensive Care}), empleada para el entrenamiento y la evaluación interna de los modelos, y \textbf{eICU-CRD}~\cite{pollard2018} (\textit{eICU Collaborative Research Database}), empleada para la validación externa. Ambas están alojadas en PhysioNet~\cite{physionet} y su acceso requirió completar el curso de formación CITI Program~\cite{citiprogram}, registrar el proyecto y firmar el acuerdo de uso de datos correspondiente.
+Los datos utilizados en este trabajo proceden de dos bases de datos clínicas de cuidados críticos: \textbf{MIMIC-IV}~\cite{johnson2023} (\textit{Medical Information Mart for Intensive Care}), 
+empleada para el entrenamiento y la evaluación interna de los modelos, y \textbf{eICU-CRD}~\cite{pollard2018} (\textit{eICU Collaborative Research Database}), empleada para la validación externa. Ambas están alojadas en PhysioNet~\cite{physionet} y su acceso requirió completar el curso de formación CITI Program~\cite{citiprogram}, registrar el proyecto y firmar el acuerdo de uso de datos correspondiente.
  
-Las consultas de extracción se ejecutaron directamente sobre las tablas originales de cada base de datos, alojadas en un servidor PostgreSQL local, y los resultados se exportaron en formato CSV tras winsorizarse con la estrategia seguida por \cite{gupta2022mimic}. No se utilizó ningún otro formato de fichero. Cada fila de los CSV resultantes representa una única estancia en UCI (\texttt{stay\_id}), y cada columna una variable clínica o administrativa calculada sobre la ventana de observación correspondiente.
+Las consultas de extracción se ejecutaron directamente sobre las tablas originales de cada base de datos, alojadas en un servidor PostgreSQL local, y los resultados se exportaron en formato CSV 
+tras winsorizarse con la estrategia seguida por \cite{gupta2022mimic}. No se utilizó ningún otro formato de fichero. Cada fila de los CSV resultantes representa una única estancia en UCI 
+(\texttt{stay\_id}), y cada columna una variable clínica o administrativa calculada sobre la ventana de observación correspondiente.
  
 \subsection*{Estructura de ficheros generados}
  
-El proceso de extracción y preprocesado produjo seis conjuntos de datos definitivos, uno por cada combinación de base de datos y ventana temporal. La tabla~\ref{tab:inventario-ficheros} los enumera junto con sus dimensiones.
+El proceso de extracción y preprocesado produjo seis conjuntos de datos definitivos, uno por cada combinación de base de datos y ventana temporal. La tabla~\ref{tab:inventario-ficheros} los 
+enumera junto con sus dimensiones. Conviene precisar que estos ficheros CSV no se incluyen en el repositorio público del proyecto, ya que contienen datos derivados de MIMIC-IV y eICU-CRD y su 
+redistribución está prohibida por el acuerdo de uso de datos de PhysioNet suscrito para acceder a ellas. El repositorio contiene únicamente el código de extracción, procesamiento y modelado, 
+de modo que cualquier persona con acceso acreditado a las bases originales pueda regenerar los conjuntos.
  
 \begin{table}[htbp]
   \centering
@@ -34,13 +40,18 @@ El proceso de extracción y preprocesado produjo seis conjuntos de datos definit
   }
 \end{table}
  
-Las diferencias de tamaño entre ventanas de la misma base responden a los criterios de inclusión: la ventana larga exige una duración de estancia superior a 48\,h, las ventanas corta y media requieren únicamente más de 24\,h, pero las variables calculadas sobre apenas 3\,h de observación implican mayor presencia de datos ausentes en analíticas con baja frecuencia de extracción, lo que reduce la cohorte elegible. El menor número de variables en los CSV de eICU refleja que la validación externa se realizó únicamente con las variables seleccionadas por los modelos finales, no con el conjunto completo de 82 predictores candidatos de MIMIC-IV.
+Las diferencias de tamaño entre ventanas de la misma base responden a los criterios de inclusión: la ventana larga exige una duración de estancia superior a 48\,h, las ventanas corta y media 
+requieren únicamente más de 24\,h, pero las variables calculadas sobre apenas 3\,h de observación implican mayor presencia de datos ausentes en analíticas con baja frecuencia de extracción, 
+lo que reduce la cohorte elegible. El menor número de variables en los CSV de eICU refleja que la validación externa se realizó únicamente con las variables seleccionadas por los modelos 
+finales, no con el conjunto completo de 82 predictores candidatos de MIMIC-IV.
  
 \subsection*{Variables incluidas en los conjuntos MIMIC-IV}
  
 Cada uno de los tres ficheros MIMIC contiene exactamente 82 columnas, distribuidas en los grupos descritos en la tabla~\ref{tab:grupos-variables}.
 
-La diferencia entre las 82 columnas totales y las 76 variables predictoras iniciales descritas en la memoria se debe a que los ficheros incluyen también identificadores, variables administrativas y columnas auxiliares de etiquetado. El análisis de correlación y selección de variables se realizó únicamente sobre el subconjunto de predictores clínicos candidatos.
+La diferencia entre las 82 columnas totales y las 76 variables sobre las que se realizó el análisis de correlación y selección se debe a seis columnas no predictoras: los tres
+identificadores (\texttt{subject\_id}, \texttt{hadm\_id}, \texttt{stay\_id}), las dos columnas de la variable objetivo (\texttt{etiqueta\_norad\_*} y \texttt{horas\_hasta\_norad}) y la
+diuresis en volumen bruto (\texttt{diuresis\_volumen\_6h}), excluida por ser redundante con la diuresis normalizada por peso (\texttt{diuresis\_ml\_kg\_6h}), que sí se conservó como predictor.
  
 \begin{table}[htbp]
   \centering
@@ -70,27 +81,95 @@ Las 23 variables clínicas cuantitativas continuas se representan con tres estad
 
 \section{Descripción clínica de los datos}
 
-Con el objetivo de dotar a las variables predictoras de contexto médico, se detalla a continuación el significado fisiopatológico e interpretación clínica de los parámetros de mayor impacto en los modelos predictivos desarrollados:
+Se describe a continuación el significado fisiopatológico e interpretación clínica de las variables clínicas incluidas en los conjuntos de datos. Para cada parámetro continuo se calcularon tres estadísticos sobre la ventana de observación (mínimo \texttt{\_min}, media \texttt{\_media} y máximo \texttt{\_max}); se indica entre paréntesis el estadístico de mayor relevancia clínica en cada caso.
+
+\subsection*{Gravedad y proceso clínico}
 
 \begin{itemize}
-  \item \textbf{Presión Arterial Media (PAM) mínima (\texttt{map\_min}):} Representa la fuerza motriz de perfusión orgánica. En situaciones de shock distributivo o hipovolémico, un descenso sostenido de la PAM por debajo de 65\,mmHg sobrepasa la capacidad de autorregulación vascular de órganos críticos (como el cerebro, los riñones y el corazón), provocando isquemia tisular. Su monitorización e intervención inmediata con noradrenalina es crucial para asegurar la supervivencia celular \cite{evans2021,vincent2013,hubu2025}.
-  
-  \item \textbf{Lactato máximo (\texttt{lactate\_max}):} El lactato es el subproducto metabólico derivado de la glucólisis anaerobia. Cuando existe hipoperfusión sistémica e hipoxia celular, la célula se ve obligada a desviar su metabolismo fuera de la cadena respiratoria mitocondrial. Un lactato elevado ($> 2,0$\,mmol/L) es el indicador analítico de cabecera más sensible de deuda de oxígeno tisular y disfunción microcirculatoria \cite{singer2016,evans2021,hubu2025}.
-  
-  \item \textbf{Índice de Kirby o relación PaO$_2$/FiO$_2$ mínima (\texttt{pao2\_fio2\_min}):} Evalúa la integridad del intercambio gaseoso en la membrana alveolocapilar. En pacientes sépticos, la cascada inflamatoria daña la microcirculación pulmonar, provocando edema alveolar y distrés respiratorio (SDRA). La consiguiente caída de este índice por debajo de 300\,mmHg refleja un fallo respiratorio agudo que asocia un sobreesfuerzo cardiaco que desestabiliza la hemodinámica \cite{singer2016,hubu2025}.
-  
-  \item \textbf{Creatinina máxima (\texttt{creatinine\_max}) e índice de filtrado:} La creatinina es el metabolito muscular depurado por filtración renal. En estados de inestabilidad hemodinámica, el riñón sufre precozmente por la vasoconstricción compensatoria que prioriza el flujo hacia el cerebro y el corazón. El incremento de la creatinina es la manifestación analítica del Fracaso Renal Agudo (IRA) inducido por hipoperfusión \cite{singer2016,hubu2025}.
-  
-  \item \textbf{Recuento de plaquetas mínimo (\texttt{platelets\_min}):} La trombocitopenia en el paciente crítico refleja un estado procoagulante destructivo. La disfunción endotelial masiva activa de forma anómala la cascada de coagulación, consumiendo plaquetas en la microvasculatura (coagulación intravascular diseminada, CID), lo que perpetúa la hipoxia microvascular y el fallo orgánico múltiple \cite{singer2016,hubu2025}.
+  \item \textbf{Puntuación SOFA (\texttt{sofa\_min}, \texttt{sofa\_media}, \texttt{sofa\_max}):} [Qué es: \textit{Sequential Organ Failure Assessment}, escala que cuantifica la disfunción de seis sistemas orgánicos. El valor máximo resume la peor disfunción del periodo.] [Relación con shock y necesidad de vasopresores; en este trabajo SOFA actúa además como referencia clínica frente a la que se comparan los modelos.] \cite{[...]}
+
+  \item \textbf{Ventilación mecánica invasiva (\texttt{ventilacion\_invasiva\_6h}):} [Qué representa: indicador binario de soporte respiratorio invasivo durante la ventana.] [Fisiopatología: marca insuficiencia respiratoria grave e interacción cardiopulmonar (la presión positiva afecta al retorno venoso y la hemodinámica).] [Relación con la probabilidad de requerir vasopresores.] \cite{[...]}
+
+  \item \textbf{Presencia de sepsis (\texttt{tiene\_sepsis}):} [Qué representa: indicador de sepsis según criterios Sepsis-3.] [Relación fisiopatológica entre síndrome séptico, disfunción orgánica distributiva y necesidad de soporte vasopresor.] \cite{[...]}
+\end{itemize}
+
+\subsection*{Constantes vitales}
+
+\begin{itemize}
+  \item \textbf{Presión arterial media — PAM (\texttt{map\_min}):} Representa la fuerza motriz de perfusión orgánica. En situaciones de shock distributivo o hipovolémico, un descenso sostenido de la PAM por debajo de 65\,mmHg sobrepasa la capacidad de autorregulación vascular de órganos críticos (cerebro, riñones y corazón), provocando isquemia tisular. Su monitorización e intervención inmediata con noradrenalina es crucial para asegurar la supervivencia celular \cite{evans2021,vincent2013,hubu2025}.
+
+  \item \textbf{Frecuencia cardíaca (\texttt{hr\_media}):} [Qué mide.] [Fisiopatología: taquicardia compensatoria ante hipovolemia, hipotensión o respuesta inflamatoria sistémica, para mantener el gasto cardíaco.] [Relación con estados de inestabilidad que pueden requerir soporte vasopresor.] \cite{[...]}
+
+  \item \textbf{Frecuencia respiratoria (\texttt{rr\_max}):} [Qué mide.] [Fisiopatología: la taquipnea como respuesta a hipoxemia, acidosis metabólica o distrés; signo precoz de deterioro.] [Relación con la gravedad.] \cite{[...]}
+
+  \item \textbf{Temperatura (\texttt{temp\_min}):} [Qué mide.] [Fisiopatología: tanto la fiebre como, especialmente, la hipotermia son marcadores de gravedad; la hipotermia en el séptico se asocia a peor pronóstico y disfunción de la termorregulación en shock avanzado.] [Por qué el mínimo es informativo.] \cite{[...]}
+
+  \item \textbf{Saturación periférica de oxígeno — SpO$_2$ (\texttt{spo2\_min}):} [Qué mide: oxigenación de la hemoglobina por pulsioximetría.] [Fisiopatología: relación con hipoxemia y deterioro respiratorio.] [Matiz que se discute en la memoria: una SpO$_2$ elevada puede coexistir con mayor gravedad si el paciente recibe oxigenoterapia intensiva o ventilación, por lo que su lectura depende de la FiO$_2$ y del soporte aplicado.] \cite{[...]}
+\end{itemize}
+
+\subsection*{Gasometría y función respiratoria}
+
+\begin{itemize}
+  \item \textbf{Relación PaO$_2$/FiO$_2$ — índice de Kirby (\texttt{pf\_min}):} Evalúa la integridad del intercambio gaseoso en la membrana alveolocapilar. En pacientes sépticos, la cascada inflamatoria daña la microcirculación pulmonar, provocando edema alveolar y distrés respiratorio (SDRA). La caída de este índice por debajo de 300\,mmHg refleja un fallo respiratorio agudo que asocia un sobreesfuerzo cardiaco que desestabiliza la hemodinámica \cite{singer2016,hubu2025}.
+
+  \item \textbf{Presión arterial de oxígeno — PaO$_2$ (\texttt{pao2\_min}):} [Qué mide: oxígeno disuelto en sangre arterial.] [Fisiopatología: hipoxemia como expresión de fallo en el intercambio gaseoso.] [Relación con la gravedad respiratoria; es además el numerador del índice de Kirby.] \cite{[...]}
+
+  \item \textbf{Fracción inspirada de oxígeno — FiO$_2$ (\texttt{fio2\_max}):} [Qué representa: proporción de oxígeno en el aire inspirado; refleja la intensidad del soporte de oxigenoterapia.] [Fisiopatología: una FiO$_2$ alta indica mayor necesidad de soporte para mantener la oxigenación; es el denominador del índice de Kirby.] \cite{[...]}
+
+  \item \textbf{Presión arterial de CO$_2$ — PaCO$_2$ (\texttt{paco2\_max}):} [Qué mide.] [Fisiopatología: alteraciones de la ventilación; relación con acidosis/alcalosis respiratoria y con el estado hemodinámico.] \cite{[...]}
+
+  \item \textbf{pH arterial (\texttt{ph\_min}):} [Qué mide.] [Fisiopatología: la acidemia (pH bajo), habitualmente metabólica por hipoperfusión, deprime la contractilidad miocárdica y la respuesta a catecolaminas; marcador de gravedad.] \cite{[...]}
+
+  \item \textbf{Bicarbonato sérico (\texttt{bicarbonato\_min}):} [Qué es: principal tampón del equilibrio ácido-base.] [Fisiopatología: su descenso refleja acidosis metabólica, habitualmente por acúmulo de lactato en hipoperfusión e hipoxia tisular.] [Por qué un bicarbonato bajo señala gravedad y se asocia a la necesidad de soporte hemodinámico.] \cite{[...]}
+\end{itemize}
+
+\subsection*{Analítica de laboratorio}
+
+\begin{itemize}
+  \item \textbf{Lactato (\texttt{lactato\_max}):} El lactato es el subproducto metabólico derivado de la glucólisis anaerobia. Cuando existe hipoperfusión sistémica e hipoxia celular, la célula desvía su metabolismo fuera de la cadena respiratoria mitocondrial. Un lactato elevado ($>2,0$\,mmol/L) es el indicador analítico más sensible de deuda de oxígeno tisular y disfunción microcirculatoria \cite{singer2016,evans2021,hubu2025}.
+
+  \item \textbf{Creatinina (\texttt{creatinina\_max}):} La creatinina es el metabolito muscular depurado por filtración renal. En estados de inestabilidad hemodinámica, el riñón sufre precozmente por la vasoconstricción compensatoria que prioriza el flujo hacia cerebro y corazón. Su incremento es la manifestación analítica del fracaso renal agudo inducido por hipoperfusión \cite{singer2016,hubu2025}.
+
+  \item \textbf{Recuento de plaquetas (\texttt{plaquetas\_min}):} La trombocitopenia en el paciente crítico refleja un estado procoagulante destructivo. La disfunción endotelial masiva activa de forma anómala la cascada de coagulación, consumiendo plaquetas en la microvasculatura (coagulación intravascular diseminada, CID), lo que perpetúa la hipoxia microvascular y el fallo orgánico múltiple \cite{singer2016,hubu2025}.
+
+  \item \textbf{Bilirrubina (\texttt{bilirrubina\_max}):} [Qué mide.] [Fisiopatología: su elevación refleja disfunción hepática; es uno de los componentes del SOFA y marcador de fallo orgánico.] \cite{[...]}
+
+  \item \textbf{Tiempo de protrombina — TP (\texttt{tp\_max}):} [Qué mide.] [Fisiopatología: su prolongación indica alteración de la coagulación, asociada a disfunción hepática y a coagulopatía del paciente crítico.] \cite{[...]}
+
+  \item \textbf{Transaminasa GPT/ALT (\texttt{gpt\_max}):} [Qué mide.] [Fisiopatología: marcador de daño hepatocelular; su elevación puede reflejar hipoperfusión hepática (hígado de shock).] \cite{[...]}
+
+  \item \textbf{Transaminasa GOT/AST (\texttt{got\_max}):} [Qué mide.] [Fisiopatología: marcador de daño hepatocelular y, de forma inespecífica, de sufrimiento tisular por hipoperfusión.] \cite{[...]}
+
+  \item \textbf{Leucocitos (\texttt{leucocitos\_max}):} [Qué mide.] [Fisiopatología: leucocitosis o leucopenia como respuesta inflamatoria sistémica; criterio clásico de respuesta a la infección.] \cite{[...]}
+
+  \item \textbf{Hemoglobina (\texttt{hemoglobina\_min}):} [Qué mide.] [Fisiopatología: la anemia reduce el transporte de oxígeno y agrava la deuda tisular en estados de bajo gasto.] \cite{[...]}
+
+  \item \textbf{Glucemia (\texttt{glucemia\_min}):} [Qué mide.] [Fisiopatología: la disregulación glucémica es habitual en el crítico por respuesta de estrés; mencionar tanto la hiperglucemia de estrés como el riesgo de hipoglucemia.] \cite{[...]}
+\end{itemize}
+
+\subsection*{Estado neurológico}
+
+\begin{itemize}
+  \item \textbf{Escala de coma de Glasgow — GCS (\texttt{gcs\_min}):} [Qué mide: nivel de consciencia.] [Fisiopatología: el deterioro del nivel de consciencia acompaña a la hipoperfusión cerebral y a la gravedad sistémica; es componente del SOFA.] \cite{[...]}
+\end{itemize}
+
+\subsection*{Función renal y balance hídrico}
+
+\begin{itemize}
+  \item \textbf{Diuresis (\texttt{diuresis\_volumen\_6h} y \texttt{diuresis\_ml\_kg\_6h}):} [Qué miden: volumen de orina en la ventana y su normalización por peso (mL/kg).] [Fisiopatología: la oliguria es un signo precoz de hipoperfusión renal y bajo gasto cardíaco; el riñón reduce la diuresis ante la vasoconstricción compensatoria.] [Por qué una diuresis baja anticipa deterioro hemodinámico y eventual necesidad de noradrenalina. Nota: \texttt{diuresis\_ml\_kg\_6h} se obtiene dividiendo el volumen acumulado por \texttt{peso\_kg}.] \cite{[...]}
 \end{itemize}
  
 \subsection*{Variables incluidas en los conjuntos eICU-CRD}
  
-Los conjuntos eICU contienen exclusivamente las variables retenidas por los modelos finales tras la selección de características en MIMIC-IV: entre 12 y 17 columnas según la ventana temporal (tabla~\ref{tab:inventario-ficheros}). En todos los casos se incluyen los identificadores (\texttt{subject\_id}, \texttt{stay\_id}), las variables demográficas básicas (\texttt{anchor\_age}, \texttt{gender}, \texttt{peso\_kg}, \texttt{contador\_estancia\_uci}), la variable objetivo, y el subconjunto de predictores seleccionados, que son en todos los casos un subconjunto de los disponibles en MIMIC-IV.
+Los conjuntos eICU contienen exclusivamente las variables retenidas por los modelos finales tras la selección de características en MIMIC-IV: entre 12 y 17 columnas según la ventana temporal 
+(tabla~\ref{tab:inventario-ficheros}). En todos los casos se incluyen los identificadores (\texttt{subject\_id}, \texttt{stay\_id}), las variables demográficas básicas (\texttt{anchor\_age}, 
+\texttt{gender}, \texttt{peso\_kg}, \texttt{contador\_estancia\_uci}), la variable objetivo, y el subconjunto de predictores seleccionados, que son en todos los casos un subconjunto de los 
+disponibles en MIMIC-IV.
  
 \subsection*{Variable objetivo}
  
-La variable objetivo binaria (\texttt{etiqueta\_norad\_*}) toma el valor 1 cuando el paciente recibió su primera dosis de noradrenalina dentro del horizonte de predicción definido para esa ventana, y 0 en caso contrario. La tabla~\ref{tab:distribucion-etiqueta} muestra la distribución en los seis conjuntos.
+La variable objetivo binaria (\texttt{etiqueta\_norad\_*}) toma el valor 1 cuando el paciente recibió su primera dosis de noradrenalina dentro del horizonte de predicción definido para esa 
+ventana, y 0 en caso contrario. La tabla~\ref{tab:distribucion-etiqueta} muestra la distribución en los seis conjuntos.
  
 \begin{table}[htbp]
   \centering
@@ -112,313 +191,22 @@ La variable objetivo binaria (\texttt{etiqueta\_norad\_*}) toma el valor 1 cuand
   }
 \end{table}
  
-La proporción de positivos oscila entre el 9,8\% y el 14,4\%, lo que indica un desbalanceo moderado consistente con la prevalencia real del evento en UCI \cite{firzli2023}. El conjunto eICU de 3\,h presenta la mayor proporción de positivos (14,4\%). La columna \texttt{horas\_hasta\_norad} registra el tiempo transcurrido entre el inicio de la ventana de observación y la primera administración de noradrenalina; esta columna es \texttt{NA} para todos los pacientes con etiqueta 0, ya que el evento no tuvo lugar.
+La proporción de positivos oscila entre el 9,8\% y el 14,4\%, lo que indica un desbalanceo moderado consistente con la prevalencia real del evento en UCI \cite{firzli2023}. El conjunto eICU 
+de 3\,h presenta la mayor proporción de positivos (14,4\%). La columna \texttt{horas\_hasta\_norad} registra el tiempo transcurrido entre el inicio de la ventana de observación y la primera 
+administración de noradrenalina; esta columna es \texttt{NA} para todos los pacientes con etiqueta 0, ya que el evento no tuvo lugar.
  
 \subsection*{Valores perdidos y estrategia de no-imputación}
 
-Es fundamental destacar que, bajo esta decisión metodológica y con el fin de preservar la fidelidad fisiológica de los datos reales, \textbf{en ningún momento se aplicaron técnicas de imputación artificial de datos faltantes}. En su lugar, se adoptó un enfoque de caso completo(\textit{complete-case analysis}), en el que únicamente se conservaron y analizaron aquellas estancias de UCI que presentaban la totalidad de sus variables clínicas y demográficas perfectamente pobladas.
+Es fundamental destacar que, bajo esta decisión metodológica y con el fin de preservar la fidelidad fisiológica de los datos reales, \textbf{en ningún momento se aplicaron técnicas de imputación
+artificial de datos faltantes}. En su lugar, se adoptó un enfoque de caso completo, en el que únicamente se conservaron y analizaron aquellas estancias de UCI que presentaban la totalidad de 
+sus variables clínicas y demográficas perfectamente pobladas.
 
-Como consecuencia de este diseño, la única columna que presenta valores perdidos de carácter estructural en los conjuntos de datos definitivos de MIMIC-IV es \texttt{horas\_hasta\_norad} (ausente por definición clínica en los casos negativos). Las restantes 80 columnas de variables se encuentran completamente cubiertas. En los conjuntos de validación de eICU-CRD la situación es análoga: la variable \texttt{horas\_hasta\_norad} toma el valor \texttt{NA} para los casos negativos.
-```
+Como consecuencia de este diseño, la única columna que presenta valores perdidos de carácter estructural en los conjuntos de datos definitivos de MIMIC-IV es \texttt{horas\_hasta\_norad} 
+(ausente por definición clínica en los casos negativos). Las restantes 80 columnas de variables se encuentran completamente cubiertas. En los conjuntos de validación de eICU-CRD la situación es 
+análoga: la variable \texttt{horas\_hasta\_norad} toma el valor \texttt{NA} para los casos negativos.
 
-\subsection*{Análisis exploratorio comparativo de las cohortes}
+\subsection*{Análisis exploratorio de la cohorte de desarrollo y comparación de las cohortes}
 
-Para caracterizar los datos más allá de su descripción formal se realizó
-un análisis exploratorio sobre los seis conjuntos definitivos. Dado que
-MIMIC-IV actúa como cohorte de desarrollo y eICU-CRD como cohorte de
-validación externa, el análisis se orienta a cuantificar las diferencias
-estructurales entre ambas, ya que estas condicionan la interpretación del
-rendimiento obtenido en la validación externa. Todas las tablas y figuras
-que siguen se calculan directamente sobre los ficheros definitivos en
-tiempo de compilación.
+METER TABLA Y EDAS DE COHERENCIA
 
-```{r}
-#| label: setup-eda
-#| echo: true
-#| message: false
-#| warning: false
-#| code-overflow: wrap
-
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(knitr)
-
-ruta_datos <- "C:/Users/danie/OneDrive/Escritorio/DATA"
-
-cargar_conjunto <- function(fichero, col_etiqueta,
-                            base, ventana) {
-  marco <- read.csv(
-    file.path(ruta_datos, fichero),
-    stringsAsFactors = FALSE, check.names = FALSE
-  )
-  names(marco)[names(marco) == col_etiqueta] <- "etiqueta"
-  marco |>
-    mutate(
-      sexo = case_when(
-        gender %in% c("M", "Male")   ~ "Hombre",
-        gender %in% c("F", "Female") ~ "Mujer"
-      ),
-      base = base,
-      ventana = ventana
-    )
-}
-
-mimic_corta <- cargar_conjunto(
-  "definitivo_v4p.csv", "etiqueta_norad_3_12", "MIMIC-IV", "3 h"
-)
-mimic_media <- cargar_conjunto(
-  "definitivo_v4.csv", "etiqueta_norad_6_24", "MIMIC-IV", "6 h"
-)
-mimic_larga <- cargar_conjunto(
-  "definitivo_v4l.csv", "etiqueta_norad_12_48",
-  "MIMIC-IV", "12 h"
-)
-eicu_corta <- cargar_conjunto(
-  "eICU_3_12_definitivo.csv", "etiqueta_norad_3_12",
-  "eICU-CRD", "3 h"
-)
-eicu_media <- cargar_conjunto(
-  "eICU_6_24_definitivo.csv", "etiqueta_norad_6_24",
-  "eICU-CRD", "6 h"
-)
-eicu_larga <- cargar_conjunto(
-  "eICU_12_48_definitivo.csv", "etiqueta_norad_12_48",
-  "eICU-CRD", "12 h"
-)
-```
-
-La tabla \ref{tab:comparacion-cohortes} resume las características basales de
-las seis cohortes. Las dos bases presentan una edad y una distribución por
-sexo similares (en torno a 60 años, con leve predominio masculino).
-
-```{r}
-#| label: build-tbl-cohortes
-#| echo: false
-#| results: asis
-
-resumir_cohorte <- function(marco) {
-  n <- nrow(marco)
-  tibble(
-    Conjunto      = paste(unique(marco$base), unique(marco$ventana)),
-    N             = n,
-    Edad          = sprintf("%.1f \u00b1 %.1f", mean(marco$anchor_age), sd(marco$anchor_age)),
-    Hombres       = sprintf("%.1f %%", 100 * sum(marco$sexo == "Hombre") / n),
-    Peso          = sprintf("%.1f \u00b1 %.1f", mean(marco$peso_kg, na.rm = TRUE),
-                            sd(marco$peso_kg, na.rm = TRUE)),
-    Noradrenalina = sprintf("%.1f %%", 100 * sum(marco$etiqueta == 1) / n),
-    SOFA          = sprintf("%.0f [%.0f\u2013%.0f]", median(marco$sofa_max),
-                            quantile(marco$sofa_max, 0.25), quantile(marco$sofa_max, 0.75))
-  )
-}
-
-tabla_cohortes <- bind_rows(
-  resumir_cohorte(mimic_corta), resumir_cohorte(mimic_media), resumir_cohorte(mimic_larga),
-  resumir_cohorte(eicu_corta),  resumir_cohorte(eicu_media),  resumir_cohorte(eicu_larga)
-)
-
-tabular_cohortes <- kable(tabla_cohortes, format = "latex", booktabs = TRUE,
-                          align = "lrrrrrr",
-                          col.names = c("Conjunto", "N", "Edad (a\u00f1os)", "Hombres",
-                                        "Peso (kg)", "Noradrenalina", "SOFA m\u00e1x"))
-
-cat("\\begin{table}[htbp]\n\\centering\n")
-cat("\\caption{Caracter\u00edsticas de las cohortes de desarrollo (MIMIC-IV) y de validaci\u00f3n externa (eICU-CRD) en las tres ventanas temporales.}\n")
-cat("\\label{tab:comparacion-cohortes}\n")
-cat("\\resizebox{\\textwidth}{!}{%\n")
-cat(tabular_cohortes)
-cat("\n}\n\\end{table}\n")
-```
-
-El contraste se confirma al examinar los predictores compartidos por ambas
-bases en la ventana media (tabla \ref{tab:predictores-comparados}): eICU-CRD
-presenta una PAM mínima más baja y un SOFA máximo más alto, mientras que el
-cociente PaO2/FiO2 mínimo es mayor; en conjunto, un perfil hemodinámico más
-comprometido pero con mejor oxigenación basal. Estas diferencias no invalidan
-la validación externa, sino que delimitan el grado de extrapolación exigido a
-los modelos.
-
-```{r}
-#| label: build-tbl-predictores
-#| echo: false
-#| results: asis
-
-variables_compartidas <- c("map_min", "pf_min", "sofa_max", "hr_media",
-                           "rr_max", "glucemia_min", "diuresis_ml_kg_6h")
-etiquetas_compartidas <- c("PAM m\u00edn (mmHg)", "PaO2/FiO2 m\u00edn", "SOFA m\u00e1x",
-                          "FC media (lpm)", "FR m\u00e1x (rpm)",
-                          "Glucemia m\u00edn (mg/dL)", "Diuresis (mL/kg/6 h)")
-
-resumir_variable <- function(x) {
-  sprintf("%.1f [%.1f\u2013%.1f]", median(x, na.rm = TRUE),
-          quantile(x, 0.25, na.rm = TRUE), quantile(x, 0.75, na.rm = TRUE))
-}
-
-tabla_predictores <- tibble(
-  Variable = etiquetas_compartidas,
-  mimic    = unname(sapply(variables_compartidas, function(v) resumir_variable(mimic_media[[v]]))),
-  eicu     = unname(sapply(variables_compartidas, function(v) resumir_variable(eicu_media[[v]])))
-)
-
-tabular_predictores <- kable(tabla_predictores, format = "latex", booktabs = TRUE,
-                             align = "lcc",
-                             col.names = c("Variable",
-                                           paste0("MIMIC-IV (n = ", nrow(mimic_media), ")"),
-                                           paste0("eICU-CRD (n = ", nrow(eicu_media), ")")))
-
-cat("\\begin{table}[htbp]\n\\centering\n")
-cat("\\caption{Distribuci\u00f3n de las variables predictoras compartidas por MIMIC-IV y eICU-CRD en la ventana media (observaci\u00f3n 0--6 h). Mediana [P25--P75].}\n")
-cat("\\label{tab:predictores-comparados}\n")
-cat(tabular_predictores)
-cat("\n\\end{table}\n")
-```
-
-Las distribuciones de la @fig-densidades-comparadas hacen visible ese
-desplazamiento de dominio: las densidades de eICU-CRD aparecen desplazadas
-respecto a las de MIMIC-IV en la mayoría de los predictores, de forma más
-acusada en el SOFA máximo y en el cociente PaO2/FiO2 mínimo.
-
-```{r}
-#| label: fig-densidades-comparadas
-#| fig-cap: "Distribuciones comparadas de las variables predictoras compartidas entre MIMIC-IV y eICU-CRD (ventana de observación 0--6 h). Las diferencias de forma reflejan el desplazamiento de dominio entre la cohorte de desarrollo y la de validación externa."
-#| fig-width: 7
-#| fig-height: 4.5
-#| echo: true
-#| code-overflow: wrap
-
-variables_densidad <- c(
-  "map_min", "pf_min", "hr_media",
-  "rr_max", "glucemia_min", "sofa_max"
-)
-etiquetas_densidad <- c(
-  "PAM mín (mmHg)", "PaO2/FiO2 mín", "FC media (lpm)",
-  "FR máx (rpm)", "Glucemia mín (mg/dL)", "SOFA máx"
-)
-
-datos_densidad <- bind_rows(
-  mimic_media |> select(base, all_of(variables_densidad)),
-  eicu_media  |> select(base, all_of(variables_densidad))
-) |>
-  pivot_longer(
-    all_of(variables_densidad),
-    names_to = "variable", values_to = "valor"
-  ) |>
-  mutate(
-    variable = factor(
-      variable, levels = variables_densidad,
-      labels = etiquetas_densidad
-    )
-  )
-
-ggplot(datos_densidad, aes(x = valor, fill = base)) +
-  geom_density(alpha = 0.55, color = NA) +
-  facet_wrap(~ variable, scales = "free", ncol = 3) +
-  scale_fill_manual(
-    values = c("MIMIC-IV" = "#3B6EA5", "eICU-CRD" = "#E07B39")
-  ) +
-  labs(x = NULL, y = "Densidad", fill = "Base de datos") +
-  theme_minimal(base_size = 10) +
-  theme(legend.position = "bottom")
-```
-
-Pese a esas diferencias de partida, la dirección de la asociación con el
-desenlace se conserva entre cohortes (@fig-predictores-desenlace): tanto en
-MIMIC-IV como en eICU-CRD, los pacientes que recibieron noradrenalina
-presentan una PAM mínima y un cociente PaO2/FiO2 mínimo inferiores y un SOFA
-máximo superior. Esta coherencia en el sentido del efecto es lo que hace
-plausible la transferencia de los modelos a la cohorte externa.
-
-```{r}
-#| label: fig-predictores-desenlace
-#| fig-cap: "Predictores hemodinámicos y de gravedad clave según el desenlace (inicio de noradrenalina) en ambas cohortes (ventana 0--6 h). La dirección de la asociación se mantiene entre la cohorte de desarrollo y la de validación."
-#| fig-width: 7
-#| fig-height: 4
-#| echo: true
-#| code-overflow: wrap
-
-variables_desenlace <- c("map_min", "pf_min", "sofa_max")
-etiquetas_desenlace <- c(
-  "PAM mín (mmHg)", "PaO2/FiO2 mín", "SOFA máx"
-)
-
-datos_desenlace <- bind_rows(
-  mimic_media |>
-    select(base, etiqueta, all_of(variables_desenlace)),
-  eicu_media |>
-    select(base, etiqueta, all_of(variables_desenlace))
-) |>
-  pivot_longer(
-    all_of(variables_desenlace),
-    names_to = "variable", values_to = "valor"
-  ) |>
-  mutate(
-    variable = factor(
-      variable, levels = variables_desenlace,
-      labels = etiquetas_desenlace
-    ),
-    desenlace = factor(
-      etiqueta, levels = c(0, 1),
-      labels = c("No noradrenalina", "Noradrenalina")
-    )
-  )
-
-ggplot(datos_desenlace,
-       aes(x = base, y = valor, fill = desenlace)) +
-  geom_boxplot(outlier.size = 0.4, alpha = 0.85, width = 0.6) +
-  facet_wrap(~ variable, scales = "free_y") +
-  scale_fill_manual(
-    values = c("No noradrenalina" = "#7FB069",
-               "Noradrenalina" = "#D1495B")
-  ) +
-  labs(x = NULL, y = "Valor", fill = "Desenlace") +
-  theme_minimal(base_size = 10) +
-  theme(legend.position = "bottom")
-```
-
-Por último, el tiempo desde el inicio de la ventana de observación hasta la
-primera dosis de noradrenalina (@fig-tiempo-norad) escala con el horizonte de
-predicción. Los valores respetan en todos los casos los límites inferiores de cada horizonte,
-lo que confirma la consistencia del etiquetado entre ambas bases y la ausencia
-de fugas de información desde el evento.
-
-```{r}
-#| label: fig-tiempo-norad
-#| fig-cap: "Tiempo desde el inicio de la ventana de observación hasta la primera administración de noradrenalina, en los pacientes con desenlace positivo. Los valores respetan los límites de cada horizonte de predicción y son consistentes entre ambas bases."
-#| fig-width: 7
-#| fig-height: 3.5
-#| echo: true
-#| code-overflow: wrap
-
-seleccionar_tiempo <- function(marco) {
-  select(marco, base, ventana, etiqueta, horas_hasta_norad)
-}
-
-datos_tiempo <- bind_rows(
-  seleccionar_tiempo(mimic_corta),
-  seleccionar_tiempo(mimic_media),
-  seleccionar_tiempo(mimic_larga),
-  seleccionar_tiempo(eicu_corta),
-  seleccionar_tiempo(eicu_media),
-  seleccionar_tiempo(eicu_larga)
-) |>
-  filter(etiqueta == 1, !is.na(horas_hasta_norad)) |>
-  mutate(
-    ventana = factor(ventana, levels = c("3 h", "6 h", "12 h"),
-                     labels = c("Ventana corta (3–12 h)",
-                                "Ventana media (6–24 h)",
-                                "Ventana larga (12–48 h)"))
-  )
-
-ggplot(datos_tiempo,
-       aes(x = horas_hasta_norad, fill = base)) +
-  geom_histogram(bins = 25, position = "identity",
-                 alpha = 0.6, color = "white") +
-  facet_wrap(~ ventana, scales = "free", ncol = 3) +
-  scale_fill_manual(
-    values = c("MIMIC-IV" = "#3B6EA5", "eICU-CRD" = "#E07B39")
-  ) +
-  labs(x = "Horas hasta noradrenalina",
-       y = "Número de pacientes", fill = "Base de datos") +
-  theme_minimal(base_size = 10) +
-  theme(legend.position = "bottom")
 ```
