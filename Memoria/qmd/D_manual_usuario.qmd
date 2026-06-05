@@ -62,16 +62,14 @@ Los pasos recomendados son los siguientes:
   \item Descargar o clonar el repositorio del proyecto desde GitHub.
 
 \begin{verbatim}
-git clone [URL]
+git clone <URL del repositorio público del proyecto>
 \end{verbatim}
 
   \item Entrar en la carpeta del repositorio.
 
-{\footnotesize
 \begin{verbatim}
 cd Estimacion-temprana-*
 \end{verbatim}
-}
 
   \item Crear un entorno virtual de Python (opcional).
 
