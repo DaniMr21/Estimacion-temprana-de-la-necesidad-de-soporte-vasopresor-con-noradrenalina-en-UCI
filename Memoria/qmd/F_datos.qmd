@@ -47,7 +47,7 @@ de modo que cualquier persona con acceso acreditado a las bases originales pueda
 Las diferencias de tamaño entre ventanas de la misma base responden a los criterios de inclusión: la ventana larga exige una duración de estancia superior a 48\,h, las ventanas corta y media 
 requieren únicamente más de 24\,h, pero las variables calculadas sobre apenas 3\,h de observación implican mayor presencia de datos ausentes en analíticas con baja frecuencia de extracción, 
 lo que reduce la cohorte elegible. El menor número de variables en los CSV de eICU refleja que la validación externa se realizó únicamente con las variables seleccionadas por los modelos 
-finales, no con el conjunto completo de 82 predictores candidatos de MIMIC-IV.
+evaluados externamente, no con el conjunto completo de 82 predictores candidatos de MIMIC-IV.
  
 \subsection*{Variables incluidas en los conjuntos MIMIC-IV}
  
@@ -165,7 +165,7 @@ cada caso.
  
 \subsection*{Variables incluidas en los conjuntos eICU-CRD}
  
-Los conjuntos eICU contienen exclusivamente las variables retenidas por los modelos finales tras la selección de características en MIMIC-IV: entre 12 y 17 columnas según la ventana temporal 
+Los conjuntos eICU contienen exclusivamente las variables retenidas por los modelos evaluados externamente tras la selección de características en MIMIC-IV: entre 12 y 17 columnas según la ventana temporal 
 (tabla~\ref{tab:inventario-ficheros}). En todos los casos se incluyen los identificadores (\texttt{subject\_id}, \texttt{stay\_id}), las variables demográficas básicas (\texttt{anchor\_age}, 
 \texttt{gender}, \texttt{peso\_kg}, \texttt{contador\_estancia\_uci}), la variable objetivo, y el subconjunto de predictores seleccionados, que son en todos los casos un subconjunto de los 
 disponibles en MIMIC-IV.
