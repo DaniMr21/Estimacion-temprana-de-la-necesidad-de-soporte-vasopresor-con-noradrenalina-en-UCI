@@ -84,7 +84,7 @@ El seguimiento del proyecto se organizó en GitHub mediante \textit{milestones} 
 
 Las fases vinculadas a la obtención de datos, construcción de cohortes, experimentación principal y validación externa se completaron dentro del alcance finalmente definido. El desarrollo del \textit{dashboard} y la redacción de la memoria constituyeron la etapa final del trabajo, concentrada en las últimas semanas de mayo y primera de junio. La experimentación interna —entrenamiento, calibración e iteración sucesiva de los modelos— se gestionó por versiones en el repositorio en lugar de como un \textit{milestone} independiente, tal como refleja la sucesión de carpetas de pruebas descrita en el apartado anterior.
 
-\subsection{Planificación económica}
+\section{Planificación económica}
 
 A continuación se estima el coste que supondría ejecutar este proyecto en un contexto profesional. Se valora, por un lado, el coste material imputable, incluyendo hardware, software y datos, y por otro, el coste de personal, calculando la dedicación al precio de mercado fijado por convenio. El software empleado es de código abierto o de libre acceso y las bases de datos utilizadas no tienen coste económico directo para fines de investigación, por lo que el coste material se reduce a la amortización del equipo.
 
@@ -219,7 +219,7 @@ Coste de personal & 5.906,77\,€ \\
 Este importe no representa un precio de venta o de facturación, sino una estimación del coste interno de ejecución, considerando la amortización del equipo, el salario bruto proporcional y las 
 cotizaciones empresariales estimadas a la Seguridad Social.
 
-\subsection{Viabilidad legal}
+\section{Viabilidad legal}
 
 Dado que este trabajo constituye un análisis retrospectivo sobre bases de datos públicas y desidentificadas por sus custodios originales \citep{johnson2023,pollard2018,physionet}, el análisis
 desarrollado en este TFG no requirió una aprobación adicional por parte de un Comité de Ética de Investigación local, sin embargo, el acceso a MIMIC-IV y eICU-CRD a través de PhysioNet exige 
