@@ -26,4 +26,6 @@ la base de datos eICU-CRD \citep{pollard2018}.
 El presente documento se organiza en ocho capítulos. Tras esta introducción, el \textbf{Capítulo~2} recoge los objetivos del trabajo. El \textbf{Capítulo~3} desarrolla el marco teórico y el 
 estado del arte. El \textbf{Capítulo~4} describe la metodología empleada. Los \textbf{Capítulos~5 y~6} presentan y discuten los resultados obtenidos. El \textbf{Capítulo~7} recoge las conclusiones
 principales y el \textbf{Capítulo~8} propone posibles líneas de trabajo futuro.
+
+El repositorio público del presente proyecto está disponible a través de la siguiente dirección: \url{https://github.com/DaniMr21/Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI}
 ```
