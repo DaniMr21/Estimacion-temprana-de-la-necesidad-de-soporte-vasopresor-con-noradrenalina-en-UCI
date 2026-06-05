@@ -69,7 +69,7 @@ git clone [URL del repositorio]
 
 {\footnotesize
 \begin{verbatim}
-cd Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI
+cd Estimacion-temprana-*
 \end{verbatim}
 }
 

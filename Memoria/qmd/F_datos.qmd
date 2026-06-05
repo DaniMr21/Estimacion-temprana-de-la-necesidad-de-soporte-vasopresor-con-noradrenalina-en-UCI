@@ -9,9 +9,11 @@
 Los datos utilizados en este trabajo proceden de dos bases de datos clínicas de cuidados críticos: \textbf{MIMIC-IV}~\cite{johnson2023} (\textit{Medical Information Mart for Intensive Care}), 
 empleada para el entrenamiento y la evaluación interna de los modelos, y \textbf{eICU-CRD}~\cite{pollard2018} (\textit{eICU Collaborative Research Database}), empleada para la validación externa. Ambas están alojadas en PhysioNet~\cite{physionet} y su acceso requirió completar el curso de formación CITI Program~\cite{citiprogram}, registrar el proyecto y firmar el acuerdo de uso de datos correspondiente.
  
-Las consultas de extracción se ejecutaron directamente sobre las tablas originales de cada base de datos, alojadas en un servidor PostgreSQL local, y los resultados se exportaron en formato CSV 
-tras winsorizarse con la estrategia seguida por \cite{gupta2022mimic}. No se utilizó ningún otro formato de fichero. Cada fila de los CSV resultantes representa una única estancia en UCI 
-(\texttt{stay\_id}), y cada columna una variable clínica o administrativa calculada sobre la ventana de observación correspondiente.
+Sobre las variables clínicas continuas se aplicó una winsorización al percentil 2--98, siguiendo la estrategia de tratamiento de valores extremos del flujo de procesamiento de \citet{gupta2022mimic}. 
+Esta técnica acota los valores situados por debajo del percentil 2 y por encima del percentil 98 a dichos umbrales, en lugar de eliminarlos, lo que limita el efecto de los valores atípicos y 
+de los errores de registro sobre el entrenamiento sin reducir el tamaño de la cohorte ni descartar estancias completas. Quedaron excluidas de este recorte las variables binarias 
+(\texttt{tiene\_sepsis} y \texttt{ventilacion\_invasiva\_*h}), sobre las que la winsorización no tiene sentido, así como los identificadores y la variable objetivo.
+
  
 \subsection*{Estructura de ficheros generados}
  
@@ -62,14 +64,14 @@ diuresis en volumen bruto (\texttt{diuresis\_volumen\_6h}), excluida por ser red
     \toprule
     Grupo & N.º columnas & Ejemplos representativos \\
     \midrule
-    Identificadores                     &   3 & \texttt{subject\_id}, \texttt{hadm\_id}, \texttt{stay\_id} \\
-    Demográficas y administrativas      &   4 & \texttt{anchor\_age}, \texttt{gender}, \texttt{peso\_kg}, \texttt{contador\_estancia\_uci} \\
-    Clínico-proceso                     &   4 & \texttt{tiene\_sepsis}, \texttt{ventilacion\_invasiva\_*h}, \texttt{diuresis\_volumen}, \texttt{diuresis\_ml\_kg} \\
+    Identificadores                     &   3 & subject\_id, hadm\_id, stay\_id \\
+    Demográficas y administrativas      &   4 & anchor\_age, gender, peso\_kg, contador\_estancia\_uci \\
+    Clínico-proceso                     &   4 & tiene\_sepsis, ventilacion\_invasiva\_*h, diuresis\_volumen, diuresis\_ml\_kg \\
     Constantes vitales (x3 estadísticos)& 15 & FC, FR, temperatura, SpO$_2$, PAM \\
     Gasometría y respiratorio (x3)      & 15 & PaO$_2$, PaCO$_2$, pH, FiO$_2$, PaO$_2$/FiO$_2$ \\
     Analítica de laboratorio (x3)       & 33 & lactato, creatinina, plaquetas, bilirrubina, TP, GPT, GOT, leucocitos, hemoglobina, bicarbonato, glucemia \\
     Neurológica y de gravedad (x3)      &   6 & GCS, SOFA \\
-    Variable objetivo                   &   2 & \texttt{etiqueta\_norad\_*}, \texttt{horas\_hasta\_norad} \\
+    Variable objetivo                   &   2 & etiqueta\_norad\_*, horas\_hasta\_norad \\
     \midrule
     \textbf{Total}                      & \textbf{82} & \\
     \bottomrule
