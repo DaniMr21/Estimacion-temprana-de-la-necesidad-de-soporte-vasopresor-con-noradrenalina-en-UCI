@@ -67,10 +67,11 @@ git clone [URL del repositorio]
 
   \item Entrar en la carpeta del repositorio.
 
-\begin{lstlisting}[breaklines=true, basicstyle=\footnotesize\ttfamily]
-git clone https://github.com/DaniMr21/Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI.git
+{\footnotesize
+\begin{verbatim}
 cd Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI
-\end{lstlisting}
+\end{verbatim}
+}
 
   \item Crear un entorno virtual de Python (opcional).
 
