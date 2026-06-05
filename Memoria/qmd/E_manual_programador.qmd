@@ -65,10 +65,15 @@ aplicación Streamlit. Deben distinguirse dos niveles de ejecución: el uso del 
 
 La reproducción completa del flujo experimental requiere disponer de acceso autorizado a las bases de datos originales MIMIC-IV y eICU-CRD.
 
+En el desarrollo de este TFG, las tablas originales de MIMIC-IV y eICU-CRD se importaron en un servidor local de PostgreSQL, desde el que se ejecutaron las consultas SQL de extracción de 
+cohortes. Este servidor local se empleó únicamente como entorno de trabajo para el procesamiento autorizado de los datos y no forma parte del repositorio público. Por tanto, para reproducir 
+completamente el flujo experimental es necesario disponer de acceso autorizado a PhysioNet, descargar las bases de datos bajo sus condiciones de uso e importarlas previamente en una instancia 
+local de PostgreSQL con una estructura equivalente.
+
 A nivel general, la reproducción sigue esta secuencia:
 
 \begin{enumerate}
-  \item Ejecutar las consultas SQL de extracción de cohortes sobre MIMIC-IV y eICU-CRD.
+  \item \item Importar MIMIC-IV y eICU-CRD en una instancia local de PostgreSQL autorizada y ejecutar sobre ella las consultas SQL de extracción de cohortes.
   \item Generar los CSV definitivos por ventana temporal.
   \item Aplicar el preprocesamiento y la selección de variables.
   \item Ejecutar los scripts finales de entrenamiento y validación interna en \ruta{Pipeline/FINAL/}.

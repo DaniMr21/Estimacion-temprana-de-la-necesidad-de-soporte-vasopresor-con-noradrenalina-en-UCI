@@ -119,7 +119,7 @@ Dado que el proyecto requirió 360 horas de trabajo, el coste de hardware imputa
 \textbf{Categoría} & \textbf{Concepto} & \textbf{Coste} \\
 \midrule
 Hardware  & Amortización proporcional del portátil & 60,27\,€ \\
-Software  & Python, SQL y R en VS Code y PostgreSQL & 0,00\,€ \\
+Software  & Python, R y SQL en VS Code y PostgreSQL & 0,00\,€ \\
 Datos     & MIMIC-IV y eICU-CRD (PhysioNet) & 0,00\,€ \\
 \midrule
 \multicolumn{2}{r}{\textbf{Total costes materiales}} & \textbf{60,27\,€} \\
