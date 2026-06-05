@@ -7,21 +7,19 @@
 
 \section{Diagrama de casos de uso}
 
-El único subsistema interactivo del trabajo es el dashboard; el pipeline
-de modelado se ejecuta de forma desatendida y no requiere interacción
-directa por parte del usuario final. Por este motivo, los casos de uso modelan
-exclusivamente la aplicación de visualización. El actor único considerado es
+El único subsistema interactivo del trabajo es el \textit{dashboard}; el pipeline de modelado se ejecuta de forma desatendida y no requiere interacción
+directa por parte del usuario final. Por este motivo, los casos de uso modelan exclusivamente la aplicación de visualización. El actor único considerado es
 el facultativo de Medicina Intensiva como usuario evaluador del prototipo.
 La Figura C.1 resume las funcionalidades principales.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{casos.jpeg}
-  \caption{Diagrama de casos de uso del \textit{dashboard}.}
+  \caption{diagrama de casos de uso del \textit{dashboard}.}
   \label{fig:casos-uso}
 \end{figure}
 
-\section{Explicación de los casos de uso}
+\section{Tablas de casos de uso}
 
 A modo de contexto, los casos de uso se apoyan en los siguientes requisitos funcionales (RF) y no funcionales (RNF):
 
@@ -57,7 +55,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-1, RF-4 \\
+		\textbf{Requisitos asociados} & RF-1 \\
 		\textbf{Descripción} & El facultativo selecciona la ventana temporal de predicción disponible en el prototipo: media (6--24\,h) o larga (12--48\,h). La selección determina el modelo que se aplicará. \\
 		\textbf{Precondición} & La aplicación está en ejecución. \\
 		\textbf{Acciones} &
@@ -65,15 +63,14 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 			\def\labelenumi{\arabic{enumi}.}
 			\tightlist
 			\item El facultativo pulsa el botón de la ventana deseada.
-			\item El sistema registra la ventana seleccionada.
-			\item El sistema deja preparado el modelo correspondiente para su uso posterior.
+			\item El sistema registra la ventana seleccionada para la consulta posterior.
 		\end{enumerate}\\
 		\textbf{Postcondición} & Queda seleccionada la ventana temporal y el modelo asociado. \\
 		\textbf{Excepciones} & --- \\
 		\textbf{Importancia} & Alta \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-1 Seleccionar la ventana temporal.}
+	\caption{CU-1 seleccionar la ventana temporal.}
 \end{table}
 
 % ── CU-2 ──────────────────────────────────────────────
@@ -103,7 +100,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\textbf{Importancia} & Alta \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-2 Cargar CSV con datos del caso evaluado.}
+	\caption{CU-2 cargar CSV con datos del caso evaluado.}
 \end{table}
 
 % ── CU-3 ──────────────────────────────────────────────
@@ -133,7 +130,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\textbf{Importancia} & Alta \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-3 Consultar el percentil de riesgo y la explicación SHAP.}
+	\caption{CU-3 consultar el percentil de riesgo y la explicación SHAP.}
 \end{table}
 
 % ── CU-4 ──────────────────────────────────────────────
@@ -145,7 +142,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\toprule
 		\textbf{Versión del caso de uso} & 1.0 \\
 		\textbf{Autor} & Daniel Marina de la Cal \\
-		\textbf{Requisitos asociados} & RF-7 \\
+		\textbf{Requisitos asociados} & RF-7, RF-4, RF-5, RF-6 \\
 		\textbf{Descripción} & El facultativo explora el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV propio. \\
 		\textbf{Precondición} & La aplicación está en ejecución. \\
 		\textbf{Acciones} &
@@ -162,7 +159,7 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\textbf{Importancia} & Baja \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-4 Ejecutar el modo demostración.}
+	\caption{CU-4 ejecutar el modo demostración.}
 \end{table}
 
 % ── CU-5 ──────────────────────────────────────────────
@@ -190,36 +187,36 @@ A modo de contexto, los casos de uso se apoyan en los siguientes requisitos func
 		\textbf{Importancia} & Baja-media \\
 		\bottomrule
 	\end{tabularx}
-	\caption{CU-5 Consultar el manual e información.}
+	\caption{CU-5 consultar el manual e información.}
 \end{table}
 
-\section{Prototipo de interfaz}
+\section{Prototipos}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard_portada.png}
-  \caption{Pantalla de inicio del \textit{dashboard}. Bajo el título se muestra el aviso permanente de prototipo de investigación y los controles de selección de ventana temporal, modo demostración y manual. La aplicación no realiza ninguna estimación hasta que el usuario selecciona una opción.}
+  \caption{pantalla de inicio del \textit{dashboard}. Bajo el título se muestra el aviso permanente de prototipo de investigación y los controles de selección de ventana temporal, modo demostración y manual. La aplicación no realiza ninguna estimación hasta que el usuario selecciona una opción.}
   \label{fig:dash-portada}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard.png}
-  \caption{Vista principal tras cargar los datos de un caso ficticio en la ventana larga (12--48\,h). A la izquierda se muestra el percentil de riesgo acompañado de su explicación textual y de los datos del caso; a la derecha, los factores individuales según los valores SHAP, donde las barras rojas empujan el riesgo al alza y las verdes lo reducen.}
+  \caption{vista principal tras cargar un CSV de ejemplo en la ventana larga (12--48\,h). A la izquierda se muestra el percentil de riesgo acompañado de su explicación textual y de los datos del caso; a la derecha, los factores individuales según los valores SHAP, donde las barras rojas empujan el riesgo al alza y las verdes lo reducen.}
   \label{fig:dash-principal}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard_demo.png}
-  \caption{Modo demostración. Permite explorar el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV propio. Se muestra un caso de paciente con deterioro hemodinámico.}
+  \caption{modo demostración. Permite explorar el funcionamiento del \textit{dashboard} con casos ficticios, sin necesidad de cargar un CSV propio. Se muestra un caso de paciente con deterioro hemodinámico.}
   \label{fig:dash-demo}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{dashboard_manual.png}
-  \caption{Manual de uso integrado, accesible desde la propia interfaz. Documenta las ventanas temporales disponibles, el modo de uso, el formato esperado del CSV de entrada y la interpretación del percentil de riesgo y de los valores SHAP.}
+  \caption{manual de uso integrado, accesible desde la propia interfaz. Documenta las ventanas temporales disponibles, el modo de uso, el formato esperado del CSV de entrada y la interpretación del percentil de riesgo y de los valores SHAP.}
   \label{fig:dash-manual}
 \end{figure}
 ```

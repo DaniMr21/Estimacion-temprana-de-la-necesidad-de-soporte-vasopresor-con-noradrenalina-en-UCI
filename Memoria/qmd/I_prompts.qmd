@@ -7,7 +7,7 @@
 
 \section{Registro de interacciones}
 
-NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Anthropic, a continuación se muestran las interacciones más significativas:
+NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Anthropic salvo que se indique lo contrario, a continuación se muestran las interacciones más significativas:
 
 {\small\setlength{\tabcolsep}{4pt}
 \begin{longtable}{@{} p{0.04\linewidth} p{0.14\linewidth} p{0.60\linewidth} p{0.16\linewidth} @{}}
@@ -117,6 +117,8 @@ NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Ant
 46 & Mayo (2.\textsuperscript{a} q.) & Revisa una nota de documentación en el código para aclarar que los valores SHAP pertenecen al modelo base y que la calibración solo transforma la probabilidad final. & Claridad metodológica \\
 \addlinespace
 47 & Mayo (2.\textsuperscript{a} q.) & Revisa un texto bajo el gráfico SHAP que aclare que las barras indican contribución al modelo, no causalidad clínica. & Advertencia metodológica \\
+\addlinespace
+48 & Mayo (2.\textsuperscript{a} q.) & (Nano Banana 2) Genérame una imagen según la temática de este proyecto [link repositorio] para meter en el readme, que sea tipo dibujo o logo, no una imagen realista & Imagen decorativa \\
 \end{longtable}
 }
 ```

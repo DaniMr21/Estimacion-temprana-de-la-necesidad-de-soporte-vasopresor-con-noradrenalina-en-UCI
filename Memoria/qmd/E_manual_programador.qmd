@@ -189,7 +189,8 @@ modelo y las variables calculadas por la aplicación.
 
 \subsection*{Añadir una nueva ventana temporal}
 
-Añadir una nueva ventana temporal implica replicar la lógica de etiquetado y agregación para el nuevo horizonte. No basta con entrenar un nuevo modelo: también habría que actualizar el \textit{dashboard} para que reconozca la nueva ventana y cargue los ficheros correspondientes.
+Añadir una nueva ventana temporal implica replicar la lógica de etiquetado y agregación para el nuevo horizonte. No basta con entrenar un nuevo modelo: también habría que actualizar el 
+\textit{dashboard} para que reconozca la nueva ventana y cargue los ficheros correspondientes.
 
 Los cambios mínimos serían:
 
@@ -205,25 +206,6 @@ Los cambios mínimos serían:
   \item Actualizar el manual de usuario y las capturas de interfaz.
 \end{itemize}
 
-\subsection*{Modificar las variables de entrada}
-
-Si se incorporan nuevas variables clínicas, deben actualizarse de forma coordinada las consultas de extracción, el preprocesamiento, el entrenamiento y el 
-\textit{dashboard}. La modificación aislada de una sola parte del flujo puede provocar incompatibilidades entre los datos cargados y las variables esperadas por el 
-modelo.
-
-En particular, habría que revisar:
-
-\begin{itemize}
-  \item Nombres de columnas;
-  \item Unidades de medida;
-  \item Rangos fisiológicos esperados;
-  \item Tratamiento de valores ausentes;
-  \item Estadísticos agregados calculados por ventana;
-  \item Etiquetas clínicas mostradas en la interfaz;
-  \item Referencias de percentiles;
-  \item Explicación SHAP asociada a las nuevas variables.
-\end{itemize}
-
 \subsection*{Mejoras recomendadas del \textit{dashboard}}
 
 Como mejoras de mantenibilidad y robustez del prototipo se recomienda:
@@ -231,10 +213,8 @@ Como mejoras de mantenibilidad y robustez del prototipo se recomienda:
 \begin{itemize}
   \item Añadir una función explícita de validación del CSV de entrada, comprobando columnas obligatorias, tipos numéricos, escala de FiO2 y rangos fisiológicamente plausibles;
   \item Separar la lógica de carga de modelos, procesamiento del CSV, cálculo de percentiles y visualización SHAP en módulos independientes;
-  \item Sustituir rutas absolutas por rutas relativas basadas en la ubicación del script;
-  \item Fijar versiones exactas de dependencias en un fichero de entorno reproducible;
+  \item Externalizar la configuración de los modelos (rutas, nombres de ficheros y variables esperadas por ventana) a un fichero de configuración, en lugar de definirla directamente en el script;
   \item Añadir pruebas funcionales simples para comprobar que el modo demostración, la carga de CSV y la generación de SHAP no fallan tras modificar el código;
-  \item Documentar en un fichero específico el formato esperado del CSV de entrada.
 \end{itemize}
 
 \subsection*{Evolución metodológica futura}

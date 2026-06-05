@@ -4,38 +4,36 @@
 %% ══════════════════════════════════════════════════════
 \apendice{Manual de especificación de diseño}
 
-\section{Diseño arquitectónico}
+\section{Arquitectura}
 
-El sistema desarrollado se organiza en dos subsistemas principales y desacoplados: un \textit{pipeline} de modelado y entrenamiento, encargado de transformar los datos clínicos en modelos 
-predictivos entrenados, calibrados e interpretables; y una aplicación de visualización o \textit{dashboard}, encargada de cargar dichos modelos y aplicarlos sobre los datos introducidos 
-para un paciente concreto. La Figura~\ref{fig:arquitectura} resume la arquitectura general del sistema.
+El sistema desarrollado se organiza en dos subsistemas principales y desacoplados: un \textit{pipeline} de modelado y entrenamiento, encargado de transformar los datos clínicos en modelos
+predictivos entrenados, calibrados e interpretables; y una aplicación de visualización o \textit{dashboard}, encargada de cargar dichos modelos y aplicarlos sobre los datos introducidos para un
+paciente concreto. La Figura~\ref{fig:arquitectura} resume la arquitectura general del sistema mediante un diagrama de bloques.
 
 El \textit{pipeline} de modelado constituye la parte experimental del proyecto. Su flujo comienza con las fuentes de datos, principalmente MIMIC-IV para el entrenamiento y eICU-CRD para la 
-validación externa. A partir de estas bases se realiza la extracción de cohortes mediante consultas SQL, seguida del preprocesamiento de los datos, la selección de variables, el entrenamiento 
-de los modelos, la optimización mediante validación cruzada anidada y la calibración probabilística. Finalmente, los modelos seleccionados se serializan en formato \texttt{.pkl} mediante 
-\texttt{joblib}, separando así la fase de entrenamiento de la fase posterior de inferencia.
+validación externa. A partir de estas bases se realiza la extracción de cohortes mediante consultas SQL, seguida del preprocesamiento de los datos, la selección de variables, el entrenamiento de
+ los modelos, la optimización mediante validación cruzada anidada y la calibración probabilística. Finalmente, los modelos seleccionados se serializan en formato \texttt{.pkl} mediante 
+ \texttt{joblib}, separando así la fase de entrenamiento de la fase posterior de inferencia.
 
-La aplicación de visualización, implementada en Streamlit, funciona como un módulo independiente que consume los modelos ya entrenados. El usuario carga un fichero CSV con mediciones
- clínicas del paciente, estructurado como registros temporales. A partir de estos datos, la aplicación calcula los estadísticos agregados requeridos por el modelo según la ventana temporal
-  seleccionada, carga el modelo correspondiente, obtiene la probabilidad estimada de inicio de noradrenalina y contextualiza el resultado mediante un percentil de riesgo respecto a la cohorte
-   de referencia. Este prototipo incorpora controles básicos de error durante la carga y el procesamiento del fichero, principalmente ante columnas ausentes o fallos de lectura.
+La aplicación de visualización, implementada en Streamlit, funciona como un módulo independiente que consume los modelos ya entrenados. El usuario carga un fichero CSV con mediciones clínicas 
+del paciente, estructurado como registros temporales. A partir de estos datos, la aplicación calcula los estadísticos agregados (mínimo, máximo o media, según la variable) correspondientes al 
+conjunto de predictores de la ventana seleccionada, carga el modelo correspondiente, obtiene la probabilidad estimada de inicio de noradrenalina y contextualiza el resultado mediante un percentil
+de riesgo respecto a la cohorte de referencia.
 
-Además de la probabilidad estimada, el \textit{dashboard} incorpora una explicación individual mediante valores SHAP, mostrando qué variables contribuyen a aumentar o reducir la predicción
-para el paciente evaluado. De este modo, la arquitectura no se limita a producir una salida numérica, sino que integra también una capa de interpretabilidad orientada a facilitar la revisión
-crítica del resultado.
+Además de la probabilidad estimada, el \textit{dashboard} incorpora una explicación individual mediante valores SHAP, mostrando qué variables contribuyen a aumentar o reducir la predicción para 
+el paciente evaluado. De este modo, la arquitectura no se limita a producir una salida numérica, sino que integra también una capa de interpretabilidad orientada a facilitar la revisión del resultado.
 
 La separación entre entrenamiento e inferencia permite que los modelos finales puedan reutilizarse sin repetir el proceso completo de entrenamiento. Esta decisión simplifica el uso del prototipo,
- reduce el coste computacional durante la ejecución del \textit{dashboard} y mantiene una frontera clara entre el desarrollo experimental de los modelos y su uso posterior como herramienta de 
- visualización.
+reduce el coste computacional durante la ejecución del \textit{dashboard} y mantiene una frontera clara entre el desarrollo experimental de los modelos y su uso posterior como herramienta de visualización.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{arquitectura.jpeg}
-  \caption{Arquitectura general del sistema: \textit{pipeline} de modelado y entrenamiento, serialización de modelos y aplicación de visualización mediante \textit{dashboard}.}
+  \caption{arquitectura general del sistema: \textit{pipeline} de modelado y entrenamiento, serialización de modelos y aplicación de visualización mediante \textit{dashboard}.}
   \label{fig:arquitectura}
 \end{figure}
 
 El diseño adoptado es deliberadamente modular. Las etapas de extracción, preprocesamiento, entrenamiento, calibración, interpretabilidad y visualización pueden modificarse de forma independiente,
- siempre que se mantenga la compatibilidad entre las variables requeridas por los modelos serializados y las variables calculadas por el \textit{dashboard}. Esta modularidad facilita la 
- trazabilidad del flujo experimental y permitiría, en trabajos futuros, sustituir modelos, actualizar cohortes o integrar nuevas fuentes de datos sin rediseñar por completo la aplicación.
+siempre que se mantenga la compatibilidad entre las variables requeridas por los modelos serializados y las variables calculadas por el \textit{dashboard}. Esta modularidad facilita la 
+trazabilidad del flujo experimental y permitiría, en trabajos futuros, sustituir modelos, actualizar cohortes o integrar nuevas fuentes de datos sin rediseñar por completo la aplicación.
 ```

@@ -6,19 +6,30 @@
 
 \section{Introducción}
 
-El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad de anticipar qué pacientes requerirán soporte vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes y recursos \citep{evans2021,firzli2023}.
+El presente proyecto tiene como objetivo el desarrollo y validación de modelos de aprendizaje automático para la estimación temprana del riesgo de inicio de noradrenalina en pacientes adultos 
+ingresados en la Unidad de Cuidados Intensivos (UCI), utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia. La motivación clínica reside en la necesidad 
+de anticipar qué pacientes requerirán soporte vasopresor, lo que podría proporcionar una ventana terapéutica para una intervención más temprana y, en su caso, apoyar la priorización de pacientes
+y recursos \citep{evans2021,firzli2023}.
 
-El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la base de datos MIMIC-IV \citep{johnson2023}, con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \citep{pollard2018}, que permite evaluar la generalización de los modelos a entornos clínicos distintos del de desarrollo; y el desarrollo de un prototipo de \textit{dashboard} clínico interpretable implementado en Streamlit, orientado a demostrar la viabilidad de integrar los modelos en una interfaz funcional de apoyo a la interpretación del riesgo.
+El alcance del trabajo comprende tres componentes principales: la construcción de cohortes y el desarrollo de modelos predictivos sobre la base de datos MIMIC-IV \citep{johnson2023}, 
+con evaluación interna mediante validación cruzada anidada; la validación externa sobre la base de datos multicéntrica eICU-CRD \citep{pollard2018}, que permite evaluar la generalización de los 
+modelos a entornos clínicos distintos del de desarrollo; y el desarrollo de un prototipo de \textit{dashboard} clínico interpretable implementado en Streamlit, orientado a demostrar la viabilidad
+de integrar los modelos en una interfaz funcional de apoyo a la interpretación del riesgo.
 
-El proyecto no incluye validación prospectiva ni despliegue clínico en entorno asistencial real, por lo que se enmarca como investigación aplicada y prueba de concepto. Las consideraciones metodológicas, temporales, económicas y legales relevantes se desarrollan en los apartados siguientes.
+El proyecto no incluye validación prospectiva ni despliegue clínico en entorno asistencial real, por lo que se enmarca como investigación aplicada y prueba de concepto. Las consideraciones 
+metodológicas, temporales, económicas y legales relevantes se desarrollan en los apartados siguientes.
 
 El repositorio público del proyecto se encuentra disponible en: \url{https://github.com/DaniMr21/Estimacion-temprana-de-la-necesidad-de-soporte-vasopresor-con-noradrenalina-en-UCI}.
 
 \section{Metodología de ingeniería del software}
 
-La metodología seguida durante el desarrollo se describe en detalle en la sección de Metodología de la memoria. En síntesis, se empleó un enfoque experimental e iterativo con un ciclo incremental por versiones, código organizado en módulos funcionales y control de versiones con Git y GitHub. Este enfoque se corresponde con un modelo de desarrollo iterativo e incremental: cada versión del flujo de trabajo se construyó sobre la anterior y se refinó en función de los resultados obtenidos, sin un diseño cerrado definido a priori.
+La metodología seguida durante el desarrollo se describe en detalle en la sección de Metodología de la memoria. En síntesis, se empleó un enfoque experimental e iterativo con un ciclo 
+incremental por versiones, código organizado en módulos funcionales y control de versiones con Git y GitHub. Este enfoque se corresponde con un modelo de desarrollo iterativo e incremental: 
+cada versión del flujo de trabajo se construyó sobre la anterior y se refinó en función de los resultados obtenidos, sin un diseño cerrado definido a priori.
 
-Esta naturaleza iterativa queda reflejada en la propia estructura del repositorio, cuyas sucesivas carpetas de pruebas documentan la evolución del trabajo: desde los primeros ensayos por ventana sobre MIMIC-IV, pasando por los refinamientos de la cohorte general, la eliminación de registros incompletos, la restricción de ventanas temporales y el análisis del subgrupo de sepsis, hasta las versiones finales del modelo y la validación externa sobre eICU-CRD.
+Esta naturaleza iterativa queda reflejada en la propia estructura del repositorio, cuyas sucesivas carpetas de pruebas documentan la evolución del trabajo: desde los primeros ensayos por ventana
+sobre MIMIC-IV, pasando por los refinamientos de la cohorte general, la eliminación de registros incompletos, la restricción de ventanas temporales y el análisis del subgrupo de sepsis, hasta las
+versiones finales del modelo y la validación externa sobre eICU-CRD.
 
 Las fases principales llevadas a cabo fueron:
 
@@ -34,9 +45,11 @@ Las fases principales llevadas a cabo fueron:
   \item Redacción de la memoria, anexos y documentación del repositorio.
 \end{enumerate}
 
-Desde el punto de vista de producto, el ciclo de vida queda limitado a una prueba de concepto. Quedan fuera del alcance de este TFG la validación con datos locales del Hospital Universitario de Burgos, la validación prospectiva y la integración del \textit{dashboard} en sistemas de información sanitarios.
+Desde el punto de vista de producto, el ciclo de vida queda limitado a una prueba de concepto. Quedan fuera del alcance de este TFG la validación con datos locales del Hospital Universitario de
+Burgos, la validación prospectiva y la integración del \textit{dashboard} en sistemas de información sanitarios.
 
-Si se desease continuar con el presente trabajo para dejar lista y validada una herramienta clínica, podría plantearse una metodología Scrum \citep{sutherland2014}, ya que permitiría incorporar el \textit{feedback} continuo de los clínicos en iteraciones cortas y facilitaría la coordinación entre perfiles técnicos y sanitarios durante el desarrollo.
+Si se desease continuar con el presente trabajo para dejar lista y validada una herramienta clínica, podría plantearse una metodología Scrum \citep{sutherland2014}, ya que permitiría incorporar 
+el \textit{feedback} continuo de los clínicos en iteraciones cortas y facilitaría la coordinación entre perfiles técnicos y sanitarios durante el desarrollo.
 
 \section{Planificación temporal}
 
@@ -99,7 +112,7 @@ Dado que el proyecto requirió 360 horas de trabajo, el coste de hardware imputa
 
 \begin{table}[H]
 \centering
-\caption{Estimación de costes materiales del proyecto.}
+\caption{estimación de costes materiales del proyecto.}
 \label{tab:costes_materiales}
 \begin{tabular}{llr}
 \toprule
@@ -116,95 +129,122 @@ Datos     & MIMIC-IV y eICU-CRD (PhysioNet) & 0,00\,€ \\
 
 \subsubsection*{Costes de personal}
 
-Para estimar el coste de personal se toma como referencia el XX Convenio colectivo nacional de empresas de ingeniería, oficinas de estudios técnicos, inspección, supervisión y control técnico y de calidad. Según la clasificación profesional recogida en dicho convenio, un graduado universitario se encuadra en el Nivel Salarial 2. La actualización de las tablas salariales para 2024 fija para este nivel una retribución total anual de 22.224,26\,€ brutos, incluyendo la tabla salarial anual y el plus de convenio.
+Para estimar el coste de personal se toma como referencia el XX Convenio colectivo nacional de empresas de ingeniería, oficinas de estudios técnicos, inspección, supervisión y control técnico 
+y de calidad \citep{boe2023convenio}. Según la clasificación profesional recogida en dicho convenio (Art.~17), un graduado universitario se encuadra en el Nivel Salarial 2.
 
-Considerando la jornada anual máxima de 1.792 horas establecida en el convenio, el coste salarial horario equivalente es:
+El convenio publica las tablas salariales de 2021 y 2022 en su Anexo II y, para los años siguientes, establece (Art.~33.2) que los importes se actualicen aplicando a la tabla del año anterior 
+un porcentaje en función de la variación interanual del Índice de Precios de Consumo (IPC) a 31 de diciembre. Partiendo del importe de la tabla salarial del Nivel~2 en 2022 (18.634,84\,€) y 
+aplicando los incrementos correspondientes —+3,50\,\% en 2023 (IPC interanual de diciembre de 2022 del 5,7\,\%) y +2,30\,\% en 2024 (IPC interanual de diciembre de 2023 del 3,1\,\%),
+la tabla salarial del Nivel~2 para 2024 resulta:
 
 \[
-\frac{22.224{,}26}{1.792} \approx 12{,}40\ \text{€/h}
+18.634{,}84 \times 1{,}035 \times 1{,}023 \approx 19.730{,}66\ \text{€}
+\]
+
+A esta cifra se añade el plus de convenio fijado para 2024 en el Art.~38 (2.493,50\,€), de modo que la retribución total anual del Nivel~2 asciende a:
+
+\[
+19.730{,}66 + 2.493{,}50 = 22.224{,}16\ \text{€}
+\]
+
+Considerando la jornada anual máxima de 1.792 horas establecida en el convenio (Art.~22.1), el coste salarial horario equivalente es:
+
+\[
+\frac{22.224{,}16}{1.792} \approx 12{,}40\ \text{€/h}
 \]
 
 Para las 360 horas de dedicación, el salario bruto proporcional asciende a:
 
 \[
-\frac{22.224{,}26}{1.792} \times 360 = 4.464{,}70\ \text{€}
+\frac{22.224{,}16}{1.792} \times 360 = 4.464{,}68\ \text{€}
 \]
 
-A este importe se añaden las cotizaciones empresariales a la Seguridad Social. A efectos de estimación, se aplica un porcentaje conjunto del 32,30\,\% sobre el salario bruto, formado por las aportaciones empresariales por contingencias comunes, desempleo, FOGASA, formación profesional, Mecanismo de Equidad Intergeneracional y una estimación de contingencias profesionales. Estas últimas dependen de la tarifa de primas aplicable, por lo que el porcentaje empleado debe interpretarse como una aproximación razonable para la estimación económica del proyecto.
+A este importe se añaden las cotizaciones empresariales a la Seguridad Social. A efectos de estimación, se aplica un porcentaje conjunto del 32,30\,\% sobre el salario bruto, formado por las 
+aportaciones empresariales por contingencias comunes, desempleo, FOGASA, formación profesional, Mecanismo de Equidad Intergeneracional y una estimación de contingencias profesionales. 
+Estas últimas dependen de la tarifa de primas aplicable, por lo que el porcentaje empleado debe interpretarse como una aproximación razonable para la estimación económica del proyecto.
 
 \[
-4.464{,}70 \times 0{,}3230 = 1.442{,}10\ \text{€}
+4.464{,}68 \times 0{,}3230 = 1.442{,}09\ \text{€}
 \]
 
 Por tanto, el coste de personal estimado es:
 
 \[
-4.464{,}70 + 1.442{,}10 = 5.906{,}80\ \text{€}
+4.464{,}68 + 1.442{,}09 = 5.906{,}77\ \text{€}
 \]
 
 \begin{table}[H]
 \centering
-\caption{Estimación del coste de personal del proyecto.}
+\caption{estimación del coste de personal del proyecto.}
 \label{tab:coste_laboral}
 \begin{tabular}{lrr}
 \toprule
 \textbf{Concepto} & \textbf{Cálculo} & \textbf{Importe} \\
 \midrule
-Salario bruto proporcional & 12,40\,€/h $\times$ 360\,h & 4.464,70\,€ \\
-Cotizaciones empresariales estimadas & 32,30\,\% $\times$ 4.464,70\,€ & 1.442,10\,€ \\
+Salario bruto proporcional & 12,4019\,€/h $\times$ 360\,h & 4.464,68\,€ \\
+Cotizaciones empresariales estimadas & 32,30\,\% $\times$ 4.464,68\,€ & 1.442,09\,€ \\
 \midrule
-\textbf{Coste de personal} &  & \textbf{5.906,80\,€} \\
+\textbf{Coste de personal} &  & \textbf{5.906,77\,€} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsubsection*{Costes indirectos y coste total}
 
-No se imputan costes indirectos (electricidad, conexión a internet o espacio de trabajo) de forma separada, al haberse desarrollado el proyecto con recursos personales y sin instalaciones dedicadas; su efecto se considera marginal frente a los costes de personal y se omite de forma deliberada.
+No se imputan costes indirectos (electricidad, conexión a internet o espacio de trabajo) de forma separada, al haberse desarrollado el proyecto con recursos personales y sin instalaciones 
+dedicadas; su efecto se considera marginal frente a los costes de personal y se omite de forma deliberada.
 
 Sumando los costes materiales y de personal, el coste total estimado de ejecución del proyecto es:
 
 \[
-60{,}27 + 5.906{,}80 = 5.967{,}07\ \text{€}
+60{,}27 + 5.906{,}77 = 5.967{,}03\ \text{€}
 \]
 
 \begin{table}[H]
 \centering
-\caption{Coste total estimado del proyecto.}
+\caption{coste total estimado del proyecto.}
 \label{tab:coste_total}
 \begin{tabular}{lr}
 \toprule
 \textbf{Concepto} & \textbf{Importe} \\
 \midrule
 Costes materiales & 60,27\,€ \\
-Coste de personal & 5.906,80\,€ \\
+Coste de personal & 5.906,77\,€ \\
 \midrule
-\textbf{Coste total estimado} & \textbf{5.967,07\,€} \\
+\textbf{Coste total estimado} & \textbf{5.967,03\,€} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Este importe no representa un precio de venta o de facturación, sino una estimación del coste interno de ejecución, considerando la amortización del equipo, el salario bruto proporcional y las cotizaciones empresariales estimadas a la Seguridad Social. Todas las operaciones se han calculado sobre los valores exactos, no sobre los redondeos intermedios mostrados en las fórmulas.
+Este importe no representa un precio de venta o de facturación, sino una estimación del coste interno de ejecución, considerando la amortización del equipo, el salario bruto proporcional y las 
+cotizaciones empresariales estimadas a la Seguridad Social.
 
 \subsection{Viabilidad legal}
 
-Dado que este trabajo constituye un análisis retrospectivo sobre bases de datos públicas y desidentificadas por sus custodios originales \citep{johnson2023,pollard2018,physionet}, el análisis desarrollado en este TFG no requirió una aprobación adicional por parte de un Comité de Ética de Investigación local. El acceso a MIMIC-IV y eICU-CRD a través de PhysioNet exige acreditar formación en ética de la investigación con datos de sujetos humanos y suscribir el correspondiente acuerdo de uso de datos. Por ello, se aporta la certificación del CITI Program completada por el autor como documento acreditativo de dicha formación.
+Dado que este trabajo constituye un análisis retrospectivo sobre bases de datos públicas y desidentificadas por sus custodios originales \citep{johnson2023,pollard2018,physionet}, el análisis
+desarrollado en este TFG no requirió una aprobación adicional por parte de un Comité de Ética de Investigación local, sin embargo, el acceso a MIMIC-IV y eICU-CRD a través de PhysioNet exige 
+acreditar formación en ética de la investigación con datos de sujetos humanos y suscribir el correspondiente acuerdo de uso de datos. Por ello, se aporta la certificación del CITI Program 
+completada por el autor como documento acreditativo de dicha formación.
 
-La formación corresponde al curso \emph{Human Research — Data or Specimens Only Research (Stage 1, Basic Course)}, completado el 14 de marzo de 2026 con una puntuación de 95 sobre un mínimo exigido de 90 (Record ID 75910225), e incluyó módulos sobre el Informe Belmont, regulación y revisión por IRB, investigación basada en registros (\emph{Records-Based Research}), protecciones de privacidad HIPAA y conflictos de interés, entre otros. El certificado se muestra en la Figura~\ref{fig:citi-cert} y el informe detallado de módulos en la Figura~\ref{fig:citi-report}.
+La formación corresponde al curso \emph{Human Research — Data or Specimens Only Research (Stage 1, Basic Course)}, completado el 14 de marzo de 2026 con una puntuación de 95 sobre un mínimo
+exigido de 90 (Record ID 75910225), e incluyó módulos sobre el Informe Belmont, regulación y revisión por IRB, investigación basada en registros (\emph{Records-Based Research}), protecciones de
+privacidad HIPAA y conflictos de interés, entre otros. El certificado se muestra en la Figura~\ref{fig:citi-cert} y el informe detallado de módulos en la Figura~\ref{fig:citi-report}.
 
-No obstante, para continuar con una validación externa con datos del Hospital Universitario de Burgos o para validar el \textit{dashboard} como herramienta clínica, sí se precisaría la aprobación del Comité de Ética de Investigación correspondiente. Por este motivo, en este anexo se incluye la acreditación disponible para el alcance finalmente desarrollado, y se explicita que cualquier extensión del trabajo a datos locales o a validación prospectiva requeriría autorización ética específica.
+No obstante, para continuar con una validación externa con datos del Hospital Universitario de Burgos o para validar el \textit{dashboard} como herramienta clínica, sí se precisa la 
+aprobación del Comité de Ética de Investigación correspondiente. Por este motivo, en este anexo se incluye la acreditación disponible para el alcance finalmente desarrollado, y se explicita que
+cualquier extensión del trabajo a datos locales o a validación prospectiva requeriría autorización ética específica.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.85\textwidth]{citi_certificado.png}
-  \caption{Certificado de finalización del curso CITI Program.}
+  \caption{certificado de finalización del curso CITI Program.}
   \label{fig:citi-cert}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.85\textwidth]{citi_informe.png}
-  \caption{Informe de finalización del CITI Program con el detalle de módulos y puntuaciones, se censura información de carácter personal.}
+  \caption{informe de finalización del CITI Program con el detalle de módulos y puntuaciones, se censura información de carácter personal.}
   \label{fig:citi-report}
 \end{figure}
 ```
