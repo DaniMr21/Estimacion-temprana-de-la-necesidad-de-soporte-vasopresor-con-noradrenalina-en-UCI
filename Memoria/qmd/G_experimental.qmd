@@ -270,6 +270,10 @@ externa y la aplicación final de visualización.
 
 \section{Resultados}
 
+Los resultados gráficos completos de discriminación, calibración e interpretabilidad de los modelos principales se presentan en la memoria. En este anexo se recogen únicamente resultados 
+experimentales complementarios que justifican decisiones internas del flujo de trabajo, como el desempate entre estadísticos, la selección final de variables para el prototipo y las pruebas de
+ recalibración probabilística.
+
 \begin{table}[htbp]
   \centering
   \caption{análisis de desempate entre estadísticos para las variables en las que la elección no resultaba evidente por criterio clínico.}
@@ -317,5 +321,48 @@ externa y la aplicación final de visualización.
   \end{tabular}%
   }
 \end{table}
+
+\subsection*{Resultados de los experimentos de recalibración}
+
+Como complemento a la selección de modelos, se revisó de forma específica la calibración probabilística de varios modelos candidatos. Las figuras siguientes muestran las comparaciones realizadas mediante predicciones \textit{out-of-fold}, enfrentando las probabilidades originales del modelo frente a versiones recalibradas mediante Platt e isotónica. La revisión conjunta de las curvas de calibración, el ECE y el BSS permitió decidir si la recalibración aportaba una mejora real o si, por el contrario, empeoraba el rendimiento probabilístico.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{img/calibracion_comparativa_corto_cat.png}
+  \caption{comparación empírica de recalibración probabilística mediante predicciones \textit{out-of-fold} para CatBoost en la ventana corta (3--12 h).}
+  \label{fig:calibracion-corto-cat}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{img/calibracion_comparativa_corto_xgb.png}
+  \caption{comparación empírica de recalibración probabilística mediante predicciones \textit{out-of-fold} para XGBoost en la ventana corta (3--12 h).}
+  \label{fig:calibracion-corto-xgb}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{img/calibracion_comparativa_medio_cat.png}
+  \caption{comparación empírica de recalibración probabilística mediante predicciones \textit{out-of-fold} para CatBoost en la ventana media (6--24 h).}
+  \label{fig:calibracion-medio-cat}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{img/calibracion_comparativa_largo_xgb.png}
+  \caption{comparación empírica de recalibración probabilística mediante predicciones \textit{out-of-fold} para XGBoost en la ventana larga (12--48 h).}
+  \label{fig:calibracion-largo-xgb}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{img/verificacion_calibracion_medio_xgb.png}
+  \caption{verificación final de la recalibración mediante Platt regularizado para XGBoost en la ventana media (6--24 h). Esta fue la única versión recalibrada conservada para la validación externa y para el prototipo de \textit{dashboard}.}
+  \label{fig:verificacion-calibracion-medio-xgb}
+\end{figure}
+
+En conjunto, estos experimentos mostraron que la recalibración no debía incorporarse como paso automático del flujo. En varios modelos, las versiones recalibradas reducían de forma limitada el 
+ECE, empeoraban el BSS o comprimían excesivamente la distribución de probabilidades. Por ello, solo se conservó la versión recalibrada de XGBoost en la ventana media (6--24 h), al ofrecer un 
+equilibrio más adecuado entre calibración y utilidad probabilística.
 
 ```
