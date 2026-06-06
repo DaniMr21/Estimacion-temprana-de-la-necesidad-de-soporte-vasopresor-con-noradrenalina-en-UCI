@@ -203,9 +203,10 @@ administración de noradrenalina; esta columna es \texttt{NA} para todos los pac
  
 \subsection*{Valores perdidos y estrategia de no-imputación}
 
-Como consecuencia del diseño de la cohorte, donde solo se incluyeron estancias cuando las variables no contenían nulos, la única columna que presenta valores perdidos de carácter estructural en los conjuntos de datos definitivos de MIMIC-IV es \texttt{horas\_hasta\_norad} 
-(ausente por definición clínica en los casos negativos). Las restantes 81 columnas se encuentran completamente cubiertas. En los conjuntos de validación de eICU-CRD la situación es 
-análoga: la variable \texttt{horas\_hasta\_norad} toma el valor \texttt{NA} para los casos negativos.
+Con el fin de preservar la fidelidad fisiológica de los datos reales, no se aplicaron técnicas de imputación de valores faltantes. En su lugar se adoptó un enfoque de caso
+completo, conservando únicamente las estancias con todas sus variables clínicas y demográficas pobladas. La columna \texttt{horas\_hasta\_norad}
+constituye una excepción por definición: toma el valor \texttt{NA} en todos los casos negativos, ya que en ellos el evento no llegó a producirse. Este mismo criterio se aplicó
+a los conjuntos de validación de eICU-CRD.
 
 \subsection*{Análisis exploratorio y comparación de las cohortes}
 
