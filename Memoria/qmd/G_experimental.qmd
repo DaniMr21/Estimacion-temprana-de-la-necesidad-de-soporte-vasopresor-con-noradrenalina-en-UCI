@@ -157,45 +157,116 @@ que la información del conjunto de prueba influyera en la transformación de la
 
 \subsubsection*{Ponderación de clases}
 
-Dado que el inicio de noradrenalina era un evento minoritario, se aplicaron estrategias de ponderación de clases en los modelos que lo permitían de forma directa. En regresión logística y 
-LightGBM se utilizó \texttt{class\_weight='balanced'}, de forma que el peso de cada clase se ajustara inversamente a su frecuencia en el conjunto de entrenamiento. En Random Forest se empleó 
-\texttt{class\_weight='balanced\_subsample'}, calculando la ponderación en cada submuestra utilizada para construir los árboles.
+Dado que el inicio de noradrenalina era un evento minoritario, se incorporaron estrategias de ponderación de clases en los modelos que lo permitían. En regresión logística se utilizó \texttt{class\_weight='balanced'}. En Random Forest se incluyó la ponderación dentro de la búsqueda de hiperparámetros, comparando \texttt{balanced} y \texttt{balanced\_subsample}. En LightGBM se comparó \texttt{class\_weight='balanced'} frente a ausencia de ponderación explícita. En XGBoost se exploraron distintos valores de \texttt{scale\_pos\_weight}. En Naive Bayes y CatBoost no se aplicó un parámetro específico de balanceo en el flujo principal.
 
-En XGBoost se ajustó el parámetro \texttt{scale\_pos\_weight} a partir de la relación entre negativos y positivos del conjunto de entrenamiento de cada partición. En Naive Bayes y CatBoost no 
-se aplicó un parámetro específico de balanceo en el flujo principal.
+\subsubsection*{Búsqueda de hiperparámetros}
+
+La optimización de hiperparámetros se realizó dentro del bucle interno de la validación cruzada anidada, mediante \texttt{GridSearchCV}, utilizando AUC-ROC como métrica de optimización. El objetivo de esta búsqueda fue ajustar la complejidad de cada modelo sin utilizar información del conjunto de prueba externo.
+
+La Tabla~\ref{tab:rejilla-hiperparametros} resume los espacios de búsqueda empleados para cada algoritmo. La configuración final de cada modelo se obtuvo a partir de los hiperparámetros seleccionados en los folds externos. Cuando existían discrepancias entre folds, se tomó como configuración final el valor más frecuente. Posteriormente, el modelo definitivo se reentrenó sobre el conjunto completo de desarrollo de MIMIC-IV antes de su aplicación a la validación externa o su serialización para el \textit{dashboard}.
 
 \begin{table}[htbp]
   \centering
-  \caption{configuración general de preprocesamiento y balanceo por familia de modelo.}
-  \label{tab:parametrizacion-modelos}
+  \small
+  \caption{rejilla de hiperparámetros explorada en la validación cruzada interna para cada algoritmo.}
+  \label{tab:rejilla-hiperparametros}
   \resizebox{\textwidth}{!}{%
-  \begin{tabular}{llll}
+  \begin{tabular}{lll}
     \toprule
-    Modelo & Escalado & Balanceo de clases & Comentario \\
+    Algoritmo & Hiperparámetro & Valores explorados \\
     \midrule
-    Regresión logística & \texttt{RobustScaler} & \texttt{class\_weight='balanced'} & Modelo lineal de referencia \\
-    Naive Bayes & \texttt{RobustScaler} & No aplicado & Clasificador probabilístico basal \\
-    Random Forest & No & \texttt{class\_weight='balanced\_subsample'} & Ensamblado por \textit{bagging} \\
-    XGBoost & No & \texttt{scale\_pos\_weight} & Ajustado según la relación entre clases \\
-    LightGBM & No & \texttt{class\_weight='balanced'} & \textit{Gradient boosting} eficiente \\
-    CatBoost & No & No aplicado & \textit{Gradient boosting} robusto para datos tabulares \\
+    Regresión logística
+      & \texttt{C}
+      & \texttt{\{1e-4, 5e-4, 1e-3, 5e-3, 1e-2, 5e-2, 0.1, 0.5, 1, 5, 10, 50\}} \\
+
+    \midrule
+    Random Forest
+      & \texttt{n\_estimators}
+      & \texttt{\{300, 400, 500, 600, 700, 850, 1000\}} \\
+    Random Forest
+      & \texttt{max\_depth}
+      & \texttt{\{None, 5, 10, 20, 30\}} \\
+    Random Forest
+      & \texttt{min\_samples\_leaf}
+      & \texttt{\{1, 2, 5\}} \\
+    Random Forest
+      & \texttt{max\_features}
+      & \texttt{\{sqrt, 0.3, 0.5\}} \\
+    Random Forest
+      & \texttt{class\_weight}
+      & \texttt{\{balanced, balanced\_subsample\}} \\
+
+    \midrule
+    XGBoost
+      & \texttt{n\_estimators}
+      & \texttt{\{300, 400, 500, 600, 750, 900\}} \\
+    XGBoost
+      & \texttt{max\_depth}
+      & \texttt{\{3, 5, 7\}} \\
+    XGBoost
+      & \texttt{learning\_rate}
+      & \texttt{\{0.005, 0.01, 0.03, 0.1\}} \\
+    XGBoost
+      & \texttt{subsample}
+      & \texttt{\{0.6, 0.8, 1.0\}} \\
+    XGBoost
+      & \texttt{colsample\_bytree}
+      & \texttt{\{0.6, 0.8, 1.0\}} \\
+    XGBoost
+      & \texttt{reg\_lambda}
+      & \texttt{\{0.1, 1, 10\}} \\
+    XGBoost
+      & \texttt{scale\_pos\_weight}
+      & \texttt{\{1, 5, 9\}} \\
+
+    \midrule
+    LightGBM
+      & \texttt{n\_estimators}
+      & \texttt{\{300, 600, 1000\}} \\
+    LightGBM
+      & \texttt{num\_leaves}
+      & \texttt{\{15, 31, 63\}} \\
+    LightGBM
+      & \texttt{learning\_rate}
+      & \texttt{\{0.005, 0.01, 0.03, 0.1\}} \\
+    LightGBM
+      & \texttt{min\_child\_samples}
+      & \texttt{\{10, 30, 60\}} \\
+    LightGBM
+      & \texttt{reg\_lambda}
+      & \texttt{\{0.1, 1, 10\}} \\
+    LightGBM
+      & \texttt{subsample}
+      & \texttt{\{0.6, 0.8, 1.0\}} \\
+    LightGBM
+      & \texttt{class\_weight}
+      & \texttt{\{balanced, None\}} \\
+
+    \midrule
+    CatBoost
+      & \texttt{iterations}
+      & \texttt{\{500, 1000\}} \\
+    CatBoost
+      & \texttt{depth}
+      & \texttt{\{4, 5, 6, 7\}} \\
+    CatBoost
+      & \texttt{learning\_rate}
+      & \texttt{\{0.01, 0.03, 0.05, 0.1\}} \\
+    CatBoost
+      & \texttt{l2\_leaf\_reg}
+      & \texttt{\{1, 5, 15\}} \\
+    CatBoost
+      & \texttt{bagging\_temperature}
+      & \texttt{\{0, 0.5, 1\}} \\
+
+    \midrule
+    Naive Bayes
+      & \texttt{var\_smoothing}
+      & \texttt{30 valores logarítmicos entre 1e-12 y 1e-2} \\
     \bottomrule
   \end{tabular}%
   }
 \end{table}
-
-\subsubsection*{Búsqueda de hiperparámetros}
-
-La optimización de hiperparámetros se realizó dentro del bucle interno de la validación cruzada anidada, mediante \texttt{GridSearchCV}, utilizando AUC-ROC como métrica de optimización. 
-El objetivo de esta búsqueda fue ajustar la complejidad de cada modelo sin utilizar información del conjunto de prueba externo.
-
-Los espacios de búsqueda se definieron de forma específica para cada familia de modelos. En regresión logística se exploró la intensidad de regularización. En Random Forest se ajustaron 
-parámetros relacionados con el número de árboles, la profundidad máxima, el tamaño mínimo de hoja y la selección de variables por división. En los modelos de \textit{gradient boosting} se 
-evaluaron combinaciones de número de estimadores, profundidad, tasa de aprendizaje, regularización y muestreo. En Naive Bayes se exploró el parámetro \texttt{var\_smoothing}.
-
-La configuración final de cada modelo se obtuvo a partir de los hiperparámetros seleccionados en los folds externos. Cuando existían discrepancias entre folds, se tomó como configuración final 
-el valor más frecuente. Posteriormente, el modelo definitivo se reentrenó sobre el conjunto completo de desarrollo de MIMIC-IV antes de su aplicación a la validación externa o su serialización
-para el \textit{dashboard}.
 
 \subsubsection*{Validación cruzada anidada}
 
@@ -257,8 +328,9 @@ en la regresión logística, \texttt{LinearExplainer}; y en Naive Bayes, \texttt
 Los valores SHAP se utilizaron como herramienta de auditoría posterior, no como criterio principal de selección de variables. Su objetivo fue comprobar si los modelos basaban sus predicciones 
 en patrones clínicamente razonables y si la dirección de las contribuciones era compatible con la fisiopatología esperada.
 
-En los modelos recalibrados, la interpretación SHAP se calculó sobre el modelo base, mientras que el calibrador se utilizó únicamente para transformar la probabilidad final. Esta separación 
-permitió conservar una explicación asociada al patrón predictivo aprendido por el modelo, evitando atribuir al calibrador una estructura de contribuciones clínicas que no le corresponde.
+Cuando se empleó un modelo recalibrado, la interpretación SHAP se calculó sobre el modelo base, mientras que el calibrador se utilizó únicamente para transformar la probabilidad final. Esta 
+separación permitió conservar una explicación asociada al patrón predictivo aprendido por el modelo, evitando atribuir al calibrador una estructura de contribuciones clínicas que no le 
+corresponde.
 
 \subsubsection*{Organización modular del código}
 
@@ -270,9 +342,8 @@ externa y la aplicación final de visualización.
 
 \section{Resultados}
 
-Los resultados gráficos completos de discriminación, calibración e interpretabilidad de los modelos principales se presentan en la memoria. En este anexo se recogen únicamente resultados 
-experimentales complementarios que justifican decisiones internas del flujo de trabajo, como el desempate entre estadísticos, la selección final de variables para el prototipo y las pruebas de
- recalibración probabilística.
+Los resultados principales de discriminación e interpretabilidad de los modelos conservados se presentan en la memoria. En este anexo se recogen únicamente resultados experimentales complementarios
+ que justifican decisiones internas del flujo de trabajo, como el desempate entre estadísticos, la selección final de variables para el prototipo y las pruebas de recalibración probabilística.
 
 \begin{table}[htbp]
   \centering
