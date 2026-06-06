@@ -272,7 +272,7 @@ externa y la aplicación final de visualización.
 
 \begin{table}[htbp]
   \centering
-  \caption{análisis de desempate entre estadísticos (mínimo, media y máximo) para las variables en las que la elección no resultaba evidente por criterio clínico. Se muestran la capacidad discriminativa univariante (AUC-ROC) y el tamaño del efecto ($d$ de Cohen) entre pacientes positivos y negativos. La elección final priorizó la interpretación clínica del parámetro.}
+  \caption{análisis de desempate entre estadísticos para las variables en las que la elección no resultaba evidente por criterio clínico.}
   \label{tab:desempate-estadisticos}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{llrrl}
@@ -299,6 +299,23 @@ externa y la aplicación final de visualización.
   }
 \end{table}
 
-[Variables finales por ventana y algoritmo]
+\begin{table}[htbp]
+  \centering
+  \caption{variables utilizadas por los modelos finalmente conservados para el prototipo de \textit{dashboard}.}
+  \label{tab:variables-dashboard-finales}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lll}
+    \toprule
+    Ventana & Modelo & Variables \\
+    \midrule
+    Media (6--24 h) & XGBoost recalibrado &
+    \texttt{pf\_min}, \texttt{map\_min}, \texttt{diuresis\_ml\_kg\_6h}, \texttt{hr\_media}, \texttt{sofa\_max}, \texttt{ventilacion\_invasiva\_6h} \\
+    \midrule
+    Larga (12--48 h) & XGBoost &
+    \texttt{temp\_min}, \texttt{pf\_min}, \texttt{spo2\_min}, \texttt{bicarbonato\_min}, \texttt{map\_min}, \texttt{glucemia\_min}, \texttt{sofa\_max} \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
 
 ```
