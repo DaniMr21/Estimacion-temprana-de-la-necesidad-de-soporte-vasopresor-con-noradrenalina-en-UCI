@@ -6,6 +6,141 @@
 
 \section{Registro de experimentos}
 
+\subsection*{Visión general del flujo experimental}
+
+El desarrollo de este trabajo no siguió una trayectoria lineal, sino un proceso iterativo de prueba, error y refinamiento progresivo. Antes de consolidar el flujo definitivo, se llevó a 
+cabo una fase exploratoria preliminar cuyo objetivo no era obtener los modelos finales, sino familiarizarse con las bases de datos, ensayar enfoques de preprocesamiento y descartar estrategias 
+que no resultaban adecuadas. Estas pruebas iniciales, conservadas en el repositorio con fines de trazabilidad, resultaron decisivas para orientar las decisiones metodológicas posteriores.
+
+En una primera etapa se construyeron cohortes generales de UCI y se entrenaron modelos de referencia con las seis familias de algoritmos consideradas. Sobre estas cohortes se ensayó la 
+imputación de valores ausentes mediante el algoritmo de los $k$ vecinos más cercanos (KNN), con distintos valores de $k$ (3 y 5). Sin embargo, este enfoque se descartó por dos motivos. 
+En primer lugar, varias variables clínicas presentaban un porcentaje de valores ausentes muy elevado, de modo que su imputación habría supuesto reconstruir artificialmente una fracción muy 
+considerable de los datos, comprometiendo la fidelidad fisiológica de la cohorte. En segundo lugar, imputar de forma rigurosa sobre datos agregados por ventana añadía una 
+complejidad metodológica notable, difícil de justificar y de controlar frente a sus posibles beneficios. Por ello se adoptó, de forma mantenida en todo el trabajo posterior, un enfoque de caso 
+completo que conserva únicamente las estancias con todas sus variables pobladas (véase el apéndice~\ref{cap:apendiceF}).
+
+Una segunda observación relevante de esta fase preliminar fue la necesidad de imponer un criterio temporal mínimo de inclusión. Las estancias debían superar una duración mínima —24 horas en las 
+ventanas corta y media, y 48 horas en la ventana larga— con el fin de evitar la entrada de ingresos muy breves, como postoperatorios programados o derivaciones rápidas, que introducían falsos 
+negativos y ruido en el etiquetado. Este criterio, junto con la incorporación progresiva de variables como la diuresis, sentó las bases de la definición de cohortes y ventanas temporales empleada
+en el flujo definitivo.
+
+A partir de estas conclusiones se consolidó un flujo experimental estructurado de forma modular, en el que cada etapa se implementó de manera independiente para favorecer la reproducibilidad y 
+la trazabilidad: extracción de cohortes mediante consultas SQL sobre MIMIC-IV y eICU-CRD, preprocesamiento y tratamiento de valores extremos, análisis exploratorio, definición de ventanas 
+temporales, selección de variables en varias fases, entrenamiento de modelos, calibración de probabilidades, análisis de interpretabilidad, validación externa y, finalmente, 
+integración de los modelos seleccionados en el prototipo de \textit{dashboard}. Las secciones siguientes detallan el registro de experimentos realizados, la justificación de las configuraciones 
+empleadas y los resultados obtenidos en cada fase.
+
+\subsection*{Evolución del trabajo experimental por fases}
+
+Una vez definida la cohorte de trabajo sobre MIMIC-IV, el proceso de selección de variables y de ajuste de los modelos se organizó en tres fases sucesivas, cada una de las cuales refinó las 
+conclusiones de la anterior. Estas fases se conservan en el repositorio como versiones diferenciadas (\texttt{Pruebas\_v4}, \texttt{Pruebas\_v4\_2} y \texttt{Pruebas\_v4\_3}) y documentan tanto 
+los análisis que se incorporaron al flujo final como aquellos que se exploraron y posteriormente se descartaron.
+
+\subsubsection*{Fase 1: caracterización inicial y reducción de redundancia}
+
+La primera fase tuvo como objetivo caracterizar el conjunto de predictores candidatos y reducir su redundancia. Se establecieron los modelos de referencia (\textit{baseline}) sobre los seis 
+algoritmos y se aplicó el tratamiento de valores extremos mediante winsorización al percentil 2--98 sobre las variables clínicas continuas. A continuación se realizó un análisis de 
+correlación de Spearman entre las variables candidatas, filtrando previamente a una única estancia por paciente para evitar dependencias entre observaciones.
+
+En esta fase se abordó también un problema específico de representación: cada variable clínica continua disponía de tres estadísticos por ventana (mínimo, media y máximo), muy 
+correlacionados entre sí. La elección del estadístico a conservar se guio en primer lugar por criterio clínico, atendiendo a qué resumen resultaba fisiológicamente más informativo para cada 
+parámetro (por ejemplo, el valor mínimo para la presión arterial media o el máximo para el lactato). Únicamente cuando esta elección no resultaba evidente, como por ejemplo, al dudar entre el 
+mínimo y el máximo de una misma variable, se recurrió a un análisis de desempate, evaluando para cada estadístico su capacidad discriminativa univariante (AUC-ROC) y el tamaño del efecto entre 
+pacientes positivos y negativos mediante la $d$ de Cohen, además de comprobar la coherencia de la dirección del efecto con las medianas de ambos grupos. Este procedimiento permitió retener, 
+para cada variable, un único estadístico representativo en lugar de arrastrar los tres.
+
+\begin{table}[htbp]
+  \centering
+  \caption{análisis de desempate entre estadísticos (mínimo, media y máximo) para las variables en las que la elección no resultaba evidente por criterio clínico. Se muestran la capacidad discriminativa univariante (AUC-ROC) y el tamaño del efecto ($d$ de Cohen) entre pacientes positivos y negativos. La elección final priorizó la interpretación clínica del parámetro.}
+  \label{tab:desempate-estadisticos}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{llrrl}
+    \toprule
+    Variable & Estadístico & AUC-ROC & $d$ de Cohen & Dirección (pos vs neg) \\
+    \midrule
+    Frecuencia cardíaca & \texttt{hr\_media} & 0,562 & $+0,228$ & $\uparrow$ \\
+                        & \texttt{hr\_min}   & 0,545 & $+0,160$ & $\uparrow$ \\
+                        & \texttt{hr\_max}   & 0,557 & $+0,209$ & $\uparrow$ \\
+    \midrule
+    Temperatura & \texttt{temp\_media} & 0,514 & $-0,091$ & $\downarrow$ \\
+                & \texttt{temp\_min}   & 0,526 & $-0,149$ & $\downarrow$ \\
+                & \texttt{temp\_max}   & 0,503 & $+0,005$ & $=$ \\
+    \midrule
+    Puntuación SOFA & \texttt{sofa\_media} & 0,586 & $+0,302$ & $\uparrow$ \\
+                    & \texttt{sofa\_min}   & 0,538 & $+0,108$ & $\uparrow$ \\
+                    & \texttt{sofa\_max}   & 0,606 & $+0,401$ & $\uparrow$ \\
+    \midrule
+    Glucemia & \texttt{glucemia\_media} & 0,518 & $-0,021$ & $=$ \\
+             & \texttt{glucemia\_min}   & 0,522 & $-0,030$ & $\downarrow$ \\
+             & \texttt{glucemia\_max}   & 0,515 & $-0,021$ & $\uparrow$ \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
+
+\subsubsection*{Fase 2: significancia, importancia y eliminación de variables}
+
+La segunda fase profundizó en la selección combinando varios criterios estadísticos. Se evaluó la significancia univariante de cada variable frente a la variable objetivo y, posteriormente, 
+su comportamiento en un contexto multivariante mediante regresión logística ajustada, aplicando en ambos casos la corrección de Benjamini--Hochberg para el control de comparaciones múltiples 
+cuando procedía. El contraste entre ambos análisis permitió distinguir variables clínicamente relevantes cuya señal quedaba absorbida por otros predictores, variables redundantes y variables 
+cuyo comportamiento ajustado resultaba difícil de justificar desde el punto de vista fisiopatológico.
+
+El análisis multivariante no se utilizó como criterio único de selección, sino como una auditoría de coherencia. En particular, se examinó la \textit{odds ratio} (OR) ajustada de cada predictor
+ para comprobar si la dirección de asociación era compatible con la interpretación clínica esperada. Dado que las variables continuas estaban estandarizadas, la OR representa el cambio en las 
+ probabilidades relativas del evento ante un incremento de una desviación estándar en el predictor. Por tanto, una OR superior a 1 indica una asociación positiva con la necesidad de 
+ noradrenalina, mientras que una OR inferior a 1 indica una asociación inversa, siempre interpretada según el sentido clínico de la variable. Así, una OR inferior a 1 puede ser coherente en 
+ variables donde valores más bajos implican peor situación clínica, como la presión arterial media, el pH o el bicarbonato.
+
+Un ejemplo de variable clínicamente relevante pero con señal ajustada débil fue el lactato (\texttt{lactato\_max}). Pese a ser uno de los marcadores de hipoperfusión tisular mejor establecidos, 
+su asociación con la variable objetivo se diluía en algunos análisis multivariantes, probablemente por solapamiento con otros indicadores de gravedad, perfusión y disfunción orgánica.
+
+Un segundo caso, de naturaleza distinta, resultó lo bastante llamativo como para motivar un experimento específico: el de la transaminasa \texttt{gpt\_max}. En el modelo de regresión logística
+ multivariante, esta variable resultaba estadísticamente significativa pero con un OR inferior a uno, es decir, una asociación ajustada aparentemente protectora según la cual un valor más alto 
+ de la enzima se asociaba a un menor riesgo de requerir noradrenalina. Esta dirección carecía de sentido fisiológico dentro del objetivo del trabajo. Su origen más probable estaba en la 
+ composición de la muestra, la redundancia con otras variables o un efecto de supresión estadística. El modelo, por tanto, no estaba aprendiendo un mecanismo causal clínicamente defendible, 
+ sino un patrón ajustado que no convenía incorporar sin revisión.
+
+Para cuantificar su contribución real se diseñó un experimento que comparó, mediante validación cruzada, un modelo de \textit{Random Forest} entrenado con la variable frente al mismo modelo sin 
+ella. La eliminación de \texttt{gpt\_max} apenas modificó la discriminación (AUC-ROC de 0,707 con la variable frente a 0,701 sin ella), lo que confirmó que su aportación predictiva era marginal 
+y prescindible y respaldó su exclusión. En conjunto, estos hallazgos pusieron de manifiesto que el comportamiento estadístico de una variable, ya sea por su capacidad discriminativa aislada o 
+por su asociación en un modelo ajustado, no basta por sí solo como criterio de selección, y motivaron la verificación de la coherencia clínica de cada predictor descrita en la fase siguiente.
+
+\subsubsection*{Fase 3: consolidación y verificación de la dirección de asociación}
+
+La tercera fase consolidó la selección de variables y la sometió a una verificación final. Se construyó un criterio de significancia propio que combinaba los resultados de las fases anteriores, 
+definiendo para cada familia de modelo el subconjunto de variables cuya importancia por permutación excluía el cero. Sobre ese subconjunto se reentrenaron los modelos de referencia, en dos 
+versiones sucesivas, hasta fijar la configuración definitiva de predictores por ventana.
+
+Como comprobación final, se revisó la dirección de asociación de las variables retenidas mediante regresión logística multivariante ajustada. Esta revisión se basó en la OR ajustada de cada 
+predictor y en las medianas observadas en pacientes positivos y negativos. El objetivo no era inferir causalidad, sino comprobar que el patrón estadístico observado fuera compatible con la 
+fisiopatología esperada. Así, se consideró coherente que variables como \texttt{sofa\_max}, \texttt{lactato\_max} o \texttt{fio2\_max} tendieran a asociarse con mayor riesgo cuando aumentaban, 
+mientras que variables como \texttt{map\_min}, \texttt{pf\_min}, \texttt{ph\_min}, \texttt{bicarbonato\_min} o \texttt{spo2\_min} podían mostrar una asociación inversa, al representar situaciones
+ en las que valores más bajos indican mayor deterioro clínico.
+
+Esta verificación evitó incorporar a los modelos finales variables cuya relación ajustada con el evento, aun siendo estadísticamente significativa, resultara contraria a la lógica clínica o 
+difícil de defender. Por tanto, la OR se utilizó como herramienta de auditoría de la dirección de asociación, complementaria a la importancia por permutación, al análisis univariante y a la 
+revisión clínica de los diagramas SHAP.
+
+\subsection*{Identificación del evento en cada base de datos}
+
+La variable objetivo de este trabajo es el inicio de soporte vasopresor con noradrenalina. Dado que MIMIC-IV y eICU-CRD presentan estructuras y nomenclaturas distintas, la identificación del 
+evento requirió una definición específica para cada base, buscando en ambos casos el primer instante de administración de noradrenalina en cada estancia.
+
+En \textbf{MIMIC-IV}, las administraciones de fármacos en la UCI se registran en la tabla \texttt{inputevents}, donde cada medicamento se identifica mediante un código numérico 
+(\texttt{itemid}). La noradrenalina corresponde al código \texttt{221906}. El evento se definió como el primer registro de administración de este fármaco en cada estancia (\texttt{stay\_id}), 
+exigiendo además que la cantidad administrada fuera positiva (\texttt{amount > 0}) para descartar registros nulos o anotaciones sin perfusión efectiva. El instante de inicio se obtuvo como el 
+mínimo de los tiempos de comienzo (\texttt{starttime}) de dichos registros.
+
+En \textbf{eICU-CRD}, las perfusiones se registran en la tabla \texttt{infusionDrug}, en la que el fármaco se identifica por su nombre (\texttt{drugname}) en lugar de por un código normalizado. 
+Para localizar la noradrenalina se seleccionaron los registros cuyo nombre contenía el término \texttt{norepinephrine} o su nombre comercial \texttt{levophed}. Adicionalmente, se excluyeron los
+registros cuyo nombre contenía el término \texttt{volume}, con el fin de evitar falsos positivos asociados a anotaciones de volumen o de soluciones de reposición que no se corresponden con una 
+perfusión vasopresora activa. El instante de inicio se obtuvo como el mínimo de los desplazamientos temporales de perfusión (\texttt{infusionoffset}) por estancia (\texttt{patientunitstayid}).
+
+Esta doble definición, adaptada a las particularidades de cada fuente, permitió construir una variable objetivo homogénea en su significado clínico, el primer inicio de noradrenalina dentro del 
+horizonte de predicción, y, por ende, comparable entre la cohorte de desarrollo y la de validación externa.
+
+----------------------------------------------
+
 \section{Parametrización}
 
 \section{Resultados}
