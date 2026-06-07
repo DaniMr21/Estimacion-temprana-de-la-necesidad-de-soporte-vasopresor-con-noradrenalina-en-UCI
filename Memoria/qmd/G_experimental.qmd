@@ -50,7 +50,7 @@ defendibles y poco redundantes. Por ello, la reducción definitiva se apoyó en 
 En esta fase se abordó también un problema específico de representación: cada variable clínica continua disponía de tres estadísticos por ventana (mínimo, media y máximo), muy 
 correlacionados entre sí. La elección del estadístico a conservar se guio en primer lugar por criterio clínico, atendiendo a qué resumen resultaba fisiológicamente más informativo para cada 
 parámetro (por ejemplo, el valor mínimo para la presión arterial media o el máximo para el lactato). Únicamente cuando esta elección no resultaba evidente, como por ejemplo, al dudar entre el 
-mínimo y el máximo de una misma variable, se recurrió a un análisis de desempate, evaluando para cada estadístico su capacidad discriminativa univariante (AUC-ROC) y el tamaño del efecto entre 
+mínimo y el máximo de una misma variable, se recurrió a un análisis de desempate (Tabla~\ref{tab:desempate-estadisticos}), evaluando para cada estadístico su capacidad discriminativa univariante (AUC-ROC) y el tamaño del efecto entre 
 pacientes positivos y negativos mediante la $d$ de Cohen, además de comprobar que el sentido observado en las medianas de ambos grupos fuera clínicamente coherente. Este procedimiento permitió retener, 
 para cada variable, un único estadístico representativo en lugar de arrastrar los tres.
 
@@ -86,7 +86,7 @@ por su asociación en un modelo ajustado, no basta por sí solo como criterio de
 
 La tercera fase consolidó la selección de variables y la sometió a una verificación final. Se construyó un criterio de significancia propio que combinaba los resultados de las fases anteriores, 
 definiendo para cada familia de modelo el subconjunto de variables cuya importancia por permutación excluía el cero. Sobre ese subconjunto se reentrenaron los modelos de referencia, en dos 
-versiones sucesivas, hasta fijar la configuración definitiva de predictores por ventana.
+versiones sucesivas, hasta fijar la configuración definitiva de predictores por ventana, recogida en la Tabla~\ref{tab:variables-finales-ventana-modelo}.
 
 Como comprobación final, se revisó la dirección de asociación de las variables retenidas mediante regresión logística multivariante ajustada. Esta revisión se basó en la OR ajustada de cada 
 predictor y en las medianas observadas en pacientes positivos y negativos. El objetivo no era inferir causalidad, sino comprobar que el patrón estadístico observado fuera compatible con la 
@@ -98,22 +98,6 @@ al representar situaciones en las que los valores más bajos indican mayor grave
 Esta verificación evitó incorporar a los modelos finales variables cuya relación ajustada con el evento, aun siendo estadísticamente significativa, resultara contraria a la lógica clínica o 
 difícil de defender. Por tanto, la OR se utilizó como herramienta de auditoría de la dirección de asociación, complementaria a la importancia por permutación, al análisis univariante y a la 
 revisión clínica de los diagramas SHAP.
-
-\subsection*{Experimentos de recalibración probabilística}
-
-Los experimentos de recalibración se aplicaron de forma selectiva sobre modelos candidatos o de interés comparativo: CatBoost y XGBoost en la ventana corta (3--12 h), XGBoost y CatBoost en la 
-ventana media (6--24 h), y XGBoost en la ventana larga (12--48 h). No se aplicó una recalibración sistemática a todos los algoritmos evaluados inicialmente ni a todos los modelos preseleccionados, 
-sino solo a aquellos sobre los que se consideró necesario comprobar si una transformación probabilística mejoraba la calibración sin deteriorar el rendimiento global.
-
-En estos experimentos se compararon las probabilidades originales de cada modelo frente a versiones recalibradas mediante escalado de Platt y regresión isotónica, utilizando predicciones 
-\textit{out-of-fold} y manteniendo la separación entre entrenamiento y prueba en cada partición. En el experimento final de XGBoost en la ventana media se incorporó además una variante de Platt 
-regularizado. La comparación se basó en curvas de calibración, ECE, Brier score y BSS, evitando seleccionar un calibrador únicamente por una mejora aislada del ECE.
-
-Los resultados mostraron que la recalibración no aportaba una mejora consistente en todos los modelos evaluados. En varios casos, las versiones recalibradas reducían de forma marginal el ECE, 
-comprimían excesivamente las probabilidades o no mantenían un equilibrio adecuado con el BSS. Por ello, la recalibración no se incorporó como paso automático del flujo experimental.
-
-Finalmente, solo se conservó una versión recalibrada para XGBoost en la ventana media (6--24 h), mediante escalado de Platt regularizado. Este modelo se guardó de forma independiente y fue el 
-utilizado posteriormente como modelo recalibrado en la validación externa y en el prototipo de \textit{dashboard} para la ventana media.
 
 \subsection*{Identificación del evento en cada base de datos}
 
@@ -174,27 +158,25 @@ neurologico    : segun escala de Glasgow
 SOFA = suma de los seis componentes
 \end{verbatim}
 
-Las diferencias principales radican en la granularidad temporal y en dos componentes concretos. En el cardiovascular, mientras que la tabla del MIT pondera las dosis de vasopresores, la versión 
-sobre eICU-CRD lo aproxima a partir de la mera presencia de fármacos vasoactivos y de la presión arterial media, al no disponerse de las dosis ponderadas por peso con la misma fiabilidad. 
-En el respiratorio, la versión sobre eICU-CRD asigna la puntuación únicamente en función del cociente PaO$_2$/FiO$_2$, sin condicionarla a la presencia de soporte ventilatorio como hace la 
-implementación del MIT. Estas diferencias metodológicas son coherentes con la mayor gravedad basal observada en la cohorte de eICU-CRD y deben tenerse presentes al interpretar el SOFA como 
-referencia comparativa entre bases.
+Estas diferencias responden, en última instancia, a la distinta disponibilidad y estructura de las variables entre ambas bases, y se concentran en la granularidad temporal y en dos componentes 
+concretos. En el cardiovascular, mientras que la tabla del MIT pondera las dosis de vasopresores, la versión sobre eICU-CRD lo aproxima a partir de la mera presencia de fármacos vasoactivos y de 
+la presión arterial media, al no disponerse de las dosis ponderadas por peso con la misma fiabilidad. En el respiratorio, la versión sobre eICU-CRD asigna la puntuación únicamente en función del 
+cociente PaO$_2$/FiO$_2$, a diferencia del SOFA respiratorio estándar, que pondera también el soporte ventilatorio. Estas diferencias metodológicas pueden contribuir a diferencias en la 
+distribución del SOFA entre bases de datos y deben tenerse presentes al interpretar el SOFA como referencia comparativa entre MIMIC-IV y eICU-CRD.
 
 \subsection*{Identificación de la sepsis (Sepsis-3)}
 
 La presencia de sepsis (\texttt{tiene\_sepsis}), empleada para el análisis de subgrupos en MIMIC-IV, se obtuvo igualmente de la tabla derivada \texttt{mimiciv\_derived.sepsis3} del repositorio del MIT, sin reimplementar el algoritmo. Dicho \textit{concept} aplica los criterios Sepsis-3, que combinan la sospecha de infección con la presencia de disfunción orgánica medida mediante el SOFA. De forma esquemática:
 
 \begin{verbatim}
-sospecha de infeccion:
+sospecha de infección:
     coincidencia temporal entre una toma de cultivo y
-    la administracion de un antibiotico
-    (ventana de 24 h si el antibiotico precede al cultivo;
-     de 72 h si el cultivo precede al antibiotico)
+    la administración de un antibiótico
 
-disfuncion organica:
-    SOFA >= 2 en la ventana asociada a la sospecha de infeccion
+disfunción orgánica:
+    incremento de SOFA >= 2 puntos alrededor de la sospecha de infección
 
-Sepsis-3 = sospecha de infeccion Y SOFA >= 2
+Sepsis-3 = sospecha de infeccion Y disfuncion organica
 \end{verbatim}
 
 En este trabajo, una estancia se etiquetó como séptica cuando la tabla \texttt{sepsis3} la identificaba como tal y el instante de sospecha de infección caía dentro de la ventana de observación 
@@ -348,6 +330,11 @@ modelo. El bucle interno constó de tres particiones y se utilizó exclusivament
 Las particiones se construyeron mediante \texttt{StratifiedGroupKFold}, manteniendo la proporción de clases y agrupando las estancias por paciente. Esta decisión evitó que estancias 
 pertenecientes a un mismo paciente pudieran aparecer simultáneamente en entrenamiento y prueba, reduciendo así el riesgo de fuga de información.
 
+El rendimiento de cada modelo se resumió agregando las métricas obtenidas en las cinco particiones externas: para cada métrica se reporta su media y su desviación típica entre particiones, 
+lo que ofrece una medida de la estabilidad del rendimiento. Conviene precisar que esta desviación, recogida en las tablas de resultados, no procede de un remuestreo \textit{bootstrap}, 
+sino de la variabilidad entre los folds externos de la validación cruzada. El procedimiento \textit{bootstrap} se reservó para la estimación de los intervalos de confianza en la validación 
+externa, descrita en la memoria.
+
 \subsubsection*{Predicciones out-of-fold}
 
 Además de las métricas medias por fold externo, se generaron predicciones \textit{out-of-fold} para construir curvas ROC, curvas precisión-recall y curvas de calibración. En este esquema, cada 
@@ -387,6 +374,9 @@ el Expected Calibration Error (ECE), agrupando las predicciones en diez interval
 La recalibración probabilística se evaluó como una transformación posterior de las probabilidades generadas por los modelos candidatos, utilizando predicciones \textit{out-of-fold} y manteniendo 
 el mismo esquema de particionado agrupado por paciente. En cada partición, el modelo base se entrenó sobre el conjunto de entrenamiento y los calibradores se ajustaron únicamente con información 
 procedente de dicho conjunto, aplicándose después sobre el conjunto de prueba correspondiente.
+
+La recalibración no se aplicó de forma sistemática a todos los modelos, sino de manera selectiva sobre los candidatos de interés comparativo: CatBoost y XGBoost en la ventana corta, XGBoost y 
+CatBoost en la media, y XGBoost en la larga.
 
 Se compararon las probabilidades originales frente a versiones recalibradas mediante escalado de Platt y regresión isotónica. En el experimento final de calibración se incorporó además una 
 variante de Platt regularizado mediante validación cruzada interna, implementada con \texttt{LogisticRegressionCV}. La comparación no se basó únicamente en el ECE, sino también en el Brier score, 
@@ -454,6 +444,10 @@ Las métricas de rendimiento de evaluación interna de todos los modelos (AUC-RO
  estadísticos, la selección final de variables por ventana y algoritmo y las pruebas de recalibración probabilística. Las gráficas individuales de rendimiento e interpretabilidad de cada
   combinación de ventana y algoritmo, incluidas las de los modelos finalmente descartados, se encuentran disponibles en el repositorio del proyecto.
 
+\subsection*{Desempate entre estadísticos}
+
+La Tabla~\ref{tab:desempate-estadisticos} recoge el análisis de desempate descrito en la Fase 1, para las variables en las que la elección del estadístico no resultaba evidente por criterio clínico.
+
 \begin{table}[htbp]
   \centering
   \caption{análisis de desempate entre estadísticos para las variables en las que la elección no resultaba evidente por criterio clínico.}
@@ -484,6 +478,8 @@ Las métricas de rendimiento de evaluación interna de todos los modelos (AUC-RO
 \end{table}
 
 \subsection*{Variables finales por ventana y algoritmo}
+
+La Tabla~\ref{tab:variables-finales-ventana-modelo} detalla la configuración final de predictores seleccionada para cada ventana temporal y familia de modelo, resultado del proceso de selección descrito en las fases anteriores.
 
 \begin{table}[htbp]
   \centering
@@ -558,8 +554,7 @@ Las métricas de rendimiento de evaluación interna de todos los modelos (AUC-RO
 
 \subsection*{Resultados de los experimentos de recalibración}
 
-Como complemento a la selección de modelos, se revisó de forma específica la calibración probabilística de varios modelos candidatos. Las figuras siguientes muestran las comparaciones realizadas
- mediante predicciones \textit{out-of-fold}, enfrentando las probabilidades originales del modelo frente a versiones recalibradas mediante Platt e isotónica. La revisión conjunta de las curvas 
+Como complemento a la selección de modelos, se revisó de forma específica la calibración probabilística de varios modelos candidatos. Las Figuras~\ref{fig:calibracion-corto-cat} a~\ref{fig:verificacion-calibracion-medio-xgb} muestran estas comparaciones mediante predicciones \textit{out-of-fold}. La revisión conjunta de las curvas 
  de calibración, el ECE y el BSS permitió decidir si la recalibración aportaba una mejora real o si, por el contrario, empeoraba el rendimiento probabilístico.
 
 \begin{figure}[htbp]
@@ -603,11 +598,11 @@ equilibrio más adecuado entre calibración y utilidad probabilística.
 
 \subsection*{Rendimiento de los modelos no seleccionados (ventana media)}
 
-Como complemento al registro de experimentos, y dado que la memoria presenta únicamente las curvas de los modelos seleccionados o discutidos, las figuras siguientes recogen las curvas de 
+Como complemento al registro de experimentos, y dado que la memoria presenta únicamente las curvas de los modelos seleccionados o discutidos, las Figuras~\ref{fig:oof-medio-lr} a~\ref{fig:oof-medio-nb} recogen las curvas de 
 rendimiento \textit{out-of-fold} (ROC, precisión-recall y calibración) de los cuatro modelos de la ventana media que no fueron seleccionados para el prototipo: regresión logística, Random Forest,
- LightGBM y Naive Bayes. Su inclusión permite documentar de forma transparente el comportamiento de las alternativas descartadas frente a los modelos finalmente conservados (XGBoost y CatBoost),
-  que se presentan en la memoria. Se observa cómo, pese a alcanzar una discriminación comparable en algunos casos, estos modelos presentaban una calibración notablemente peor antes de cualquier 
-  ajuste, con curvas alejadas de la diagonal ideal, lo que refuerza las decisiones de selección descritas en los apartados anteriores.
+LightGBM y Naive Bayes. Su inclusión permite documentar de forma transparente el comportamiento de alternativas descartadas frente a los modelos principales de comparación de la ventana media, 
+presentados en la memoria. Estas curvas permiten observar que, aunque algunos modelos alcanzaban una discriminación razonable, su comportamiento probabilístico y su calibración resultaban menos 
+adecuados para la integración final en el prototipo.
 
 \begin{figure}[htbp]
   \centering
