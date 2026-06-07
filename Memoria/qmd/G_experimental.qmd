@@ -66,12 +66,7 @@ para comprobar si la dirección de asociación era compatible con la interpretac
 noradrenalina, mientras que una OR inferior a 1 indica una asociación inversa, siempre interpretada según el sentido clínico de la variable. Así, una OR inferior a 1 puede ser coherente en 
 variables donde valores más bajos implican peor situación clínica, como la presión arterial media o el bicarbonato.
 
-Un ejemplo claro fue el del lactato (\texttt{lactato\_max}). Pese a ser uno de los marcadores de hipoperfusión tisular mejor establecidos y mostrar la dirección esperada de forma aislada 
-(medianas de 2,35 frente a 1,9 en la ventana media), su efecto se volvía prácticamente nulo al ajustarlo junto al resto de predictores en dicha ventana (OR ajustada $\approx$ 1,0, no 
-significativa), al quedar su información recogida por otras variables de gravedad y perfusión como el SOFA, la presión arterial media o el índice de oxigenación. En la ventana larga, además, su 
-asociación ajustada llegaba a invertirse de forma incoherente. Por una u otra razón —redundancia o dirección no defendible según la ventana— el lactato no se incorporó a los modelos finales.
-
-Un segundo caso, de naturaleza distinta, resultó lo bastante llamativo como para motivar un experimento específico: el de la transaminasa \texttt{gpt\_max}. En el modelo de regresión logística
+Un caso resultó lo bastante llamativo como para motivar un experimento específico: el de la transaminasa \texttt{gpt\_max}. En el modelo de regresión logística
 multivariante, esta variable resultaba estadísticamente significativa pero con un OR inferior a uno, es decir, una asociación ajustada aparentemente protectora según la cual un valor más alto 
 de la enzima se asociaba a un menor riesgo de requerir noradrenalina. Esta dirección carecía de sentido fisiológico dentro del objetivo del trabajo. Su origen más probable estaba en la 
 composición de la muestra, la redundancia con otras variables o un efecto de supresión estadística. El modelo, por tanto, no estaba aprendiendo un mecanismo causal clínicamente defendible, 

@@ -15,4 +15,83 @@ Las herramientas de IA utilizadas como apoyo para el presente trabajo son las si
 
 \section{Registro de interacciones}
 
+\subsection*{Interacción 1}
+
+\textbf{Herramienta:} Claude Sonnet 4.6.
+
+\textbf{Fecha aproximada:} marzo de 2026.
+
+\textbf{Prompt:} Cómo transformar con CASE WHEN en SQL las temperaturas de MIMIC que están en Fahrenheit a Celsius, al estar mezcladas en la base de datos.
+
+\textbf{Uso posterior:} ideación y apoyo en código.
+
+\subsection*{Interacción 2}
+
+\textbf{Herramienta:} GPT 5.4.
+
+\textbf{Fecha aproximada:} marzo de 2026.
+
+\textbf{Prompt:} Por qué la noradrenalina se denomina norepinefrina en Estados Unidos y otros países.
+
+\textbf{Uso posterior:} resolución de duda terminológica.
+
+\subsection*{Interacción 3}
+
+\textbf{Herramienta:} Claude Sonnet 4.6.
+
+\textbf{Fecha aproximada:} abril de 2026.
+
+\textbf{Prompt:} En eICU, cómo combinar vitalPeriodic y vitalAperiodic para obtener la presión arterial media mínima en la ventana 0--X horas.
+
+\textbf{Uso posterior:} consulta sobre extracción SQL.
+
+\subsection*{Interacción 4}
+
+\textbf{Herramienta:} Claude Sonnet 4.6.
+
+\textbf{Fecha aproximada:} abril de 2026.
+
+\textbf{Prompt:} Comprobación de si las columnas de bilirrubina, plaquetas, creatinina, PaO2, FiO2 y GCS estaban realmente medidas antes de filtrar la tabla limpia.
+
+\textbf{Uso posterior:} corrección de código.
+
+\subsection*{Interacción 5}
+
+\textbf{Herramienta:} Claude Sonnet 4.6.
+
+\textbf{Fecha aproximada:} mayo de 2026.
+
+\textbf{Prompt:} Simplificar un script para que recorriera automáticamente ventanas temporales y modelos, cargara cada fichero .pkl entrenado y generara los gráficos SHAP globales con la configuración correspondiente de cada algoritmo.
+
+\textbf{Uso posterior:} ideación y corrección de código.
+
+\subsection*{Interacción 6}
+
+\textbf{Herramienta:} Claude Sonnet 4.6.
+
+\textbf{Fecha aproximada:} abril de 2026.
+
+\textbf{Prompt:} Comprobación de la implementación de SHAP para Random Forest, XGBoost, LightGBM y CatBoost mediante TreeExplainer, manteniendo las variables originales sin escalar.
+
+\textbf{Uso posterior:} implementación de SHAP para modelos basados en árboles.
+
+\subsection*{Interacción 7}
+
+\textbf{Herramienta:} Claude Sonnet 4.6.
+
+\textbf{Fecha aproximada:} abril de 2026.
+
+\textbf{Prompt:} Optimizar \texttt{KernelExplainer} mediante muestreo de datos, tanto para el conjunto de fondo como para el conjunto de prueba, para reducir el coste computacional del cálculo de SHAP.
+
+\textbf{Uso posterior:} optimización de código.
+
+\subsection*{Interacción 8}
+
+\textbf{Herramienta:} Claude Sonnet 4.6.
+
+\textbf{Fecha aproximada:} abril de 2026.
+
+\textbf{Prompt:} Diseñar una función para manejar modelos cargados desde ficheros .pkl, algunos de ellos empaquetados dentro de un Pipeline de Scikit-Learn, separando dinámicamente el escalador cuando existiera y extrayendo el estimador final para su uso con SHAP.
+
+\textbf{Uso posterior:} ideación y apoyo en código.
 ```

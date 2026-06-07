@@ -47,7 +47,7 @@ de modo que cualquier persona con acceso acreditado a las bases originales pueda
 Las diferencias de tamaño entre ventanas de la misma base responden a los criterios de inclusión: la ventana larga exige una duración de estancia superior a 48\,h, las ventanas corta y media 
 requieren únicamente más de 24\,h, pero las variables calculadas sobre apenas 3\,h de observación implican mayor presencia de datos ausentes en analíticas con baja frecuencia de extracción, 
 lo que reduce la cohorte elegible. El menor número de variables en los CSV de eICU refleja que la validación externa se realizó únicamente con las variables seleccionadas por los modelos 
-evaluados externamente, no con el conjunto completo de 82 predictores candidatos de MIMIC-IV.
+evaluados externamente, no con el conjunto completo de variables clínicas, administrativas y de etiquetado generadas para MIMIC-IV.
  
 \subsection*{Variables incluidas en los conjuntos MIMIC-IV}
  
@@ -56,6 +56,10 @@ Cada uno de los tres ficheros MIMIC contiene exactamente 82 columnas, distribuid
 La diferencia entre las 82 columnas totales y las 76 variables sobre las que se realizó el análisis de correlación y selección se debe a seis columnas no predictoras: los tres
 identificadores (\texttt{subject\_id}, \texttt{hadm\_id}, \texttt{stay\_id}), las dos columnas de la variable objetivo (\texttt{etiqueta\_norad\_*} y \texttt{horas\_hasta\_norad}) y la
 diuresis en volumen bruto (\texttt{diuresis\_volumen\_6h}), excluida por ser redundante con la diuresis normalizada por peso (\texttt{diuresis\_ml\_kg\_6h}), que sí se conservó como predictor.
+
+Debe matizarse que la variable \texttt{tiene\_sepsis} formó parte de los conjuntos clínicos generados y fue considerada en fases exploratorias iniciales del desarrollo, dada su relevancia 
+fisiopatológica para el inicio de soporte vasopresor. Sin embargo, en el flujo experimental consolidado no se mantuvo como predictor principal ni formó parte de los modelos finales. 
+Su uso definitivo quedó restringido a la estratificación de la cohorte y al análisis de rendimiento diferencial en pacientes con y sin sepsis, tal como se describe en la memoria.
  
 \begin{table}[htbp]
   \centering
@@ -197,9 +201,10 @@ ventana, y 0 en caso contrario. La tabla~\ref{tab:distribucion-etiqueta} muestra
   }
 \end{table}
  
-La proporción de positivos oscila entre el 9,8\% y el 14,4\%, lo que indica un desbalanceo moderado consistente con la prevalencia real del evento en UCI \citep{firzli2023}. El conjunto eICU 
-de 3\,h presenta la mayor proporción de positivos (14,4\%). La columna \texttt{horas\_hasta\_norad} registra el tiempo transcurrido entre el inicio de la ventana de observación y la primera 
-administración de noradrenalina; esta columna es \texttt{NA} para todos los pacientes con etiqueta 0, ya que el evento no tuvo lugar.
+La proporción de positivos en las cohortes filtradas oscila entre el 9,8 \% y el 14,4 \%, lo que indica un desbalanceo moderado. Estos valores reflejan el diseño de caso completo y el 
+enriquecimiento derivado del filtro de completitud, por lo que no deben interpretarse como una estimación directa de la prevalencia real del inicio de noradrenalina en UCI. 
+El conjunto eICU de 3 h presenta la mayor proporción de positivos (14,4 \%). La columna \texttt{horas\_hasta\_norad} registra el tiempo transcurrido entre el inicio de la ventana de observación 
+y la primera administración de noradrenalina; esta columna es NA para todos los pacientes con etiqueta 0, ya que el evento no tuvo lugar.
  
 \subsection*{Valores perdidos y estrategia de no-imputación}
 
@@ -260,11 +265,23 @@ Con el fin de caracterizar la cohorte de desarrollo (MIMIC-IV) y compararla con 
   {\footnotesize \textsuperscript{*}Calculada únicamente sobre los casos positivos.}
 \end{table}
 
-La comparación revela que ambas cohortes son demográficamente similares en edad y sexo, con diferencias estadísticamente significativas pero de escasa magnitud clínica. La diferencia más relevante se observa en la gravedad: la cohorte de eICU-CRD presenta de forma sistemática un SOFA máximo superior al de MIMIC-IV en las tres ventanas (mediana 7 frente a 4--5; $p<0,001$), así como una mayor proporción de primeras estancias en UCI. Esta mayor gravedad basal de la cohorte externa es coherente con su mayor prevalencia del evento en las ventanas corta y media, y constituye un ejemplo de desplazamiento de distribución (\textit{dataset shift}) entre centros que conviene tener presente al interpretar la transferencia de los modelos. El tiempo hasta el inicio de noradrenalina, en cambio, fue comparable entre cohortes dentro de cada ventana, lo que sugiere una dinámica temporal del evento similar en ambas bases.
+La comparación revela que ambas cohortes son demográficamente similares en edad y sexo, con diferencias estadísticamente significativas pero de escasa magnitud clínica. 
+La diferencia más relevante se observa en la gravedad: la cohorte de eICU-CRD presenta de forma sistemática un SOFA máximo superior al de MIMIC-IV en las tres ventanas 
+(mediana 7 frente a 4--5; $p<0,001$), así como una mayor proporción de primeras estancias en UCI. Esta mayor gravedad basal de la cohorte externa es coherente con su mayor prevalencia 
+del evento en las ventanas corta y media, y constituye un ejemplo de desplazamiento de distribución (\textit{dataset shift}) entre centros que conviene tener presente al interpretar la
+ transferencia de los modelos. En las ventanas corta y media el tiempo hasta noradrenalina fue comparable entre cohortes; en la ventana larga se observó una diferencia estadísticamente 
+ significativa, aunque con solapamiento de los rangos intercuartílicos. Por tanto, la dinámica temporal fue parcialmente similar, pero no idéntica.
 
-Conviene precisar que las cohortes se definen a nivel de estancia en UCI (\texttt{stay\_id}). En la cohorte de desarrollo, el número de estancias es muy próximo al de pacientes únicos en las tres ventanas: 1\,667 estancias de 1\,645 pacientes en la corta (1,01 estancias por paciente), 3\,282 de 3\,198 en la media (1,03) y 4\,088 de 3\,918 en la larga (1,04). Esta escasa presencia de pacientes con múltiples ingresos indica un bajo riesgo de dependencia entre estancias. Aun así, la validación cruzada se estratificó con agrupamiento por paciente para garantizar que ninguna persona apareciera simultáneamente en los conjuntos de entrenamiento y prueba.
+Conviene precisar que las cohortes se definen a nivel de estancia en UCI (\texttt{stay\_id}). En la cohorte de desarrollo, el número de estancias es muy próximo al de pacientes únicos en las 
+tres ventanas: 1\,667 estancias de 1\,645 pacientes en la corta (1,01 estancias por paciente), 3\,282 de 3\,198 en la media (1,03) y 4\,088 de 3\,918 en la larga (1,04). Esta escasa 
+presencia de pacientes con múltiples ingresos indica un bajo riesgo de dependencia entre estancias. Aun así, la validación cruzada se estratificó con agrupamiento por paciente para garantizar
+ que ninguna persona apareciera simultáneamente en los conjuntos de entrenamiento y prueba.
 
-El análisis de la distribución de los predictores confirma esta lectura: las variables fisiológicas presentan rangos y medianas ampliamente solapados entre MIMIC-IV y eICU-CRD, lo que respalda la viabilidad de aplicar sobre la cohorte externa un modelo entrenado en MIMIC-IV. La diferencia más marcada vuelve a recaer en el SOFA máximo, desplazado hacia valores superiores en eICU-CRD, en consonancia con la mayor gravedad de esa cohorte. Las figuras~\ref{fig:eda-medio} y~\ref{fig:eda-largo} muestran esta comparación para los predictores de los modelos evaluados externamente (XGBoost en las ventanas media y larga), mientras que las figuras~\ref{fig:eda-medio-cat}, \ref{fig:eda-largo-cat} y~\ref{fig:eda-corta} recogen la comparación para los conjuntos de variables de los modelos comparativos (CatBoost en las ventanas media y larga, y la ventana corta).
+El análisis de la distribución de los predictores confirma esta lectura: las variables fisiológicas presentan rangos y medianas ampliamente solapados entre MIMIC-IV y eICU-CRD, lo que respalda 
+la viabilidad de aplicar sobre la cohorte externa un modelo entrenado en MIMIC-IV. La diferencia más marcada vuelve a recaer en el SOFA máximo, desplazado hacia valores superiores en eICU-CRD, 
+en consonancia con la mayor gravedad de esa cohorte. Las figuras~\ref{fig:eda-medio} y~\ref{fig:eda-largo} muestran esta comparación para los predictores de los modelos evaluados externamente 
+(XGBoost en las ventanas media y larga), mientras que las figuras~\ref{fig:eda-medio-cat}, \ref{fig:eda-largo-cat} y~\ref{fig:eda-corta} recogen la comparación para los conjuntos de variables 
+de los modelos comparativos (CatBoost en las ventanas media y larga, y la ventana corta).
 
 \begin{figure}[htbp]
   \centering
