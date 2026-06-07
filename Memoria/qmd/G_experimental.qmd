@@ -39,8 +39,9 @@ los análisis que se incorporaron al flujo final como aquellos que se exploraron
 \subsubsection*{Fase 1: caracterización inicial y reducción de redundancia}
 
 La primera fase tuvo como objetivo caracterizar el conjunto de predictores candidatos y reducir su redundancia. Se establecieron los modelos de referencia (\textit{baseline}) sobre los seis 
-algoritmos y se aplicó el tratamiento de valores extremos mediante winsorización al percentil 2--98 sobre las variables clínicas continuas. A continuación se realizó un análisis de 
-correlación de Spearman entre las variables candidatas, filtrando previamente a una única estancia por paciente para evitar dependencias entre observaciones.
+algoritmos y se aplicó el tratamiento de valores extremos mediante winsorización al percentil 2--98 sobre las variables clínicas continuas. A continuación se realizó un análisis de correlación 
+entre las variables candidatas, filtrando previamente a una única estancia por paciente para evitar dependencias entre observaciones. Se empleó el coeficiente de correlación de Spearman, basado 
+en rangos, en lugar del de Pearson, por la asimetría y los valores extremos característicos de los datos clínicos.
 
 De forma exploratoria, también se calcularon factores de inflación de la varianza (VIF) para valorar posibles problemas de multicolinealidad multivariante entre predictores. No obstante, este 
 análisis no se incorporó como criterio formal de eliminación, ya que añadía complejidad interpretativa y resultaba menos alineado con el objetivo final de seleccionar variables clínicamente 
@@ -65,8 +66,10 @@ para comprobar si la dirección de asociación era compatible con la interpretac
 noradrenalina, mientras que una OR inferior a 1 indica una asociación inversa, siempre interpretada según el sentido clínico de la variable. Así, una OR inferior a 1 puede ser coherente en 
 variables donde valores más bajos implican peor situación clínica, como la presión arterial media o el bicarbonato.
 
-Un ejemplo de variable clínicamente relevante pero con señal ajustada débil fue el lactato (\texttt{lactato\_max}). Pese a ser uno de los marcadores de hipoperfusión tisular mejor establecidos, 
-su asociación con la variable objetivo se diluía en algunos análisis multivariantes, probablemente por solapamiento con otros indicadores de gravedad, perfusión y disfunción orgánica.
+Un ejemplo claro fue el del lactato (\texttt{lactato\_max}). Pese a ser uno de los marcadores de hipoperfusión tisular mejor establecidos y mostrar la dirección esperada de forma aislada 
+(medianas de 2,35 frente a 1,9 en la ventana media), su efecto se volvía prácticamente nulo al ajustarlo junto al resto de predictores en dicha ventana (OR ajustada $\approx$ 1,0, no 
+significativa), al quedar su información recogida por otras variables de gravedad y perfusión como el SOFA, la presión arterial media o el índice de oxigenación. En la ventana larga, además, su 
+asociación ajustada llegaba a invertirse de forma incoherente. Por una u otra razón —redundancia o dirección no defendible según la ventana— el lactato no se incorporó a los modelos finales.
 
 Un segundo caso, de naturaleza distinta, resultó lo bastante llamativo como para motivar un experimento específico: el de la transaminasa \texttt{gpt\_max}. En el modelo de regresión logística
 multivariante, esta variable resultaba estadísticamente significativa pero con un OR inferior a uno, es decir, una asociación ajustada aparentemente protectora según la cual un valor más alto 
@@ -87,9 +90,10 @@ versiones sucesivas, hasta fijar la configuración definitiva de predictores por
 
 Como comprobación final, se revisó la dirección de asociación de las variables retenidas mediante regresión logística multivariante ajustada. Esta revisión se basó en la OR ajustada de cada 
 predictor y en las medianas observadas en pacientes positivos y negativos. El objetivo no era inferir causalidad, sino comprobar que el patrón estadístico observado fuera compatible con la 
-fisiopatología esperada. Así, se consideró coherente que variables como \texttt{sofa\_max}, \texttt{lactato\_max} o \texttt{fio2\_max} tendieran a asociarse con mayor riesgo cuando aumentaban, 
-mientras que variables como \texttt{map\_min}, \texttt{pf\_min}, \texttt{bicarbonato\_min} o \texttt{spo2\_min} podían mostrar una asociación inversa, al representar situaciones
-en las que valores más bajos indican mayor deterioro clínico.
+fisiopatología esperada. Así, se confirmó que variables como \texttt{sofa\_max} se asociaban a un mayor riesgo a medida que aumentaban (OR ajustada $\approx$ 1,30), mientras que variables como 
+\texttt{pf\_min} mostraban una asociación inversa (OR ajustada $\approx$ 0,69), coherente con el hecho de que un índice de oxigenación más bajo refleja un mayor deterioro respiratorio. Otras 
+variables, como la presión arterial media (\texttt{map\_min}), el bicarbonato (\texttt{bicarbonato\_min}) o la SpO$_2$ (\texttt{spo2\_min}), mostraban igualmente una asociación inversa coherente, 
+al representar situaciones en las que los valores más bajos indican mayor gravedad.
 
 Esta verificación evitó incorporar a los modelos finales variables cuya relación ajustada con el evento, aun siendo estadísticamente significativa, resultara contraria a la lógica clínica o 
 difícil de defender. Por tanto, la OR se utilizó como herramienta de auditoría de la dirección de asociación, complementaria a la importancia por permutación, al análisis univariante y a la 
@@ -126,8 +130,76 @@ Para localizar la noradrenalina se seleccionaron los registros cuyo nombre conte
 registros cuyo nombre contenía el término \texttt{volume}, con el fin de evitar falsos positivos asociados a anotaciones de volumen o de soluciones de reposición que no se corresponden con una 
 perfusión vasopresora activa. El instante de inicio se obtuvo como el mínimo de los desplazamientos temporales de perfusión (\texttt{infusionoffset}) por estancia (\texttt{patientunitstayid}).
 
+Una vez identificado el primer inicio de noradrenalina, el etiquetado de cada estancia se definió en función del momento de dicho inicio respecto a la ventana de observación. Se asignó la 
+etiqueta positiva a las estancias cuyo primer inicio de noradrenalina se producía dentro del horizonte de predicción correspondiente (por ejemplo, entre las 6 y las 24 horas en la ventana media),
+ y la etiqueta negativa al resto. Resultó esencial excluir de la cohorte las estancias en las que la noradrenalina se había iniciado durante la propia ventana de observación, es decir, antes 
+ del comienzo del horizonte de predicción, ya que en esos pacientes el evento era anterior al instante desde el que el modelo debe predecir y su inclusión habría supuesto una fuga de 
+ información temporal. De este modo, solo se conservaron las estancias sin noradrenalina previa: las que nunca la recibieron y las que la iniciaron a partir del comienzo del horizonte de
+  predicción. Este mismo criterio temporal se aplicó de forma análoga en eICU-CRD.
+
 Esta doble definición, adaptada a las particularidades de cada fuente, permitió construir una variable objetivo homogénea en su significado clínico, el primer inicio de noradrenalina dentro del 
 horizonte de predicción, y, por ende, comparable entre la cohorte de desarrollo y la de validación externa.
+
+\subsection*{Cálculo de la puntuación SOFA en cada base de datos}
+
+La puntuación SOFA se incorporó como variable de gravedad (\texttt{sofa\_max}) y como referencia clínica basal de comparación. Su cálculo, sin embargo, difirió entre ambas bases de datos, lo que constituye una fuente de heterogeneidad que conviene documentar.
+
+En \textbf{MIMIC-IV} no se reimplementó la puntuación, sino que se empleó la tabla derivada oficial \texttt{mimiciv\_derived.sofa} del repositorio de \textit{concepts} del MIT 
+(\texttt{MIT-LCP/mimic-code}), generada sobre la instancia local antes de construir la cohorte. Dicha tabla produce una fila por hora y estancia con el SOFA acumulado de las 24 horas previas, 
+de la que se tomaron los estadísticos sobre la ventana de observación. De forma esquemática, el procedimiento del MIT sigue la lógica:
+
+\begin{verbatim}
+para cada hora de la estancia:
+    respiratorio   = puntua(PaO2/FiO2, soporte ventilatorio)
+    cardiovascular = puntua(PAM, dosis de vasopresores)
+    hepatico       = puntua(bilirrubina)
+    coagulacion    = puntua(plaquetas)
+    renal          = puntua(creatinina, diuresis)
+    neurologico    = puntua(escala de Glasgow)
+    SOFA_hora = suma de los seis componentes (0-4 cada uno)
+SOFA_24h = SOFA agregado sobre la ventana de 24 horas previas
+\end{verbatim}
+
+En \textbf{eICU-CRD} no se dispone de una tabla derivada equivalente, por lo que la puntuación se calculó \textit{ad hoc} mediante consultas SQL sobre la ventana de observación, replicando la 
+misma definición por componentes a partir de las variables disponibles:
+
+\begin{verbatim}
+respiratorio   : segun PaO2/FiO2  (<100->4, <200->3, <300->2, <400->1)
+cardiovascular : vasopresores presentes -> 2-3
+                 si no, segun PAM (<70 -> 1, resto -> 0)
+hepatico       : segun bilirrubina (>=12->4, >=6->3, >=2->2, >=1.2->1)
+coagulacion    : segun plaquetas (<20->4, <50->3, <100->2, <150->1)
+renal          : segun creatinina (>=5->4, >=3.5->3, >=2->2, >=1.2->1)
+neurologico    : segun escala de Glasgow
+SOFA = suma de los seis componentes
+\end{verbatim}
+
+Las diferencias principales radican en la granularidad temporal y en dos componentes concretos. En el cardiovascular, mientras que la tabla del MIT pondera las dosis de vasopresores, la versión 
+sobre eICU-CRD lo aproxima a partir de la mera presencia de fármacos vasoactivos y de la presión arterial media, al no disponerse de las dosis ponderadas por peso con la misma fiabilidad. 
+En el respiratorio, la versión sobre eICU-CRD asigna la puntuación únicamente en función del cociente PaO$_2$/FiO$_2$, sin condicionarla a la presencia de soporte ventilatorio como hace la 
+implementación del MIT. Estas diferencias metodológicas son coherentes con la mayor gravedad basal observada en la cohorte de eICU-CRD y deben tenerse presentes al interpretar el SOFA como 
+referencia comparativa entre bases.
+
+\subsection*{Identificación de la sepsis (Sepsis-3)}
+
+La presencia de sepsis (\texttt{tiene\_sepsis}), empleada para el análisis de subgrupos en MIMIC-IV, se obtuvo igualmente de la tabla derivada \texttt{mimiciv\_derived.sepsis3} del repositorio del MIT, sin reimplementar el algoritmo. Dicho \textit{concept} aplica los criterios Sepsis-3, que combinan la sospecha de infección con la presencia de disfunción orgánica medida mediante el SOFA. De forma esquemática:
+
+\begin{verbatim}
+sospecha de infeccion:
+    coincidencia temporal entre una toma de cultivo y
+    la administracion de un antibiotico
+    (ventana de 24 h si el antibiotico precede al cultivo;
+     de 72 h si el cultivo precede al antibiotico)
+
+disfuncion organica:
+    SOFA >= 2 en la ventana asociada a la sospecha de infeccion
+
+Sepsis-3 = sospecha de infeccion Y SOFA >= 2
+\end{verbatim}
+
+En este trabajo, una estancia se etiquetó como séptica cuando la tabla \texttt{sepsis3} la identificaba como tal y el instante de sospecha de infección caía dentro de la ventana de observación 
+correspondiente (las primeras 3, 6 o 12 horas según la ventana). Esta definición, homogénea y reproducible, es la que no pudo trasladarse a eICU-CRD por las limitaciones de su tabla de 
+microbiología descritas más adelante.
 
 \section{Parametrización}
 
@@ -340,10 +412,47 @@ análisis exploratorio, definición de ventanas temporales, selección de variab
 Esta organización permitió conservar versiones sucesivas del trabajo experimental, documentar decisiones descartadas y mantener una separación clara entre el desarrollo de modelos, la validación
 externa y la aplicación final de visualización.
 
+\subsubsection*{Diseño de la validación externa}
+
+La validación externa sobre eICU-CRD se planteó como una evaluación de la capacidad de generalización de los modelos entrenados en MIMIC-IV, sin reentrenamiento sobre la cohorte externa. 
+Para cada ventana se aplicaron los modelos preseleccionados y se compararon frente a la puntuación SOFA empleada como predictor aislado, tomada como referencia clínica basal. Los intervalos de 
+confianza al 95\,\% de todas las métricas se estimaron mediante \textit{bootstrap} con mil remuestreos y semilla fija, y la significación de la diferencia de AUC-ROC entre cada modelo y el SOFA 
+se evaluó mediante un contraste pareado basado en esos mismos remuestreos. Los resultados de esta validación, incluidas las métricas con sus intervalos de confianza y los diagramas SHAP sobre 
+la cohorte externa, se presentan y discuten en la memoria.
+
+El análisis de rendimiento por subgrupos según la presencia de sepsis, realizado sobre MIMIC-IV, no se replicó en eICU-CRD. La estratificación en la cohorte de desarrollo se basó en la 
+definición Sepsis-3 proporcionada por las tablas derivadas del MIT, que aplica criterios fisiológicos homogéneos y reproducibles a partir de la combinación de sospecha de infección 
+(cultivos y antibióticos) y disfunción orgánica. La aplicación de esta misma definición sobre eICU-CRD no resultó viable, ya que su tabla de microbiología está escasamente poblada debido a 
+la limitada disponibilidad de interfaces de microbiología en los centros participantes, lo que impide identificar de forma fiable la sospecha de infección que requiere el algoritmo. 
+La alternativa habría sido recurrir a los códigos diagnósticos (CIE) introducidos manualmente por el personal de cada centro, una fuente sujeta a variabilidad de codificación y a errores, en 
+la que enfermedades clínicamente próximas pero no equivalentes pueden recibir códigos similares. Al no ser ninguna de las dos opciones metodológicamente equivalente al análisis realizado en 
+MIMIC-IV, se optó por no incluir la estratificación por sepsis en la validación externa para no comprometer la comparabilidad.
+
+\subsubsection*{Encuesta de evaluación de usabilidad}
+
+Para valorar la usabilidad y la comprensión del prototipo de \textit{dashboard} se diseñó una breve encuesta de satisfacción dirigida al personal facultativo del servicio de Medicina Intensiva 
+del Hospital Universitario de Burgos (HUBU). La encuesta era anónima, no recogía datos de carácter personal y sus resultados se trataron de forma estrictamente confidencial y agregada. 
+Se administró a los facultativos después de que utilizaran el prototipo con ayuda del manual de usuario proporcionado, y fue completada por ocho intensivistas.
+
+El instrumento constaba de tres ítems, cada uno puntuado en una escala de 1 a 10, donde 1 significaba «Completamente en desacuerdo» y 10 «Completamente de acuerdo». Las afirmaciones evaluadas, 
+una por cada dimensión de interés, fueron las siguientes:
+
+\begin{itemize}
+  \item \textbf{Entendimiento del prototipo:} «Logro comprender el funcionamiento general y la interfaz del prototipo con el manual proporcionado».
+  \item \textbf{Explicabilidad:} «Entiendo conceptualmente qué significan los valores SHAP y cómo justifican el riesgo estimado de cada paciente».
+  \item \textbf{Utilidad clínica:} «Considero que este prototipo es una herramienta útil y con potencial para la práctica clínica futura en la UCI».
+\end{itemize}
+
+Estas tres dimensiones —comprensión de la interfaz, comprensión de la interpretabilidad basada en SHAP y utilidad clínica percibida— buscaban capturar tanto la facilidad de uso del prototipo 
+como la claridad de las explicaciones que ofrece y su potencial aplicabilidad. Los resultados individuales y promedio de esta evaluación se recogen y discuten en la memoria.
+
 \section{Resultados}
 
-Los resultados principales de discriminación e interpretabilidad de los modelos conservados se presentan en la memoria. En este anexo se recogen únicamente resultados experimentales complementarios
- que justifican decisiones internas del flujo de trabajo, como el desempate entre estadísticos, la selección final de variables para el prototipo y las pruebas de recalibración probabilística.
+Las métricas de rendimiento de evaluación interna de todos los modelos (AUC-ROC, AUC-PR, Brier score, BSS, ECE y \textit{LogLoss} con sus desviaciones típicas), así como las curvas 
+\textit{out-of-fold} y los diagramas SHAP de los modelos seleccionados, se presentan y discuten en el capítulo de resultados de la memoria. Para evitar duplicidades, este anexo no las reproduce,
+ sino que recoge los resultados experimentales complementarios que justifican decisiones internas del flujo de trabajo y que no tienen cabida en el cuerpo principal: el desempate entre 
+ estadísticos, la selección final de variables por ventana y algoritmo y las pruebas de recalibración probabilística. Las gráficas individuales de rendimiento e interpretabilidad de cada
+  combinación de ventana y algoritmo, incluidas las de los modelos finalmente descartados, se encuentran disponibles en el repositorio del proyecto.
 
 \begin{table}[htbp]
   \centering
@@ -374,20 +483,74 @@ Los resultados principales de discriminación e interpretabilidad de los modelos
   }
 \end{table}
 
+\subsection*{Variables finales por ventana y algoritmo}
+
 \begin{table}[htbp]
   \centering
-  \caption{variables utilizadas por los modelos finalmente conservados para el prototipo de \textit{dashboard}.}
-  \label{tab:variables-dashboard-finales}
+  \small
+  \caption{variables finales seleccionadas para cada ventana temporal y familia de modelo.}
+  \label{tab:variables-finales-ventana-modelo}
   \resizebox{\textwidth}{!}{%
-  \begin{tabular}{lll}
+  \begin{tabular}{p{0.16\textwidth}p{0.13\textwidth}p{0.64\textwidth}}
     \toprule
-    Ventana & Modelo & Variables \\
+    Ventana & Modelo & Variables seleccionadas \\
     \midrule
-    Media (6--24 h) & XGBoost recalibrado &
+
+    Corta (3--12 h) & RF &
+    \texttt{temp\_min}, \texttt{rr\_max} \\
+
+    Corta (3--12 h) & XGBoost &
+    \texttt{pf\_min}, \texttt{map\_min}, \texttt{diuresis\_ml\_kg\_3h}, \texttt{sofa\_max} \\
+
+    Corta (3--12 h) & LightGBM &
+    \texttt{map\_min}, \texttt{pf\_min}, \texttt{sofa\_max} \\
+
+    Corta (3--12 h) & CatBoost &
+    \texttt{map\_min}, \texttt{pf\_min}, \texttt{sofa\_max}, \texttt{tp\_max} \\
+
+    Corta (3--12 h) & Naive Bayes &
+    \texttt{map\_min}, \texttt{temp\_min}, \texttt{spo2\_min} \\
+
+    \midrule
+
+    Media (6--24 h) & Regresión logística &
+    \texttt{pf\_min}, \texttt{diuresis\_ml\_kg\_6h}, \texttt{rr\_max}, \texttt{sofa\_max}, \texttt{hr\_media}, \texttt{ventilacion\_invasiva\_6h} \\
+
+    Media (6--24 h) & RF &
+    \texttt{pf\_min}, \texttt{map\_min}, \texttt{diuresis\_ml\_kg\_6h}, \texttt{rr\_max}, \texttt{spo2\_min}, \texttt{hr\_media}, \texttt{glucemia\_min}, \texttt{ventilacion\_invasiva\_6h} \\
+
+    Media (6--24 h) & XGBoost &
     \texttt{pf\_min}, \texttt{map\_min}, \texttt{diuresis\_ml\_kg\_6h}, \texttt{hr\_media}, \texttt{sofa\_max}, \texttt{ventilacion\_invasiva\_6h} \\
+
+    Media (6--24 h) & LightGBM &
+    \texttt{map\_min}, \texttt{pf\_min}, \texttt{diuresis\_ml\_kg\_6h}, \texttt{spo2\_min}, \texttt{ventilacion\_invasiva\_6h} \\
+
+    Media (6--24 h) & CatBoost &
+    \texttt{map\_min}, \texttt{pf\_min}, \texttt{diuresis\_ml\_kg\_6h}, \texttt{hr\_media}, \texttt{rr\_max}, \texttt{glucemia\_min}, \texttt{ventilacion\_invasiva\_6h} \\
+
+    Media (6--24 h) & Naive Bayes &
+    \texttt{pf\_min}, \texttt{diuresis\_ml\_kg\_6h}, \texttt{rr\_max}, \texttt{lactato\_max}, \texttt{sofa\_max}, \texttt{hr\_media}, \texttt{ventilacion\_invasiva\_6h} \\
+
     \midrule
+
+    Larga (12--48 h) & Regresión logística &
+    \texttt{temp\_min}, \texttt{pf\_min}, \texttt{spo2\_min}, \texttt{bicarbonato\_min}, \texttt{rr\_max}, \texttt{map\_min} \\
+
+    Larga (12--48 h) & RF &
+    \texttt{temp\_min}, \texttt{spo2\_min}, \texttt{bicarbonato\_min}, \texttt{rr\_max}, \texttt{map\_min}, \texttt{glucemia\_min}, \texttt{sofa\_max}, \texttt{diuresis\_ml\_kg\_12h}, \texttt{bilirrubina\_media} \\
+
     Larga (12--48 h) & XGBoost &
     \texttt{temp\_min}, \texttt{pf\_min}, \texttt{spo2\_min}, \texttt{bicarbonato\_min}, \texttt{map\_min}, \texttt{glucemia\_min}, \texttt{sofa\_max} \\
+
+    Larga (12--48 h) & LightGBM &
+    \texttt{temp\_min}, \texttt{spo2\_min}, \texttt{bicarbonato\_min}, \texttt{rr\_max}, \texttt{glucemia\_min}, \texttt{sofa\_max}, \texttt{diuresis\_ml\_kg\_12h}, \texttt{map\_min}, \texttt{pf\_min} \\
+
+    Larga (12--48 h) & CatBoost &
+    \texttt{pf\_min}, \texttt{temp\_min}, \texttt{diuresis\_ml\_kg\_12h}, \texttt{bicarbonato\_min}, \texttt{rr\_max}, \texttt{glucemia\_min} \\
+
+    Larga (12--48 h) & Naive Bayes &
+    \texttt{temp\_min}, \texttt{pf\_min}, \texttt{spo2\_min}, \texttt{rr\_max}, \texttt{map\_min} \\
+
     \bottomrule
   \end{tabular}%
   }
@@ -395,7 +558,9 @@ Los resultados principales de discriminación e interpretabilidad de los modelos
 
 \subsection*{Resultados de los experimentos de recalibración}
 
-Como complemento a la selección de modelos, se revisó de forma específica la calibración probabilística de varios modelos candidatos. Las figuras siguientes muestran las comparaciones realizadas mediante predicciones \textit{out-of-fold}, enfrentando las probabilidades originales del modelo frente a versiones recalibradas mediante Platt e isotónica. La revisión conjunta de las curvas de calibración, el ECE y el BSS permitió decidir si la recalibración aportaba una mejora real o si, por el contrario, empeoraba el rendimiento probabilístico.
+Como complemento a la selección de modelos, se revisó de forma específica la calibración probabilística de varios modelos candidatos. Las figuras siguientes muestran las comparaciones realizadas
+ mediante predicciones \textit{out-of-fold}, enfrentando las probabilidades originales del modelo frente a versiones recalibradas mediante Platt e isotónica. La revisión conjunta de las curvas 
+ de calibración, el ECE y el BSS permitió decidir si la recalibración aportaba una mejora real o si, por el contrario, empeoraba el rendimiento probabilístico.
 
 \begin{figure}[htbp]
   \centering
@@ -435,5 +600,41 @@ Como complemento a la selección de modelos, se revisó de forma específica la 
 En conjunto, estos experimentos mostraron que la recalibración no debía incorporarse como paso automático del flujo. En varios modelos, las versiones recalibradas reducían de forma limitada el 
 ECE, empeoraban el BSS o comprimían excesivamente la distribución de probabilidades. Por ello, solo se conservó la versión recalibrada de XGBoost en la ventana media (6--24 h), al ofrecer un 
 equilibrio más adecuado entre calibración y utilidad probabilística.
+
+\subsection*{Rendimiento de los modelos no seleccionados (ventana media)}
+
+Como complemento al registro de experimentos, y dado que la memoria presenta únicamente las curvas de los modelos seleccionados o discutidos, las figuras siguientes recogen las curvas de 
+rendimiento \textit{out-of-fold} (ROC, precisión-recall y calibración) de los cuatro modelos de la ventana media que no fueron seleccionados para el prototipo: regresión logística, Random Forest,
+ LightGBM y Naive Bayes. Su inclusión permite documentar de forma transparente el comportamiento de las alternativas descartadas frente a los modelos finalmente conservados (XGBoost y CatBoost),
+  que se presentan en la memoria. Se observa cómo, pese a alcanzar una discriminación comparable en algunos casos, estos modelos presentaban una calibración notablemente peor antes de cualquier 
+  ajuste, con curvas alejadas de la diagonal ideal, lo que refuerza las decisiones de selección descritas en los apartados anteriores.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{img/Grafica_OOF_Medio_6_24_LR.png}
+  \caption{curvas de rendimiento \textit{out-of-fold} de la regresión logística en la ventana media (6--24\,h).}
+  \label{fig:oof-medio-lr}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{img/Grafica_OOF_Medio_6_24_RF.png}
+  \caption{curvas de rendimiento \textit{out-of-fold} de Random Forest en la ventana media (6--24\,h).}
+  \label{fig:oof-medio-rf}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{img/Grafica_OOF_Medio_6_24_LGBM.png}
+  \caption{curvas de rendimiento \textit{out-of-fold} de LightGBM en la ventana media (6--24\,h).}
+  \label{fig:oof-medio-lgbm}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{img/Grafica_OOF_Medio_6_24_NB.png}
+  \caption{curvas de rendimiento \textit{out-of-fold} de Naive Bayes en la ventana media (6--24\,h).}
+  \label{fig:oof-medio-nb}
+\end{figure}
 
 ```
