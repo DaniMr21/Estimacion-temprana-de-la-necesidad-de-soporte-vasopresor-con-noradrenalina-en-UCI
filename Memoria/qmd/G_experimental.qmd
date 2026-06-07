@@ -141,7 +141,7 @@ para cada hora de la estancia:
     renal          = puntua(creatinina, diuresis)
     neurologico    = puntua(escala de Glasgow)
     SOFA_hora = suma de los seis componentes (0-4 cada uno)
-SOFA_24h = SOFA agregado sobre la ventana de 24 horas previas
+SOFA = SOFA agregado sobre la ventana
 \end{verbatim}
 
 En \textbf{eICU-CRD} no se dispone de una tabla derivada equivalente, por lo que la puntuación se calculó \textit{ad hoc} mediante consultas SQL sobre la ventana de observación, replicando la 
