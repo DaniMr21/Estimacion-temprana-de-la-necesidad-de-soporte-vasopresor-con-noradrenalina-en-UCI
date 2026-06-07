@@ -8,7 +8,7 @@
 Las herramientas de IA utilizadas como apoyo para el presente trabajo son las siguientes:
 
 \begin{itemize}
-  \item Claude (modelo Sonnet 4.6), de Anthropic \citep{claude2025}.
+  \item Claude (modelo Sonnet 4.6), de Anthropic \citep{claude2026}.
   \item GPT-5.4, de OpenAI \citep{gpt54_2026}.
   \item Gemini 3.5 Flash, de Google \citep{gemini35flash_2026}.
 \end{itemize}
