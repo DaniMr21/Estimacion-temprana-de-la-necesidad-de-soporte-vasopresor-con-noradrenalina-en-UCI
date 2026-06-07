@@ -363,8 +363,8 @@ elif st.session_state.mostrar_manual:
 **Objetivo.** Estimar de manera temprana la probabilidad de la necesidad de soporte vasopresor con noradrenalina en UCI
 
 **Ventanas disponibles.**
-- *Medio:* probabilidad de inicio entre 6 y 24 horas a partir del momento actual.
-- *Largo:* probabilidad de inicio entre 12 y 48 horas a partir del momento actual.
+- *Medio:* estimación del riesgo de inicio de noradrenalina entre las 6 y las 24 horas desde el ingreso en UCI, usando mediciones de las primeras 6 horas.
+- *Largo:* estimación del riesgo de inicio de noradrenalina entre las 12 y las 48 horas desde el ingreso en UCI, usando mediciones de las primeras 12 horas.
 
 **Modo de uso.**
 1. Seleccione la ventana temporal con uno de los botones superiores.
