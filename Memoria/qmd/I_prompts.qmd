@@ -5,120 +5,14 @@
 
 \apendice{Registro de interacciones con sistemas de IA}
 
+Las herramientas de IA utilizadas como apoyo para el presente trabajo son las siguientes:
+
+\begin{itemize}
+  \item Claude (modelo Sonnet 4.6), de Anthropic \citep{claude2025}.
+  \item GPT-5.4, de OpenAI \citep{gpt54_2026}.
+  \item Gemini 3.5 Flash, de Google \citep{gemini35flash_2026}.
+\end{itemize}
+
 \section{Registro de interacciones}
 
-NOTA: la herramienta usada siempre ha sido el modelo Sonnet 4.6 de Claude by Anthropic \citep{claude2026},salvo que se indique lo contrario, a continuación se muestran las interacciones más significativas:
-
-{\small\setlength{\tabcolsep}{4pt}
-\begin{longtable}{@{} p{0.04\linewidth} p{0.14\linewidth} p{0.60\linewidth} p{0.16\linewidth} @{}}
-\toprule
-\textbf{N.\textsuperscript{o}} & \textbf{Fecha} & \textbf{Prompt / consulta} & \textbf{Uso posterior} \\
-\midrule
-\endfirsthead
-\toprule
-\textbf{N.\textsuperscript{o}} & \textbf{Fecha} & \textbf{Prompt / consulta} & \textbf{Uso posterior} \\
-\midrule
-\endhead
-\midrule
-\multicolumn{4}{r}{\footnotesize\itshape continúa en la página siguiente}\\
-\endfoot
-\bottomrule
-\endlastfoot
-1 & Marzo (1.\textsuperscript{a} q.) & ¿Por qué la noradrenalina se llama norepinefrina en EE.UU. y otros países? & Consulta conceptual \\
-\addlinespace
-2 & Marzo (2.\textsuperscript{a} q.) & Revisa esta expresión CASE WHEN en SQL para transformar temperaturas de MIMIC-IV de Fahrenheit a Celsius cuando aparecen mezcladas. & Revisión de código SQL \\
-\addlinespace
-3 & Marzo (2.\textsuperscript{a} q.) & Revisa una consulta SQL de eICU que combina vitalPeriodic y vitalAperiodic para obtener la PAM mínima en una ventana 0--X horas. & Revisión de extracción SQL \\
-\addlinespace
-4 & Marzo (2.\textsuperscript{a} q.) & Comprueba si la lógica de diuresis deja NULL en pacientes sin registros de orina y solo calcula mL/kg cuando hay volumen y peso válidos. & Control de calidad de datos \\
-\addlinespace
-5 & Marzo (2.\textsuperscript{a} q.) & Revisa que el SOFA se calcule usando únicamente filas cuyo endtime cae dentro de la ventana de observación, sin imputarlo a cero si no hay registro. & Prevención de sesgo en variables \\
-\addlinespace
-6 & Marzo (2.\textsuperscript{a} q.) & Qué columnas auxiliares conviene revisar para comprobar que bilirrubina, plaquetas, creatinina, PaO2, FiO2 y GCS están realmente medidos antes del filtrado. & Auditoría de completitud \\
-\addlinespace
-7 & Abril (1.\textsuperscript{a} q.) & Revisa una función de control previo que comprueba valores perdidos, infinitos y tipos de datos antes de entrenar los modelos. & Preprocesamiento \\
-\addlinespace
-8 & Abril (1.\textsuperscript{a} q.) & Ayúdame a estructurar una comparación entre el dataset completo y el dataset limpio: pacientes, positivos, prevalencia y variables eliminadas. & Auditoría de datos \\
-\addlinespace
-9 & Abril (2.\textsuperscript{a} q.) & Revisa una propuesta de organización de la configuración de ventanas Corto\_3\_12, Medio\_6\_24 y Largo\_12\_48 para no duplicar rutas y variables en varios scripts. & Organización del código \\
-\addlinespace
-10 & Abril (2.\textsuperscript{a} q.) & Comprueba cómo verificar que ningún subject\_id aparezca simultáneamente en train y test dentro de cada fold externo. & Prevención de fuga de pacientes \\
-\addlinespace
-11 & Abril (2.\textsuperscript{a} q.) & Revisa una función común para calcular AUC-ROC, AUC-PR, Brier, BSS, ECE, sensibilidad, especificidad y F1 de forma homogénea. & Métricas homogéneas \\
-\addlinespace
-12 & Abril (2.\textsuperscript{a} q.) & Comprueba que el umbral óptimo se elige en train y se evalúa en test sin recalcularlo con datos de test. & Umbral sin fuga de información \\
-\addlinespace
-13 & Abril (2.\textsuperscript{a} q.) & Revisa el planteamiento de un sistema de checkpoint para leer el CSV de resultados y omitir combinaciones ventana-modelo ya evaluadas. & Reanudación de experimentos \\
-\addlinespace
-14 & Abril (2.\textsuperscript{a} q.) & Revisa la comparación entre Platt sin regularización, Platt regularizado e isotónico para detectar posibles errores metodológicos o de fuga. & Revisión de calibración \\
-\addlinespace
-15 & Abril (2.\textsuperscript{a} q.) & Comprueba si el criterio de escoger el menor ECE solo entre calibradores con BSS positivo es coherente y cómo documentarlo. & Selección de calibrador \\
-\addlinespace
-16 & Abril (2.\textsuperscript{a} q.) & Revisa la fórmula del Brier Skill Score comparando el Brier del modelo frente a una predicción nula basada en la prevalencia. & Métrica de calibración \\
-\addlinespace
-17 & Abril (2.\textsuperscript{a} q.) & Revisa si el calibrador isotónico puede sobreajustar con pocos positivos y cómo compararlo con Platt usando ECE, BSS y curvas de calibración. & Control metodológico \\
-\addlinespace
-18 & Abril (2.\textsuperscript{a} q.) & Comprueba cómo calcular pendiente e intercepto de calibración mediante regresión logística sobre el logit de las probabilidades predichas. & Evaluación de calibración \\
-\addlinespace
-19 & Abril (2.\textsuperscript{a} q.) & Revisa el uso de TreeExplainer para modelos de árboles, manteniendo las variables originales sin escalar. & Revisión de SHAP \\
-\addlinespace
-20 & Abril (2.\textsuperscript{a} q.) & Revisa cómo aplicar LinearExplainer a la regresión logística cuando los datos han pasado por el escalador del pipeline. & Revisión de SHAP \\
-\addlinespace
-21 & Abril (2.\textsuperscript{a} q.) & Revisa el planteamiento de KernelExplainer para Naive Bayes con un fondo estratificado que incluya positivos y negativos. & Revisión de SHAP \\
-\addlinespace
-22 & Abril (2.\textsuperscript{a} q.) & Ayúdame a comprobar una función calcular\_shap que decide entre TreeExplainer, LinearExplainer y KernelExplainer según el algoritmo. & Depuración de SHAP \\
-\addlinespace
-23 & Abril (2.\textsuperscript{a} q.) & Revisa un script que recorre ventanas y modelos para cargar cada modelo guardado y guardar los gráficos SHAP globales correspondientes. & Automatización de análisis \\
-\addlinespace
-24 & Abril (2.\textsuperscript{a} q.) & Revisa una forma de resumir importancias SHAP ya calculadas en una tabla o visualización comparativa por variable, algoritmo y ventana. & Comparativa de explicabilidad \\
-\addlinespace
-25 & Mayo (1.\textsuperscript{a} q.) & Cómo estructurar un wrapper de modelo calibrado compatible con predict\_proba sin romper la integración con sklearn. & Revisión de diseño software \\
-\addlinespace
-26 & Mayo (1.\textsuperscript{a} q.) & Revisa cómo evitar duplicar la clase del wrapper calibrado entre entrenamiento y dashboard. & Refactorización \\
-\addlinespace
-27 & Mayo (1.\textsuperscript{a} q.) & Qué metadatos conviene guardar junto al modelo final: variables, calibrador, métricas, ventana y configuración. & Trazabilidad del modelo \\
-\addlinespace
-28 & Mayo (1.\textsuperscript{a} q.) & Comprueba si es correcto explicar con SHAP el modelo base y usar el calibrador solo para transformar la probabilidad final. & Claridad metodológica \\
-\addlinespace
-29 & Mayo (1.\textsuperscript{a} q.) & Revisa el esquema para aplicar en eICU un modelo entrenado en MIMIC-IV sin reentrenamiento y detectar incompatibilidades de variables. & Validación externa \\
-\addlinespace
-30 & Mayo (1.\textsuperscript{a} q.) & Ayúdame a revisar el cálculo de AUC, AUC-PR, Brier, ECE y calibración-in-the-large en la validación externa. & Métricas externas \\
-\addlinespace
-31 & Mayo (1.\textsuperscript{a} q.) & Cómo presentar una comparación entre rendimiento interno en MIMIC-IV y rendimiento externo en eICU-CRD usando diferencias absolutas de métricas. & Comparación interna-externa \\
-\addlinespace
-32 & Mayo (1.\textsuperscript{a} q.) & Revisa una función que detecta si el modelo cargado es un Pipeline y extrae por separado el escalador y el estimador final antes de calcular SHAP. & Depuración de pipeline \\
-\addlinespace
-33 & Mayo (1.\textsuperscript{a} q.) & Revisa qué comprobaciones de forma conviene incluir para verificar que los datos, los valores SHAP y los nombres de variables tienen dimensiones compatibles antes de graficar. & Depuración SHAP \\
-\addlinespace
-34 & Mayo (1.\textsuperscript{a} q.) & Antes de validar en eICU, comprueba que las variables disponibles coinciden exactamente con las variables del modelo entrenado en MIMIC-IV. & Preparación de validación externa \\
-\addlinespace
-35 & Mayo (1.\textsuperscript{a} q.) & Imprime por fold el número de pacientes únicos, estancias, positivos, negativos y prevalencia para auditar la validación cruzada. & Auditoría de particiones \\
-\addlinespace
-36 & Mayo (2.\textsuperscript{a} q.) & Revisa el cálculo de pf\_min en el dashboard a partir de PaO2 y FiO2, evitando divisiones inválidas, infinitos o escalas ambiguas de FiO2. & Ingeniería de variables \\
-\addlinespace
-37 & Mayo (2.\textsuperscript{a} q.) & Comprueba cómo usar los percentiles de riesgo guardados del entrenamiento para posicionar a pacientes nuevos en Streamlit. & Percentiles en dashboard \\
-\addlinespace
-38 & Mayo (2.\textsuperscript{a} q.) & Revisa el diseño de una visualización local con percentil de riesgo, datos básicos del paciente y gráfico horizontal de contribuciones SHAP. & Visualización del dashboard \\
-\addlinespace
-39 & Mayo (2.\textsuperscript{a} q.) & Traduce nombres técnicos de variables a etiquetas clínicas y unidades; por ejemplo, pf\_min como peor PaO2/FiO2. & Lectura clínica \\
-\addlinespace
-40 & Mayo (2.\textsuperscript{a} q.) & Revisa textos explicativos para aclarar que el percentil es riesgo relativo frente a la cohorte de referencia y no una probabilidad clínica directa. & Explicabilidad \\
-\addlinespace
-41 & Mayo (2.\textsuperscript{a} q.) & Revisa cómo podría plantearse una validación previa del CSV del paciente, incluyendo columnas obligatorias, tipos numéricos, escala de FiO2 y valores plausibles antes de aplicar el modelo. & Mejora futura del dashboard \\
-\addlinespace
-42 & Mayo (2.\textsuperscript{a} q.) & Revisa la coherencia de tres CSV ficticios de demostración para comprobar que representan perfiles esperados de bajo, medio y alto riesgo relativo. & Pruebas del dashboard \\
-\addlinespace
-43 & Mayo (2.\textsuperscript{a} q.) & Revisa cómo cambiar rutas absolutas de Windows a rutas relativas basadas en BASE\_DIR para mejorar la portabilidad del repositorio. & Portabilidad \\
-\addlinespace
-44 & Mayo (2.\textsuperscript{a} q.) & Revisa la transformación de resultados ya calculados en una tabla de hiperparámetros finales para XGBoost, LightGBM, Random Forest, CatBoost, regresión logística y Naive Bayes. & Documentación de entrenamiento \\
-\addlinespace
-45 & Mayo (2.\textsuperscript{a} q.) & Revisa la transformación de resultados estadísticos ya obtenidos en una tabla resumen de variables significativas por regresor. & Resultados \\
-\addlinespace
-46 & Mayo (2.\textsuperscript{a} q.) & Revisa una nota de documentación en el código para aclarar que los valores SHAP pertenecen al modelo base y que la calibración solo transforma la probabilidad final. & Claridad metodológica \\
-\addlinespace
-47 & Mayo (2.\textsuperscript{a} q.) & Revisa un texto bajo el gráfico SHAP que aclare que las barras indican contribución al modelo, no causalidad clínica. & Advertencia metodológica \\
-\addlinespace
-48 & Mayo (2.\textsuperscript{a} q.) & (Nano Banana 2) Genérame una imagen según la temática de este proyecto [link repositorio] para meter en el readme, que sea tipo dibujo o logo, no una imagen realista & Imagen decorativa \\
-\end{longtable}
-}
 ```

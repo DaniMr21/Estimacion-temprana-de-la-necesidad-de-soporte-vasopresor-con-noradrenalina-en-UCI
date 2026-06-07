@@ -91,7 +91,8 @@ versiones sucesivas, hasta fijar la configuración definitiva de predictores por
 Como comprobación final, se revisó la dirección de asociación de las variables retenidas mediante regresión logística multivariante ajustada. Esta revisión se basó en la OR ajustada de cada 
 predictor y en las medianas observadas en pacientes positivos y negativos. El objetivo no era inferir causalidad, sino comprobar que el patrón estadístico observado fuera compatible con la 
 fisiopatología esperada. Así, se confirmó que variables como \texttt{sofa\_max} se asociaban a un mayor riesgo a medida que aumentaban (OR ajustada $\approx$ 1,30), mientras que variables como 
-\texttt{pf\_min} mostraban una asociación inversa (OR ajustada $\approx$ 0,69), coherente con el hecho de que un índice de oxigenación más bajo refleja un mayor deterioro respiratorio. Otras 
+\texttt{pf\_min} mostraban una asociación inversa (OR ajustada $\approx$ 0,69): al aumentar el índice de oxigenación el riesgo disminuía y, equivalentemente, sus valores más bajos, que reflejan 
+peor oxigenación y mayor deterioro respiratorio, se asociaban a un mayor riesgo de requerir noradrenalina. Otras 
 variables, como la presión arterial media (\texttt{map\_min}), el bicarbonato (\texttt{bicarbonato\_min}) o la SpO$_2$ (\texttt{spo2\_min}), mostraban igualmente una asociación inversa coherente, 
 al representar situaciones en las que los valores más bajos indican mayor gravedad.
 
