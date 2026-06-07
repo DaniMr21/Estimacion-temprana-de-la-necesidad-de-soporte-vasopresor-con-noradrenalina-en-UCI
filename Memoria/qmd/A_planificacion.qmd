@@ -191,13 +191,15 @@ Cotizaciones empresariales estimadas & 32,30\,\% $\times$ 4.464,68\,€ & 1.442,
 
 \subsubsection*{Costes indirectos y coste total}
 
-No se imputan costes indirectos (electricidad, conexión a internet o espacio de trabajo) de forma separada, al haberse desarrollado el proyecto con recursos personales y sin instalaciones 
-dedicadas; su efecto se considera marginal frente a los costes de personal y se omite de forma deliberada.
+No se imputan costes indirectos como electricidad, conexión a internet o espacio de trabajo de forma separada, al haberse desarrollado el proyecto con recursos personales.
+
+Como único gasto adicional no contemplado inicialmente, se incluye un mes de suscripción a Claude Pro by Anthropic \citep{claude2026} en entre el 15 de abril y el 15 de mayo de 2026 por valor de 22\,€, 
+principalmente como herramienta de corrección de código.
 
 Sumando los costes materiales y de personal, el coste total estimado de ejecución del proyecto es:
 
 \[
-60{,}27 + 5.906{,}77 = 5.967{,}03\ \text{€}
+60{,}27 + 5.906{,}77 + 22 = 5.989{,}03\ \text{€}
 \]
 
 \begin{table}[H]
@@ -210,8 +212,9 @@ Sumando los costes materiales y de personal, el coste total estimado de ejecuci�
 \midrule
 Costes materiales & 60,27\,€ \\
 Coste de personal & 5.906,77\,€ \\
+Costes indirectos & 22\,€ \\
 \midrule
-\textbf{Coste total estimado} & \textbf{5.967,03\,€} \\
+\textbf{Coste total estimado} & \textbf{5.989,03\,€} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -246,5 +249,21 @@ cualquier extensión del trabajo a datos locales o a validación prospectiva req
   \includegraphics[width=0.85\textwidth]{citi_informe.png}
   \caption{informe de finalización del CITI Program con el detalle de módulos y puntuaciones, se censura información de carácter personal.}
   \label{fig:citi-report}
+\end{figure}
+
+A continuación, se adjunta del mismo modo la copia de los acuerdos de uso firmados para el uso de las bases de datos MIMIC-IV y eICU:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{dua_mimic.png}
+  \caption{acuerdo de uso de MIMIC-IV}
+  \label{fig:dua_mimic}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{dua_eicu.png}
+  \caption{acuerdo de uso de eICU-CRD}
+  \label{fig:dua_eicu}
 \end{figure}
 ```
