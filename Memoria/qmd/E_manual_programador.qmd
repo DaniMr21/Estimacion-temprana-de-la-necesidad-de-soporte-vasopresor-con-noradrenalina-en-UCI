@@ -103,10 +103,6 @@ La compilación requiere tener instalado Quarto, una distribución LaTeX compati
 
 \section{Pruebas del sistema}
 
-Al tratarse de un trabajo de investigación de carácter experimental, no se desarrolló una batería completa de pruebas unitarias, pruebas de integración o integración 
-continua propia de un software de producción. La validación del sistema se abordó desde dos perspectivas: validación metodológica de los modelos y comprobación funcional 
-básica del prototipo de \textit{dashboard}.
-
 Desde el punto de vista metodológico, se aplicaron las siguientes estrategias:
 
 \begin{itemize}
@@ -119,7 +115,7 @@ Desde el punto de vista metodológico, se aplicaron las siguientes estrategias:
   \item \textbf{Evaluación exploratoria de usabilidad} del \textit{dashboard} mediante una encuesta a ocho facultativos del servicio de Medicina Intensiva del HUBU.
 \end{itemize}
 
-Además, para el prototipo de \textit{dashboard} se realizaron comprobaciones funcionales básicas:
+Para el prototipo de \textit{dashboard} se realizaron comprobaciones funcionales básicas:
 
 \begin{itemize}
   \item apertura correcta de la aplicación en Streamlit;
@@ -137,9 +133,6 @@ Además, para el prototipo de \textit{dashboard} se realizaron comprobaciones fu
 
 Estas comprobaciones no sustituyen a una validación clínica prospectiva ni a una certificación del software como producto sanitario. Su objetivo fue verificar la coherencia
 técnica del prototipo dentro del alcance académico del TFG.
-
-Los resultados cuantitativos de la validación interna, la validación externa, la calibración, la comparación frente a SOFA y la encuesta de usabilidad se recogen en los 
-capítulos de Resultados y Discusión de la memoria.
 
 \section{Instrucciones para la modificación o mejora del proyecto}
 

@@ -23,9 +23,9 @@ El repositorio público del proyecto se encuentra disponible en: \url{https://gi
 
 \section{Metodología de ingeniería del software}
 
-La metodología seguida durante el desarrollo se describe en detalle en la sección de Metodología de la memoria. En síntesis, se empleó un enfoque experimental e iterativo con un ciclo 
-incremental por versiones, código organizado en módulos funcionales y control de versiones con Git y GitHub. Este enfoque se corresponde con un modelo de desarrollo iterativo e incremental: 
-cada versión del flujo de trabajo se construyó sobre la anterior y se refinó en función de los resultados obtenidos, sin un diseño cerrado definido a priori.
+Se empleó un enfoque experimental e iterativo con un ciclo incremental por versiones, código organizado en módulos funcionales y control de versiones con Git y GitHub. Este enfoque se 
+corresponde con un modelo de desarrollo iterativo e incremental: cada versión del flujo de trabajo se construyó sobre la anterior y se refinó en función de los resultados obtenidos, sin un 
+diseño cerrado definido a priori.
 
 Esta naturaleza iterativa queda reflejada en la propia estructura del repositorio, cuyas sucesivas carpetas de pruebas documentan la evolución del trabajo: desde los primeros ensayos por ventana
 sobre MIMIC-IV, pasando por los refinamientos de la cohorte general, la eliminación de registros incompletos, la restricción de ventanas temporales y el análisis del subgrupo de sepsis, hasta las

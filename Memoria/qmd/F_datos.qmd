@@ -114,7 +114,7 @@ cada caso.
 
   \item \textbf{Temperatura mínima (\texttt{temp\_min}):} Temperatura corporal. Tanto la fiebre como, de forma especialmente relevante, la hipotermia son marcadores de gravedad en el paciente crítico. La hipotermia en el contexto séptico refleja una respuesta desregulada del huésped y disfunción de la termorregulación propia del shock avanzado, y se asocia a peor pronóstico; por ello el valor mínimo de la ventana resulta particularmente informativo \citep{singer2016,vincent2013}.
 
-  \item \textbf{Saturación periférica de oxígeno — SpO$_2$ (\texttt{spo2\_min}):} Estima de forma no invasiva, mediante pulsioximetría, el porcentaje de hemoglobina saturada de oxígeno. Su descenso indica hipoxemia y deterioro del intercambio gaseoso. Conviene un matiz que se discute en la memoria: una SpO$_2$ aparentemente elevada puede coexistir con mayor gravedad si el paciente recibe oxigenoterapia intensiva o ventilación mecánica, ya que en ese caso la cifra observada depende de la FiO$_2$ y del soporte aplicado, no solo del estado pulmonar subyacente \citep{evans2021,vincent2013}.
+  \item \textbf{Saturación periférica de oxígeno — SpO$_2$ (\texttt{spo2\_min}):} Estima de forma no invasiva, mediante pulsioximetría, el porcentaje de hemoglobina saturada de oxígeno. Su descenso indica hipoxemia y deterioro del intercambio gaseoso \citep{evans2021,vincent2013}.
 \end{itemize}
 
 \subsection*{Gasometría y función respiratoria}

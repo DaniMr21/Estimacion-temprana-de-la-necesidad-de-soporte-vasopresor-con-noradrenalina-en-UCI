@@ -329,7 +329,7 @@ pertenecientes a un mismo paciente pudieran aparecer simultáneamente en entrena
 El rendimiento de cada modelo se resumió agregando las métricas obtenidas en las cinco particiones externas: para cada métrica se reporta su media y su desviación típica entre particiones, 
 lo que ofrece una medida de la estabilidad del rendimiento. Conviene precisar que esta desviación, recogida en las tablas de resultados, no procede de un remuestreo \textit{bootstrap}, 
 sino de la variabilidad entre los folds externos de la validación cruzada. El procedimiento \textit{bootstrap} se reservó para la estimación de los intervalos de confianza en la validación 
-externa, descrita en la memoria.
+externa.
 
 \subsubsection*{Predicciones out-of-fold}
 
@@ -430,8 +430,8 @@ una por cada dimensión de interés, fueron las siguientes:
   \item \textbf{Utilidad clínica:} «Considero que este prototipo es una herramienta útil y con potencial para la práctica clínica futura en la UCI».
 \end{itemize}
 
-Estas tres dimensiones —comprensión de la interfaz, comprensión de la interpretabilidad basada en SHAP y utilidad clínica percibida— buscaban capturar tanto la facilidad de uso del prototipo 
-como la claridad de las explicaciones que ofrece y su potencial aplicabilidad. Los resultados individuales y promedio de esta evaluación se recogen y discuten en la memoria.
+Estas tres dimensiones: comprensión de la interfaz, comprensión de la interpretabilidad basada en SHAP y utilidad clínica percibida; buscaban capturar tanto la facilidad de uso del prototipo 
+como la claridad de las explicaciones que ofrece y su potencial aplicabilidad.
 
 \section{Resultados}
 
