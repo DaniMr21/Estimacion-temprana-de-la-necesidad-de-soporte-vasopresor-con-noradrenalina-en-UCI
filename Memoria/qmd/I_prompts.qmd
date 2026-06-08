@@ -13,85 +13,79 @@ Las herramientas de IA utilizadas como apoyo para el presente trabajo son las si
   \item Gemini 3.5 Flash, de Google \citep{gemini35flash_2026}.
 \end{itemize}
 
+Se recogen únicamente interacciones representativas y técnicamente significativas. Las respuestas generadas por las herramientas de IA se utilizaron como apoyo puntual para resolver dudas, 
+depurar código, contrastar decisiones metodológicas o mejorar la presentación de resultados.
+
 \section{Registro de interacciones}
 
-\subsection*{Interacción 1}
+{\footnotesize
+\setlength{\extrarowheight}{2pt}
+\begin{longtable}{@{}p{0.085\textwidth} p{0.12\textwidth} p{0.475\textwidth} p{0.20\textwidth}@{}}
+\caption{Registro de interacciones con sistemas de IA.}\label{tab:registro_ia}\\
+\toprule
+\textbf{Modelo} & \textbf{Fecha aprox.} & \textbf{Prompt} & \textbf{Uso posterior} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\footnotesize\itshape (Tabla~\ref{tab:registro_ia} — continuación)}\\
+\toprule
+\textbf{Modelo} & \textbf{Fecha aprox.} & \textbf{Prompt} & \textbf{Uso posterior} \\
+\midrule
+\endhead
+\multicolumn{4}{r}{\footnotesize\itshape (continúa)}\\
+\endfoot
+\bottomrule
+\endlastfoot
 
-\textbf{Herramienta:} Claude Sonnet 4.6.
+GPT    & Marzo, 2.ª q. & ¿Por qué la noradrenalina se denomina norepinefrina en Estados Unidos y otros países? & Resolución de una duda terminológica. \\
+Claude & Marzo, 2.ª q. & En MIMIC-IV las temperaturas están mezcladas en Fahrenheit y Celsius; ¿cómo convertirlas en SQL con CASE WHEN a una escala única? & Apoyo en la extracción SQL de constantes vitales. \\
+Claude & Marzo, 2.ª q. & En MIMIC-IV los componentes del GCS (ocular, verbal y motor) se registran en filas separadas por charttime en chartevents; ¿cómo montar una CTE que los pivote y sume por stay\_id y charttime en un GCS total y extraiga su media, mínimo y máximo por estancia? & Vista temporal del GCS para los descriptores neurológicos. \\
+\addlinespace[3pt]
+Claude & Abril, 1.ª q. & Antes de filtrar la tabla limpia, ¿cómo comprobar que las columnas de bilirrubina, plaquetas, creatinina, PaO2, FiO2 y GCS estaban realmente medidas y no vacías? & Verificación de completitud previa al filtrado. \\
+Claude & Abril, 1.ª q. & Tengo una función de winsorización por percentiles en pandas; ¿cómo modificarla para que, además de recortar, cuente y devuelva cuántas filas se modifican por debajo del percentil bajo y por encima del alto, e imprima un informe del impacto por columna? & Auditoría del recorte en outliers\_v4.py. \\
+GPT & Abril, 1.ª q. & ¿Cómo implementar a mano en Python con NumPy la fórmula de la d de Cohen con varianza ponderada? & Tamaño del efecto en el desempate de estadísticos. \\
+GPT & Abril, 1.ª q. & ¿Cómo generar las figuras de la matriz de correlaciones de Spearman y de los dendrogramas de agrupamiento? & Figuras para la reducción de variables. \\
+\addlinespace[3pt]
+Claude & Abril, 2.ª q. & En una validación cruzada anidada con pacientes que pueden aparecer más de una vez, ¿cómo evito que un mismo paciente esté simultáneamente en entrenamiento y prueba? & Control de fugas mediante agrupamiento por paciente. \\
+Claude & Abril, 2.ª q. & En la importancia por permutación, ¿cómo programar el bucle iterativo registrando todo el historial en un DataFrame? & Registro de la importancia por permutación. \\
+Claude & Abril, 2.ª q. & Quiero una figura de dos paneles para comparar la significancia de 26 variables: a la izquierda un mapa de calor de una columna (verde si es significativa con corrección de Benjamini-Hochberg, rojo si no) y a la derecha una matriz con la caída de AUC de los seis modelos, con anchos personalizados para que no se deforme. & Figura de significancia e importancia multimodelo. \\
+Claude & Abril, 2.ª q. & En el panel univariante, en lugar de los valores numéricos, superponer una estrella si Benjamini-Hochberg es significativo y un punto si no, centrados en cada celda. & Refinamiento de la figura de significancia. \\
+Claude & Abril, 2.ª q. & En el panel de la caída de AUC, usar una paleta divergente rojo-verde centrada en cero y superponer una estrella negra solo si el intervalo de confianza del 95 por ciento de esa permutación excluye el cero. & Refinamiento de la figura de importancia. \\
+Claude & Abril, 2.ª q. & Al unir los dos paneles las etiquetas de variables se repiten en el medio; como el orden de filas es idéntico, ¿cómo ocultar las etiquetas del eje vertical del panel derecho para compartir filas sin repetir texto? & Ajuste visual del doble panel. \\
+Claude & Abril, 2.ª q. & Comprueba la implementación de SHAP para Random Forest, XGBoost, LightGBM y CatBoost con TreeExplainer, manteniendo las variables originales sin escalar. & Implementación de SHAP para modelos de árboles. \\
+GPT & Abril, 2.ª q. & Optimizar KernelExplainer mediante muestreo de los conjuntos de fondo y de prueba para reducir el coste computacional del cálculo de SHAP. & Optimización del SHAP de Naive Bayes. \\
+GPT & Abril, 2.ª q. & En eICU-CRD, ¿cómo combinar las tablas de constantes vitales periódicas y aperiódicas para obtener la presión arterial media mínima en la ventana 0--X horas? & Extracción SQL de la PAM en eICU-CRD. \\
+Claude & Abril, 2.ª q. & Diseñar una función para cargar modelos desde ficheros .pkl, algunos empaquetados en un Pipeline de scikit-learn, separando el escalador cuando exista y extrayendo el estimador final para usarlo con SHAP. & Carga de modelos y extracción del estimador para SHAP. \\
+Claude & Abril, 2.ª q. & Añadir una función que detecte si el modelo cargado es un Pipeline y separe el escalador del estimador final. & Utilidad de separación escalador/estimador. \\
+Claude & Abril, 2.ª q. & Extraer el estimador real de un modelo que puede ser un wrapper calibrado, un Pipeline o un estimador simple, para usarlo en el SHAP local. & Extracción del estimador para SHAP local. \\
+Claude & Abril, 2.ª q. & Añadir control de errores para omitir los modelos cuyo .pkl no exista, sin detener el script completo de SHAP. & Robustez del script de SHAP. \\
+GPT & Abril, 2.ª q. & ¿Dónde colocar mensajes por terminal para ver el progreso mientras se entrenan los modelos? & Seguimiento del entrenamiento. \\
+GPT & Abril, 2.ª q. & ¿Cómo añadir un checkpoint simple que lea el CSV de resultados y omita las combinaciones ventana-modelo ya evaluadas? & Reanudación de experimentos. \\
+\addlinespace[3pt]
+Claude & Mayo, 1.ª q. & Diseñar un script centralizado que, a partir de un diccionario con tres ventanas temporales (cada una con su fichero de datos y su lista de variables por algoritmo), recorra cada combinación, aplique validación cruzada anidada agrupada por paciente, busque hiperparámetros en una malla y escriba una línea de métricas en un CSV común sin sobrescribir lo anterior. & Orquestación del entrenamiento en baseline\_v4\_4\_completo.py. \\
+Claude & Mayo, 1.ª q. & Añadir una función que compruebe valores ausentes, infinitos y tipos de datos antes de entrenar cualquier modelo. & Control de calidad de datos previo al entrenamiento. \\
+Claude & Mayo, 1.ª q. & scikit-learn no trae ECE ni BSS de forma nativa: ¿cómo programar el ECE en diez contenedores (diferencia absoluta ponderada por la fracción de positivos) y el BSS comparando el Brier del modelo con el de un predictor basado en la prevalencia? & Funciones calcular\_ece y calcular\_bss. \\
+Claude & Mayo, 1.ª q. & Implementar el Brier Skill Score comparando el Brier del modelo frente a una predicción nula basada únicamente en la prevalencia de la muestra. & Implementación del Brier Skill Score. \\
+Claude & Mayo, 1.ª q. & Añadir mensajes de progreso por fold, modelo y ventana para saber qué parte del entrenamiento o del SHAP se está ejecutando. & Trazas de progreso del flujo. \\
+\addlinespace[3pt]
+Claude & Mayo, 2.ª q. & El XGBoost de la ventana media no está bien calibrado: aplicar escalado de Platt (regresión logística) y regresión isotónica ajustando el calibrador dentro de un bucle de validación cruzada out-of-fold, sin mezclar estancias del mismo paciente, y guardar el pipeline calibrado. & Calibración post-hoc en calibrar\_guardar\_medio\_xgb.py. \\
+Claude & Mayo, 2.ª q. & Crear un wrapper ModeloCalibrado con métodos predict\_proba y predict que aplique el calibrador después del modelo base. & Wrapper de calibración. \\
+Claude & Mayo, 2.ª q. & Asegurar que el predict\_proba del wrapper devuelva una matriz de dos columnas (probabilidad de clase 0 y de clase 1). & Formato de salida del wrapper. \\
+GPT & Mayo, 2.ª q. & Añadir una validación de que cada fold de StratifiedGroupKFold tenga al menos un positivo y un negativo antes de calibrar. & Validación de folds antes de calibrar. \\
+Claude & Mayo, 2.ª q. & ¿Cómo hacer que SHAP ignore el calibrador del XGBoost medio y explique únicamente el XGBoost base, manteniendo las probabilidades calibradas para la predicción? & SHAP sobre el modelo base con probabilidad calibrada. \\
+Claude & Mayo, 2.ª q. & ¿Cómo graficar superpuestas las probabilidades del XGBoost con y sin calibrar? & Comparación visual de la calibración. \\
+GPT & Mayo, 2.ª q. & ¿Cómo generar una figura de verificación con las curvas de calibración por cuantiles y el histograma comparando las probabilidades? & Figura de verificación de la calibración. \\
+Claude & Mayo, 2.ª q. & Simplificar un script para que recorra automáticamente ventanas y modelos, cargue cada .pkl entrenado y genere los diagramas SHAP globales con la configuración propia de cada algoritmo. & SHAP global automatizado por modelo y ventana. \\
+Claude & Mayo, 2.ª q. & Generar, para cada modelo guardado, una figura de diagnóstico con tres paneles: curva ROC con su área, curva de precisión-recall con la línea base de prevalencia y curva de calibración por cuantiles, todo a partir de predicciones out-of-fold. & Figuras diagnósticas en graficos\_oof.py. \\
+Claude & Mayo, 2.ª q. & Con máscaras booleanas sobre la columna de sepsis, filtrar las etiquetas y las probabilidades out-of-fold para comparar en una tabla el rendimiento global frente a pacientes sépticos y no sépticos (AUC-ROC, AUC-PR, BSS y ECE). & Evaluación por subgrupos en comparativa\_subgrupos.py. \\
+GPT & Mayo, 2.ª q. & Calcular pf\_min en el dashboard a partir de PaO2 y FiO2, evitando infinitos y valores inválidos antes de pasarlo al modelo. & Cálculo de PaO2/FiO2 en el dashboard. \\
+Claude & Mayo, 2.ª q. & Redefinir la clase ModeloCalibrado dentro del dashboard para deserializar correctamente el .pkl del XGBoost medio. & Deserialización del modelo calibrado en el dashboard. \\
+Claude & Mayo, 2.ª q. & Diseñar un modo demostración en Streamlit que guarde en el estado de sesión dos perfiles ficticios clínicamente coherentes, uno estable y otro con deterioro hemodinámico, y permita alternar entre el modo real y el simulado. & Modo demostración del dashboard. \\
+Claude & Mayo, 2.ª q. & Incrustar el gráfico de importancia local de SHAP de un paciente dentro de Streamlit, forzando a SHAP a dibujar sobre una figura de matplotlib para volcarla limpiamente con el comando de gráficos nativo de la interfaz. & Integración del SHAP local en el dashboard. \\
+Claude & Mayo, 2.ª q. & ¿Cómo calcular, dentro del mismo bootstrap pareado, la diferencia de AUC-ROC entre el modelo y SOFA en cada remuestreo para obtener una comparación estadística aproximada entre ambos? & Comparación modelo-SOFA en validación externa. \\
+\addlinespace[3pt]
+Claude & Junio, 1.ª q. & ¿Cómo resolver que en Streamlit se solapen los elementos de la interfaz? & Corrección de la maquetación del dashboard. \\
+Gemini & Junio, 1.ª q. & Genera una imagen para poner como portada en el readme de mi repositorio que lleva como título: estimación temprana de la necesidad de soporte vasopresor en UCI. Hazla muy simple, solo lineas y algún detalle, minimalista. & Presentación en el repositorio. \\
+\end{longtable}
+}
 
-\textbf{Fecha aproximada:} marzo de 2026.
-
-\textbf{Prompt:} Cómo transformar con CASE WHEN en SQL las temperaturas de MIMIC que están en Fahrenheit a Celsius, al estar mezcladas en la base de datos.
-
-\textbf{Uso posterior:} ideación y apoyo en código.
-
-\subsection*{Interacción 2}
-
-\textbf{Herramienta:} GPT 5.4.
-
-\textbf{Fecha aproximada:} marzo de 2026.
-
-\textbf{Prompt:} Por qué la noradrenalina se denomina norepinefrina en Estados Unidos y otros países.
-
-\textbf{Uso posterior:} resolución de duda terminológica.
-
-\subsection*{Interacción 3}
-
-\textbf{Herramienta:} Claude Sonnet 4.6.
-
-\textbf{Fecha aproximada:} abril de 2026.
-
-\textbf{Prompt:} En eICU, cómo combinar vitalPeriodic y vitalAperiodic para obtener la presión arterial media mínima en la ventana 0--X horas.
-
-\textbf{Uso posterior:} consulta sobre extracción SQL.
-
-\subsection*{Interacción 4}
-
-\textbf{Herramienta:} Claude Sonnet 4.6.
-
-\textbf{Fecha aproximada:} abril de 2026.
-
-\textbf{Prompt:} Comprobación de si las columnas de bilirrubina, plaquetas, creatinina, PaO2, FiO2 y GCS estaban realmente medidas antes de filtrar la tabla limpia.
-
-\textbf{Uso posterior:} corrección de código.
-
-\subsection*{Interacción 5}
-
-\textbf{Herramienta:} Claude Sonnet 4.6.
-
-\textbf{Fecha aproximada:} mayo de 2026.
-
-\textbf{Prompt:} Simplificar un script para que recorriera automáticamente ventanas temporales y modelos, cargara cada fichero .pkl entrenado y generara los gráficos SHAP globales con la configuración correspondiente de cada algoritmo.
-
-\textbf{Uso posterior:} ideación y corrección de código.
-
-\subsection*{Interacción 6}
-
-\textbf{Herramienta:} Claude Sonnet 4.6.
-
-\textbf{Fecha aproximada:} abril de 2026.
-
-\textbf{Prompt:} Comprobación de la implementación de SHAP para Random Forest, XGBoost, LightGBM y CatBoost mediante TreeExplainer, manteniendo las variables originales sin escalar.
-
-\textbf{Uso posterior:} implementación de SHAP para modelos basados en árboles.
-
-\subsection*{Interacción 7}
-
-\textbf{Herramienta:} Claude Sonnet 4.6.
-
-\textbf{Fecha aproximada:} abril de 2026.
-
-\textbf{Prompt:} Optimizar \texttt{KernelExplainer} mediante muestreo de datos, tanto para el conjunto de fondo como para el conjunto de prueba, para reducir el coste computacional del cálculo de SHAP.
-
-\textbf{Uso posterior:} optimización de código.
-
-\subsection*{Interacción 8}
-
-\textbf{Herramienta:} Claude Sonnet 4.6.
-
-\textbf{Fecha aproximada:} abril de 2026.
-
-\textbf{Prompt:} Diseñar una función para manejar modelos cargados desde ficheros .pkl, algunos de ellos empaquetados dentro de un Pipeline de Scikit-Learn, separando dinámicamente el escalador cuando existiera y extrayendo el estimador final para su uso con SHAP.
-
-\textbf{Uso posterior:} ideación y apoyo en código.
 ```

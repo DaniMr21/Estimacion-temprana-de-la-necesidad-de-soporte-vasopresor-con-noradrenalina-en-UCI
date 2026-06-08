@@ -402,9 +402,10 @@ externa y la aplicación final de visualización.
 
 La validación externa sobre eICU-CRD se planteó como una evaluación de la capacidad de generalización de los modelos entrenados en MIMIC-IV, sin reentrenamiento sobre la cohorte externa. 
 Para cada ventana se aplicaron los modelos preseleccionados y se compararon frente a la puntuación SOFA empleada como predictor aislado, tomada como referencia clínica basal. Los intervalos de 
-confianza al 95\,\% de todas las métricas se estimaron mediante \textit{bootstrap} con mil remuestreos y semilla fija, y la significación de la diferencia de AUC-ROC entre cada modelo y el SOFA 
-se evaluó mediante un contraste pareado basado en esos mismos remuestreos. Los resultados de esta validación, incluidas las métricas con sus intervalos de confianza y los diagramas SHAP sobre 
-la cohorte externa, se presentan y discuten en la memoria.
+confianza al 95\,\% de todas las métricas se estimaron mediante \textit{bootstrap} con mil remuestreos y semilla fija. La significación de la diferencia de AUC-ROC entre cada modelo y el SOFA 
+se evaluó mediante un contraste pareado basado en \textit{bootstrap}: sobre esos mismos remuestreos pareados se calculó, en cada uno, la diferencia de AUC entre el modelo y el SOFA, y el 
+valor $p$ se obtuvo mediante una aproximación normal sobre la distribución \textit{bootstrap} de dicha diferencia. En las salidas del script este valor se etiquetó como ``p DeLong'', aunque 
+estrictamente corresponde a una comparación pareada por \textit{bootstrap} y no a una implementación formal del test de DeLong.
 
 El análisis de rendimiento por subgrupos según la presencia de sepsis, realizado sobre MIMIC-IV, no se replicó en eICU-CRD. La estratificación en la cohorte de desarrollo se basó en la 
 definición Sepsis-3 proporcionada por las tablas derivadas del MIT, que aplica criterios fisiológicos homogéneos y reproducibles a partir de la combinación de sospecha de infección 
