@@ -2,26 +2,34 @@
 %% ── Capítulo 4: Metodología ─────────────────────────────────
 \capitulo{4}{Metodología}
 ```
+#### Diseño del estudio y ventanas temporales
 
 El diseño metodológico se planteó como un flujo retrospectivo de desarrollo y evaluación de modelos predictivos, utilizando la estancia en UCI como unidad de análisis. Para cada estancia se 
 definieron tres escenarios temporales: ventana corta, con observación entre 0--3 h y predicción entre 3--12 h; ventana media, con observación entre 0--6 h y predicción entre 6--24 h; y ventana 
 larga, con observación entre 0--12 h y predicción entre 12--48 h. En todos los casos, las variables clínicas y analíticas se extrajeron exclusivamente del periodo de observación,
 mientras que el inicio de soporte vasopresor con noradrenalina se comprobó en el horizonte posterior de predicción.
 
-La cohorte de desarrollo se construyó a partir de MIMIC-IV [@johnson2023]. El acceso requirió completar la formación en investigación con datos humanos del CITI Program [@citiprogram], registrar el proyecto en 
-PhysioNet y suscribir el acuerdo de uso de datos, que prohíbe la redistribución de los datos originales y cualquier intento de reidentificación de pacientes.
-El repositorio público de GitHub contiene el código completo de extracción, preprocesamiento, entrenamiento y evaluación, pero no los datos clínicos originales.
-La replicación completa requiere credenciales de acceso autorizado a PhysioNet.
+#### Fuente de datos y restricciones de acceso
 
-La unidad de análisis fue la estancia en UCI. Para las ventanas corta y media se exigió una estancia superior a 24 horas, y para la larga superior a 48 horas. Este criterio garantizó que el 
+La cohorte de desarrollo se construyó a partir de MIMIC-IV [@johnson2023]. El acceso requirió completar la formación en investigación con datos de sujetos humanos del CITI 
+Program [@citiprogram], acreditarse como usuario en PhysioNet y suscribir el acuerdo de uso de datos, que prohíbe la redistribución de los datos originales y cualquier 
+intento de reidentificación de pacientes. Por este motivo, y con el fin de respetar dichas condiciones, el repositorio público del proyecto no contiene ningún dato clínico 
+procedente de MIMIC-IV ni registros individuales de pacientes; en él se difunde el código completo del flujo de trabajo y, cuando procede, resultados agregados y modelos entrenados
+que no permiten reconstruir observaciones individuales.
+
+#### Construcción de cohortes y definición del evento
+
+Para las ventanas corta y media se exigió una estancia superior a 24 horas, y para la larga superior a 48 horas. Este criterio garantizó que el 
 horizonte de predicción quedara contenido dentro del periodo observable y evitó clasificar como negativos a pacientes que no habían permanecido el tiempo suficiente para presentar el evento.
 Para cada ventana temporal se generó una cohorte específica, aplicando de forma independiente los criterios de duración mínima, exclusión de noradrenalina previa, extracción de predictores 
-y asignación de etiquetas, evaluando cada horizonte como una tarea de clasificación binaria distinta. Las estancias en las que la noradrenalina se había iniciado antes de finalizar la ventana de observación fueron excluidas, de modo que todos los predictores procedieran de un periodo previo 
-al inicio del soporte vasopresor.
+y asignación de etiquetas, evaluando cada horizonte como una tarea de clasificación binaria distinta. Las estancias en las que la noradrenalina se había iniciado antes de finalizar la ventana 
+de observación fueron excluidas, de modo que todos los predictores procedieran de un periodo previo al inicio del soporte vasopresor.
 
 El evento objetivo fue el primer inicio de perfusión de noradrenalina durante la estancia en UCI, identificado en MIMIC-IV a partir de la tabla `inputevents` mediante el `itemid` 221906.
 La etiqueta se asignó de forma independiente para cada ventana: positiva (`1`) cuando el primer inicio ocurrió dentro del intervalo de predicción, y negativa (`0`) en caso contrario. Esta última 
 categoría englobó tanto estancias sin administración de noradrenalina como estancias en las que el tratamiento se inició fuera del horizonte evaluado.
+
+#### Selección y preprocesamiento de variables
 
 La selección inicial de variables predictoras se realizó antes del entrenamiento de los modelos, combinando disponibilidad en MIMIC-IV y plausibilidad clínica. Se priorizaron constantes vitales,
 parámetros analíticos, variables respiratorias y marcadores de función orgánica relacionados con el deterioro hemodinámico y la posible necesidad de soporte vasopresor. La selección se 
@@ -29,8 +37,9 @@ contrastó con el Protocolo Código Sepsis del HUBU [@hubu2025], con el fin de m
 Se descartaron variables que, aun siendo clínicamente relevantes, no estaban disponibles de forma suficientemente completa o estructurada para su uso sistemático en las ventanas temporales 
 definidas, como la procalcitonina y la proteína C reactiva.
 
-La puntuación SOFA y la presencia de sepsis se obtuvieron de las tablas derivadas `mimiciv_derived.sofa` y `mimiciv_derived.sepsis3`, generadas mediante los scripts oficiales del repositorio 
-MIT-LCP [@mimiccode]. Estas tablas implementan los criterios Sepsis-3 a partir de la combinación de sospecha de infección y disfunción orgánica medida mediante SOFA [@johnson2023; @mimiccode]. 
+La puntuación SOFA y la presencia de sepsis se obtuvieron de las tablas derivadas `mimiciv_derived.sofa` y `mimiciv_derived.sepsis3`, generadas mediante los scripts 
+oficiales del repositorio MIT-LCP [@mimiccode]. La primera proporciona la puntuación SOFA horaria, mientras que la segunda aplica los criterios Sepsis-3 a partir de la 
+combinación de sospecha de infección y disfunción orgánica medida mediante SOFA [@johnson2023; @mimiccode].
 
 Para el tratamiento de valores extremos se siguió una estrategia coherente con el preprocesamiento propuesto por Gupta et al. [-@gupta2022mimic] para MIMIC-IV. Se aplicó una winsorización que sustituyó
  los valores situados por debajo del percentil 2 y por encima del percentil 98 por los límites correspondientes. La winsorización se aplicó sobre los estadísticos agregados por estancia y ventana
@@ -50,7 +59,7 @@ A partir de este análisis se aplicó una selección en dos pasos. En primer lug
 
 La variable de sepsis no se utilizó como predictor principal, sino que se reservó para el análisis diferencial por subgrupos en pacientes sépticos y no sépticos.
 
-Una vez fijado el conjunto de predictores, su contribución se auditó mediante tres análisis complementarios. La importancia por permutación se calculó dentro de la validación cruzada, 
+Una vez definido el conjunto de predictores, su contribución se auditó mediante tres análisis complementarios. La importancia por permutación se calculó dentro de la validación cruzada, 
 sobre el conjunto de prueba de cada fold externo: para cada variable se realizaron 50 permutaciones y se registró la caída media de AUC-ROC respecto al modelo sin permutar, lo que permitió 
 estimar la pérdida de rendimiento asociada a alterar cada predictor sin fuga de información. Cuando un modelo no presentaba ninguna variable con contribución significativa en una ventana, 
 se excluyó de la evaluación en esa ventana. En paralelo, un análisis univariante sobre la primera estancia de cada paciente empleó la prueba de Mann--Whitney U para las variables continuas y
@@ -60,6 +69,8 @@ se excluyó de la evaluación en esa ventana. En paralelo, un análisis univaria
 
 La decisión final de conservar o descartar variables no se basó en un único criterio estadístico. Se priorizó la combinación de relevancia clínica, contribución predictiva, estabilidad entre
  ventanas temporales, coherencia fisiopatológica y ausencia de redundancia evidente.
+
+#### Modelado predictivo y validación interna
 
  Se evaluaron seis algoritmos de aprendizaje supervisado sobre datos tabulares, cubriendo distintas familias de modelos: regresión logística como modelo lineal de referencia, 
  Naive Bayes gaussiano como clasificador probabilístico basal, Random Forest como método de \textit{bagging}, y XGBoost, LightGBM y CatBoost como modelos de \textit{gradient boosting}. 
@@ -77,11 +88,13 @@ El rendimiento de los modelos se estimó mediante validación cruzada anidada 5�
 la proporción de clases y agrupando todas las estancias de un mismo paciente en el mismo fold para evitar fuga de información entre entrenamiento y prueba. El bucle interno, compuesto por tres 
 particiones, se utilizó para la búsqueda de hiperparámetros mediante `GridSearchCV`, optimizando AUC-ROC.
 
-La evaluación de los modelos combinó métricas de discriminación (AUC-ROC y AUC-PR), rendimiento probabilístico (Brier score, Brier Skill Score [BSS] y \textit{LogLoss}) y calibración mediante 
-el Expected Calibration Error (ECE). Todas estas métricas se calcularon sobre las particiones externas de la validación cruzada anidada, agregando los resultados de los cinco folds de la validación 
-cruzada anidada.
+#### Evaluación interna, calibración y preselección de modelos
 
-Una vez completada la validación anidada, se seleccionó para cada modelo una configuración final de hiperparámetros a partir de los valores escogidos en los cinco folds externos, tomando el valor
+La evaluación de los modelos combinó métricas de discriminación (AUC-ROC y AUC-PR), rendimiento probabilístico (Brier score, Brier Skill Score [BSS] y \textit{LogLoss}) y calibración mediante 
+el Expected Calibration Error (ECE). Todas estas métricas se calcularon sobre las particiones externas de la validación cruzada anidada, agregando los resultados de los 
+cinco folds externos.
+
+Una vez completada la validación anidada, se seleccionó para cada modelo una configuración final de hiperparámetros a partir de los valores escogidos agregando los cinco folds externos, tomando el valor
 más frecuente cuando existían discrepancias entre folds. Posteriormente, cada \textit{pipeline} final se reentrenó sobre el conjunto completo de desarrollo de MIMIC-IV y se serializó en formato
 `.pkl` mediante `joblib`.
 
@@ -114,11 +127,13 @@ Adicionalmente, se evaluó el rendimiento por subgrupos según la presencia de s
 estratificaron las estancias en tres grupos: cohorte global, pacientes con sepsis según Sepsis-3 y pacientes sin sepsis. En cada subgrupo se calcularon las mismas métricas utilizadas en la 
 evaluación principal: AUC-ROC, AUC-PR, BSS y ECE.
 
+#### Validación externa
+
 La validación externa se realizó sobre eICU Collaborative Research Database (eICU-CRD) [@pollard2018]. Su uso permitió evaluar el comportamiento de los modelos en una cohorte independiente de MIMIC-IV y 
 procedente de un entorno hospitalario diferente.
 
-Los requisitos de acceso a eICU-CRD son equivalentes a los de MIMIC-IV, ya mencionados, por estar también alojada en PhysioNet; por ello, el repositorio público del trabajo tampoco contiene las 
-tablas de eICU-CRD.
+Los requisitos de acceso a eICU-CRD son equivalentes a los de MIMIC-IV, ya mencionados, por estar también alojada en PhysioNet; por ello, el repositorio público del trabajo
+ tampoco contiene las tablas de eICU-CRD.
 
 La cohorte de validación externa se construyó mediante consultas SQL sobre eICU-CRD, utilizando igualmente la estancia en UCI como unidad de análisis. Se aplicaron las mismas ventanas temporales
 que en la cohorte de desarrollo: corta, media y larga; y también se mantuvieron los mismos requisitos de duración mínima de estancia.
@@ -140,6 +155,8 @@ Para cada modelo preseleccionado, se realizó la comparación frente a SOFA en t
  95\% de todas las métricas se estimaron mediante \textit{bootstrap} con 1000 remuestreos y semilla fija para garantizar la reproducibilidad. La significación de la diferencia de AUC-ROC entre 
  cada modelo y SOFA se evaluó mediante un contraste pareado basado en los mismos remuestreos \textit{bootstrap}. Por último, se replicó el análisis de interpretabilidad mediante valores SHAP 
  sobre la cohorte externa, con el fin de comprobar si los patrones de atribución se mantenían coherentes.
+
+#### Prototipo de dashboard y evaluación de usabilidad
 
 Como fase final del trabajo se desarrolló un prototipo de \textit{dashboard} clínico en Python mediante Streamlit. El objetivo del prototipo fue demostrar la viabilidad de integrar los modelos 
 seleccionados tras la validación externa en una interfaz sencilla, interpretable y orientada a la consulta individual, sin sustituir la valoración médica ni emitir recomendaciones terapéuticas.
