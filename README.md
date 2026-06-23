@@ -3,7 +3,9 @@
 Repositorio asociado al Trabajo de Fin de Grado (TFG) orientado al desarrollo, evaluación y validación de modelos de aprendizaje automático para estimar la probabilidad de inicio de soporte vasopresor con noradrenalina en pacientes adultos ingresados en UCI, utilizando variables clínicas y analíticas disponibles durante las primeras horas de estancia.
 
 Autor: Daniel Marina de la Cal
+
 Tutor académico: Antonio Jesús Canepa Oneto
+
 Tutores del Hospital Universitario de Burgos: Sergio Andrés Ossa Echeverri y Fernando Callejo Torre
 
 <p align="center">
